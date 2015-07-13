@@ -430,7 +430,13 @@ TimeMap.prototype = {
             },
             // handler to open item window
             eventClickHandler = function(x, y, evt) {
-                evt.item.openInfoWindow();
+                console.log(evt.item);
+                /*
+                if (evt.item.getInfoPoint())
+                    alert(evt.item.getTitle());
+                else
+                */
+                    evt.item.openInfoWindow();
             },
             resizeTimerID, x, painter;
         
@@ -1985,6 +1991,7 @@ TimeMapItem = function(data, dataset) {
      */
     item.getInfoPoint = function() { 
         // default to map center if placemark not set
+        console.log("TÄÄLLÄ");
         return options.infoPoint || item.map.getCenter();
     };
     
