@@ -9,39 +9,26 @@
  */
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($scope, SparqlService) {
-      SparqlService.getDataForTimelineMap()
-        .success(function(data) {
+      SparqlService.getEventsForTimelineMap()
+        .then(function(data) {
             console.log(data);
-            //data = JSON.parse(data);
             var res = [];
-            var ids = []
-            data.results.bindings.forEach(function(e) {
-                if (ids.indexOf(e.id.value) !== -1)
-                    return;
-                ids.push(e.id.value);
-
+            data.forEach(function(e) {
                 var entry = {
-                    start: e.start_time.value,
-                    title: e.description.value.split(' ')[0],
+                    start: e.start_time,
+                    title: e.description.split(' ')[0],
                     options: {
-                        description: e.description.value
+                        description: e.description
                     }
                 };
-                if (e.start_time.value !== e.end_time.value)
-                    entry.end = e.end_time.value;
+                if (e.start_time !== e.end_time) {
+                    entry.end = e.end_time;
+                }
 
-                if (e.lat && e.lon) {
-                    entry.point = {
-                        lat: e.lat.value,
-                        lon: e.lon.value
-                    }                        
-                } else if (e.polygon) {
-                    var l = e.polygon.value.split(" ");
-                    l = l.map(function(e) { 
-                        var latlon = e.split(',');
-                        return { lat: latlon[1], lon: latlon[0] };
-                    });
-                    entry.polygon = l;
+                if (e.points) {
+                    entry.point = e.points[0];
+                } else if (e.polygons) {
+                    entry.polygon = e.polygons[0];
                 } else {
                     entry.options.noPlacemarkLoad = true;
                 }
@@ -71,8 +58,7 @@ angular.module('eventsApp')
                     Timeline.DateTime.MONTH
                 ]
             });
-        })
-        .error(function(data) {
+        }, function(data) {
             $scope.error = data;
         });
   });

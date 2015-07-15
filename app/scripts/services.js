@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('eventsApp')
-    .factory('SparqlService', function($http) {
+    .factory('SparqlService', function($http, $q) {
 
         var URL = 'http://ldf.fi/warsa/sparql';
         var executeQuery = function(sparqlQry) {
             return $http.get(URL + '?query=' + encodeURIComponent(sparqlQry) + '&format=json');
-        }
+        };
 
         var timelineMapQry = `
 PREFIX hipla: <http://ldf.fi/schema/hipla/> 
@@ -57,7 +57,55 @@ WHERE {
             return executeQuery(timelineMapQry);
         };
 
+        function simplify(event) {
+            var e = {};
+
+            e.id = event.id.value;
+            e.description = event.description.value;
+            e.start_time = event.start_time.value;
+            e.end_time = event.end_time.value;
+            e.place_name = event.place_label.value;
+
+            if (event.polygon) {
+                var l = event.polygon.value.split(" ");
+                l = l.map(function(p) { 
+                    var latlon = p.split(',');
+                    return { lat: latlon[1], lon: latlon[0] };
+                });
+                e.polygons = [l];
+            }
+            if (event.lat && event.lon) {
+                e.points = [{
+                    lat: event.lat.value,
+                    lon: event.lon.value
+                }];
+            }
+
+            return e;
+        }
+
+        var getEventsForTimelineMap = function() {
+            return executeQuery(timelineMapQry).then(function(response) {
+                var event_list = _.transform(response.data.results.bindings, function(result, event) {
+                    event = simplify(event);
+                    var old = _.find(result, function(e) {
+                        return e.id === event.id;
+                    });
+                    if (old) { 
+                        _.merge(old, event);
+                    }
+                    else {
+                        result.push(event);
+                    }                
+                });
+                return event_list;
+            }, function(response) {
+                return $q.reject(response.data);
+            });
+        };
+
         return {
+            getEventsForTimelineMap: getEventsForTimelineMap,
             getDataForTimeline: getDataForTimeline,
             getDataForTimelineMap: getDataForTimelineMap
         };
