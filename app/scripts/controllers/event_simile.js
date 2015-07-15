@@ -11,7 +11,6 @@ angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($scope, SparqlService) {
       SparqlService.getEventsForTimelineMap()
         .then(function(data) {
-            console.log(data);
             var res = [];
             data.forEach(function(e) {
                 var entry = {
@@ -44,10 +43,9 @@ angular.module('eventsApp')
                 },
                 datasets: [
                 {
-                    id: "artists",
-                    title: "Artists",
+                    id: "warsa",
+                    title: "Itsenäisen Suomen sotien tapahtumat",
                     theme: "orange",
-                    // note that the lines below are now the preferred syntax
                     type: "basic",
                     options: {
                         items: res

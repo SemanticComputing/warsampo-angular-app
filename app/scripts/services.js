@@ -57,7 +57,10 @@ WHERE {
             return executeQuery(timelineMapQry);
         };
 
-        function simplify(event) {
+        function makeObject(event) {
+            // Take the event as received and turn it into an object that
+            // is easier to handle.
+            // Make the location a list as to support multiple locations per event.
             var e = {};
 
             e.id = event.id.value;
@@ -67,6 +70,9 @@ WHERE {
             e.place_name = event.place_label.value;
 
             if (event.polygon) {
+                // The event's location is represented as a polygon.
+                // Transform the polygon string into a list consisting
+                // of a single lat/lon pair object list.
                 var l = event.polygon.value.split(" ");
                 l = l.map(function(p) { 
                     var latlon = p.split(',');
@@ -75,6 +81,7 @@ WHERE {
                 e.polygons = [l];
             }
             if (event.lat && event.lon) {
+                // The event's location is represented as a point.
                 e.points = [{
                     lat: event.lat.value,
                     lon: event.lon.value
@@ -84,17 +91,29 @@ WHERE {
             return e;
         }
 
+        function mergeObjects(first, second) {
+            return _.merge(first, second, function(a, b) {
+                if (_.isArray(a)) {
+                    return a.concat(b);
+                }
+            });
+        }
+
         var getEventsForTimelineMap = function() {
+            // Query for events and merge the returned triples into objects.
             return executeQuery(timelineMapQry).then(function(response) {
                 var event_list = _.transform(response.data.results.bindings, function(result, event) {
-                    event = simplify(event);
+                    event = makeObject(event);
+                    // Check if this event has been constructed earlier
                     var old = _.find(result, function(e) {
                         return e.id === event.id;
                     });
                     if (old) { 
-                        _.merge(old, event);
+                        // Merge this triple into the event constructed earlier
+                        mergeObjects(old, event);
                     }
                     else {
+                        // This is the first triple related to the event
                         result.push(event);
                     }                
                 });
