@@ -13,7 +13,7 @@
   "globals": {
     "angular": false,
     "_": false,
-    "TimeMap": false
+    "TimeMap": false,
     "Timeline": false
   }
 }

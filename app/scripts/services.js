@@ -8,23 +8,28 @@ angular.module('eventsApp')
             return $http.get(URL + '?query=' + encodeURIComponent(sparqlQry) + '&format=json');
         };
 
-        var timelineMapQry = `
+        var eventQry = `
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX hipla: <http://ldf.fi/schema/hipla/> 
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX sch: <http://schema.org/>
 
-SELECT ?id ?start_time ?end_time ?description ?place_label ?lat ?lon ?polygon 
+SELECT ?id ?start_time ?end_time ?description ?place_label ?lat ?lon ?polygon ?type
 WHERE {
-    ?id skos:prefLabel ?description ;
+  ?type_id skos:prefLabel ?type .    
+  FILTER(langMatches(lang(?type), "FI"))
+  ?id a ?type_id ;
+        skos:prefLabel ?description ;
         crm:P4_has_time-span ?time_id ;
         crm:P7_took_place_at ?place_id .
+    {0}
     ?time_id crm:P82a_begin_of_the_begin ?start_time ;
         crm:P82b_end_of_the_end ?end_time .
-
-    OPTIONAL { ?place_id geo:lat ?lat ;
-            geo:long ?lon .
+    OPTIONAL { 
+        ?place_id geo:lat ?lat ;
+        geo:long ?lon .
     }
     OPTIONAL { ?place_id sch:polygon ?polygon . }
     OPTIONAL { ?place_id skos:prefLabel ?place_label . }
@@ -32,30 +37,11 @@ WHERE {
 ORDER BY ?start_time ?end_time
 `;
 
-        var timelineQry = `
-PREFIX hipla: <http://ldf.fi/schema/hipla/> 
-PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-
-SELECT ?id ?start_time ?end_time ?description ?place_label ?lat ?lon ?type 
-WHERE {
-    ?id a ?type_id ;
-        skos:prefLabel ?description ;
-    crm:P4_has_time-span ?time_id .
-    ?time_id crm:P82a_begin_of_the_begin ?start_time ;
-        crm:P82b_end_of_the_end ?end_time .
-    ?type_id skos:prefLabel ?type .
-    FILTER(langMatches(lang(?type), "FI"))
-}
+        var eventFilterWithinTimeSpan = `
+FILTER(?start_time >= "{0}"^^xsd:date && ?end_time <= "{1}"^^xsd:date)
 `;
 
-        var getDataForTimeline = function() {
-            return executeQuery(timelineQry);
-        };
-        var getDataForTimelineMap = function() {
-            return executeQuery(timelineMapQry);
-        };
+        var eventsWithinTimeSpanQry = eventQry.format(eventFilterWithinTimeSpan);
 
         function makeObject(event) {
             // Take the event as received and turn it into an object that
@@ -99,34 +85,50 @@ WHERE {
             });
         }
 
-        var getEventsForTimelineMap = function() {
-            // Query for events and merge the returned triples into objects.
-            return executeQuery(timelineMapQry).then(function(response) {
-                var event_list = _.transform(response.data.results.bindings, function(result, event) {
-                    event = makeObject(event);
-                    // Check if this event has been constructed earlier
-                    var old = _.find(result, function(e) {
-                        return e.id === event.id;
-                    });
-                    if (old) { 
-                        // Merge this triple into the event constructed earlier
-                        mergeObjects(old, event);
-                    }
-                    else {
-                        // This is the first triple related to the event
-                        result.push(event);
-                    }                
+        function makeObjectList(objects) {
+            var event_list = _.transform(objects, function(result, event) {
+                event = makeObject(event);
+                // Check if this event has been constructed earlier
+                var old = _.find(result, function(e) {
+                    return e.id === event.id;
                 });
-                return event_list;
+                if (old) { 
+                    // Merge this triple into the event constructed earlier
+                    mergeObjects(old, event);
+                }
+                else {
+                    // This is the first triple related to the event
+                    result.push(event);
+                }                
+            });
+            return event_list;
+        }
+
+        function getEvents(qry) {
+            // Query for events and merge the returned triples into objects.
+            return executeQuery(qry).then(function(response) {
+                return makeObjectList(response.data.results.bindings);
             }, function(response) {
                 return $q.reject(response.data);
             });
+        }
+
+        var getEventsByTimeSpan = function(start, end) {
+            return getEvents(eventsWithinTimeSpanQry.format(start, end));
+        };
+        
+        var getDataForTimelineMap = function() {
+            return executeQuery(eventQry.format(""));
+        };
+
+        var getDataForTimeline = function() {
+            return executeQuery(eventQry.format(""));
         };
 
         return {
-            getEventsForTimelineMap: getEventsForTimelineMap,
             getDataForTimeline: getDataForTimeline,
-            getDataForTimelineMap: getDataForTimelineMap
+            getDataForTimelineMap: getDataForTimelineMap,
+            getEventsByTimeSpan: getEventsByTimeSpan
         };
 });
 
