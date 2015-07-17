@@ -8,11 +8,9 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('MapCtrl', function ($scope, SparqlService) {
-      SparqlService.getDataForTimelineMap()
-        .success(function(data) {
-            console.log(data);
-            //data = JSON.parse(data);
+  .controller('MapCtrl', function ($scope, Event) {
+      Event.getEventsByTimeSpan('1939-01-01', '1940-12-31')
+        .then(function(data) {
             var res = [
                 {
                     type: "overview",
@@ -23,24 +21,17 @@ angular.module('eventsApp')
                     }
                 }
             ];
-            var ids = []
-            data.results.bindings.forEach(function(e) {
-                // Purkalla pois duplikaatit
-                if (ids.indexOf(e.id.value) !== -1)
-                    return;
-                ids.push(e.id.value);
+            data.forEach(function(e) {
                 var ev = {};
-                if (e.lat && e.lon) {
-                    ev.location = {
-                        lat: e.lat.value,
-                        lon: e.lon.value
-                    };
-                } else
+                if (e.points) {
+                    ev.location = e.points[0];
+                } else {
                     ev.type = "overview";
+                }
 
                 ev.text = {
-                    headline: e.description.value.split('.')[0],
-                    text: e.description.value
+                    headline: e.description.split('.')[0],
+                    text: e.description
                 };
                 res.push(ev);
             });
@@ -54,12 +45,12 @@ angular.module('eventsApp')
                     slides: res
                 }
             };
+            /* global VCO */
             var storymap = new VCO.StoryMap('mapdiv', map_data);
-            window.onresize = function(event) {
+            window.onresize = function() {
                 storymap.updateDisplay();
             };
-        })
-        .error(function(data) {
+        }, function(data) {
             $scope.error = data;
         });
   });

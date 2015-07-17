@@ -8,8 +8,8 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SimileMapCtrl', function ($scope, SparqlService) {
-      SparqlService.getEventsByTimeSpan('1939-01-01', '1940-12-31')
+  .controller('SimileMapCtrl', function ($scope, Event) {
+      Event.getEventsByTimeSpan('1939-01-01', '1940-12-31')
         .then(function(data) {
             var res = [];
             data.forEach(function(e) {
