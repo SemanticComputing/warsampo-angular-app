@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * Service for transforming SPARQL results into more manageable objects.
+ * Service for transforming SPARQL result triples into more manageable objects.
  * Functionality can be modified by giving overriding functions as parameters.
  */
 angular.module('eventsApp')
