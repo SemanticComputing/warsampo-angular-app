@@ -25,7 +25,7 @@ angular.module('eventsApp')
             '         crm:P7_took_place_at ?place_id .' +
             '     ?time_id crm:P82a_begin_of_the_begin ?start_time ;' +
             '         crm:P82b_end_of_the_end ?end_time .' +
-            '     {0}' +
+            '     {0}' + // Placeholder for a filter
             '     OPTIONAL { ' +
             '         ?place_id geo:lat ?lat ;' +
             '         geo:long ?lon .' +
@@ -40,12 +40,23 @@ angular.module('eventsApp')
 
         var eventsWithinTimeSpanQry = eventQry.format(eventFilterWithinTimeSpan);
 
+        var allEventsQry = eventQry.format("");
+
         var getEventsByTimeSpan = function(start, end) {
             // Get events that occured between the dates start and end (inclusive).
-            return endpoint.getObjects(eventsWithinTimeSpanQry.format(start, end), EventMapper.makeObjectList);
+            // Returns a promise.
+            return endpoint.getObjects(eventsWithinTimeSpanQry.format(start, end), 
+                    EventMapper.makeObjectList);
+        };
+
+        var getAllEvents = function() {
+            // Get all events.
+            // Returns a promise.
+            return endpoint.getObjects(allEventsQry, EventMapper.makeObjectList);
         };
 
         return {
+            getAllEvents: getAllEvents,
             getEventsByTimeSpan: getEventsByTimeSpan
         };
 });

@@ -41,6 +41,8 @@ angular.module('eventsApp')
             return e;
         };
 
+        // Override ObjectMapper.makeObject.
+        // Other functions defined by ObjectMapper are fine.
         var mapper = new ObjectMapper({ makeObject: makeObject });
 
         return mapper;

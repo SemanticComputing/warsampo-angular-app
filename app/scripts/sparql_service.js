@@ -1,8 +1,11 @@
 'use strict';
 
+/*
+ * Service for querying a SPARQL endpoint.
+ * Takes the endpoint URL as a parameter.
+ */
 angular.module('eventsApp')
     .factory('SparqlService', function($http, $q) {
-
         return function(endpointUrl) {
 
             var executeQuery = function(sparqlQry) {

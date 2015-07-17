@@ -35,22 +35,22 @@ angular.module('eventsApp')
         var makeObjectList = function(objects, makeObject, mergeObjects) {
             // Create a list of the SPARQL results where triples with the same
             // subject are merged into one object.
-            var event_list = _.transform(objects, function(result, event) {
-                event = makeObject(event);
+            var obj_list = _.transform(objects, function(result, obj) {
+                obj = makeObject(obj);
                 // Check if this object has been constructed earlier
                 var old = _.find(result, function(e) {
-                    return e.id === event.id;
+                    return e.id === obj.id;
                 });
                 if (old) { 
                     // Merge this triple into the object constructed earlier
-                    mergeObjects(old, event);
+                    mergeObjects(old, obj);
                 }
                 else {
                     // This is the first triple related to the id
-                    result.push(event);
+                    result.push(obj);
                 }                
             });
-            return event_list;
+            return obj_list;
         };
 
         return function(overrides) {
