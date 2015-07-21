@@ -4,7 +4,7 @@
  * Service that provides an interface for fetching events from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .factory('Event', function(SparqlService, EventMapper) {
+    .service('eventService', function(SparqlService, eventMapperService) {
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var eventQry =
@@ -42,22 +42,20 @@ angular.module('eventsApp')
 
         var allEventsQry = eventQry.format("");
 
-        var getEventsByTimeSpan = function(start, end) {
+        this.getEventsByTimeSpan = function(start, end) {
             // Get events that occured between the dates start and end (inclusive).
             // Returns a promise.
-            return endpoint.getObjects(eventsWithinTimeSpanQry.format(start, end), 
-                    EventMapper.makeObjectList);
+            return endpoint.getObjects(eventsWithinTimeSpanQry.format(start, end)).then(function(data) {
+                return eventMapperService.makeObjectList(data);
+            });
         };
 
-        var getAllEvents = function() {
+        this.getAllEvents = function() {
             // Get all events.
             // Returns a promise.
-            return endpoint.getObjects(allEventsQry, EventMapper.makeObjectList);
-        };
-
-        return {
-            getAllEvents: getAllEvents,
-            getEventsByTimeSpan: getEventsByTimeSpan
+            return endpoint.getObjects(allEventsQry).then(function(data) {
+                return eventMapperService.makeObjectList(data);
+            });
         };
 });
 

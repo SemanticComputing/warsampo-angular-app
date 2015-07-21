@@ -5,8 +5,8 @@
  * "Extends" ObjectMapper.
  */
 angular.module('eventsApp')
-    .factory('EventMapper', function(ObjectMapper) {
-        var makeObject = function(event) {
+    .service('eventMapperService', function(objectMapperService) {
+        this.makeObject = function(event) {
             // Take the event as received and turn it into an object that
             // is easier to handle.
             // Make the location a list as to support multiple locations per event.
@@ -41,10 +41,7 @@ angular.module('eventsApp')
             return e;
         };
 
-        // Override ObjectMapper.makeObject.
-        // Other functions defined by ObjectMapper are fine.
-        var mapper = new ObjectMapper({ makeObject: makeObject });
-
-        return mapper;
+        this.mergeObjects = objectMapperService.mergeObjects;
+        this.makeObjectList = objectMapperService.makeObjectList;
 });
 

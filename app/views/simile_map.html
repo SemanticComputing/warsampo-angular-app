@@ -1,6 +1,14 @@
-<div id="eras">
-  <button class="btn btn-primary" ng-click="showWinterWar()">Talvisota</button>
-  <button class="btn btn-primary" ng-click="showContinuationWar()">Jatkosota</button>
+<div class="row nav-btn-container">
+  <div class="col-md-2">
+    <button class="btn btn-primary" ng-click="previous()">Edellinen</button>
+  </div>
+  <div class="col-md-8">
+    <button class="btn btn-primary" ng-click="showWinterWar()">Talvisota</button>
+    <button class="btn btn-primary" ng-click="showContinuationWar()">Jatkosota</button>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-primary" ng-click="next()">Seuraava</button>
+  </div>
 </div>
 <div id="timemap">
   <div id="timelinecontainer">

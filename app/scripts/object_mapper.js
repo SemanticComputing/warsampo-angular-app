@@ -5,8 +5,8 @@
  * Functionality can be modified by giving overriding functions as parameters.
  */
 angular.module('eventsApp')
-    .service('ObjectMapper', function() {
-        var makeObject = function(obj) {
+    .service('objectMapperService', function() {
+        this.makeObject = function(obj) {
             // Flatten the obj. Discard everything except values.
             // Assume that each property of the obj has a value property with
             // the actual value.
@@ -19,7 +19,7 @@ angular.module('eventsApp')
             return o;
         };
 
-        var mergeObjects = function(first, second) {
+        this.mergeObjects = function(first, second) {
             // Merge two objects (triples) into one object.
             return _.merge(first, second, function(a, b) {
                 if (_.isEqual(a, b)) {
@@ -29,21 +29,22 @@ angular.module('eventsApp')
                     return a.concat(b);
                 }
                 return [a, b];
-            });
+            }, this);
         };
 
-        var makeObjectList = function(objects, makeObject, mergeObjects) {
+        this.makeObjectList = function(objects) {
             // Create a list of the SPARQL results where triples with the same
             // subject are merged into one object.
+            var self = this;
             var obj_list = _.transform(objects, function(result, obj) {
-                obj = makeObject(obj);
+                obj = self.makeObject(obj);
                 // Check if this object has been constructed earlier
                 var old = _.find(result, function(e) {
                     return e.id === obj.id;
                 });
                 if (old) { 
                     // Merge this triple into the object constructed earlier
-                    mergeObjects(old, obj);
+                    self.mergeObjects(old, obj);
                 }
                 else {
                     // This is the first triple related to the id
@@ -51,20 +52,5 @@ angular.module('eventsApp')
                 }                
             });
             return obj_list;
-        };
-
-        return function(overrides) {
-            overrides = overrides || {};
-            var make = overrides.makeObject || makeObject;
-            var merge = overrides.mergeObjects || mergeObjects;
-            var makeList = overrides.makeObjectList || makeObjectList;
-
-            return {
-                makeObject: make,
-                mergeObjects: merge,
-                makeObjectList: function(objects) { 
-                    return makeList(objects, make, merge);
-                }
-            };
         };
 });

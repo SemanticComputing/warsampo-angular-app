@@ -8,14 +8,10 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SimileMapCtrl', function ($scope, Event) {
+  .controller('SimileMapCtrl', function ($scope, eventService) {
       $scope.createTimeMap = function(start, end) {
           (function() {
-              if (start && end) {
-                  return Event.getEventsByTimeSpan(start, end);
-              } else {
-                  return Event.getAllEvents();
-              }
+              return (start && end) ? eventService.getEventsByTimeSpan(start, end) : eventService.getAllEvents();
           })().then(function(data) {
                 var res = [];
                 data.forEach(function(e) {
