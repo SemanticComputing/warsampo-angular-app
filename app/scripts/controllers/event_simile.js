@@ -17,7 +17,7 @@ angular.module('eventsApp')
                 data.forEach(function(e) {
                     var entry = {
                         start: e.start_time,
-                        title: e.description.split(' ')[0],
+                        title: ' ',//e.description.split(' ')[0],
                         options: {
                             description: e.description
                         }

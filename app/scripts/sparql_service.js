@@ -13,16 +13,10 @@ angular.module('eventsApp')
             };
 
             return {
-                getObjects: function(sparqlQry, callback) {
+                getObjects: function(sparqlQry) {
                     // Query for triples and call the callback function with the results
                     return executeQuery(sparqlQry).then(function(response) {
-                        var bindings = response.data.results.bindings;
-
-                        if (callback) {
-                            return callback(bindings);
-                        }
-                        return bindings;
-
+                        return response.data.results.bindings;
                     }, function(response) {
                         return $q.reject(response.data);
                     });
