@@ -17,7 +17,8 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'uiGmapgoogle-maps'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -41,7 +42,18 @@ angular
         controller: 'SimileMapCtrl',
         controllerAs: 'simileMap'
       })
+      .when('/angulargmaps', {
+        templateUrl: 'views/angular_gmaps.html',
+        controller: 'AngularGMapsCtrl',
+        controllerAs: 'angularGMaps'
+      })
       .otherwise({
         redirectTo: '/'
       });
+  })
+  .config(function(uiGmapGoogleMapApiProvider) {
+    uiGmapGoogleMapApiProvider.configure({
+        //    key: 'your api key',
+        libraries: 'weather,geometry,visualization'
   });
+});

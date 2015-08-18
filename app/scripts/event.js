@@ -57,5 +57,56 @@ angular.module('eventsApp')
                 return eventMapperService.makeObjectList(data);
             });
         };
+
+        this.getExtremeDate = function(dates, min) {
+            if (_.isArray(dates)) {
+                var fun;
+                if (min) {
+                    fun = _.min;
+                } else {
+                    fun = _.max;
+                }
+                return new Date(fun(dates, function(date) {
+                    return new Date(date);
+                }));
+            }
+            if (!dates) {
+                return undefined;
+            }
+            return new Date(dates);
+        };
+
+        this.isFullYear = function(start, end) {
+            return start.getDate() === 1 && start.getMonth() === 0 && end.getDate() === 31 &&
+                end.getMonth() === 11;
+        };
+
+        this.formatDateRange = function(start, end) {
+            if (this.isFullYear(start, end)) {
+                var start_year = start.getFullYear();
+                var end_year = end.getFullYear();
+                return start_year === end_year ? start_year : start_year + '-' + end_year;
+            }
+            if (end - start) {
+                return start.toLocaleDateString() + '-' + end.toLocaleDateString();
+            }
+            return start.toLocaleDateString();
+        };
+
+
+        this.createTitle = function(event) {
+            var start = this.getExtremeDate(event.start_time, true);
+            var end = this.getExtremeDate(event.end_time, false);
+            var time = this.formatDateRange(start, end);
+
+            var place;
+            if (_.isArray(event.place_label)) {
+                place = event.place_label.join(", ");
+            } else {
+                place = event.place_label;
+            }
+
+            return place ? place + ' ' + time : time;
+        };
 });
 

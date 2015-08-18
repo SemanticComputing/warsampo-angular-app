@@ -9,6 +9,7 @@
  */
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($scope, eventService) {
+      var infoHtml = "<div class=''><h3>{0}</h3><p>{1}</p></div>";
       $scope.createTimeMap = function(start, end) {
           (function() {
               return (start && end) ? eventService.getEventsByTimeSpan(start, end) : eventService.getAllEvents();
@@ -17,9 +18,10 @@ angular.module('eventsApp')
                 data.forEach(function(e) {
                     var entry = {
                         start: e.start_time,
-                        title: ' ',//e.description.split(' ')[0],
+                        title: e.type, //e.description.split(' ')[0],
                         options: {
-                            description: e.description
+                            infoHtml: infoHtml.format(eventService.createTitle(e), e.description)
+                            //description: e.description
                         }
                     };
                     if (e.start_time !== e.end_time) {
@@ -27,7 +29,17 @@ angular.module('eventsApp')
                     }
 
                     if (e.points) {
-                        entry.point = e.points[0];
+                        if (e.points.length === 1) {
+                            entry.point = e.points[0];
+                        }
+                        else {
+                            entry.placemarks = [{
+                                polyline: e.points
+                            }];
+                            e.points.forEach(function(point) {
+                                entry.placemarks.push({ point: point });
+                            });
+                        }
                     } else if (e.polygons) {
                         entry.polygon = e.polygons[0];
                     } else {
