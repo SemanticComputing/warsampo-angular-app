@@ -15,7 +15,7 @@ angular.module('eventsApp')
             ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
             ' PREFIX sch: <http://schema.org/>' +
               
-            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?lat ?lon ?polygon ?type' +
+            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?type' +
             ' WHERE {' +
             '   ?type_id skos:prefLabel ?type .    ' +
             '   FILTER(langMatches(lang(?type), "FI"))' +

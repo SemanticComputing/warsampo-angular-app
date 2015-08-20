@@ -10,11 +10,24 @@
     <button class="btn btn-primary" ng-click="next()">Seuraava</button>
   </div>
 </div>
-<div id="timemap">
-  <div id="timelinecontainer">
-    <div id=timeline></div>
-  </div>
-  <div id="mapcontainer">
-    <div id="map"></div>
+<div class="row">
+  <div class="col-md-12">
+    <div id="timemap">
+      <div id="timelinecontainer">
+        <div id=timeline></div>
+      </div>
+      <div id="mapcontainer">
+        <div id="map"></div>
+      </div>
+    </div>
   </div>
 </div>
+<div class="row">
+  <div class="col-md-12">
+    <figure ng-repeat="img in images" class="pull-left gap-right">
+      <img class="img-responsive" ng-src="{{img.url}}" />
+      <figcaption>{{img.description}} ({{img.created}}. SA-kuva)</figcaption>
+    </figure>
+  </div>
+</div>
+
