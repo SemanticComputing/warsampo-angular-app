@@ -9,9 +9,10 @@
  */
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($scope, eventService, photoService) {
-      $scope.images = [];
+      $scope.images = undefined;
       $scope.photoDaysBefore = 1;
       $scope.photoDaysAfter = 4;
+      $scope.photoPlace = true;
 
       var infoHtml = "<div class=''><h3>{0}</h3><p>{1}</p></div>";
 
@@ -23,22 +24,27 @@ angular.module('eventsApp')
 
       var getImageUrls = function(item) {
           $scope.images = [];
-          var place_ids = item.opts.place_uri;
-
-          if (!_.isArray(place_ids)) {
-              place_ids = [place_ids];
+          var place_ids;
+          if ($scope.photoPlace) {
+            place_ids = item.opts.place_uri;
           }
-          place_ids.forEach(function(id) {
-              $scope.isLoadingImages = true;
-              photoService.getPhotosByPlaceAndTimeSpan(id, 
+
+          $scope.isLoadingImages = true;
+          photoService.getPhotosByPlaceAndTimeSpan(place_ids, 
                 changeDateAndFormat(item.getStart(), -$scope.photoDaysBefore), 
-                changeDateAndFormat(item.getEnd(), $scope.photoDaysAfter)).then(function(imgs) {
+                changeDateAndFormat(item.getEnd(), $scope.photoDaysAfter))
+                .then(function(imgs) {
                     $scope.isLoadingImages = false;
-                    imgs.forEach(function(img) {
-                        $scope.images.push(img);
-                    });
+                      imgs.forEach(function(img) {
+                          $scope.images.push(img);
+                      });
                 });
-          });
+      };
+
+      $scope.getImages = function() {
+          if ($scope.selected) {
+            getImageUrls($scope.selected);
+          }
       };
 
 
@@ -88,6 +94,7 @@ angular.module('eventsApp')
                         eventIconPath: "../images/",
                         openInfoWindow: function() {
                             // call some custom function, passing the item
+                            $scope.selected = this;
                             getImageUrls(this);
                             TimeMapItem.openInfoWindowBasic.call(this);
                         }

@@ -1,16 +1,23 @@
 <div class="row nav-btn-container">
-  <div class="col-xs-2 form-inline">
+  <div class="col-xs-3">
+    <p>Valokuvien aikahaarukka (päiviä):</p>
+  </div>
+  <div class="col-xs-3 form-inline text-right">
     <!--
     <button class="btn btn-primary" ng-click="previous()">Edellinen</button>
     -->
     <label for="photo-days-before">Ennen</label>
-      <input name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" />
+      <input ng-change="getImages()" min="0" name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" />
   </div>
-  <div class="col-xs-2 form-inline">
+  <div class="col-xs-3 form-inline text-left">
     <label for="photo-days-after">Jälkeen</label>
-      <input name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" />
+      <input ng-change="getImages()" min="0" name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" />
   </div>
-  <div class="col-xs-8 text-right">
+  <div class="col-xs-1 form-inline text-left">
+    <label for="photo-place">Paikka</label>
+      <input ng-change="getImages()" min="0" name="photo-place" class="form-control" type="CHECKBOX" ng-model="photoPlace" />
+  </div>
+  <div class="col-xs-2 text-left">
     <button class="btn btn-primary" ng-click="showWinterWar()">Talvisota</button>
     <button class="btn btn-primary" ng-click="showContinuationWar()">Jatkosota</button>
   </div>
@@ -36,10 +43,12 @@
   <div class="col-md-12">
     <figure ng-repeat="img in images" class="pull-left gap-right">
       <img class="img-responsive" ng-src="{{img.url}}" />
-      <figcaption>{{img.description}} ({{img.created}}. SA-kuva)</figcaption>
+      <figcaption>{{img.description}} (<i>{{img.created}} SA-kuva</i>)</figcaption>
     </figure>
-    <img ng-if="isLoadingImages" ng-src="images/loading.gif" />
-    <p ng-if="images.length === 0 && !isLoadingImages">
+    <div ng-if="isLoadingImages" class="text-center">
+      <img ng-src="images/loading.gif" />
+    </div>
+    <p class="text-center" ng-if="images.length === 0 && !isLoadingImages">
       Ei tapahtumaan liittyviä kuvia.
     </p>
   </div>
