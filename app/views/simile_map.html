@@ -1,14 +1,24 @@
 <div class="row nav-btn-container">
-  <div class="col-md-2">
+  <div class="col-xs-2 form-inline">
+    <!--
     <button class="btn btn-primary" ng-click="previous()">Edellinen</button>
+    -->
+    <label for="photo-days-before">Ennen</label>
+      <input name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" />
   </div>
-  <div class="col-md-8">
+  <div class="col-xs-2 form-inline">
+    <label for="photo-days-after">Jälkeen</label>
+      <input name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" />
+  </div>
+  <div class="col-xs-8 text-right">
     <button class="btn btn-primary" ng-click="showWinterWar()">Talvisota</button>
     <button class="btn btn-primary" ng-click="showContinuationWar()">Jatkosota</button>
   </div>
+  <!--
   <div class="col-md-2">
     <button class="btn btn-primary" ng-click="next()">Seuraava</button>
   </div>
+    -->
 </div>
 <div class="row">
   <div class="col-md-12">
@@ -28,6 +38,10 @@
       <img class="img-responsive" ng-src="{{img.url}}" />
       <figcaption>{{img.description}} ({{img.created}}. SA-kuva)</figcaption>
     </figure>
+    <img ng-if="isLoadingImages" ng-src="images/loading.gif" />
+    <p ng-if="images.length === 0 && !isLoadingImages">
+      Ei tapahtumaan liittyviä kuvia.
+    </p>
   </div>
 </div>
 

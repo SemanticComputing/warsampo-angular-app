@@ -10,6 +10,8 @@
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($scope, eventService, photoService) {
       $scope.images = [];
+      $scope.photoDaysBefore = 1;
+      $scope.photoDaysAfter = 4;
 
       var infoHtml = "<div class=''><h3>{0}</h3><p>{1}</p></div>";
 
@@ -27,9 +29,11 @@ angular.module('eventsApp')
               place_ids = [place_ids];
           }
           place_ids.forEach(function(id) {
+              $scope.isLoadingImages = true;
               photoService.getPhotosByPlaceAndTimeSpan(id, 
-                changeDateAndFormat(item.getStart(), -1), 
-                changeDateAndFormat(item.getEnd(), 5)).then(function(imgs) {
+                changeDateAndFormat(item.getStart(), -$scope.photoDaysBefore), 
+                changeDateAndFormat(item.getEnd(), $scope.photoDaysAfter)).then(function(imgs) {
+                    $scope.isLoadingImages = false;
                     imgs.forEach(function(img) {
                         $scope.images.push(img);
                     });
