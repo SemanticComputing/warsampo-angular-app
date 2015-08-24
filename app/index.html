@@ -8,15 +8,16 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/vis/dist/vis.min.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="scripts/vendor/timemap/examples/examples.css">
     <!-- endbuild -->
+    <!--
     <link rel="stylesheet" type="text/css" href="http://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
     <link rel="stylesheet" href="https://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
+    -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="scripts/vendor/timemap/lib/mxn/mxn.js?(googlev3)"></script>
     <script src="scripts/vendor/timemap/lib/timeline-2.3.0.js"></script>
@@ -47,10 +48,7 @@
 
             <ul class="nav navbar-nav">
               <li class="active"><a href="#/">Home</a></li>
-              <li><a href="#/timelinejs">Timeline</a></li>
-              <li><a ng-href="#/map">Map</a></li>
               <li><a ng-href="#/similemap">Timemap</a></li>
-              <li><a ng-href="#/angulargmaps">Angular Google Maps</a></li>
             </ul>
           </div>
         </div>
@@ -93,8 +91,6 @@
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
-    <script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
-    <script src="bower_components/vis/dist/vis.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -108,13 +104,12 @@
     <script src="scripts/photo.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/about.js"></script>
-    <script src="scripts/controllers/event_storymap.js"></script>
-    <script src="scripts/controllers/event_timeline.js"></script>
     <script src="scripts/controllers/event_simile.js"></script>
-    <script src="scripts/controllers/angular_gmaps.js"></script>
     <!-- endbuild -->
+    <!--
     <script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/timeline.js"></script>
     <script type="text/javascript" src="http://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
     <script type="text/javascript" src="https://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
+    -->
 </body>
 </html>

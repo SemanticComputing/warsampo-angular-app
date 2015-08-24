@@ -123,7 +123,7 @@ angular.module('eventsApp')
         $scope.createTimeMap('1939-01-01', '1940-12-31');
       };
       $scope.showContinuationWar = function() {
-        $scope.createTimeMap('1941-01-01', '1944-12-31');
+        $scope.createTimeMap('1941-06-01', '1944-12-31');
       };
 
       $scope.showWinterWar();
