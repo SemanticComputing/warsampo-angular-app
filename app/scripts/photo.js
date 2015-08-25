@@ -58,7 +58,6 @@ angular.module('eventsApp')
             } else {
                 qry = photosByTimeQry.format(start, end);
             }
-            console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
             });
