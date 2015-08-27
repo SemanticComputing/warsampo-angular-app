@@ -14,7 +14,7 @@ angular.module('eventsApp')
       $scope.photoDaysAfter = 4;
       $scope.photoPlace = true;
 
-      var infoHtml = "<div class=''><h3>{0}</h3><p>{1}</p></div>";
+      var infoHtml = "<div><h3>{0}</h3><p>{1}</p></div>";
 
       function changeDateAndFormat(date, days) {
           var d = new Date(date);
@@ -41,7 +41,7 @@ angular.module('eventsApp')
                 });
       };
 
-      $scope.getImages = function() {
+      $scope.fetchImages = function() {
           if ($scope.selected) {
             getImageUrls($scope.selected);
           }
@@ -87,6 +87,7 @@ angular.module('eventsApp')
                     res.push(entry);
                 });
                 var tm;
+                var ib;
                 tm = TimeMap.init({
                     mapId: "map",               // Id of map div element (required)
                     timelineId: "timeline",     // Id of timeline div element (required)
@@ -94,9 +95,31 @@ angular.module('eventsApp')
                         eventIconPath: "vendor/timemap/images/",
                         openInfoWindow: function() {
                             // call some custom function, passing the item
+                            if (ib) {
+                                ib.close();
+                            }
                             $scope.selected = this;
-                            $scope.getImages();
-                            TimeMapItem.openInfoWindowBasic.call(this);
+                            $scope.fetchImages();
+                            var opts = {
+                                content: this.opts.infoHtml,
+                                isHidden: false,
+                                pane: 'floatPane',
+                                boxStyle: {
+                                    background: "rgb(255, 255, 255)",
+                                    width: "280px"
+                                },
+                                infoBoxClearance: new google.maps.Size(1, 1)
+                            };
+                            ib = new InfoBox(opts);
+                            var map = this.map.maps.googlev3; 
+                            var mark = this.getNativePlacemark();
+                            if (mark) {
+                                ib.open(map, mark);
+                            } else {
+                                ib.position_ = map.getCenter();
+                                ib.open(map);
+                            }
+                            //TimeMapItem.openInfoWindowBasic.call(this);
                         }
                     },
                     datasets: [
