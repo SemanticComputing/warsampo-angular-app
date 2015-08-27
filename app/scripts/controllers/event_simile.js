@@ -56,7 +56,7 @@ angular.module('eventsApp')
                 data.forEach(function(e) {
                     var entry = {
                         start: e.start_time,
-                        title: e.type, //e.description.split(' ')[0],
+                        title: e.length < 20 ? e.description : e.description.substr(0, 20) + '...',
                         options: {
                             infoHtml: infoHtml.format(eventService.createTitle(e), e.description),
                             place_uri: e.place_id,
@@ -91,11 +91,11 @@ angular.module('eventsApp')
                     mapId: "map",               // Id of map div element (required)
                     timelineId: "timeline",     // Id of timeline div element (required)
                     options: {
-                        eventIconPath: "../images/",
+                        eventIconPath: "vendor/timemap/images/",
                         openInfoWindow: function() {
                             // call some custom function, passing the item
                             $scope.selected = this;
-                            getImageUrls(this);
+                            $scope.getImages();
                             TimeMapItem.openInfoWindowBasic.call(this);
                         }
                     },

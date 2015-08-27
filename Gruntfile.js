@@ -271,7 +271,7 @@ module.exports = function (grunt) {
     usemin: {
       html: ['<%= yeoman.dist %>/{,*/}*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
-      js: ['<%= yeoman.dist %>/scripts/{,*/}*.js'],
+      js: ['<%= yeoman.dist %>/scripts/{,*/}*.js', '<%= yeoman.dist %>/vendor/{,*/}*.js'],
       options: {
         assetsDirs: [
           '<%= yeoman.dist %>',
@@ -395,7 +395,8 @@ module.exports = function (grunt) {
             '.htaccess',
             '*.html',
             'images/{,*/}*.{webp}',
-            'styles/fonts/{,*/}*.*'
+            'vendor/**',
+            'styles/fonts/{,*/}*.*',
           ]
         }, {
           expand: true,
@@ -427,7 +428,7 @@ module.exports = function (grunt) {
       ],
       dist: [
         'compass:dist',
-        //'imagemin',
+        'imagemin',
         'svgmin'
       ]
     },
