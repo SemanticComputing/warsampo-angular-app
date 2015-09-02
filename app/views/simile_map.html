@@ -1,25 +1,15 @@
 <div class="row nav-btn-container">
-  <div class="col-xs-3">
-    <p>Valokuvien aikahaarukka (päiviä):</p>
-  </div>
-  <div class="col-xs-3 form-inline text-right">
+  <div class="col-xs-12 form-inline">
     <!--
     <button class="btn btn-primary" ng-click="previous()">Edellinen</button>
     -->
-    <label for="photo-days-before">Ennen</label>
-      <input ng-change="fetchImages()" min="0" name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" />
-  </div>
-  <div class="col-xs-3 form-inline text-left">
-    <label for="photo-days-after">Jälkeen</label>
-      <input ng-change="fetchImages()" min="0" name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" />
-  </div>
-  <div class="col-xs-1 form-inline text-left">
-    <label for="photo-place">Paikka</label>
-      <input ng-change="fetchImages()" min="0" name="photo-place" class="form-control" type="CHECKBOX" ng-model="photoPlace" />
-  </div>
-  <div class="col-xs-2 text-left">
-    <button class="btn btn-primary" ng-click="showWinterWar()">Talvisota</button>
-    <button class="btn btn-primary" ng-click="showContinuationWar()">Jatkosota</button>
+    <label for="photo-days-before">Valokuvien aikahaarukka </label>
+    <input ng-change="fetchImages()" min="0" name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" />
+    <label for="photo-days-before">päivää ennen</label>
+    <input ng-change="fetchImages()" min="0" name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" />
+    <label for="photo-days-after">päivää jälkeen tapahtuman.</label>
+    <input ng-change="fetchImages()" min="0" name="photo-place" class="form-control" type="CHECKBOX" ng-model="photoPlace" />
+    <label for="photo-place">Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa</label>
   </div>
   <!--
   <div class="col-md-2">

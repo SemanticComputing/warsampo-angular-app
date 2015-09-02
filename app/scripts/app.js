@@ -17,44 +17,19 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'//,
-//    'uiGmapgoogle-maps'
+    'ngTouch'
   ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl',
-        controllerAs: 'main'
+        redirectTo: '/timemap/winterwar'
       })
-      .when('/timelinejs', {
-        templateUrl: 'views/timelinejs.html',
-        controller: 'TimelinejsCtrl',
-        controllerAs: 'timeline'
-      })
-      .when('/map', {
-        templateUrl: 'views/map.html',
-        controller: 'MapCtrl',
-        controllerAs: 'map'
-      })
-      .when('/similemap', {
+      .when('/timemap/:era', {
         templateUrl: 'views/simile_map.html',
         controller: 'SimileMapCtrl',
-        controllerAs: 'simileMap'
-      })
-      .when('/angulargmaps', {
-        templateUrl: 'views/angular_gmaps.html',
-        controller: 'AngularGMapsCtrl',
-        controllerAs: 'angularGMaps'
+        controllerAs: 'timemapCtrl'
       })
       .otherwise({
         redirectTo: '/'
       });
   });
-/*
-  .config(function(uiGmapGoogleMapApiProvider) {
-    uiGmapGoogleMapApiProvider.configure({
-        //    key: 'your api key',
-        libraries: 'weather,geometry,visualization'
-  });
-})*/
