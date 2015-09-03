@@ -11,7 +11,7 @@ angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($scope, $routeParams, eventService, photoService, timemapService) {
     $scope.images = undefined;
     $scope.photoDaysBefore = 1;
-    $scope.photoDaysAfter = 4;
+    $scope.photoDaysAfter = 3;
     $scope.photoPlace = true;
     var tm;
 

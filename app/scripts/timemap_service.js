@@ -16,6 +16,9 @@ angular.module('eventsApp')
                 options: {
                     infoHtml: infoHtml.format(eventService.createTitle(e), e.description),
                     place_uri: e.place_id,
+                    descTitle: eventService.createTitle(e),
+                    description: e.description,
+                    event: e
                 }
             };
             if (e.start_time !== e.end_time) {
@@ -47,8 +50,20 @@ angular.module('eventsApp')
         }
 
         var ib;
+        var mark;
+        var oldIcon;
+        var oldTheme;
+        var oldEvent;
 
         var openInfoWindow = function(event, callback) {
+            if (mark) {
+                mark.setIcon(oldIcon);
+            }
+            oldTheme = _.clone(event.opts.theme);
+            if (oldEvent) {
+                oldEvent.changeTheme(oldTheme);
+            }
+            oldIcon = undefined;
             if (ib) {
                 ib.close();
             }
@@ -60,13 +75,25 @@ angular.module('eventsApp')
             };
             ib = new InfoBox(opts);
             var map = event.map.maps.googlev3; 
-            var mark = event.getNativePlacemark();
+            //mark = event.placemark;
+            mark = event.getNativePlacemark();
             if (mark) {
-                ib.open(map, mark);
-            } else {
-                ib.position_ = map.getCenter();
-                ib.open(map);
+                oldIcon = mark.getIcon();
+                mark.setIcon('https://www.google.com/mapfiles/marker_green.png');
             }
+            event.changeTheme('purple');
+            oldEvent = event;
+            /*
+            if (_.isArray(event.placemark)) {
+                var m = event.placemark.pop();
+                console.log(m);
+            }
+            console.log(event);
+            if (mark) {
+                oldIcon = mark.getIcon();
+                mark.setIcon('https://www.google.com/mapfiles/marker_green.png');
+            }
+            */
             if (callback) {
                 callback(event);
             }
