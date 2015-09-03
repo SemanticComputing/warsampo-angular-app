@@ -29,10 +29,11 @@
     </div>
   </div>
 </div>
-<div class="row">
+<div class="row" ng-repeat="img in images track by $index" ng-if="$index % 3 == 0">
   <div class="col-md-12">
-    <figure ng-repeat="img in images" class="pull-left gap-right">
-      <img class="img-responsive" ng-src="{{img.url}}" />
+    <figure ng-repeat="i in [$index, $index + 1, $index + 2]"
+      class="pull-left gap-right" ng-if="images[i]">
+      <img ng-src="{{images[i].url}}" />
       <figcaption>{{img.description}} (<i>{{img.created}} SA-kuva</i>)</figcaption>
     </figure>
     <div ng-if="isLoadingImages" class="text-center">
