@@ -22,6 +22,7 @@ angular.module('eventsApp')
     }
 
     var fetchImages = function(item) {
+        $scope.isLoadingImages = true;
         $scope.current = item;
         $scope.images = [];
         var place_ids;
