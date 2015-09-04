@@ -13,7 +13,7 @@ angular.module('eventsApp')
     $scope.photoDaysBefore = 1;
     $scope.photoDaysAfter = 3;
     $scope.photoPlace = true;
-    var tm;
+    var tm, map, heatmap;
 
     function changeDateAndFormat(date, days) {
         var d = new Date(date);
@@ -46,8 +46,33 @@ angular.module('eventsApp')
         fetchImages($scope.current);
     };
 
+    var getVisibleMarkers = function(tm) {
+        return _.reduce(tm.map.markers, function(result, marker) {
+            if (marker.proprietary_marker && marker.proprietary_marker.visible) {
+                result.push(new google.maps.LatLng(marker.location.lat, marker.location.lon));
+            }
+            return result;
+        }, []);
+    };
+
     $scope.createTimeMap = function(start, end) {
-        tm = timemapService.createTimemap(start, end, fetchImages);
+        timemapService.createTimemap(start, end, fetchImages)
+        .then(function(timemap) {
+            tm = timemap;
+            map = timemap.getNativeMap();
+            var band = tm.timeline.getBand(0);
+            band.addOnScrollListener(function() {
+                if (!heatmap) {
+                    heatmap = new google.maps.visualization.HeatmapLayer({
+                        data: getVisibleMarkers(tm),
+                        map: map
+                    });
+                } else {
+                    heatmap.setData(getVisibleMarkers(tm));
+                }
+            });
+            console.log(tm);
+        });
     };
 
     $scope.showWinterWar = function() {

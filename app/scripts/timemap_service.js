@@ -42,7 +42,7 @@
 };
 
 angular.module('eventsApp')
-    .service('timemapService', function(eventService) {
+    .service('timemapService', function($q, eventService) {
 
         function createEventObject(e) {
             var entry = {
@@ -99,7 +99,7 @@ angular.module('eventsApp')
         };
 
         this.createTimemap = function(start, end, infoWindowCallback) {
-            (function() {
+            return (function() {
                 return (start && end) ? eventService.getEventsByTimeSpan(start, end) : eventService.getAllEvents();
             })().then(function(data) {
                 var res = [];
@@ -131,7 +131,7 @@ angular.module('eventsApp')
                 return tm;
 
             }, function(data) {
-                throw data;
+                $q.reject(data);
             });
         };
     });

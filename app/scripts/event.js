@@ -15,7 +15,7 @@ angular.module('eventsApp')
             ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
             ' PREFIX sch: <http://schema.org/>' +
               
-            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?type' +
+            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?type ?participant' +
             ' WHERE {' +
             '   ?type_id skos:prefLabel ?type .    ' +
             '   FILTER(langMatches(lang(?type), "FI"))' +
@@ -30,6 +30,7 @@ angular.module('eventsApp')
             '         ?place_id geo:lat ?lat ;' +
             '         geo:long ?lon .' +
             '     }' +
+            '     OPTIONAL { ?id crm:P11_had_participant ?participant. }' +
             '     OPTIONAL { ?place_id sch:polygon ?polygon . }' +
             '     OPTIONAL { ?place_id skos:prefLabel ?place_label . }' +
             ' }' +
