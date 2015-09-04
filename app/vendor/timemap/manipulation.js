@@ -345,8 +345,6 @@ TimeMapItem.prototype.createEvent = function(start, end) {
         placemark = item.placemark,
         i;
     newTheme = util.lookup(newTheme, TimeMap.themes);
-    newTheme.eventIconPath = item.opts.theme.eventIconPath;
-    newTheme.eventIcon = newTheme.eventIconPath + newTheme.eventIconImage;
     item.opts.theme = newTheme;
     // internal function - takes type, placemark
     function changePlacemark(pm) {
@@ -359,7 +357,6 @@ TimeMapItem.prototype.createEvent = function(start, end) {
         if (type == 'array') {
             placemark.forEach(changePlacemark);
         } else {
-            //this.getNativePlacemark().setIcon('https://www.google.com/mapfiles/marker_green.png');
             changePlacemark(placemark);
         }
     }

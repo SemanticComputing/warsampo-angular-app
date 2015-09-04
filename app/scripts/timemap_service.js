@@ -4,6 +4,41 @@
  * Service for querying a SPARQL endpoint.
  * Takes the endpoint URL as a parameter.
  */
+
+ TimeMapItem.prototype.changeTheme = function(newTheme, suppressLayout) {
+    var item = this,
+        type = item.getType(),
+        event = item.event,
+        placemark = item.placemark,
+        i;
+    newTheme = TimeMap.util.lookup(newTheme, TimeMap.themes);
+    newTheme.eventIconPath = item.opts.theme.eventIconPath;
+    newTheme.eventIcon = newTheme.eventIconPath + newTheme.eventIconImage;
+    item.opts.theme = newTheme;
+    // internal function - takes type, placemark
+    function changePlacemark(pm) {
+        if (pm.proprietary_marker) {
+            pm.proprietary_marker.setIcon(newTheme.icon);
+        }
+    }
+    // change placemark
+    if (placemark) {
+        if (type == 'array') {
+            placemark.forEach(changePlacemark);
+        } else {
+            changePlacemark(placemark);
+        }
+    }
+    // change event
+    if (event) {
+        event._color = newTheme.eventColor;
+        event._icon = newTheme.eventIcon;
+        if (!suppressLayout) {
+            item.timeline.layout();
+        }
+    }
+};
+
 angular.module('eventsApp')
     .service('timemapService', function(eventService) {
 
@@ -49,55 +84,19 @@ angular.module('eventsApp')
             return entry;
         }
 
-        var ib;
-        var mark;
-        var oldIcon;
         var oldTheme;
         var oldEvent;
 
         var openInfoWindow = function(event, callback) {
-            if (mark) {
-                mark.setIcon(oldIcon);
-            }
             oldTheme = _.clone(event.opts.theme);
             if (oldEvent) {
                 oldEvent.changeTheme(oldTheme);
             }
-            oldIcon = undefined;
-            if (ib) {
-                ib.close();
-            }
-            var opts = {
-                content: event.opts.infoHtml,
-                isHidden: false,
-                pane: 'floatPane',
-                infoBoxClearance: new google.maps.Size(1, 1)
-            };
-            ib = new InfoBox(opts);
-            var map = event.map.maps.googlev3; 
-            //mark = event.placemark;
-            mark = event.getNativePlacemark();
-            if (mark) {
-                oldIcon = mark.getIcon();
-                mark.setIcon('https://www.google.com/mapfiles/marker_green.png');
-            }
-            event.changeTheme('purple');
+            event.changeTheme('green');
             oldEvent = event;
-            /*
-            if (_.isArray(event.placemark)) {
-                var m = event.placemark.pop();
-                console.log(m);
-            }
-            console.log(event);
-            if (mark) {
-                oldIcon = mark.getIcon();
-                mark.setIcon('https://www.google.com/mapfiles/marker_green.png');
-            }
-            */
             if (callback) {
                 callback(event);
             }
-            //TimeMapItem.openInfoWindowBasic.call(this);
         };
 
         this.createTimemap = function(start, end, infoWindowCallback) {
