@@ -19,6 +19,8 @@
     function changePlacemark(pm) {
         if (pm.proprietary_marker) {
             pm.proprietary_marker.setIcon(newTheme.icon);
+        } else {
+            pm.proprietary_polyline.setOptions({strokeColor: newTheme.color});
         }
     }
     // change placemark
@@ -42,14 +44,11 @@
 angular.module('eventsApp')
     .service('timemapService', function(eventService) {
 
-        var infoHtml = "<div><h3>{0}</h3><p>{1}</p></div>";
-
         function createEventObject(e) {
             var entry = {
                 start: e.start_time,
                 title: e.length < 20 ? e.description : e.description.substr(0, 20) + '...',
                 options: {
-                    infoHtml: infoHtml.format(eventService.createTitle(e), e.description),
                     place_uri: e.place_id,
                     descTitle: eventService.createTitle(e),
                     description: e.description,
