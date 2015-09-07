@@ -71,10 +71,13 @@ angular.module('eventsApp')
     };
 
     var clearHeatmap = function() {
-        heatmap.setMap(null);
+        if (tm.timeline.getBand(0)._dragging || tm.timeline.getBand(1)._dragging) {
+            heatmap.setMap(null);
+        }
     };
 
     $scope.createTimeMap = function(start, end) {
+        timemapService.setOnMouseUpListener(heatmapListener);
         timemapService.createTimemap(start, end, fetchImages)
         .then(function(timemap) {
             tm = timemap;
@@ -88,7 +91,6 @@ angular.module('eventsApp')
                         map: map
                 });
             });
-            timemapService.setOnMouseUpListener(heatmapListener);
         });
     };
 
