@@ -14,8 +14,10 @@ angular.module('eventsApp')
             ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
             ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
             ' PREFIX sch: <http://schema.org/>' +
+            ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
+            ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
               
-            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?type ?participant' +
+            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?municipality_id ?type ?participant' +
             ' WHERE {' +
             '   ?type_id skos:prefLabel ?type .    ' +
             '   FILTER(langMatches(lang(?type), "FI"))' +
@@ -33,6 +35,7 @@ angular.module('eventsApp')
             '     OPTIONAL { ?id crm:P11_had_participant ?participant. }' +
             '     OPTIONAL { ?place_id sch:polygon ?polygon . }' +
             '     OPTIONAL { ?place_id skos:prefLabel ?place_label . }' +
+            '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality_id . ?municipality_id a suo:kunta . } ' +
             ' }' +
             ' ORDER BY ?start_time ?end_time';
 

@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SimileMapCtrl', function ($scope, $routeParams, eventService, photoService, timemapService) {
+  .controller('SimileMapCtrl', function ($scope, $routeParams, eventService, photoService, casualtyService, timemapService) {
     $scope.images = undefined;
     $scope.photoDaysBefore = 1;
     $scope.photoDaysAfter = 3;
@@ -18,7 +18,11 @@ angular.module('eventsApp')
     function changeDateAndFormat(date, days) {
         var d = new Date(date);
         d.setDate(d.getDate() + days);
-        return d.toISOString().slice(0, 10);
+        return formatDate(d);
+    }
+
+    function formatDate(date) {
+        return date.toISOString().slice(0, 10);
     }
 
     var fetchImages = function(item) {
@@ -46,13 +50,28 @@ angular.module('eventsApp')
         fetchImages($scope.current);
     };
 
-    var getVisibleMarkers = function(tm) {
-        return _.reduce(tm.map.markers, function(result, marker) {
-            if (marker.proprietary_marker && marker.proprietary_marker.visible) {
-                result.push(new google.maps.LatLng(marker.location.lat, marker.location.lon));
-            }
-            return result;
-        }, []);
+    var getCasualtyLocations = function() {
+        var band = tm.timeline.getBand(0);
+        return casualtyService.getCasualtyLocationsByTime(formatDate(band.getMinVisibleDate()), formatDate(band.getMaxVisibleDate()))
+            .then(function(casualties) {
+                var res = [];
+                casualties.forEach(function(casualty) {
+                    var point = casualty.point.split(' ');
+                    res.push(new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1])));
+                });
+                return res;
+            });
+    };
+
+    var heatmapListener = function() {
+        getCasualtyLocations().then(function(locations) {
+            heatmap.setData(locations);
+            heatmap.setMap(map);
+        });
+    };
+
+    var clearHeatmap = function() {
+        heatmap.setMap(null);
     };
 
     $scope.createTimeMap = function(start, end) {
@@ -61,17 +80,15 @@ angular.module('eventsApp')
             tm = timemap;
             map = timemap.getNativeMap();
             var band = tm.timeline.getBand(0);
-            band.addOnScrollListener(function() {
-                if (!heatmap) {
-                    heatmap = new google.maps.visualization.HeatmapLayer({
-                        data: getVisibleMarkers(tm),
+            band.addOnScrollListener(clearHeatmap);
+
+            getCasualtyLocations().then(function(locations) {
+                heatmap = new google.maps.visualization.HeatmapLayer({
+                    data: locations,
                         map: map
-                    });
-                } else {
-                    heatmap.setData(getVisibleMarkers(tm));
-                }
+                });
             });
-            console.log(tm);
+            timemapService.setOnMouseUpListener(heatmapListener);
         });
     };
 

@@ -9,8 +9,8 @@
     var item = this,
         type = item.getType(),
         event = item.event,
-        placemark = item.placemark,
-        i;
+        placemark = item.placemark;
+
     newTheme = TimeMap.util.lookup(newTheme, TimeMap.themes);
     newTheme.eventIconPath = item.opts.theme.eventIconPath;
     newTheme.eventIcon = newTheme.eventIconPath + newTheme.eventIconImage;
@@ -25,7 +25,7 @@
     }
     // change placemark
     if (placemark) {
-        if (type == 'array') {
+        if (type === 'array') {
             placemark.forEach(changePlacemark);
         } else {
             changePlacemark(placemark);
@@ -43,6 +43,21 @@
 
 angular.module('eventsApp')
     .service('timemapService', function($q, eventService) {
+
+        this.setOnMouseUpListener = function(fun) {
+            Timeline._Band.prototype._onMouseUp = function() {
+                if (this._dragging) {
+                    this._dragging = false;
+                } else if (this._orthogonalDragging) {
+                    this._orthogonalDragging = false;
+                } else {
+                    return;
+                }
+
+                fun();
+            };
+        };
+
 
         function createEventObject(e) {
             var entry = {
