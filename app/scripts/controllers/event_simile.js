@@ -13,6 +13,7 @@ angular.module('eventsApp')
     $scope.photoDaysBefore = 1;
     $scope.photoDaysAfter = 3;
     $scope.photoPlace = true;
+    $scope.showCasualtyHeatmap = false;
     var tm, map, heatmap;
 
     function changeDateAndFormat(date, days) {
@@ -25,6 +26,14 @@ angular.module('eventsApp')
         return date.toISOString().slice(0, 10);
     }
 
+    var fetchRelatedPeople = function(item) {
+        if (item.participant_id) {
+            casualtyService.getCasualtyInfo(item.participant_id).then(function(participants) {
+                $scope.current.related_people = participants;
+            });
+        }
+    };
+
     var fetchImages = function(item) {
         $scope.isLoadingImages = true;
         $scope.current = item;
@@ -33,7 +42,8 @@ angular.module('eventsApp')
         if ($scope.photoPlace) {
             place_ids = item.opts.place_uri;
         }
-
+        
+        fetchRelatedPeople(item.opts.event);
         $scope.isLoadingImages = true;
         photoService.getPhotosByPlaceAndTimeSpan(place_ids, 
                 changeDateAndFormat(item.getStart(), -$scope.photoDaysBefore), 
@@ -52,7 +62,9 @@ angular.module('eventsApp')
 
     var getCasualtyLocations = function() {
         var band = tm.timeline.getBand(0);
-        return casualtyService.getCasualtyLocationsByTime(formatDate(band.getMinVisibleDate()), formatDate(band.getMaxVisibleDate()))
+        var start = band.getMinVisibleDate();
+        var end = band.getMaxVisibleDate();
+        return casualtyService.getCasualtyLocationsByTime(formatDate(start), formatDate(end))
             .then(function(casualties) {
                 var res = [];
                 casualties.forEach(function(casualty) {
@@ -63,11 +75,30 @@ angular.module('eventsApp')
             });
     };
 
+    var getCasualtyCount = function() {
+        var band = tm.timeline.getBand(0);
+        var start = band.getMinVisibleDate();
+        var end = band.getMaxVisibleDate();
+        $scope.minVisibleDate = start;
+        $scope.maxVisibleDate = end;
+        casualtyService.getCasualtyCountsByTimeGroupByType(formatDate(start), formatDate(end))
+        .then(function(counts) {
+            $scope.casualtyStats = counts;
+            var count = 0;
+            counts.forEach(function(type) {
+                count += parseInt(type.count);
+            });
+            $scope.casualtyCount = count;
+         });
+    };
+
     var heatmapListener = function() {
-        getCasualtyLocations().then(function(locations) {
-            heatmap.setData(locations);
-            heatmap.setMap(map);
-        });
+        if ($scope.showCasualtyHeatmap) {
+            getCasualtyLocations().then(function(locations) {
+                heatmap.setData(locations);
+                heatmap.setMap(map);
+            });
+        }
     };
 
     var clearHeatmap = function() {
@@ -76,26 +107,41 @@ angular.module('eventsApp')
         }
     };
 
+    $scope.updateHeatmap = function() {
+        if ($scope.showCasualtyHeatmap) {
+            heatmapListener();
+        } else {
+            heatmap.setMap(null);
+        }
+    };
+
+    var onMouseUpListener = function() {
+        heatmapListener();
+        getCasualtyCount();
+    };
+
     $scope.createTimeMap = function(start, end) {
-        timemapService.setOnMouseUpListener(heatmapListener);
         timemapService.createTimemap(start, end, fetchImages)
         .then(function(timemap) {
             tm = timemap;
             map = timemap.getNativeMap();
             var band = tm.timeline.getBand(0);
-            band.addOnScrollListener(clearHeatmap);
 
+            getCasualtyCount();
+            timemapService.setOnMouseUpListener(onMouseUpListener);
+            band.addOnScrollListener(clearHeatmap);
             getCasualtyLocations().then(function(locations) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: locations,
-                        map: map
+                    radius: 20
                 });
+                $scope.updateHeatmap();
             });
         });
     };
 
     $scope.showWinterWar = function() {
-        $scope.createTimeMap('1939-01-01', '1940-12-31');
+        $scope.createTimeMap('1939-08-01', '1940-04-30');
     };
     $scope.showContinuationWar = function() {
         $scope.createTimeMap('1941-06-01', '1944-12-31');

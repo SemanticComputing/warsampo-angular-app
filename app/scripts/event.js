@@ -32,7 +32,7 @@ angular.module('eventsApp')
             '         ?place_id geo:lat ?lat ;' +
             '         geo:long ?lon .' +
             '     }' +
-            '     OPTIONAL { ?id crm:P11_had_participant ?participant. }' +
+            '     OPTIONAL { ?id crm:P11_had_participant ?participant . }' +
             '     OPTIONAL { ?place_id sch:polygon ?polygon . }' +
             '     OPTIONAL { ?place_id skos:prefLabel ?place_label . }' +
             '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality_id . ?municipality_id a suo:kunta . } ' +

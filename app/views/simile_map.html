@@ -3,13 +3,10 @@
     <!--
     <button class="btn btn-primary" ng-click="previous()">Edellinen</button>
     -->
-    <label for="photo-days-before">Valokuvien aikahaarukka </label>
-    <input ng-change="fetchImages()" min="0" name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" />
-    <label for="photo-days-before">päivää ennen</label>
-    <input ng-change="fetchImages()" min="0" name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" />
-    <label for="photo-days-after">päivää jälkeen tapahtuman.</label>
-    <input ng-change="fetchImages()" min="0" name="photo-place" class="form-control" type="CHECKBOX" ng-model="photoPlace" />
-    <label for="photo-place">Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa</label>
+    <label for="photo-days-before">Valokuvien aikahaarukka <input ng-change="fetchImages()" min="0" name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" /> päivää ennen</label>
+    <label for="photo-days-after"><input ng-change="fetchImages()" min="0" name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" /> päivää jälkeen tapahtuman.</label>
+    <label for="photo-place"><input ng-change="fetchImages()" min="0" name="photo-place" class="form-control" type="CHECKBOX" ng-model="photoPlace" /> Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.</label>
+    <label for="photo-place"><input ng-change="updateHeatmap()" name="heatmap-toggle" class="form-control" type="CHECKBOX" ng-model="showCasualtyHeatmap" /> Näytä lämpökartta menehtyneistä.</label>
   </div>
   <!--
   <div class="col-md-2">
@@ -18,7 +15,7 @@
     -->
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-lg-7 col-md-12">
     <div id="timemap">
       <div id="timelinecontainer">
         <div id=timeline></div>
@@ -28,17 +25,80 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div ng-if="current">
-      <h3>{{ current.opts.descTitle }}</h3>
-      <p>{{ current.opts.description }}</p>
+  <div class="col-lg-5 col-md-12">
+    <div class="row" ng-if="current">
+      <div class="col-md-12">
+        <h3>{{ current.opts.descTitle }}</h3>
+        <p>{{ current.opts.description }}</p>
+        <hr/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 casualtyCount" ng-click="showCasualtyStats = !showCasualtyStats">
+        <p>Menehtyneitä ajanjaksolla {{ minVisibleDate.toLocaleDateString() }} - {{ maxVisibleDate.toLocaleDateString() }}: {{ casualtyCount }}</p>
+      </div>
+    </div>
+    <div class="row" ng-if="showCasualtyStats" ng-repeat="casualtyClass in casualtyStats">
+      <div class="col-xs-10 casualtyCount">
+        {{ casualtyClass.description }}
+      </div>
+      <div class="col-xs-2 casualtyCount">
+        {{ casualtyClass.count }}
+      </div>
+    </div>
+    <div class="row" ng-repeat="person in current.related_people">
+      <div class="col-md-12" style="text-transform: capitalize">
+        <h4>
+          {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
+        </h4>
+        <div class="row">
+          <div class="col-xs-6">
+            Kuolinaika:
+          </div>
+          <div class="col-xs-6">
+            {{ person.kuolinaika }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            Kuolinpaikka:
+          </div>
+          <div class="col-xs-6">
+            {{ person.kuolinpaikka }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            Menehtymisluokka:
+          </div>
+          <div class="col-xs-6" style="text-transform: none">
+            {{ person.menehtymisluokka }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            Ammatti:
+          </div>
+          <div class="col-xs-6">
+            {{ person.ammatti }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6">
+            Siviilisääty:
+          </div>
+          <div class="col-xs-6">
+            {{ person.siviilisaeaety }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 <div class="row" ng-if="images.length === 0">
   <div class="col-md-12">
     <p class="text-center" ng-if="!isLoadingImages">
-      Ei tapahtumaan liittyviä kuvia.
+    Ei tapahtumaan liittyviä kuvia.
     </p>
     <div ng-if="isLoadingImages" class="text-center">
       <img ng-src="images/loading.gif" />

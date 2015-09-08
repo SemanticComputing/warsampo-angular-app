@@ -1,3 +1,4 @@
+/*
 div, p {
 font-family: Verdana, Arial, sans-serif;
 }
@@ -6,6 +7,7 @@ p.content {
 font-size: 12px;
 width: 30em;
 }
+*/
 
 div#help {
 font-size: 12px;
@@ -13,13 +15,15 @@ width: 45em;
 padding: 1em;
 }
 
+/*
 div#timemap {
 padding: 1em;
 }
+*/
 
 div#timelinecontainer{
 width: 100%;
-height: 200px;
+height: 220px;
 }
 
 div#timeline{

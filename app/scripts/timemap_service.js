@@ -102,6 +102,8 @@ angular.module('eventsApp')
         var oldEvent;
 
         var openInfoWindow = function(event, callback) {
+            var band = event.timeline.getBand(0);
+            var start = band.getMinVisibleDate();
             oldTheme = _.clone(event.opts.theme);
             if (oldEvent) {
                 oldEvent.changeTheme(oldTheme);
@@ -111,6 +113,8 @@ angular.module('eventsApp')
             if (callback) {
                 callback(event);
             }
+            band.setMinVisibleDate(start);
+
         };
 
         this.createTimemap = function(start, end, infoWindowCallback) {
@@ -121,26 +125,45 @@ angular.module('eventsApp')
                 data.forEach(function(e) {
                     res.push(createEventObject(e));
                 });
+
+                var theme = Timeline.ClassicTheme.create();
+                theme.timeline_start = new Date(start);
+                theme.timeline_stop = new Date(end);
+
                 var tm = TimeMap.init({
                     mapId: "map",               // Id of map div element (required)
-                        timelineId: "timeline",     // Id of timeline div element (required)
+                    timelineId: "timeline",     // Id of timeline div element (required)
+                    options: {
+                        eventIconPath: "vendor/timemap/images/",
+                        openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
+                    },
+                    datasets: [{
+                        id: "warsa",
+                        title: "Itsenäisen Suomen sotien tapahtumat",
+                        theme: "orange",
+                        type: "basic",
                         options: {
-                            eventIconPath: "vendor/timemap/images/",
-                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
-                        },
-                        datasets: [{
-                            id: "warsa",
-                            title: "Itsenäisen Suomen sotien tapahtumat",
-                            theme: "orange",
-                            type: "basic",
-                            options: {
-                                items: res
-                            }
-                        }],
-                        bandIntervals: [
-                            Timeline.DateTime.DAY, 
-                            Timeline.DateTime.MONTH
-                        ]
+                            items: res
+                        }
+                    }],
+                    bandInfo: [
+                    {
+                        theme: theme,
+                        width: "180",
+                        intervalPixels: 150,
+                        intervalUnit: Timeline.DateTime.DAY
+                    },
+                    {
+                        theme: theme,
+                        overview: true,
+                        width: "40",
+                        intervalPixels: 100,
+                        intervalUnit: Timeline.DateTime.MONTH
+                    }]/*
+                    bandIntervals: [
+                        Timeline.DateTime.DAY,
+                        Timeline.DateTime.MONTH
+                    ]*/
                 });
 
                 return tm;
