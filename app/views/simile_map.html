@@ -1,4 +1,4 @@
-<div class="row nav-btn-container">
+<div class="row nav-btn-container" ng-show="showSettings">
   <div class="col-xs-12 form-inline">
     <!--
     <button class="btn btn-primary" ng-click="previous()">Edellinen</button>
@@ -14,9 +14,13 @@
   </div>
     -->
 </div>
+<div class="row image-container" id="images">
+  <div class="col-md-12" ng-show="imageCount">
+  </div>
+</div>
 <div class="row">
   <div class="col-lg-7 col-md-12">
-    <div id="timemap">
+    <div id="timemap" ng-show="!showPhotos" class="animate-right">
       <div id="timelinecontainer">
         <div id=timeline></div>
       </div>
@@ -24,94 +28,114 @@
         <div id="map"></div>
       </div>
     </div>
+    <div ng-if="showPhotos" class="animate-paginate">
+      <figure ng-repeat="img in currentImages"
+        class="pull-left gap-right animate-image">
+        <img ng-src="{{ img.url }}" />
+        <figcaption>{{ img.description }} (<i>{{ img.created }} SA-kuva</i>)</figcaption>
+      </figure>
+    </div>
   </div>
   <div class="col-lg-5 col-md-12">
-    <div class="row" ng-if="current">
+    <div class="row" ng-show="current">
       <div class="col-md-12">
         <h3>{{ current.opts.descTitle }}</h3>
         <p>{{ current.opts.description }}</p>
+        <div ng-show="images.length === 0">
+          <p ng-if="!isLoadingImages">
+          Ei tapahtumaan liittyviä kuvia.
+          </p>
+          <p ng-if="isLoadingImages">
+          Haetaan kuvia <img ng-src="images/loading.gif" />
+          </p>
+        </div>
+        <div ng-show="!isLoadingImages && imageCount">
+          <p ng-click="showPhotos = !showPhotos" ng-show="!showPhotos">
+          Näytä kuvat ({{ images.length }})
+          </p>
+          <p ng-show="showPhotos" ng-click="showPhotos = !showPhotos">
+          Piilota kuvat
+          </p>
+          <div ng-show="showPhotos">
+            <pagination 
+            class="pagination-sm"
+            items-per-page="imagePageSize"
+            max-size="10"
+            previous-text="&lsaquo;"
+            next-text="&rsaquo;"
+            first-text="&laquo;"
+            last-text="&raquo;"
+            boundary-links="true"
+            rotate="false"
+            total-items="imageCount"
+            ng-model="currentImagePage"
+            ng-change="imagePageChanged()">
+            </pagination>
+          </div>
+        </div>
         <hr/>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 casualtyCount" ng-click="showCasualtyStats = !showCasualtyStats">
-        <p>Menehtyneitä ajanjaksolla {{ minVisibleDate.toLocaleDateString() }} - {{ maxVisibleDate.toLocaleDateString() }}: {{ casualtyCount }}</p>
-      </div>
-    </div>
-    <div class="row" ng-if="showCasualtyStats" ng-repeat="casualtyClass in casualtyStats">
-      <div class="col-xs-10 casualtyCount">
-        {{ casualtyClass.description }}
-      </div>
-      <div class="col-xs-2 casualtyCount">
-        {{ casualtyClass.count }}
-      </div>
-    </div>
-    <div class="row" ng-repeat="person in current.related_people">
-      <div class="col-md-12" style="text-transform: capitalize">
-        <h4>
-          {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
-        </h4>
-        <div class="row">
-          <div class="col-xs-6">
-            Kuolinaika:
-          </div>
-          <div class="col-xs-6">
-            {{ person.kuolinaika }}
+        <div id="casualtyCount" ng-click="showCasualtyStats = !showCasualtyStats">
+          <p>Menehtyneitä ajanjaksolla {{ minVisibleDate.toLocaleDateString() }} - {{ maxVisibleDate.toLocaleDateString() }}: {{ casualtyCount }}</p>
+        </div>
+        <div class="row animate-top" ng-if="showCasualtyStats" ng-repeat="casualtyClass in casualtyStats">
+          <div ng-if="casualtyClass.id">
+            <div class="col-xs-10 casualtyCount">
+              {{ casualtyClass.description }}
+            </div>
+            <div class="col-xs-2 casualtyCount">
+              {{ casualtyClass.count }}
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-xs-6">
-            Kuolinpaikka:
-          </div>
-          <div class="col-xs-6">
-            {{ person.kuolinpaikka }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-6">
-            Menehtymisluokka:
-          </div>
-          <div class="col-xs-6" style="text-transform: none">
-            {{ person.menehtymisluokka }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-6">
-            Ammatti:
-          </div>
-          <div class="col-xs-6">
-            {{ person.ammatti }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-6">
-            Siviilisääty:
-          </div>
-          <div class="col-xs-6">
-            {{ person.siviilisaeaety }}
+        <div class="row" ng-repeat="person in current.related_people">
+          <div class="col-md-12" style="text-transform: capitalize">
+            <h4>
+              {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
+            </h4>
+            <div class="row">
+              <div class="col-xs-6">
+                Kuolinaika:
+              </div>
+              <div class="col-xs-6">
+                {{ person.kuolinaika }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6">
+                Kuolinpaikka:
+              </div>
+              <div class="col-xs-6">
+                {{ person.kuolinpaikka }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6">
+                Menehtymisluokka:
+              </div>
+              <div class="col-xs-6" style="text-transform: none">
+                {{ person.menehtymisluokka }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6">
+                Ammatti:
+              </div>
+              <div class="col-xs-6">
+                {{ person.ammatti }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6">
+                Siviilisääty:
+              </div>
+              <div class="col-xs-6">
+                {{ person.siviilisaeaety }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-<div class="row" ng-if="images.length === 0">
-  <div class="col-md-12">
-    <p class="text-center" ng-if="!isLoadingImages">
-    Ei tapahtumaan liittyviä kuvia.
-    </p>
-    <div ng-if="isLoadingImages" class="text-center">
-      <img ng-src="images/loading.gif" />
-    </div>
-  </div>
-</div>
-<div class="row" ng-repeat="img in images track by $index" ng-if="$index % 3 == 0">
-  <div class="col-md-12">
-    <figure ng-repeat="i in [$index, $index + 1, $index + 2]"
-      class="pull-left gap-right" ng-if="images[i]">
-      <img ng-src="{{images[i].url}}" />
-      <figcaption>{{images[i].description}} (<i>{{images[i].created}} SA-kuva</i>)</figcaption>
-    </figure>
   </div>
 </div>
 

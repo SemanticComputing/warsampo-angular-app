@@ -8,12 +8,19 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SimileMapCtrl', function ($scope, $routeParams, eventService, photoService, casualtyService, timemapService) {
+  .controller('SimileMapCtrl', function ($scope, $routeParams, $location, 
+              $anchorScroll, $timeout, $window,
+              eventService, photoService, casualtyService, timemapService) {
     $scope.images = undefined;
+    $scope.currentImages = [];
+    $scope.imageCount = 0;
+    $scope.currentImagePage = 1;
+    $scope.imagePageSize = 2;
     $scope.photoDaysBefore = 1;
     $scope.photoDaysAfter = 3;
     $scope.photoPlace = true;
     $scope.showCasualtyHeatmap = false;
+    $scope.showPhotos = false;
     var tm, map, heatmap;
 
     function changeDateAndFormat(date, days) {
@@ -35,6 +42,7 @@ angular.module('eventsApp')
     };
 
     var fetchImages = function(item) {
+        $scope.imageCount = 0;
         $scope.isLoadingImages = true;
         $scope.current = item;
         $scope.images = [];
@@ -53,11 +61,20 @@ angular.module('eventsApp')
             imgs.forEach(function(img) {
                 $scope.images.push(img);
             });
+            $scope.imageCount = imgs.length;
+            $scope.currentImages = _.take(imgs, $scope.imagePageSize);
         });
     };
 
     $scope.fetchImages = function() {
         fetchImages($scope.current);
+    };
+
+    $scope.imagePageChanged = function() {
+        var start = ($scope.currentImagePage - 1) * $scope.imagePageSize;
+        var end = start + $scope.imagePageSize;
+        $scope.currentImages = $scope.images.slice(start, end);
+        console.log($scope.currentImages);
     };
 
     var getCasualtyLocations = function() {
