@@ -94,7 +94,7 @@ body {
 }
 
 .nav-btn-container {
-    text-align: center;
+    line-height: 20px;
 }
 
 figure {
@@ -152,13 +152,13 @@ figure {
     @extend .animate-paginate;
 }
 
+.animate-image.ng-leave,
 .animate-paginate.ng-enter,
 .animate-paginate.ng-leave {
     position: absolute;
 }
 
 .animate-image.ng-enter,
-.animate-image.ng-leave,
 .animate-right.ng-hide-add,
 .animate-right.ng-hide-remove {
   /*transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;*/
@@ -181,12 +181,14 @@ figure {
 .animate-top.ng-leave {
   transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
   position: relative;
+  top: 0;
 }
 
 .animate-top.ng-enter, .animate-top.ng-hide,
 .animate-top.ng-leave.ng-leave-active {
   opacity: 0;
   height: 0;
+  top: -50px;
 }
 
 .animate-top.ng-leave,
@@ -194,7 +196,35 @@ figure {
   opacity: 1;
 }
 
+.animate-text {
+    @extend .animate-top
+}
+
+.animate-text.ng-enter,
+.animate-text.ng-hide,
+.animate-text.ng-leave.ng-leave-active {
+    top: 0;
+}
+
 .pagination-nav {
     height: 50px;
 }
 
+.navbar {
+    margin-bottom: 0;
+}
+
+.flat-accordion {
+    .panel-heading {
+        padding: 0;
+    }
+
+    .panel {
+        border: 0;
+    }
+}
+
+.no-side-padding {
+    padding-left: 0;
+    padding-right: 0;
+}

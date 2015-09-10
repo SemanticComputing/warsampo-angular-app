@@ -1,26 +1,37 @@
-<div class="row nav-btn-container" ng-show="showSettings">
-  <div class="col-xs-12 form-inline">
-    <!--
-    <button class="btn btn-primary" ng-click="previous()">Edellinen</button>
-    -->
-    <label for="photo-days-before">Valokuvien aikahaarukka <input ng-change="fetchImages()" min="0" name="photo-days-before" class="form-control input-short" type="number" ng-model="photoDaysBefore" /> päivää ennen</label>
-    <label for="photo-days-after"><input ng-change="fetchImages()" min="0" name="photo-days-after" class="form-control input-short" type="number" ng-model="photoDaysAfter" /> päivää jälkeen tapahtuman.</label>
-    <label for="photo-place"><input ng-change="fetchImages()" min="0" name="photo-place" class="form-control" type="CHECKBOX" ng-model="photoPlace" /> Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.</label>
-    <label for="photo-place"><input ng-change="updateHeatmap()" name="heatmap-toggle" class="form-control" type="CHECKBOX" ng-model="showCasualtyHeatmap" /> Näytä lämpökartta menehtyneistä.</label>
-  </div>
-  <!--
-  <div class="col-md-2">
-    <button class="btn btn-primary" ng-click="next()">Seuraava</button>
-  </div>
-    -->
+<div class="row flat-accordion">
+  <div class="col-md-12 no-side-padding">
+      <div class="form-inline">
+        <accordion>
+        <accordion-group is-open="showSettings">
+          <label for="photo-days-before">Valokuvien aikahaarukka 
+            <input ng-change="timemapCtrl.fetchImages()" min="0" name="photo-days-before"
+              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysBefore" /> päivää ennen
+            </label>
+          <label for="photo-days-after">
+            <input ng-change="timemapCtrl.fetchImages()" min="0" name="photo-days-after"
+              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysAfter" /> päivää jälkeen tapahtuman.
+          </label>
+          <label for="photo-place">
+            <input ng-change="timemapCtrl.fetchImages()" name="photo-place"
+              class="form-control" type="CHECKBOX" ng-model="timemapCtrl.photoPlace" /> Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.
+          </label>
+          <label for="photo-place">
+            <input ng-change="timemapCtrl.updateHeatmap()" name="heatmap-toggle"
+              class="form-control" type="CHECKBOX" ng-model="timemapCtrl.showCasualtyHeatmap" /> Näytä lämpökartta menehtyneistä.
+          </label>
+        </accordion-group>
+        </accordion>
+      </div>
+    </div>
+    </div>
 </div>
 <div class="row image-container" id="images">
-  <div class="col-md-12" ng-show="imageCount">
+  <div class="col-md-12" ng-show="timemapCtrl.imageCount">
   </div>
 </div>
 <div class="row">
   <div class="col-lg-7 col-md-12">
-    <div id="timemap" ng-show="!showPhotos" class="animate-right">
+    <div id="timemap" ng-show="!timemapCtrl.showPhotos" class="animate-right">
       <div id="timelinecontainer">
         <div id=timeline></div>
       </div>
@@ -28,8 +39,8 @@
         <div id="map"></div>
       </div>
     </div>
-    <div ng-if="showPhotos" class="animate-paginate">
-      <figure ng-repeat="img in currentImages"
+    <div ng-if="timemapCtrl.showPhotos" class="animate-paginate">
+      <figure ng-repeat="img in timemapCtrl.currentImages"
         class="pull-left gap-right animate-image">
         <img ng-src="{{ img.url }}" />
         <figcaption>{{ img.description }} (<i>{{ img.created }} SA-kuva</i>)</figcaption>
@@ -37,47 +48,53 @@
     </div>
   </div>
   <div class="col-lg-5 col-md-12">
-    <div class="row" ng-show="current">
+    <div class="row">
       <div class="col-md-12">
-        <h3>{{ current.opts.descTitle }}</h3>
-        <p>{{ current.opts.description }}</p>
-        <div ng-show="images.length === 0">
-          <p ng-if="!isLoadingImages">
-          Ei tapahtumaan liittyviä kuvia.
-          </p>
-          <p ng-if="isLoadingImages">
-          Haetaan kuvia <img ng-src="images/loading.gif" />
-          </p>
-        </div>
-        <div ng-show="!isLoadingImages && imageCount">
-          <p ng-click="showPhotos = !showPhotos" ng-show="!showPhotos">
-          Näytä kuvat ({{ images.length }})
-          </p>
-          <p ng-show="showPhotos" ng-click="showPhotos = !showPhotos">
-          Piilota kuvat
-          </p>
-          <div ng-show="showPhotos">
-            <pagination 
-            class="pagination-sm"
-            items-per-page="imagePageSize"
-            max-size="10"
-            previous-text="&lsaquo;"
-            next-text="&rsaquo;"
-            first-text="&laquo;"
-            last-text="&raquo;"
-            boundary-links="true"
-            rotate="false"
-            total-items="imageCount"
-            ng-model="currentImagePage"
-            ng-change="imagePageChanged()">
-            </pagination>
+        <div ng-show="timemapCtrl.current">
+          <h3>{{ timemapCtrl.current.opts.descTitle }}</h3>
+          <p>{{ timemapCtrl.current.opts.description }}</p>
+          <div ng-show="timemapCtrl.images.length === 0">
+            <p ng-if="!timemapCtrl.isLoadingImages">
+            Ei tapahtumaan liittyviä kuvia.
+            </p>
+            <p ng-if="timemapCtrl.isLoadingImages">
+            Haetaan kuvia <img ng-src="images/loading.gif" />
+            </p>
+          </div>
+          <div ng-show="!timemapCtrl.isLoadingImages && timemapCtrl.imageCount">
+            <p ng-click="timemapCtrl.showPhotos = !timemapCtrl.showPhotos" ng-show="!timemapCtrl.showPhotos">
+            Näytä kuvat ({{ timemapCtrl.images.length }})
+            </p>
+            <p ng-show="timemapCtrl.showPhotos" ng-click="timemapCtrl.showPhotos = !timemapCtrl.showPhotos">
+            Näytä kartta
+            </p>
+            <div ng-show="timemapCtrl.showPhotos" class="animate-top pagination-nav">
+              <pagination 
+              class="pagination-sm"
+              items-per-page="timemapCtrl.imagePageSize"
+              max-size="10"
+              previous-text="&lsaquo;"
+              next-text="&rsaquo;"
+              first-text="&laquo;"
+              last-text="&raquo;"
+              boundary-links="true"
+              rotate="false"
+              total-items="timemapCtrl.imageCount"
+              ng-model="timemapCtrl.currentImagePage"
+              ng-change="timemapCtrl.imagePageChanged()">
+              </pagination>
+            </div>
           </div>
         </div>
-        <hr/>
-        <div id="casualtyCount" ng-click="showCasualtyStats = !showCasualtyStats">
-          <p>Menehtyneitä ajanjaksolla {{ minVisibleDate.toLocaleDateString() }} - {{ maxVisibleDate.toLocaleDateString() }}: {{ casualtyCount }}</p>
+        <div ng-if="!timemapCtrl.current">
+          <h3>Valitse tapahtuma aikajanalta tai kartalta.</h3>
+          <p>Aikajanaa voi liikuttaa vetämällä hiirellä.</p>
         </div>
-        <div class="row animate-top" ng-if="showCasualtyStats" ng-repeat="casualtyClass in casualtyStats">
+        <hr/>
+        <div id="casualtyCount" ng-click="timemapCtrl.showCasualtyStats = !timemapCtrl.showCasualtyStats">
+          <p>Menehtyneitä ajanjaksolla {{ timemapCtrl.minVisibleDate.toLocaleDateString() }} - {{ timemapCtrl.maxVisibleDate.toLocaleDateString() }}: {{ timemapCtrl.casualtyCount }}</p>
+        </div>
+        <div class="row animate-text" ng-if="timemapCtrl.showCasualtyStats" ng-repeat="casualtyClass in timemapCtrl.casualtyStats">
           <div ng-if="casualtyClass.id">
             <div class="col-xs-10 casualtyCount">
               {{ casualtyClass.description }}
@@ -87,7 +104,7 @@
             </div>
           </div>
         </div>
-        <div class="row" ng-repeat="person in current.related_people">
+        <div class="row" ng-repeat="person in timemapCtrl.current.related_people">
           <div class="col-md-12" style="text-transform: capitalize">
             <h4>
               {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
