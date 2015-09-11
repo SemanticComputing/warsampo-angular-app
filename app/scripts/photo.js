@@ -61,7 +61,6 @@ angular.module('eventsApp')
                 place_id = "<{0}>".format(place_id);
                 qry = photosByPlaceAndTimeQry.format(place_id, start, end);
             } else {
-                console.log("GG");
                 qry = photosByTimeQry.format(start, end);
             }
             return endpoint.getObjects(qry).then(function(data) {

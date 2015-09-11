@@ -113,6 +113,7 @@ angular.module('eventsApp')
             if (callback) {
                 callback(event);
             }
+            console.log(event);
             band.setMinVisibleDate(start);
 
         };

@@ -12,13 +12,14 @@ angular.module('eventsApp')
               $anchorScroll, $timeout, $window,
               eventService, photoService, casualtyService, timemapService) {
     var self = this;
+    self.current = undefined;
     self.images = undefined;
     self.currentImages = [];
     self.imageCount = 0;
     self.currentImagePage = 1;
     self.imagePageSize = 2;
     self.photoDaysBefore = 1;
-    self.photoDaysAfter = 3;
+    self.photoDaysAfter = 1;
     self.photoPlace = true;
     self.showCasualtyHeatmap = false;
     self.showPhotos = false;
@@ -43,19 +44,22 @@ angular.module('eventsApp')
     };
 
     var fetchImages = function(item) {
-        self.imageCount = 0;
         self.isLoadingImages = true;
-        self.current = item;
-        self.images = [];
+
+        self.imageCount = 0;
+        self.images = undefined;
+        self.currentImages = [];
+        return;
         var place_ids;
-        console.log(self.photoPlace);
-        console.log(self.photoDaysAfter);
         if (self.photoPlace) {
             place_ids = item.opts.place_uri;
-        }
-        
-        fetchRelatedPeople(item.opts.event);
-        self.isLoadingImages = true;
+ /*           if (!place_ids) {
+                self.imageCount = 0;
+                self.currentImages = [];
+                self.isLoadingImages = false;
+                return;
+            }
+*/        }
         photoService.getPhotosByPlaceAndTimeSpan(place_ids, 
                 changeDateAndFormat(item.getStart(), -self.photoDaysBefore), 
                 changeDateAndFormat(item.getEnd(), self.photoDaysAfter))
@@ -79,7 +83,6 @@ angular.module('eventsApp')
         var start = (self.currentImagePage - 1) * self.imagePageSize;
         var end = start + self.imagePageSize;
         self.currentImages = self.images.slice(start, end);
-        console.log(self.currentImages);
     };
 
     var getCasualtyLocations = function() {
@@ -142,8 +145,15 @@ angular.module('eventsApp')
         getCasualtyCount();
     };
 
+    var infoWindowCallback = function(item) {
+        self.current = item;
+        fetchRelatedPeople(item.opts.event);
+        fetchImages(item);
+    };
+
+
     self.createTimeMap = function(start, end) {
-        timemapService.createTimemap(start, end, fetchImages)
+        timemapService.createTimemap(start, end, infoWindowCallback)
         .then(function(timemap) {
             tm = timemap;
             map = timemap.getNativeMap();
@@ -163,7 +173,7 @@ angular.module('eventsApp')
     };
 
     self.showWinterWar = function() {
-        self.createTimeMap('1939-08-01', '1940-04-30');
+        self.createTimeMap('1939-07-01', '1940-04-30');
     };
     self.showContinuationWar = function() {
         self.createTimeMap('1941-06-01', '1944-12-31');
