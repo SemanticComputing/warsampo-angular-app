@@ -20,20 +20,16 @@ angular.module('eventsApp')
         var eventQry = prefixes +
             ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?type ?participant  ' +
             ' WHERE { ' +
-            '   GRAPH <http://ldf.fi/warsa/events>  { ' +
-            '     ?id crm:P4_has_time-span ?time_id ; ' +
-            '         a ?type_id ; ' +
-            '         skos:prefLabel ?description . ' +
-            '       OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
-            '     OPTIONAL { ?id crm:P7_took_place_at ?place_id .  ' +
-            '       GRAPH <http://ldf.fi/warsa/places/municipalities> {  ' +
-            '         ?place_id skos:prefLabel ?place_label . ' +
-            '         OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-            '         OPTIONAL { ' +
-            '               ?place_id geo:lat ?lat ; ' +
-            '                 geo:long ?lon . ' +
-            '         } ' +
-            '       } ' +
+            '   ?id crm:P4_has_time-span ?time_id ; ' +
+            '       a ?type_id ; ' +
+            '       skos:prefLabel ?description . ' +
+            '    OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
+            '    OPTIONAL { ?id crm:P7_took_place_at ?place_id .  ' +
+            '      ?place_id skos:prefLabel ?place_label . ' +
+            '      OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
+            '      OPTIONAL { ' +
+            '            ?place_id geo:lat ?lat ; ' +
+            '              geo:long ?lon . ' +
             '     } ' +
             '   } ' +
             '   GRAPH <http://ldf.fi/warsa/events/times> { ' +

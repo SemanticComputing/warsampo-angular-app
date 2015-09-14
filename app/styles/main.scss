@@ -97,14 +97,6 @@ body {
     line-height: 20px;
 }
 
-figure {
-  width: -webkit-min-content;
-  width: -moz-min-content;
-  width: min-content;
-  margin-right: 10px;
-  margin-top: 10px;
-}
-
 .input-short {
     width: 80px !important;
 }
@@ -227,4 +219,12 @@ figure {
 .no-side-padding {
     padding-left: 0;
     padding-right: 0;
+}
+
+figure {
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+    margin-right: 10px;
+    margin-top: 10px;
 }

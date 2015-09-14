@@ -5,6 +5,8 @@
  * Takes the endpoint URL as a parameter.
  */
 
+/* Patch TimeMap and Timeline */
+
  TimeMapItem.prototype.changeTheme = function(newTheme, suppressLayout) {
     var item = this,
         type = item.getType(),
@@ -41,6 +43,87 @@
     }
 };
 
+
+// Timeline.createBandInfo from version 2.3.1
+
+Timeline.createBandInfo = function(params) {
+    var theme = ("theme" in params) ? params.theme : Timeline.getDefaultTheme();
+
+    var decorators = ("decorators" in params) ? params.decorators : [];
+        
+    var eventSource = ("eventSource" in params) ? params.eventSource : null;
+    
+    var ether = new Timeline.LinearEther({ 
+        centersOn:          ("date" in params) ? params.date : new Date(),
+        interval:           SimileAjax.DateTime.gregorianUnitLengths[params.intervalUnit],
+        pixelsPerInterval:  params.intervalPixels,
+        theme:              theme
+    });
+    
+    var etherPainter = new Timeline.GregorianEtherPainter({
+        unit:       params.intervalUnit, 
+        multiple:   ("multiple" in params) ? params.multiple : 1,
+        theme:      theme,
+        align:      ("align" in params) ? params.align : undefined
+    });
+    
+    var eventPainterParams = {
+        showText:   ("showEventText" in params) ? params.showEventText : true,
+        theme:      theme
+    };
+    // pass in custom parameters for the event painter
+    if ("eventPainterParams" in params) {
+        for (var prop in params.eventPainterParams) {
+            eventPainterParams[prop] = params.eventPainterParams[prop];
+        }
+    }
+    
+    if ("trackHeight" in params) {
+        eventPainterParams.trackHeight = params.trackHeight;
+    }
+    if ("trackGap" in params) {
+        eventPainterParams.trackGap = params.trackGap;
+    }
+    
+    var layout = ("overview" in params && params.overview) ? "overview" : ("layout" in params ? params.layout : "original");
+    var eventPainter;
+    if ("eventPainter" in params) {
+        eventPainter = new params.eventPainter(eventPainterParams);
+    } else {
+        switch (layout) {
+            case "overview" :
+                eventPainter = new Timeline.OverviewEventPainter(eventPainterParams);
+                break;
+            case "detailed" :
+                eventPainter = new Timeline.DetailedEventPainter(eventPainterParams);
+                break;
+            default:
+                eventPainter = new Timeline.OriginalEventPainter(eventPainterParams);
+        }
+    }
+    
+    return {   
+        width:          params.width,
+        eventSource:    eventSource,
+        timeZone:       ("timeZone" in params) ? params.timeZone : 0,
+        ether:          ether,
+        etherPainter:   etherPainter,
+        eventPainter:   eventPainter,
+        theme:          theme,
+        decorators:     decorators,
+        zoomIndex:      ("zoomIndex" in params) ? params.zoomIndex : 0,
+        zoomSteps:      ("zoomSteps" in params) ? params.zoomSteps : null
+    };
+};
+
+/* End patches */
+
+var eventTypeThemes = {
+    "Sotatoimi": "red",
+    "Pommitus": "red",
+    "Poliittinen toiminta": "purple"
+};
+
 angular.module('eventsApp')
     .service('timemapService', function($q, eventService) {
 
@@ -64,6 +147,7 @@ angular.module('eventsApp')
                 start: e.start_time,
                 title: e.length < 20 ? e.description : e.description.substr(0, 20) + '...',
                 options: {
+                    theme: eventTypeThemes[e.type],
                     place_uri: e.place_id,
                     descTitle: eventService.createTitle(e),
                     description: e.description,
@@ -104,24 +188,34 @@ angular.module('eventsApp')
         var openInfoWindow = function(event, callback) {
             var band = event.timeline.getBand(0);
             var start = band.getMinVisibleDate();
-            oldTheme = _.clone(event.opts.theme);
             if (oldEvent) {
                 oldEvent.changeTheme(oldTheme);
             }
+            oldTheme = _.clone(event.opts.theme);
             event.changeTheme('green');
             oldEvent = event;
             if (callback) {
                 callback(event);
             }
-            console.log(event);
             band.setMinVisibleDate(start);
 
         };
 
-        this.createTimemap = function(start, end, infoWindowCallback) {
+        this.createTimemap = function(start, end, highlights, infoWindowCallback) {
             return (function() {
                 return (start && end) ? eventService.getEventsByTimeSpan(start, end) : eventService.getAllEvents();
             })().then(function(data) {
+
+                var bandDecorators1, bandDecorators2;
+                if (highlights) {
+                    bandDecorators1 = [];
+                    bandDecorators2 = [];
+                    highlights.forEach(function(hl) {
+                        bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
+                        bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
+                    });
+                }
+
                 var res = [];
                 data.forEach(function(e) {
                     res.push(createEventObject(e));
@@ -136,7 +230,7 @@ angular.module('eventsApp')
                     timelineId: "timeline",     // Id of timeline div element (required)
                     options: {
                         eventIconPath: "vendor/timemap/images/",
-                        openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
+                        openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); },
                     },
                     datasets: [{
                         id: "warsa",
@@ -150,16 +244,18 @@ angular.module('eventsApp')
                     bandInfo: [
                     {
                         theme: theme,
-                        width: "180",
-                        intervalPixels: 150,
-                        intervalUnit: Timeline.DateTime.DAY
+                        width: "340",
+                        intervalPixels: 155,
+                        intervalUnit: Timeline.DateTime.DAY,
+                        decorators: bandDecorators1
                     },
                     {
                         theme: theme,
                         overview: true,
                         width: "40",
                         intervalPixels: 100,
-                        intervalUnit: Timeline.DateTime.MONTH
+                        intervalUnit: Timeline.DateTime.MONTH,
+                        decorators: bandDecorators2
                     }]/*
                     bandIntervals: [
                         Timeline.DateTime.DAY,

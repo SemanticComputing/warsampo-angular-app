@@ -1,9 +1,8 @@
-{{ timemapCtrl.current }}
 <div class="row flat-accordion">
   <div class="col-md-12 no-side-padding">
       <div class="form-inline">
         <accordion>
-        <accordion-group is-open="showSettings">
+        <accordion-group is-open="timemapCtrl.settingsVisible">
           <label for="photo-days-before">Valokuvien aikahaarukka 
             <input ng-change="timemapCtrl.fetchImages()" min="0" name="photo-days-before"
               class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysBefore" /> päivää ennen
@@ -25,10 +24,6 @@
       </div>
     </div>
     </div>
-</div>
-<div class="row image-container" id="images">
-  <div class="col-md-12" ng-show="timemapCtrl.imageCount">
-  </div>
 </div>
 <div class="row">
   <div class="col-lg-7 col-md-12">
@@ -52,7 +47,7 @@
     <div class="row">
       <div class="col-md-12">
         <div ng-show="timemapCtrl.current">
-          <h3>{{ timemapCtrl.current.opts.descTitle }}</h3>
+          <h3>{{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}</h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
           <div ng-show="timemapCtrl.images.length === 0">
             <p ng-if="!timemapCtrl.isLoadingImages">
@@ -89,7 +84,15 @@
         </div>
         <div ng-if="!timemapCtrl.current">
           <h3>Valitse tapahtuma aikajanalta tai kartalta.</h3>
-          <p>Aikajanaa voi liikuttaa vetämällä hiirellä.</p>
+          <p>
+            Aikajanaa voi liikuttaa vetämällä hiirellä. Asetuksia, kuten valokuvien haun aikahaarkukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset".
+            Kartalla näkyvät kullakin hetkellä aikajanalla näkyvissä olevat tapahtumat, jos niiden paikka on tiedossa.
+          </p>
+          <h4>Tapahtumien värikoodit</h4>
+          <p><img src="vendor/timemap/images/red-circle.png"> Sotatoimi</p>
+          <p><img src="vendor/timemap/images/purple-circle.png"> Poliittinen tapahtuma</p>
+          <p><img src="vendor/timemap/images/orange-circle.png"> Muu tapahtuma</p>
+          <p><img src="vendor/timemap/images/green-circle.png"> Tällä hetkellä valittu tapahtuma</p>
         </div>
         <hr/>
         <div id="casualtyCount" ng-click="timemapCtrl.showCasualtyStats = !timemapCtrl.showCasualtyStats">

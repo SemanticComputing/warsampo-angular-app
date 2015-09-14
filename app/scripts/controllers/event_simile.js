@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($routeParams, $location, 
-              $anchorScroll, $timeout, $window,
+              $anchorScroll, $timeout, $window, $scope, $rootScope,
               eventService, photoService, casualtyService, timemapService) {
     var self = this;
     self.current = undefined;
@@ -19,11 +19,20 @@ angular.module('eventsApp')
     self.currentImagePage = 1;
     self.imagePageSize = 2;
     self.photoDaysBefore = 1;
-    self.photoDaysAfter = 1;
+    self.photoDaysAfter = 3;
     self.photoPlace = true;
     self.showCasualtyHeatmap = false;
     self.showPhotos = false;
     var tm, map, heatmap;
+
+    $rootScope.showHelp = function() {
+        self.current = undefined;
+    };
+
+    self.settingsVisible = false;
+    $rootScope.showSettings = function() {
+        self.settingsVisible = !self.settingsVisible;
+    };
 
     function changeDateAndFormat(date, days) {
         var d = new Date(date);
@@ -47,19 +56,19 @@ angular.module('eventsApp')
         self.isLoadingImages = true;
 
         self.imageCount = 0;
-        self.images = undefined;
+        self.images = [];
         self.currentImages = [];
-        return;
         var place_ids;
         if (self.photoPlace) {
             place_ids = item.opts.place_uri;
- /*           if (!place_ids) {
+            if (!place_ids) {
                 self.imageCount = 0;
                 self.currentImages = [];
                 self.isLoadingImages = false;
+                setTimeout(function(){ $scope.$apply(); });
                 return;
             }
-*/        }
+        }
         photoService.getPhotosByPlaceAndTimeSpan(place_ids, 
                 changeDateAndFormat(item.getStart(), -self.photoDaysBefore), 
                 changeDateAndFormat(item.getEnd(), self.photoDaysAfter))
@@ -152,11 +161,12 @@ angular.module('eventsApp')
     };
 
 
-    self.createTimeMap = function(start, end) {
-        timemapService.createTimemap(start, end, infoWindowCallback)
+    self.createTimeMap = function(start, end, highlights) {
+        timemapService.createTimemap(start, end, highlights, infoWindowCallback)
         .then(function(timemap) {
             tm = timemap;
             map = timemap.getNativeMap();
+            map.setOptions({ zoomControl: true });
             var band = tm.timeline.getBand(0);
 
             getCasualtyCount();
@@ -172,11 +182,45 @@ angular.module('eventsApp')
         });
     };
 
+    var worldWarHighlight = {
+        startDate: "1939-09-01",
+        endDate: "1945-09-02",
+        color:      "#F2F2F2",
+        opacity:    20,
+        startLabel: "Toinen maailmansota",
+        endLabel:   "",
+        cssClass: "band-highlight"
+    };
+
+    var winterWarHighlights = [
+        {
+            startDate: "1939-11-30",
+            endDate: "1940-03-13",
+            color:      "#94BFFF",
+            opacity:    20,
+            startLabel: "Talvisota",
+            endLabel:   "",
+            cssClass: "band-highlight"
+        }
+    ];
+
+    var continuationWarHighlights = [
+        {
+            startDate: "1941-06-25",
+            endDate: "1944-09-19",
+            color:      "#FFC080",
+            opacity:    20,
+            startLabel: "Jatkosota",
+            endLabel:   "",
+            cssClass: "band-highlight"
+        }
+    ];
+
     self.showWinterWar = function() {
-        self.createTimeMap('1939-07-01', '1940-04-30');
+        self.createTimeMap('1939-07-01', '1940-04-30', winterWarHighlights);
     };
     self.showContinuationWar = function() {
-        self.createTimeMap('1941-06-01', '1944-12-31');
+        self.createTimeMap('1941-06-01', '1944-12-31', continuationWarHighlights);
     };
 
     if ($routeParams.era.toLowerCase() === 'continuationwar') {
