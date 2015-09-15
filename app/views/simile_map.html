@@ -37,7 +37,7 @@
     </div>
     <div ng-if="timemapCtrl.showPhotos" class="animate-paginate">
       <figure ng-repeat="img in timemapCtrl.currentImages"
-        class="pull-left gap-right animate-image">
+        class="animate-image center-align">
         <img ng-src="{{ img.url }}" />
         <figcaption>{{ img.description }} (<i>{{ img.created }} SA-kuva</i>)</figcaption>
       </figure>
@@ -50,8 +50,11 @@
           <h3>{{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}</h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
           <div ng-show="timemapCtrl.images.length === 0">
-            <p ng-if="!timemapCtrl.isLoadingImages">
+            <p ng-if="!timemapCtrl.isLoadingImages && !timemapCtrl.showPhotos">
             Ei tapahtumaan liittyviä kuvia.
+            </p>
+            <p ng-if="!timemapCtrl.isLoadingImages && timemapCtrl.showPhotos" ng-click="timemapCtrl.showPhotos = false">
+            Ei tapahtumaan liittyviä kuvia. Näytä aikajana.
             </p>
             <p ng-if="timemapCtrl.isLoadingImages">
             Haetaan kuvia <img ng-src="images/loading.gif" />
@@ -62,7 +65,7 @@
             Näytä kuvat ({{ timemapCtrl.images.length }})
             </p>
             <p ng-show="timemapCtrl.showPhotos" ng-click="timemapCtrl.showPhotos = !timemapCtrl.showPhotos">
-            Näytä kartta
+            Näytä aikajana
             </p>
             <div ng-show="timemapCtrl.showPhotos" class="animate-top pagination-nav">
               <pagination 

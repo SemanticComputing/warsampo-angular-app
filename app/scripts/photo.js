@@ -34,7 +34,10 @@ angular.module('eventsApp')
         '         sch:contentUrl ?url ;          ' +
         '         dc:spatial ?place_id .    ' +
         '     } ' +
-        '     OPTIONAL { ?ref_place_id geosparql:sfWithin ?ref_municipality . ?ref_municipality a suo:kunta . } ' +
+        '     OPTIONAL { ' +
+        '       ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
+        '       ?ref_municipality a suo:kunta . ' +
+        '     } ' +
         '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality . ?municipality a suo:kunta . } ' +
         '     FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality || ?ref_place_id = ?municipality) ' +
         '     ?place_id skos:prefLabel ?place_label . ' +

@@ -17,7 +17,7 @@ angular.module('eventsApp')
     self.currentImages = [];
     self.imageCount = 0;
     self.currentImagePage = 1;
-    self.imagePageSize = 2;
+    self.imagePageSize = 1;
     self.photoDaysBefore = 1;
     self.photoDaysAfter = 3;
     self.photoPlace = true;

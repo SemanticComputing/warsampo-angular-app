@@ -26,7 +26,6 @@ body {
 
 /* Custom page header */
 .header {
-  margin-bottom: 10px;
 
   /* Make the masthead heading the same height as the navigation */
   h3 {
@@ -70,11 +69,6 @@ body {
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
-    /*
-  .container {
-    max-width: 730px;
-  }
-  */
 
   /* Remove the padding we set earlier */
   .header,
@@ -82,10 +76,6 @@ body {
   .footer {
     padding-left: 0;
     padding-right: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
   }
   /* Remove the bottom border on the jumbotron for visual effect */
   .jumbotron {
@@ -115,8 +105,11 @@ body {
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 .animate-paginate, .animate-right {
-    left: 0;
     top: 0;
+}
+
+.animate-right {
+    left: 0;
 }
 
 .animate-paginate.ng-enter,
@@ -156,8 +149,6 @@ body {
   /*transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;*/
   position: relative;
 }
-
-
 
 .animate-right.ng-hide {
   left: -9999px;
@@ -214,6 +205,10 @@ body {
     .panel {
         border: 0;
     }
+
+    .panel-body {
+        border-top: 0 !important;
+    }
 }
 
 .no-side-padding {
@@ -227,4 +222,8 @@ figure {
     width: min-content;
     margin-right: 10px;
     margin-top: 10px;
+}
+
+.center-align {
+    margin: auto;
 }
