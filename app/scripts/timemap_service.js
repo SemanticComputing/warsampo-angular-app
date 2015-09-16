@@ -7,6 +7,8 @@
 
 /* Patch TimeMap and Timeline */
 
+// Working changeTheme
+
  TimeMapItem.prototype.changeTheme = function(newTheme, suppressLayout) {
     var item = this,
         type = item.getType(),
@@ -116,6 +118,77 @@ Timeline.createBandInfo = function(params) {
     };
 };
 
+// Always resize and always animate resize
+
+Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {       
+    var timeline = this; // this Timeline
+    var immediateChange = false; // timeline._starting;
+    var newWidth = 0;
+    
+    function changeTimelineWidth() {        
+        var widthStyle = timeline.getWidthStyle();
+        if (immediateChange) {
+            timeline._containerDiv.style[widthStyle] = newWidth + 'px';
+        } else {
+                  // animate change
+                  timeline._autoResizing = true;
+                  var animateParam ={};
+                  animateParam[widthStyle] = newWidth + 'px';
+                  
+                  SimileAjax.jQuery(timeline._containerDiv).animate(
+                      animateParam, timeline.autoWidthAnimationTime,
+                      'linear', function(){timeline._autoResizing = false;});
+        }
+    }
+                
+    function checkTimelineWidth() {
+        var targetWidth = 0; // the new desired width
+        var currentWidth = timeline.getPixelWidth();
+        
+        if (timeline._autoResizing) {
+                return; // early return
+        }
+
+        // compute targetWidth
+        for (var i = 0; i < timeline._bands.length; i++) {
+            timeline._bands[i].checkAutoWidth();
+            targetWidth += timeline._bandInfos[i].width;
+        }
+        
+        if (targetWidth > currentWidth || okToShrink) {
+            // yes, let's change the size
+            newWidth = targetWidth;
+            changeTimelineWidth();
+            timeline._distributeWidths();
+        }
+    }
+    
+    checkTimelineWidth();
+};
+
+Timeline._Band.prototype.checkAutoWidth = function() {
+    // if a new (larger) width is needed by the band
+    // then: a) updates the band's bandInfo.width
+    //
+    // desiredWidth for the band is 
+    //   (number of tracks + margin) * track increment
+    
+    var overviewBand = this._eventPainter.getType() == 'overview';
+    var margin = overviewBand ? 
+       this._theme.event.overviewTrack.autoWidthMargin : 
+       this._theme.event.track.autoWidthMargin;
+    var desiredWidth = Math.ceil((this._eventTracksNeeded + margin) *
+                       this._eventTrackIncrement);
+    // add offset amount (additional margin)
+    desiredWidth += overviewBand ? this._theme.event.overviewTrack.offset : 
+                                   this._theme.event.track.offset;
+    var bandInfo = this._bandInfo;
+    
+    if (desiredWidth != bandInfo.width) {
+        bandInfo.width = desiredWidth;
+    }
+};
+
 /* End patches */
 
 var eventTypeThemes = {
@@ -136,6 +209,8 @@ angular.module('eventsApp')
                 } else {
                     return;
                 }
+
+                this.getTimeline().setAutoWidth();
 
                 fun();
             };
@@ -224,6 +299,7 @@ angular.module('eventsApp')
                 var theme = Timeline.ClassicTheme.create();
                 theme.timeline_start = new Date(start);
                 theme.timeline_stop = new Date(end);
+                //theme.autoWidth = true;
 
                 var tm = TimeMap.init({
                     mapId: "map",               // Id of map div element (required)
@@ -244,7 +320,7 @@ angular.module('eventsApp')
                     bandInfo: [
                     {
                         theme: theme,
-                        width: "340",
+                        width: "240",
                         intervalPixels: 155,
                         intervalUnit: Timeline.DateTime.DAY,
                         decorators: bandDecorators1
