@@ -194,6 +194,7 @@ Timeline._Band.prototype.checkAutoWidth = function() {
 var eventTypeThemes = {
     "Sotatoimi": "red",
     "Pommitus": "red",
+    "Taistelu": "red",
     "Poliittinen toiminta": "purple"
 };
 
@@ -220,7 +221,7 @@ angular.module('eventsApp')
         function createEventObject(e) {
             var entry = {
                 start: e.start_time,
-                title: e.length < 20 ? e.description : e.description.substr(0, 20) + '...',
+                title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
                 options: {
                     theme: eventTypeThemes[e.type],
                     place_uri: e.place_id,

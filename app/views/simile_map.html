@@ -32,6 +32,12 @@
         <div ng-show="timemapCtrl.current">
           <h3>{{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}</h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
+          <p ng-repeat="person in timemapCtrl.current.commanders" style="text-transform: capitalize">
+            {{ person.label }}
+          </p>
+          <p ng-repeat="unit in timemapCtrl.current.units" style="text-transform: capitalize">
+            {{ unit.label.join(' / ') }}
+          </p>
           <div ng-show="timemapCtrl.images.length === 0">
             <p ng-if="!timemapCtrl.isLoadingImages && !timemapCtrl.showPhotos">
             Ei tapahtumaan liittyviä kuvia.

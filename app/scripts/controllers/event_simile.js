@@ -10,7 +10,7 @@
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($routeParams, $location, 
               $anchorScroll, $timeout, $window, $scope, $rootScope,
-              eventService, photoService, casualtyService, timemapService) {
+              eventService, photoService, casualtyService, actorService, timemapService) {
     var self = this;
     self.current = undefined;
     self.images = undefined;
@@ -49,7 +49,31 @@ angular.module('eventsApp')
             casualtyService.getCasualtyInfo(item.participant_id).then(function(participants) {
                 self.current.related_people = participants;
             });
+            fetchActors(item);
         }
+    };
+
+    var fetchActors = function(item) {
+        var actorTypePrefix = 'http://ldf.fi/warsa/actors/actor_types/';
+
+        actorService.getActorInfo(item.participant_id).then(function(participants) {
+            self.current.commanders = [];
+            self.current.units = [];
+            var setActor = function(actor) {
+                if (actor.type === actorTypePrefix + 'MilitaryPerson') {
+                    self.current.commanders.push(actor);
+                } else if (actor.type === actorTypePrefix + 'MilitaryUnit') {
+                    self.current.units.push(actor);
+                }
+            };
+            if (_.isArray(participants)) {
+                participants.forEach(function(p) {
+                    setActor(p);
+                });
+            } else if (participants) {
+                setActor(participants);
+            }
+        });
     };
 
     var fetchImages = function(item) {
