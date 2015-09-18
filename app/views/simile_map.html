@@ -49,7 +49,7 @@
             Haetaan kuvia <img ng-src="images/loading.gif" />
             </p>
           </div>
-          <div ng-show="!timemapCtrl.isLoadingImages && timemapCtrl.imageCount">
+          <div ng-show="!timemapCtrl.isLoadingImages && timemapCtrl.images.length">
             <p ng-click="timemapCtrl.showPhotos = !timemapCtrl.showPhotos" ng-show="!timemapCtrl.showPhotos">
             Näytä kuvat ({{ timemapCtrl.images.length }})
             </p>
@@ -67,7 +67,7 @@
               last-text="&raquo;"
               boundary-links="true"
               rotate="false"
-              total-items="timemapCtrl.imageCount"
+              total-items="timemapCtrl.images.length"
               ng-model="timemapCtrl.currentImagePage"
               ng-change="timemapCtrl.imagePageChanged()">
               </pagination>

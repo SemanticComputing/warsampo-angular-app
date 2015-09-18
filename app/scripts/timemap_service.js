@@ -130,14 +130,14 @@ Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {
         if (immediateChange) {
             timeline._containerDiv.style[widthStyle] = newWidth + 'px';
         } else {
-                  // animate change
-                  timeline._autoResizing = true;
-                  var animateParam ={};
-                  animateParam[widthStyle] = newWidth + 'px';
-                  
-                  SimileAjax.jQuery(timeline._containerDiv).animate(
-                      animateParam, timeline.autoWidthAnimationTime,
-                      'linear', function(){timeline._autoResizing = false;});
+            // animate change
+            timeline._autoResizing = true;
+            var animateParam ={};
+            animateParam[widthStyle] = newWidth + 'px';
+
+            SimileAjax.jQuery(timeline._containerDiv).animate(
+                    animateParam, timeline.autoWidthAnimationTime,
+                    'linear', function(){timeline._autoResizing = false;});
         }
     }
                 
@@ -151,10 +151,10 @@ Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {
 
         // compute targetWidth
         for (var i = 0; i < timeline._bands.length; i++) {
-            timeline._bands[i].checkAutoWidth();
-            targetWidth += timeline._bandInfos[i].width;
+            timeline._bands[i].setAutoWidth();
+            targetWidth += parseInt(timeline._bandInfos[i].width);
         }
-        
+
         if (targetWidth > currentWidth || okToShrink) {
             // yes, let's change the size
             newWidth = targetWidth;
@@ -162,11 +162,10 @@ Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {
             timeline._distributeWidths();
         }
     }
-    
     checkTimelineWidth();
 };
 
-Timeline._Band.prototype.checkAutoWidth = function() {
+Timeline._Band.prototype.setAutoWidth = function() {
     // if a new (larger) width is needed by the band
     // then: a) updates the band's bandInfo.width
     //
@@ -184,7 +183,7 @@ Timeline._Band.prototype.checkAutoWidth = function() {
                                    this._theme.event.track.offset;
     var bandInfo = this._bandInfo;
     
-    if (desiredWidth != bandInfo.width) {
+    if (desiredWidth > bandInfo.width) {
         bandInfo.width = desiredWidth;
     }
 };

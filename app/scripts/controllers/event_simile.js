@@ -11,11 +11,15 @@ angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($routeParams, $location, 
               $anchorScroll, $timeout, $window, $scope, $rootScope,
               eventService, photoService, casualtyService, actorService, timemapService) {
+
     var self = this;
+
+    // The currently selected event
     self.current = undefined;
+    // Images related to currently selected event
     self.images = undefined;
+    // Current image page
     self.currentImages = [];
-    self.imageCount = 0;
     self.currentImagePage = 1;
     self.imagePageSize = 1;
     self.photoDaysBefore = 1;
@@ -79,14 +83,12 @@ angular.module('eventsApp')
     var fetchImages = function(item) {
         self.isLoadingImages = true;
 
-        self.imageCount = 0;
         self.images = [];
         self.currentImages = [];
         var place_ids;
         if (self.photoPlace) {
             place_ids = item.opts.place_uri;
             if (!place_ids) {
-                self.imageCount = 0;
                 self.currentImages = [];
                 self.isLoadingImages = false;
                 setTimeout(function(){ $scope.$apply(); });
@@ -101,7 +103,6 @@ angular.module('eventsApp')
             imgs.forEach(function(img) {
                 self.images.push(img);
             });
-            self.imageCount = imgs.length;
             self.currentImages = _.take(imgs, self.imagePageSize);
         });
     };
