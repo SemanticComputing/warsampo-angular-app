@@ -21,8 +21,9 @@ angular.module('eventsApp')
             ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?type ?participant  ' +
             ' WHERE { ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
-            '       a ?type_id ; ' +
-            '       skos:prefLabel ?description . ' +
+            '       a ?type_id . ' +
+            '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
+            '       ?id skos:prefLabel ?description . ' +
             '    OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
             '    OPTIONAL { ?id crm:P7_took_place_at ?place_id .  ' +
             '      ?place_id skos:prefLabel ?place_label . ' +
