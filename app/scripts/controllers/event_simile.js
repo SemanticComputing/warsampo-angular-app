@@ -25,7 +25,7 @@ angular.module('eventsApp')
     self.photoDaysBefore = 1;
     self.photoDaysAfter = 3;
     self.photoPlace = true;
-    self.showCasualtyHeatmap = false;
+    self.showCasualtyHeatmap = true;
     self.showPhotos = false;
     var tm, map, heatmap;
 

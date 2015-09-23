@@ -299,7 +299,6 @@ angular.module('eventsApp')
                 var theme = Timeline.ClassicTheme.create();
                 theme.timeline_start = new Date(start);
                 theme.timeline_stop = new Date(end);
-                //theme.autoWidth = true;
 
                 var tm = TimeMap.init({
                     mapId: "map",               // Id of map div element (required)
@@ -332,11 +331,7 @@ angular.module('eventsApp')
                         intervalPixels: 100,
                         intervalUnit: Timeline.DateTime.MONTH,
                         decorators: bandDecorators2
-                    }]/*
-                    bandIntervals: [
-                        Timeline.DateTime.DAY,
-                        Timeline.DateTime.MONTH
-                    ]*/
+                    }]
                 });
 
                 return tm;

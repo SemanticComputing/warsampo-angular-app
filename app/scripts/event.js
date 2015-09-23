@@ -22,6 +22,7 @@ angular.module('eventsApp')
             ' WHERE { ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
             '       a ?type_id . ' +
+            '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
             '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
             '       ?id skos:prefLabel ?description . ' +
             '    OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
