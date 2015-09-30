@@ -120,7 +120,7 @@ angular.module('eventsApp')
     };
 
     var getCasualtyLocations = function() {
-        var band = tm.timeline.getBand(0);
+        var band = tm.getBand(0);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         return casualtyService.getCasualtyLocationsByTime(formatDate(start), formatDate(end))
@@ -135,7 +135,7 @@ angular.module('eventsApp')
     };
 
     var getCasualtyCount = function() {
-        var band = tm.timeline.getBand(0);
+        var band = tm.getBand(0);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         self.minVisibleDate = start;
@@ -180,6 +180,8 @@ angular.module('eventsApp')
     };
 
     var infoWindowCallback = function(item) {
+        item.opts = item._obj.options;
+        console.log(item);
         self.current = item;
         fetchRelatedPeople(item.opts.event);
         fetchImages(item);
@@ -190,13 +192,15 @@ angular.module('eventsApp')
         timemapService.createTimemap(start, end, highlights, infoWindowCallback)
         .then(function(timemap) {
             tm = timemap;
+            /*
             map = timemap.getNativeMap();
             map.setOptions({ zoomControl: true });
-            var band = tm.timeline.getBand(0);
+            */
+            var band = tm.getBand(0);
 
             getCasualtyCount();
-            timemapService.setOnMouseUpListener(onMouseUpListener);
-            band.addOnScrollListener(clearHeatmap);
+            //timemapService.setOnMouseUpListener(onMouseUpListener);
+            /*band.addOnScrollListener(clearHeatmap);
             getCasualtyLocations().then(function(locations) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: locations,
@@ -204,6 +208,7 @@ angular.module('eventsApp')
                 });
                 self.updateHeatmap();
             });
+            */
         });
     };
 

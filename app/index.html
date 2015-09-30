@@ -75,8 +75,11 @@
        ga('send', 'pageview');
     </script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=visualization"></script>
+    <script>
+        var TimelineUrlPrefix = 'bower_components/standalone-timeline/dist/src/api/';
+        var AjaxUrlPrefix = 'bower_components/standalone-timeline/dist/src/';
+    </script>
     <!-- build:js({.,app}) scripts/vendor.js -->
-    <script src="vendor/infobox/infobox.js"></script>
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
@@ -92,6 +95,8 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
     <script src="bower_components/standalone-timeline/dist/timeline.min.js"></script>
+    <script src="bower_components/standalone-timeline/src/api/scripts/l10n/en/timeline.js"></script>
+    <script src="bower_components/standalone-timeline/src/api/scripts/l10n/en/labellers.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

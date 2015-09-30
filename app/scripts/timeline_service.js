@@ -7,11 +7,23 @@ var eventTypeThemes = {
     "Poliittinen toiminta": "purple"
 };
 
+
+Timeline.EventUtils.getNewEventID = function() {
+    // global across page
+    if (!this._lastEventID) {
+        this._lastEventID = 0;
+    }
+    
+    this._lastEventID += 1;
+    return "e" + this._lastEventID;
+};
+
 angular.module('eventsApp')
     .service('timemapService', function($q, eventService) {
 
         this.setOnMouseUpListener = function(fun) {
             Timeline._Band.prototype._onMouseUp = function() {
+            console.log(this);
                 if (this._dragging) {
                     this._dragging = false;
                 } else if (this._orthogonalDragging) {
@@ -26,16 +38,22 @@ angular.module('eventsApp')
             };
         };
 
+        this.setTimelineClickHandler = function(fun) {
+            Timeline.OriginalEventPainter.prototype._showBubble = function(x, y, evt) {
+                fun(evt);
+            };
+        };
 
         function createEventObject(e) {
             var entry = {
-                start: e.start_time,
+                start: new Date(e.start_time),
                 title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
-                color: eventTypeThemes[e.type],
+                text: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
+                color: eventTypeThemes[e.type] || 'orange',
+                description: e.description,
                 options: {
                     place_uri: e.place_id,
                     descTitle: eventService.createTitle(e),
-                    description: e.description,
                     event: e
                 }
             };
@@ -44,6 +62,10 @@ angular.module('eventsApp')
                 end_time.setHours(23);
                 end_time.setMinutes(59);
                 entry.end = end_time;
+                entry.durationEvent = true;
+            } else {
+                entry.durationEvent = false;
+                entry.end = new Date(e.end_time);
             }
 
             if (e.points) {
@@ -87,6 +109,9 @@ angular.module('eventsApp')
         };
 
         this.createTimemap = function(start, end, highlights, infoWindowCallback) {
+            if (infoWindowCallback) {
+                this.setTimelineClickHandler(infoWindowCallback);
+            }
             return (function() {
                 return (start && end) ? eventService.getEventsByTimeSpan(start, end) : eventService.getAllEvents();
             })().then(function(data) {
@@ -101,6 +126,7 @@ angular.module('eventsApp')
                     });
                 }
 
+                var es = new Timeline.DefaultEventSource();
                 var res = [];
                 data.forEach(function(e) {
                     res.push(createEventObject(e));
@@ -110,8 +136,12 @@ angular.module('eventsApp')
                 theme.timeline_start = new Date(start);
                 theme.timeline_stop = new Date(end);
 
+                es.addEvents(res);
+
                 var bandInfo = [
                     Timeline.createBandInfo({
+                        date: es.getEarliestDate(),
+                        eventSource: es,
                         theme: theme,
                         width: "240",
                         intervalPixels: 155,
@@ -119,6 +149,8 @@ angular.module('eventsApp')
                         decorators: bandDecorators1
                     }),
                     Timeline.createBandInfo({
+                        date: es.getEarliestDate(),
+                        eventSource: es,
                         theme: theme,
                         overview: true,
                         width: "40",
@@ -129,15 +161,13 @@ angular.module('eventsApp')
                 ];
 
                 bandInfo[1].syncWith = 0;
+                bandInfo[1].highlight = true;
 
-                var es = new Timeline.DefaultEventSource();
                 var elem = document.getElementById('timeline');
-                console.log(elem);
                 var tl = Timeline.create(elem, bandInfo, Timeline.HORIZONTAL);
 
-                es.loadJSON(res, '.');
-
                 tl.layout();
+
 
                 return tl;
 
