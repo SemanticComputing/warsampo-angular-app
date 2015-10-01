@@ -120,7 +120,7 @@ angular.module('eventsApp')
     };
 
     var getCasualtyLocations = function() {
-        var band = tm.getBand(0);
+        var band = tm.timeline.getBand(0);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         return casualtyService.getCasualtyLocationsByTime(formatDate(start), formatDate(end))
@@ -135,7 +135,7 @@ angular.module('eventsApp')
     };
 
     var getCasualtyCount = function() {
-        var band = tm.getBand(0);
+        var band = tm.timeline.getBand(0);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         self.minVisibleDate = start;
@@ -161,7 +161,7 @@ angular.module('eventsApp')
     };
 
     var clearHeatmap = function() {
-        if (tm.timeline.getBand(0)._dragging || tm.timeline.getBand(1)._dragging) {
+        if (heatmap && (tm.timeline.getBand(0)._dragging || tm.timeline.getBand(1)._dragging)) {
             heatmap.setMap(null);
         }
     };
@@ -181,26 +181,98 @@ angular.module('eventsApp')
 
     var infoWindowCallback = function(item) {
         item.opts = item._obj.options;
-        console.log(item);
         self.current = item;
         fetchRelatedPeople(item.opts.event);
         fetchImages(item);
     };
 
+    var createMarker = function(point, e) {
+        var marker = new google.maps.Marker({
+            position: { lat: parseFloat(point.lat), lng: parseFloat(point.lon) },
+            map: map
+        });
+        marker.addListener('click', function() {
+            infoWindowCallback(e);
+        });
+        return marker;
+    };
+
+    var createPolyline = function(points, e) {
+        var line = [];
+        points.forEach(function(p) {
+            line.push({ lat: parseFloat(p.lat), lng: parseFloat(p.lon) });
+        });
+        var pl = new google.maps.Polyline({
+            path: line,
+            map: map
+        });
+        pl.addListener('click', function() {
+            infoWindowCallback(e);
+        });
+        return pl;
+    };
+
+
+    var createMarkers = function(e) {
+        var point = e._obj.point;
+        var res = [];
+
+        if (point) {
+            res = [createMarker(point, e)];
+        } else if (e._obj.placemarks) {
+            e._obj.placemarks.forEach(function(p) {
+                if (p.polyline) {
+                    res.push(createPolyline(p.polyline, e));
+                } else {
+                    res.push(createMarker(p.point, e));
+                }
+            });
+        }
+                
+        return res;
+    };
+
+    var markers = [];
+
+    var displayVisibleEvents = function(band) {
+        markers.forEach(function(m) {
+            m.setMap(null);
+        });
+        markers = [];
+
+        var minDate = band.getMinVisibleDate();
+        var maxDate = band.getMaxVisibleDate();
+
+        var iterator = band.getEventSource().getEventIterator(minDate, maxDate);
+
+        while (iterator.hasNext()) {
+            var e = iterator.next();
+            var m = createMarkers(e);
+            if (m) {
+                markers = markers.concat(m);
+            }
+        }
+    };
+
+
+
+    var onScrollListener = function(band) {
+        clearHeatmap();
+        displayVisibleEvents(band);
+    };
 
     self.createTimeMap = function(start, end, highlights) {
         timemapService.createTimemap(start, end, highlights, infoWindowCallback)
         .then(function(timemap) {
             tm = timemap;
-            /*
-            map = timemap.getNativeMap();
-            map.setOptions({ zoomControl: true });
-            */
-            var band = tm.getBand(0);
+            console.log(tm);
+            map = timemap.map;
+            //map.setOptions({ zoomControl: true });
+            var band = tm.timeline.getBand(0);
+            band.addOnScrollListener(onScrollListener);
 
             getCasualtyCount();
-            //timemapService.setOnMouseUpListener(onMouseUpListener);
-            /*band.addOnScrollListener(clearHeatmap);
+            timemapService.setOnMouseUpListener(onMouseUpListener);
             getCasualtyLocations().then(function(locations) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: locations,
@@ -208,7 +280,6 @@ angular.module('eventsApp')
                 });
                 self.updateHeatmap();
             });
-            */
         });
     };
 

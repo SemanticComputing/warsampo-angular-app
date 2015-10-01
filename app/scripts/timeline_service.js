@@ -7,6 +7,7 @@ var eventTypeThemes = {
     "Poliittinen toiminta": "purple"
 };
 
+/* Hacks */
 
 Timeline.EventUtils.getNewEventID = function() {
     // global across page
@@ -18,12 +19,13 @@ Timeline.EventUtils.getNewEventID = function() {
     return "e" + this._lastEventID;
 };
 
+/* End hacks */
+
 angular.module('eventsApp')
     .service('timemapService', function($q, eventService) {
 
         this.setOnMouseUpListener = function(fun) {
             Timeline._Band.prototype._onMouseUp = function() {
-            console.log(this);
                 if (this._dragging) {
                     this._dragging = false;
                 } else if (this._orthogonalDragging) {
@@ -32,7 +34,7 @@ angular.module('eventsApp')
                     return;
                 }
 
-                this.getTimeline().setAutoWidth();
+                //this.getTimeline().setAutoWidth();
 
                 fun();
             };
@@ -54,6 +56,7 @@ angular.module('eventsApp')
                 options: {
                     place_uri: e.place_id,
                     descTitle: eventService.createTitle(e),
+                    description: e.description,
                     event: e
                 }
             };
@@ -88,6 +91,12 @@ angular.module('eventsApp')
 
             return entry;
         }
+
+        var attachToMap = function(timeline) {
+            var map = new google.maps.Map(document.getElementById('map'),
+                    { center: { lat: 64.858972, lng: 27.219131 }, zoom: 4 });
+            return { timeline: timeline, map: map };
+        };
 
         var oldTheme;
         var oldEvent;
@@ -168,8 +177,7 @@ angular.module('eventsApp')
 
                 tl.layout();
 
-
-                return tl;
+                return attachToMap(tl);
 
             }, function(data) {
                 $q.reject(data);
