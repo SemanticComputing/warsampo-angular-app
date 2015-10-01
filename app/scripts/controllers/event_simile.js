@@ -191,9 +191,7 @@ angular.module('eventsApp')
             position: { lat: parseFloat(point.lat), lng: parseFloat(point.lon) },
             map: map
         });
-        oms.addListener('click', function() {
-            infoWindowCallback(e);
-        });
+        marker.event = e;
         oms.addMarker(marker);
         return marker;
     };
@@ -271,6 +269,9 @@ angular.module('eventsApp')
             //map.setOptions({ zoomControl: true });
             var band = tm.timeline.getBand(0);
             band.addOnScrollListener(onScrollListener);
+            oms.addListener('click', function(marker, event) {
+                infoWindowCallback(marker.event);
+            });
 
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
