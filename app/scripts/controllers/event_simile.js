@@ -27,7 +27,7 @@ angular.module('eventsApp')
     self.photoPlace = true;
     self.showCasualtyHeatmap = true;
     self.showPhotos = false;
-    var tm, map, heatmap;
+    var tm, map, heatmap, oms;
 
     $rootScope.showHelp = function() {
         self.current = undefined;
@@ -191,9 +191,10 @@ angular.module('eventsApp')
             position: { lat: parseFloat(point.lat), lng: parseFloat(point.lon) },
             map: map
         });
-        marker.addListener('click', function() {
+        oms.addListener('click', function() {
             infoWindowCallback(e);
         });
+        oms.addMarker(marker);
         return marker;
     };
 
@@ -239,6 +240,7 @@ angular.module('eventsApp')
             m.setMap(null);
         });
         markers = [];
+        oms.clearMarkers();
 
         var minDate = band.getMinVisibleDate();
         var maxDate = band.getMaxVisibleDate();
@@ -254,8 +256,6 @@ angular.module('eventsApp')
         }
     };
 
-
-
     var onScrollListener = function(band) {
         clearHeatmap();
         displayVisibleEvents(band);
@@ -267,6 +267,7 @@ angular.module('eventsApp')
             tm = timemap;
             console.log(tm);
             map = timemap.map;
+            oms = new OverlappingMarkerSpiderfier(map, { markersWontMove: true, keepSpiderfied: true });
             //map.setOptions({ zoomControl: true });
             var band = tm.timeline.getBand(0);
             band.addOnScrollListener(onScrollListener);

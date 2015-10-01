@@ -34,8 +34,6 @@ angular.module('eventsApp')
                     return;
                 }
 
-                //this.getTimeline().setAutoWidth();
-
                 fun();
             };
         };
