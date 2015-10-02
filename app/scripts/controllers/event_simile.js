@@ -27,7 +27,7 @@ angular.module('eventsApp')
     self.photoPlace = true;
     self.showCasualtyHeatmap = true;
     self.showPhotos = false;
-    var tm, map, heatmap, oms;
+    var tm, map, heatmap;
 
     $rootScope.showHelp = function() {
         self.current = undefined;
@@ -96,8 +96,8 @@ angular.module('eventsApp')
             }
         }
         photoService.getPhotosByPlaceAndTimeSpan(place_ids, 
-                changeDateAndFormat(item.getStart(), -self.photoDaysBefore), 
-                changeDateAndFormat(item.getEnd(), self.photoDaysAfter))
+                changeDateAndFormat(item.start, -self.photoDaysBefore), 
+                changeDateAndFormat(item.end, self.photoDaysAfter))
         .then(function(imgs) {
             self.isLoadingImages = false;
             imgs.forEach(function(img) {
@@ -180,83 +180,14 @@ angular.module('eventsApp')
     };
 
     var infoWindowCallback = function(item) {
-        item.opts = item._obj.options;
+        item.opts = item.options;
         self.current = item;
         fetchRelatedPeople(item.opts.event);
         fetchImages(item);
     };
 
-    var createMarker = function(point, e) {
-        var marker = new google.maps.Marker({
-            position: { lat: parseFloat(point.lat), lng: parseFloat(point.lon) },
-            map: map
-        });
-        marker.event = e;
-        oms.addMarker(marker);
-        return marker;
-    };
-
-    var createPolyline = function(points, e) {
-        var line = [];
-        points.forEach(function(p) {
-            line.push({ lat: parseFloat(p.lat), lng: parseFloat(p.lon) });
-        });
-        var pl = new google.maps.Polyline({
-            path: line,
-            map: map
-        });
-        pl.addListener('click', function() {
-            infoWindowCallback(e);
-        });
-        return pl;
-    };
-
-
-    var createMarkers = function(e) {
-        var point = e._obj.point;
-        var res = [];
-
-        if (point) {
-            res = [createMarker(point, e)];
-        } else if (e._obj.placemarks) {
-            e._obj.placemarks.forEach(function(p) {
-                if (p.polyline) {
-                    res.push(createPolyline(p.polyline, e));
-                } else {
-                    res.push(createMarker(p.point, e));
-                }
-            });
-        }
-                
-        return res;
-    };
-
-    var markers = [];
-
-    var displayVisibleEvents = function(band) {
-        markers.forEach(function(m) {
-            m.setMap(null);
-        });
-        markers = [];
-        oms.clearMarkers();
-
-        var minDate = band.getMinVisibleDate();
-        var maxDate = band.getMaxVisibleDate();
-
-        var iterator = band.getEventSource().getEventIterator(minDate, maxDate);
-
-        while (iterator.hasNext()) {
-            var e = iterator.next();
-            var m = createMarkers(e);
-            if (m) {
-                markers = markers.concat(m);
-            }
-        }
-    };
-
     var onScrollListener = function(band) {
         clearHeatmap();
-        displayVisibleEvents(band);
     };
 
     self.createTimeMap = function(start, end, highlights) {
@@ -265,13 +196,9 @@ angular.module('eventsApp')
             tm = timemap;
             console.log(tm);
             map = timemap.map;
-            oms = new OverlappingMarkerSpiderfier(map, { markersWontMove: true, keepSpiderfied: true });
             //map.setOptions({ zoomControl: true });
             var band = tm.timeline.getBand(0);
             band.addOnScrollListener(onScrollListener);
-            oms.addListener('click', function(marker, event) {
-                infoWindowCallback(marker.event);
-            });
 
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);

@@ -44,15 +44,30 @@ angular.module('eventsApp')
         ' }  ';
 
         var photosByTimeQry =  prefixes +
-        ' SELECT ?id ?created ?description ?url ' +
+        ' SELECT ?id ?created ?description ?url, ?place_id ' +
         ' WHERE { ' +
         '     GRAPH warsa:photographs { ' +
         '        ?id dc:created ?created . ' +
         '        FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
         '        ?id skos:prefLabel ?description ; ' +
         '        sch:contentUrl ?url ; ' +
-        '        dc:spatial ?place_id . ' +
+        '        OPTIONAL { dc:spatial ?place_id . } ' +
         '     } ' +
+        ' } ';
+
+        var photosWithPlaceByTimeQry =  prefixes +
+        ' SELECT ?id ?created ?description ?url ?place_id ?place_label ?lat ?lon' +
+        ' WHERE { ' +
+        '     GRAPH warsa:photographs { ' +
+        '       ?id dc:created ?created . ' +
+        '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '       ?id skos:prefLabel ?description ; ' +
+        '       sch:contentUrl ?url ; ' +
+        '       dc:spatial ?place_id . ' +
+        '     } ' +
+        '     ?place_id geo:lat ?lat ; ' +
+        '       geo:long ?lon ; ' +
+        '       skos:prefLabel ?place_label . ' +
         ' } ';
 
         this.getPhotosByPlaceAndTimeSpan = function(place_id, start, end) {
@@ -66,6 +81,13 @@ angular.module('eventsApp')
             } else {
                 qry = photosByTimeQry.format(start, end);
             }
+            return endpoint.getObjects(qry).then(function(data) {
+                return objectMapperService.makeObjectList(data);
+            });
+        };
+
+        this.getPhotosWithPlaceByTimeSpan = function(start, end) {
+            var qry = photosWithPlaceByTimeQry.format(start, end);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
             });
