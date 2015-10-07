@@ -18,7 +18,7 @@ angular.module('eventsApp')
             ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
 
         var eventQry = prefixes +
-            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?lat ?lon ?polygon ?type ?participant  ' +
+            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
             ' WHERE { ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
             '       a ?type_id . ' +
@@ -32,7 +32,15 @@ angular.module('eventsApp')
             '      OPTIONAL { ' +
             '            ?place_id geo:lat ?lat ; ' +
             '              geo:long ?lon . ' +
-            '     } ' +
+            '      } ' +
+            '      OPTIONAL { ' +
+            '           GRAPH <http://ldf.fi/places/karelian_places> { ' +
+            '               ?place_id geosparql:sfWithin ?municipality . ' +
+            '           } ' +
+            '           GRAPH <http://ldf.fi/places/municipalities> { ' +
+            '               ?municipality a suo:kunta . ' +
+            '           } ' +
+            '      } ' +
             '   } ' +
             '   GRAPH <http://ldf.fi/warsa/events/times> { ' +
             '     ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +

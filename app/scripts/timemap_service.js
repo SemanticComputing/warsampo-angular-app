@@ -190,6 +190,7 @@ Timeline._Band.prototype.setAutoWidth = function() {
 
 /* End patches */
 
+
 var eventTypeThemes = {
     "Sotatoimi": "red",
     "Pommitus": "red",
@@ -198,7 +199,7 @@ var eventTypeThemes = {
 };
 
 angular.module('eventsApp')
-    .service('timemapService', function($q, eventService) {
+    .service('timemapService', function($q, eventService, photoService) {
 
         this.setOnMouseUpListener = function(fun) {
             Timeline._Band.prototype._onMouseUp = function() {
@@ -216,24 +217,64 @@ angular.module('eventsApp')
             };
         };
 
+        function arrayfy(obj, value) {
+            var val = obj[value];
+            if (!val) {
+                return;
+            }
+            return _.isArray(val) ? val : [val];
+        }
+
+        function someArray(a, b) {
+            return _.some(a, function(ap) {
+                return _.some(b, function(bp) {
+                    return ap === bp;
+                });
+            });
+        }
+
+        function isInProximity(a, b) {
+            if (!(a.place_id && b.place_id)) {
+                return false;
+            }
+            var ap = arrayfy(a, 'place_id');
+            var bp = arrayfy(b, 'place_id');
+            var am = arrayfy(a, 'municipality');
+            var bm = arrayfy(b, 'municipality');
+
+            if (!(ap && bp)) {
+                return false;
+            }
+
+            var f = someArray;
+
+            var yes = f(ap, bp) || f(ap, bm) || f(bp, am) || f(am, bm);
+
+            return yes;
+        }
+
+        var allPhotos = [];
 
         function createEventObject(e) {
             var entry = {
-                start: e.start_time,
+                start: new Date(e.start_time),
                 title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
                 options: {
-                    theme: eventTypeThemes[e.type],
+                    theme: eventTypeThemes[e.type] || 'orange',
                     place_uri: e.place_id,
                     descTitle: eventService.createTitle(e),
                     description: e.description,
                     event: e
                 }
             };
+            var end_time;
             if (e.start_time !== e.end_time) {
-                var end_time = new Date(e.end_time);
+                end_time = new Date(e.end_time);
                 end_time.setHours(23);
                 end_time.setMinutes(59);
                 entry.end = end_time;
+            } else {
+                end_time = entry.start;
             }
 
             if (e.points) {
@@ -252,6 +293,25 @@ angular.module('eventsApp')
                 entry.polygon = e.polygons[0];
             } else {
                 entry.options.noPlacemarkLoad = true;
+            }
+            var start = new Date(entry.start);
+            start.setDate(start.getDate() -1);
+            var end = new Date(end_time);
+            end.setDate(end.getDate() + 3);
+            
+            if (_.some(allPhotos, function(photo) {
+                if (photo.created) {
+                    var d = new Date(photo.created);
+
+                    if ((d >= start && d <= end) && isInProximity(e, photo)) {
+                        return true;
+                    }
+                }
+                return false;
+            })) {
+                entry.options.hasPhoto = true;
+                entry.options.theme = TimeMapTheme.create(entry.options.theme,
+                        { eventTextColor: '#000099' });
             }
 
             return entry;
@@ -277,64 +337,67 @@ angular.module('eventsApp')
         };
 
         this.createTimemap = function(start, end, highlights, infoWindowCallback) {
-            return (function() {
-                return (start && end) ? eventService.getEventsByTimeSpan(start, end) : eventService.getAllEvents();
-            })().then(function(data) {
+            return eventService.getEventsByTimeSpan(start, end).then(function(data) {
+                return data;
+            }).then(function(data) {
+                return photoService.getPhotosWithPlaceByTimeSpan(start, end).then(function(photos) {
+                    allPhotos = photos;
 
-                var bandDecorators1, bandDecorators2;
-                if (highlights) {
-                    bandDecorators1 = [];
-                    bandDecorators2 = [];
-                    highlights.forEach(function(hl) {
-                        bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
-                        bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
+                    var bandDecorators1, bandDecorators2;
+                    if (highlights) {
+                        bandDecorators1 = [];
+                        bandDecorators2 = [];
+                        highlights.forEach(function(hl) {
+                            bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
+                            bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
+                        });
+                    }
+
+                    var res = [];
+                    data.forEach(function(e) {
+                        res.push(createEventObject(e));
                     });
-                }
 
-                var res = [];
-                data.forEach(function(e) {
-                    res.push(createEventObject(e));
-                });
+                    var theme = Timeline.ClassicTheme.create();
+                    theme.timeline_start = new Date(start);
+                    theme.timeline_stop = new Date(end);
 
-                var theme = Timeline.ClassicTheme.create();
-                theme.timeline_start = new Date(start);
-                theme.timeline_stop = new Date(end);
-
-                var tm = TimeMap.init({
-                    mapId: "map",               // Id of map div element (required)
-                    timelineId: "timeline",     // Id of timeline div element (required)
-                    options: {
-                        eventIconPath: "vendor/timemap/images/",
-                        openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); },
-                    },
-                    datasets: [{
-                        id: "warsa",
-                        title: "Itsenäisen Suomen sotien tapahtumat",
-                        theme: "orange",
-                        type: "basic",
+                    var tm = TimeMap.init({
+                        mapId: "map",               // Id of map div element (required)
+                        timelineId: "timeline",     // Id of timeline div element (required)
                         options: {
-                            items: res
-                        }
-                    }],
-                    bandInfo: [
-                    {
-                        theme: theme,
-                        width: "240",
-                        intervalPixels: 155,
-                        intervalUnit: Timeline.DateTime.DAY,
-                        decorators: bandDecorators1
-                    },
-                    {
-                        theme: theme,
-                        overview: true,
-                        width: "40",
-                        intervalPixels: 100,
-                        intervalUnit: Timeline.DateTime.MONTH,
-                        decorators: bandDecorators2
-                    }]
-                });
+                            eventIconPath: "vendor/timemap/images/",
+                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); },
+                        },
+                        datasets: [{
+                            id: "warsa",
+                            title: "Itsenäisen Suomen sotien tapahtumat",
+                            theme: "orange",
+                            type: "basic",
+                            options: {
+                                items: res
+                            }
+                        }],
+                        bandInfo: [
+                        {
+                            theme: theme,
+                            width: "240",
+                            intervalPixels: 155,
+                            intervalUnit: Timeline.DateTime.DAY,
+                            decorators: bandDecorators1
+                        },
+                        {
+                            theme: theme,
+                            overview: true,
+                            width: "40",
+                            intervalPixels: 100,
+                            intervalUnit: Timeline.DateTime.MONTH,
+                            decorators: bandDecorators2
+                        }]
+                    });
 
-                return tm;
+                    return tm;
+                });
 
             }, function(data) {
                 $q.reject(data);
