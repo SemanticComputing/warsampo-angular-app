@@ -80,6 +80,10 @@ angular.module('eventsApp')
         });
     };
 
+    self.showPhotoGallery = function() {
+        blueimp.Gallery($('#photo-thumbs a'), $('#blueimp-gallery').data());
+    };
+
     var fetchImages = function(item) {
         self.isLoadingImages = true;
 
@@ -101,9 +105,12 @@ angular.module('eventsApp')
         .then(function(imgs) {
             self.isLoadingImages = false;
             imgs.forEach(function(img) {
+                img.thumbnail = img.url.replace("_r500", "_r100");
                 self.images.push(img);
             });
             self.currentImages = _.take(imgs, self.imagePageSize);
+            $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
+                markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
         });
     };
 

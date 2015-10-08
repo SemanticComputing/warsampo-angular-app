@@ -42,35 +42,20 @@
             <p ng-if="!timemapCtrl.isLoadingImages && !timemapCtrl.showPhotos">
             Ei tapahtumaan liittyviä kuvia.
             </p>
-            <p ng-if="!timemapCtrl.isLoadingImages && timemapCtrl.showPhotos" ng-click="timemapCtrl.showPhotos = false">
-            Ei tapahtumaan liittyviä kuvia. Näytä aikajana.
-            </p>
             <p ng-if="timemapCtrl.isLoadingImages">
             Haetaan kuvia <img ng-src="images/loading.gif" />
             </p>
           </div>
           <div ng-show="!timemapCtrl.isLoadingImages && timemapCtrl.images.length">
-            <p ng-click="timemapCtrl.showPhotos = !timemapCtrl.showPhotos" ng-show="!timemapCtrl.showPhotos">
-            Näytä kuvat ({{ timemapCtrl.images.length }})
+            <p ng-show="!timemapCtrl.showPhotos">
+            {{ timemapCtrl.images.length }} kuvaa
             </p>
-            <p ng-show="timemapCtrl.showPhotos" ng-click="timemapCtrl.showPhotos = !timemapCtrl.showPhotos">
-            Näytä aikajana
-            </p>
-            <div ng-show="timemapCtrl.showPhotos" class="animate-top pagination-nav">
-              <pagination 
-              class="pagination-sm"
-              items-per-page="timemapCtrl.imagePageSize"
-              max-size="10"
-              previous-text="&lsaquo;"
-              next-text="&rsaquo;"
-              first-text="&laquo;"
-              last-text="&raquo;"
-              boundary-links="true"
-              rotate="false"
-              total-items="timemapCtrl.images.length"
-              ng-model="timemapCtrl.currentImagePage"
-              ng-change="timemapCtrl.imagePageChanged()">
-              </pagination>
+            <div id="photo-thumbs" ng-cloak>
+              <div id="photo-container">
+                <a ng-repeat="img in timemapCtrl.images" ng-click="timemapCtrl.showPhotoGallery()"
+                    data-gallery title="{{ img.description }}" href="{{ img.url }}">
+                  <img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
+              </div>
             </div>
           </div>
         </div>
