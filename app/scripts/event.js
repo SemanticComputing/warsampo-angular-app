@@ -113,7 +113,6 @@ angular.module('eventsApp')
             return start.toLocaleDateString();
         };
 
-
         this.createTitle = function(event) {
             var start = this.getExtremeDate(event.start_time, true);
             var end = this.getExtremeDate(event.end_time, false);
@@ -126,7 +125,8 @@ angular.module('eventsApp')
                 place = event.place ? event.place.label : '';
             }
 
-            return place ? place + ' ' + time : time;
+            //return place ? place + ' ' + time : time;
+            return time;
         };
 });
 

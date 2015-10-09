@@ -31,7 +31,7 @@
     <div class="row">
       <div class="col-md-12">
         <div ng-show="timemapCtrl.current">
-          <h3>{{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}</h3>
+          <h3><a ng-repeat="place in timemapCtrl.current.opts.event.place" ng-href="{{ place.id }}">{{ place.label }} </a>{{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}</h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
           <p ng-repeat="person in timemapCtrl.current.commanders" style="text-transform: capitalize">
             {{ person.label }}
