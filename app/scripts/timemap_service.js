@@ -228,17 +228,17 @@ angular.module('eventsApp')
         function someArray(a, b) {
             return _.some(a, function(ap) {
                 return _.some(b, function(bp) {
-                    return ap === bp;
+                    return _.isEqual(ap, bp);
                 });
             });
         }
 
         function isInProximity(a, b) {
-            if (!(a.place_id && b.place_id)) {
+            if (!(a.place && b.place)) {
                 return false;
             }
-            var ap = arrayfy(a, 'place_id');
-            var bp = arrayfy(b, 'place_id');
+            var ap = arrayfy(a, 'place');
+            var bp = arrayfy(b, 'place');
             var am = arrayfy(a, 'municipality');
             var bm = arrayfy(b, 'municipality');
 
@@ -266,7 +266,7 @@ angular.module('eventsApp')
                 title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
                 options: {
                     theme: eventTypeThemes[e.type] || 'orange',
-                    place_uri: e.place_id,
+                    place_uri: _.pluck(e.place, 'id'),
                     descTitle: eventService.createTitle(e),
                     description: e.description,
                     event: e

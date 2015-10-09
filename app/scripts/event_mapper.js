@@ -17,13 +17,19 @@ EventMapper.prototype.makeObject = function(event) {
     e.description = event.description.value;
     e.start_time = event.start_time.value;
     e.end_time = event.end_time.value;
-    e.place_label = event.place_label ? event.place_label.value : '';
-    e.place_id = event.place_id ? event.place_id.value : '';
     e.municipality_id = event.municipality_id ? event.municipality_id.value : '';
     e.participant_id = event.participant ? event.participant.value : '';
     if (event.title) {
         e.title = event.title.value;
     }
+
+    if (event.place_id) {
+        e.place = {
+            id: event.place_id.value,
+            label: event.place_label ? event.place_label.value : ''
+        };
+    }
+
 
     if (event.polygon) {
         // The event's location is represented as a polygon.

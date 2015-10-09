@@ -120,10 +120,10 @@ angular.module('eventsApp')
             var time = this.formatDateRange(start, end);
 
             var place;
-            if (_.isArray(event.place_label)) {
-                place = event.place_label.join(", ");
+            if (_.isArray(event.place)) {
+                place = _.pluck(event.place, 'label').join(", ");
             } else {
-                place = event.place_label;
+                place = event.place ? event.place.label : '';
             }
 
             return place ? place + ' ' + time : time;
