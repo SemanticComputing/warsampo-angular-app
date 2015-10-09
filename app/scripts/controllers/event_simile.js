@@ -127,11 +127,8 @@ angular.module('eventsApp')
         self.photoPlace = self.photoPlaceSetting;
         self.current = undefined;
         self.images = [];
-        if ($routeParams.era.toLowerCase() === 'continuationwar') {
-            self.showContinuationWar();
-        } else {
-            self.showWinterWar();
-        }
+
+        self.visualize();
     };
 
     var getCasualtyLocations = function() {
@@ -272,10 +269,14 @@ angular.module('eventsApp')
         self.createTimeMap('1941-06-01', '1944-12-31', continuationWarHighlights);
     };
 
-    if ($routeParams.era.toLowerCase() === 'continuationwar') {
-        self.showContinuationWar();
-    } else {
-        self.showWinterWar();
-    }
+    self.visualize = function() {
+        if ($routeParams.era.toLowerCase() === 'continuationwar') {
+            self.showContinuationWar();
+        } else {
+            self.showWinterWar();
+        }
+    };
+
+    self.visualize();
 
 });
