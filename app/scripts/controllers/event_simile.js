@@ -19,12 +19,12 @@ angular.module('eventsApp')
     // Images related to currently selected event
     self.images = undefined;
     // Current image page
-    self.currentImages = [];
-    self.currentImagePage = 1;
-    self.imagePageSize = 1;
     self.photoDaysBefore = 1;
     self.photoDaysAfter = 3;
     self.photoPlace = true;
+    self.photoDaysBeforeSetting = self.photoDaysBefore;
+    self.photoDaysAfterSetting = self.photoDaysAfter;
+    self.photoPlaceSetting = self.photoPlace;
     self.showCasualtyHeatmap = true;
     self.showPhotos = false;
     var tm, map, heatmap;
@@ -88,12 +88,10 @@ angular.module('eventsApp')
         self.isLoadingImages = true;
 
         self.images = [];
-        self.currentImages = [];
         var place_ids;
         if (self.photoPlace) {
             place_ids = item.opts.place_uri;
             if (!place_ids) {
-                self.currentImages = [];
                 self.isLoadingImages = false;
                 setTimeout(function(){ $scope.$apply(); });
                 return;
@@ -108,10 +106,13 @@ angular.module('eventsApp')
                 img.thumbnail = img.url.replace("_r500", "_r100");
                 self.images.push(img);
             });
-            self.currentImages = _.take(imgs, self.imagePageSize);
-            $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
-                markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
         });
+    };
+
+    self.photoConfigChanged = function() {
+        return (self.photoDaysBefore !== self.photoDaysBeforeSetting) ||
+            (self.photoDaysAfter !== self.photoDaysAfterSetting) ||
+            (self.photoPlace !== self.photoPlaceSetting);
     };
 
     self.fetchImages = function() {
@@ -120,10 +121,17 @@ angular.module('eventsApp')
         }
     };
 
-    self.imagePageChanged = function() {
-        var start = (self.currentImagePage - 1) * self.imagePageSize;
-        var end = start + self.imagePageSize;
-        self.currentImages = self.images.slice(start, end);
+    self.updateTimeline = function() {
+        self.photoDaysBefore = self.photoDaysBeforeSetting;
+        self.photoDaysAfter = self.photoDaysAfterSetting;
+        self.photoPlace = self.photoPlaceSetting;
+        self.current = undefined;
+        self.images = [];
+        if ($routeParams.era.toLowerCase() === 'continuationwar') {
+            self.showContinuationWar();
+        } else {
+            self.showWinterWar();
+        }
     };
 
     var getCasualtyLocations = function() {
@@ -194,8 +202,17 @@ angular.module('eventsApp')
 
 
     self.createTimeMap = function(start, end, highlights) {
-        timemapService.createTimemap(start, end, highlights, infoWindowCallback)
+
+        var photoConfig = {
+            beforeOffset: self.photoDaysBefore,
+            afterOffset: self.photoDaysAfter,
+            inProximity: self.photoPlace
+        };
+
+        timemapService.createTimemap(start, end, highlights, infoWindowCallback, photoConfig)
         .then(function(timemap) {
+            $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
+                markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
             tm = timemap;
             map = timemap.getNativeMap();
             map.setOptions({ zoomControl: true });

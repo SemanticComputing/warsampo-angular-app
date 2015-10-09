@@ -254,6 +254,11 @@ angular.module('eventsApp')
         }
 
         var allPhotos = [];
+        var photoSettings = { 
+            beforeOffset: 0,
+            afterOffset: 0,
+            inProximity: true
+        };
 
         function createEventObject(e) {
             var entry = {
@@ -294,16 +299,23 @@ angular.module('eventsApp')
             } else {
                 entry.options.noPlacemarkLoad = true;
             }
+            setPhotoHighlight(entry);
+
+            return entry;
+        }
+
+        function setPhotoHighlight(entry) {
             var start = new Date(entry.start);
-            start.setDate(start.getDate() -1);
-            var end = new Date(end_time);
-            end.setDate(end.getDate() + 3);
+            start.setDate(start.getDate() - photoSettings.beforeOffset);
+            var end = new Date(entry.options.event.end_time);
+            end.setDate(end.getDate() + photoSettings.afterOffset);
             
             if (_.some(allPhotos, function(photo) {
                 if (photo.created) {
                     var d = new Date(photo.created);
 
-                    if ((d >= start && d <= end) && isInProximity(e, photo)) {
+                    if ((d >= start && d <= end) && (!photoSettings.inProximity ||
+                            isInProximity(entry.options.event, photo))) {
                         return true;
                     }
                 }
@@ -313,8 +325,6 @@ angular.module('eventsApp')
                 entry.options.theme = TimeMapTheme.create(entry.options.theme,
                         { eventTextColor: '#000099' });
             }
-
-            return entry;
         }
 
         var oldTheme;
@@ -336,12 +346,14 @@ angular.module('eventsApp')
 
         };
 
-        this.createTimemap = function(start, end, highlights, infoWindowCallback) {
+        this.createTimemap = function(start, end, highlights, infoWindowCallback, photoConfig) {
             return eventService.getEventsByTimeSpan(start, end).then(function(data) {
                 return data;
             }).then(function(data) {
                 return photoService.getPhotosWithPlaceByTimeSpan(start, end).then(function(photos) {
                     allPhotos = photos;
+                    angular.extend(photoSettings, photoConfig);
+                    console.log(photoSettings);
 
                     var bandDecorators1, bandDecorators2;
                     if (highlights) {

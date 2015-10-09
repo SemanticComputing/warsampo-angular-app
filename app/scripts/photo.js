@@ -44,14 +44,14 @@ angular.module('eventsApp')
         ' }  ';
 
         var photosByTimeQry =  prefixes +
-        ' SELECT ?id ?created ?description ?url, ?place_id ' +
+        ' SELECT ?id ?created ?description ?url ?place_id ' +
         ' WHERE { ' +
         '     GRAPH warsa:photographs { ' +
         '        ?id dc:created ?created . ' +
         '        FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
         '        ?id skos:prefLabel ?description ; ' +
-        '        sch:contentUrl ?url ; ' +
-        '        OPTIONAL { dc:spatial ?place_id . } ' +
+        '           sch:contentUrl ?url . ' +
+        '        OPTIONAL { ?id dc:spatial ?place_id . } ' +
         '     } ' +
         ' } ';
 
@@ -81,6 +81,7 @@ angular.module('eventsApp')
                 qry = photosByPlaceAndTimeQry.format(place_id, start, end);
             } else {
                 qry = photosByTimeQry.format(start, end);
+                console.log(qry);
             }
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);

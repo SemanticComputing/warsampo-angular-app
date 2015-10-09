@@ -4,18 +4,19 @@
         <accordion>
         <accordion-group is-open="timemapCtrl.settingsVisible">
           <label for="photo-days-before">Valokuvien aikahaarukka 
-            <input ng-change="timemapCtrl.fetchImages()" min="0" name="photo-days-before"
-              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysBefore" /> päivää ennen
+            <input min="0" name="photo-days-before"
+              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysBeforeSetting" /> päivää ennen
             </label>
           <label for="photo-days-after">
-            <input ng-change="timemapCtrl.fetchImages()" min="0" name="photo-days-after"
-              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysAfter" /> päivää jälkeen tapahtuman.
+            <input min="0" name="photo-days-after"
+              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysAfterSetting" /> päivää jälkeen tapahtuman.
           </label>
           <label for="photo-place">
-            <input ng-change="timemapCtrl.fetchImages()" name="photo-place"
-              class="form-control" type="CHECKBOX" ng-model="timemapCtrl.photoPlace" /> Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.
+            <input name="photo-place"
+              class="form-control" type="CHECKBOX" ng-model="timemapCtrl.photoPlaceSetting" /> Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.
           </label>
-          <label for="photo-place">
+          <button class="btn btn-primary" ng-click="timemapCtrl.updateTimeline()" ng-if="timemapCtrl.photoConfigChanged()">Päivitä</button>
+          <label for="heatmap-toggle">
             <input ng-change="timemapCtrl.updateHeatmap()" name="heatmap-toggle"
               class="form-control" type="CHECKBOX" ng-model="timemapCtrl.showCasualtyHeatmap" /> Näytä lämpökartta menehtyneistä.
           </label>
@@ -50,10 +51,10 @@
             <p ng-show="!timemapCtrl.showPhotos">
             {{ timemapCtrl.images.length }} kuvaa
             </p>
-            <div id="photo-thumbs" ng-cloak>
+            <div id="photo-thumbs">
               <div id="photo-container">
-                <a ng-repeat="img in timemapCtrl.images" ng-click="timemapCtrl.showPhotoGallery()"
-                    data-gallery title="{{ img.description }}" href="{{ img.url }}">
+                <a ng-cloak ng-repeat="img in timemapCtrl.images" ng-click="timemapCtrl.showPhotoGallery()"
+                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
                   <img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
               </div>
             </div>
@@ -146,13 +147,6 @@
       <div id="mapcontainer">
         <div id="map"></div>
       </div>
-    </div>
-    <div ng-if="timemapCtrl.showPhotos" class="animate-paginate">
-      <figure ng-repeat="img in timemapCtrl.currentImages"
-        class="animate-image center-align">
-        <img ng-src="{{ img.url }}" />
-        <figcaption>{{ img.description }} (<i>{{ img.created }} SA-kuva</i>)</figcaption>
-      </figure>
     </div>
   </div>
 </div>
