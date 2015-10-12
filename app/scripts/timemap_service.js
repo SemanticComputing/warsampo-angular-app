@@ -234,13 +234,13 @@ angular.module('eventsApp')
         }
 
         function isInProximity(a, b) {
-            if (!(a.place && b.place)) {
+            if (!(a.places && b.places)) {
                 return false;
             }
-            var ap = arrayfy(a, 'place');
-            var bp = arrayfy(b, 'place');
-            var am = arrayfy(a, 'municipality');
-            var bm = arrayfy(b, 'municipality');
+            var ap = a.places;
+            var bp = b.places;
+            var am = arrayfy(a, 'municipality_id');
+            var bm = arrayfy(b, 'municipality_id');
 
             if (!(ap && bp)) {
                 return false;
@@ -266,7 +266,6 @@ angular.module('eventsApp')
                 title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
                 options: {
                     theme: eventTypeThemes[e.type] || 'orange',
-                    place_uri: _.pluck(e.place, 'id'),
                     descTitle: eventService.createTitle(e),
                     description: e.description,
                     event: e
@@ -282,19 +281,23 @@ angular.module('eventsApp')
                 end_time = entry.start;
             }
 
-            if (e.points) {
-                if (e.points.length === 1) {
-                    entry.point = e.points[0];
+            var points = _(e.places).pluck('point').compact().value();
+            var polygons = _(e.places).pluck('polygon').compact().value();
+            if (points.length) {
+
+                if (points.length === 1) {
+                    entry.point = points[0];
                 }
                 else {
                     entry.placemarks = [{
-                        polyline: e.points
+                        polyline: points
                     }];
-                    e.points.forEach(function(point) {
+                    points.forEach(function(point) {
                         entry.placemarks.push({ point: point });
                     });
                 }
-            } else if (e.polygons) {
+            } else if (polygons.length) {
+                // What if there are multiple polygons?
                 entry.polygon = e.polygons[0];
             } else {
                 entry.options.noPlacemarkLoad = true;
@@ -353,7 +356,6 @@ angular.module('eventsApp')
                 return photoService.getPhotosWithPlaceByTimeSpan(start, end).then(function(photos) {
                     allPhotos = photos;
                     angular.extend(photoSettings, photoConfig);
-                    console.log(photoSettings);
 
                     var bandDecorators1, bandDecorators2;
                     if (highlights) {

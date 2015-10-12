@@ -24,30 +24,30 @@ EventMapper.prototype.makeObject = function(event) {
     }
 
     if (event.place_id) {
-        e.place = {
+        var place = {
             id: event.place_id.value,
             label: event.place_label ? event.place_label.value : ''
         };
-    }
+        if (event.polygon) {
+            // The event's location is represented as a polygon.
+            // Transform the polygon string into a list consisting
+            // of a single lat/lon pair object list.
+            var l = event.polygon.value.split(" ");
+            l = l.map(function(p) { 
+                var latlon = p.split(',');
+                return { lat: latlon[1], lon: latlon[0] };
+            });
+            place.polygon = l;
+        }
+        if (event.lat && event.lon) {
+            // The event's location is represented as a point.
+            place.point = {
+                lat: event.lat.value,
+                lon: event.lon.value
+            };
+        }
 
-
-    if (event.polygon) {
-        // The event's location is represented as a polygon.
-        // Transform the polygon string into a list consisting
-        // of a single lat/lon pair object list.
-        var l = event.polygon.value.split(" ");
-        l = l.map(function(p) { 
-            var latlon = p.split(',');
-            return { lat: latlon[1], lon: latlon[0] };
-        });
-        e.polygons = [l];
-    }
-    if (event.lat && event.lon) {
-        // The event's location is represented as a point.
-        e.points = [{
-            lat: event.lat.value,
-            lon: event.lon.value
-        }];
+        e.places = [place];
     }
 
     return e;

@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($routeParams, $location, 
-              $anchorScroll, $timeout, $window, $scope, $rootScope,
+              $anchorScroll, $timeout, $window, $scope, $rootScope, $sce,
               eventService, photoService, casualtyService, actorService, timemapService) {
 
     var self = this;
@@ -36,6 +36,26 @@ angular.module('eventsApp')
     self.settingsVisible = false;
     $rootScope.showSettings = function() {
         self.settingsVisible = !self.settingsVisible;
+    };
+
+    self.getEventTitleWithLinks = function(event) {
+        var time = eventService.createTitle(event);
+        var place;
+
+        if (event.place) {
+            var link = "<a href={0}>{1}</a>";
+            if (_.isArray(event.place)) {
+                place = _(event.place).pluck('label').forEach(function(p) {
+                    return link.format(p.id, p.label);
+                }).join(", ");
+            } else {
+                place = link.format(event.place.id, event.place.label);
+            }
+
+            return place + ' ' + time; 
+        }
+
+        return time;
     };
 
     function changeDateAndFormat(date, days) {
@@ -90,7 +110,7 @@ angular.module('eventsApp')
         self.images = [];
         var place_ids;
         if (self.photoPlace) {
-            place_ids = item.opts.place_uri;
+            place_ids = _.pluck(item.opts.event.places, 'id');
             if (!place_ids) {
                 self.isLoadingImages = false;
                 setTimeout(function(){ $scope.$apply(); });

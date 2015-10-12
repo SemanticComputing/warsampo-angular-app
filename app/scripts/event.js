@@ -113,17 +113,21 @@ angular.module('eventsApp')
             return start.toLocaleDateString();
         };
 
+        this.formatPlace = function(place) {
+            var res;
+            if (_.isArray(place)) {
+                res = _.pluck(place, 'label').join(", ");
+            } else {
+                res = place ? place.label : '';
+            }
+
+            return res;
+        };
+
         this.createTitle = function(event) {
             var start = this.getExtremeDate(event.start_time, true);
             var end = this.getExtremeDate(event.end_time, false);
             var time = this.formatDateRange(start, end);
-
-            var place;
-            if (_.isArray(event.place)) {
-                place = _.pluck(event.place, 'label').join(", ");
-            } else {
-                place = event.place ? event.place.label : '';
-            }
 
             //return place ? place + ' ' + time : time;
             return time;
