@@ -33,7 +33,7 @@
         <div ng-show="timemapCtrl.current">
           <h3>
             <span ng-repeat="place in timemapCtrl.current.opts.event.places">
-              <a ng-href="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+              <a target="_blank" ng-href="{{ place.hipla_url }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
             </span>
             {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}
           </h3>

@@ -233,20 +233,24 @@ angular.module('eventsApp')
             });
         }
 
-        function isInProximity(a, b) {
-            if (!(a.places && b.places)) {
+        function containsAny(a, b) {
+            return _.intersection(a, b).length;
+        }
+
+        function isInProximity(event, photo) {
+            if (!(event.places && photo.place_id)) {
                 return false;
             }
-            var ap = a.places;
-            var bp = b.places;
-            var am = arrayfy(a, 'municipality_id');
-            var bm = arrayfy(b, 'municipality_id');
+            var ap = _.pluck(event.places, 'id');
+            var bp = arrayfy(photo, 'place_id');
+            var am = arrayfy(event, 'municipality_id');
+            var bm = arrayfy(photo, 'municipality_id');
 
             if (!(ap && bp)) {
                 return false;
             }
 
-            var f = someArray;
+            var f = containsAny;
 
             var yes = f(ap, bp) || f(ap, bm) || f(bp, am) || f(am, bm);
 
@@ -314,13 +318,11 @@ angular.module('eventsApp')
             end.setDate(end.getDate() + photoSettings.afterOffset);
             
             if (_.some(allPhotos, function(photo) {
-                if (photo.created) {
-                    var d = new Date(photo.created);
+                var d = new Date(photo.created);
 
-                    if ((d >= start && d <= end) && (!photoSettings.inProximity ||
-                            isInProximity(entry.options.event, photo))) {
-                        return true;
-                    }
+                if (d >= start && d <= end && (!photoSettings.inProximity ||
+                        isInProximity(entry.options.event, photo))) {
+                    return true;
                 }
                 return false;
             })) {

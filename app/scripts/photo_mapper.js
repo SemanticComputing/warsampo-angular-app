@@ -17,7 +17,7 @@ PhotoMapper.prototype.makeObject = function(photo) {
     e.description = photo.description ? photo.description.value : '';
     e.created = photo.created ? photo.created.value : undefined;
     e.participant_id = photo.participant ? photo.participant.value : '';
-    e.municipality_id = photo.municipality_id ? photo.municipality_id.value : '';
+    e.municipality_id = photo.municipality ? photo.municipality.value : '';
 
     if (photo.place_id) {
         var place = {
