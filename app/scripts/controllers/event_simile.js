@@ -212,7 +212,6 @@ angular.module('eventsApp')
     };
 
     var infoWindowCallback = function(item) {
-        console.log(item);
         $location.search('uri', item.opts.event.id);
         self.current = item;
         fetchRelatedPeople(item.opts.event);
@@ -294,43 +293,57 @@ angular.module('eventsApp')
     };
 
     self.showWinterWar = function() {
-        return self.createTimeMap('1939-07-01', '1940-04-30', winterWarHighlights);
+        return self.createTimeMap(winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
     };
     self.showContinuationWar = function() {
-        return self.createTimeMap('1941-06-01', '1944-12-31', continuationWarHighlights);
+        return self.createTimeMap(continuationWarTimeSpan.start,
+                continuationWarTimeSpan.end, continuationWarHighlights);
+    };
+    var getCreateFunction = function(start, end) {
+        if (start >= new Date(winterWarTimeSpan.start) &&
+                end <= new Date(winterWarTimeSpan.end)) {
+            return self.showWinterWar;
+        } else {
+            return self.showContinuationWar;
+        }
+    };
+
+    self.createTimeMapForEvent = function(e) {
+        var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
+        show().then(function() {
+            var item = _.find(tm.getItems(), function(item) {
+                return _.isEqual(item.opts.event.id, e.id);
+            });
+            self.current = item;
+            tm.timeline.getBand(0).setCenterVisibleDate(new Date(e.start_time));
+            tm.setSelected(item);
+            item.openInfoWindow();
+        });
     };
 
     self.visualize = function() {
         var era = $routeParams.era;
         var event_uri = $routeParams.uri;
-        if (era || !event_uri) {
-            if (era && era.toLowerCase() === 'continuationwar') {
-                self.showContinuationWar();
-            } else {
-                self.showWinterWar();
-            }
-        } else {
+        if (event_uri) {
             eventService.getEventById(event_uri).then(function(e) {
                 if (e) {
-                    var show;
-                    if (new Date(e.start_time) >= new Date(winterWarTimeSpan.start) &&
-                            new Date(e.end_time) <= new Date(winterWarTimeSpan.end)) {
-                        show = self.showWinterWar;
-                    } else {
-                        show = self.showContinuationWar;
-                    }
-                            
-                    show().then(function() {
-                        var item = _.find(tm.getItems(), function(item) {
-                            return _.isEqual(item.opts.event, e);
-                        });
-                        self.current = item;
-                        tm.timeline.getBand(0).setCenterVisibleDate(new Date(e.start_time));
-                        tm.setSelected(item);
-                        item.openInfoWindow();
-                    });
+                    self.createTimeMapForEvent(e);
                 }
             });
+        } else if (era) {
+            switch(era.toLowerCase()) {
+                case 'winterwar': {
+                    self.showWinterWar();
+                    break;
+                }
+                case 'continuationwar': {
+                    self.showContinuationWar();
+                    break;
+                }
+                default: {
+                    $location.path("/winterwar");
+                }
+            }
         }
     };
 
