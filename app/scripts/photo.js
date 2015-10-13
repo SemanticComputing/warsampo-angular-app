@@ -55,8 +55,8 @@ angular.module('eventsApp')
         '     } ' +
         ' } ';
 
-        var photosWithPlaceByTimeQry =  prefixes +
-        ' SELECT ?id ?created ?description ?url ?place_id ?place_label ?municipality ?lat ?lon' +
+        var minimalPhotosWithPlaceByTimeQry = prefixes + 
+        ' SELECT DISTINCT ?created ?place_id ?municipality_id' +
         ' WHERE { ' +
         '     GRAPH warsa:photographs { ' +
         '       ?id dc:created ?created . ' +
@@ -65,27 +65,19 @@ angular.module('eventsApp')
         '       sch:contentUrl ?url ; ' +
         '       dc:spatial ?place_id . ' +
         '     } ' +
-        '     ?place_id geo:lat ?lat ; ' +
-        '       geo:long ?lon ; ' +
-        '       skos:prefLabel ?place_label . ' +
-        '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality . ?municipality a suo:kunta . } ' +
-        ' } ';
-        
-        var minimalPhotosByTimeQry = prefixes + 
-        ' SELECT ?id ?created ?place_id ?municipality_id' +
-        ' WHERE { ' +
-        '     GRAPH warsa:photographs { ' +
-        '       ?id dc:created ?created . ' +
-        '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-        '       ?id skos:prefLabel ?description ; ' +
-        '       sch:contentUrl ?url ; ' +
-        '       dc:spatial ?place_id . ' +
-        '     } ' +
-        '     ?place_id geo:lat ?lat ; ' +
-        '       geo:long ?lon ; ' +
-        '       skos:prefLabel ?place_label . ' +
         '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality_id . ?municipality_id a suo:kunta . } ' +
-        ' } ';
+        ' } ' + 
+        ' ORDER BY ?created ';
+
+        var minimalPhotosByTimeQry = prefixes + 
+        ' SELECT DISTINCT ?created' +
+        ' WHERE { ' +
+        '     GRAPH warsa:photographs { ' +
+        '       ?id dc:created ?created . ' +
+        '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '     } ' +
+        ' } ' + 
+        ' ORDER BY ?created ';
 
         this.getPhotosByPlaceAndTimeSpan = function(place_id, start, end) {
             var qry;
@@ -103,11 +95,17 @@ angular.module('eventsApp')
             });
         };
 
-        this.getPhotosWithPlaceByTimeSpan = function(start, end) {
-            var qry = minimalPhotosByTimeQry.format(start, end);
+        this.getDistinctPhotoData = function(start, end, getPlace) {
+            var qry;
+            if (getPlace) {
+                qry = minimalPhotosWithPlaceByTimeQry.format(start, end);
+            } else {
+                qry = minimalPhotosByTimeQry.format(start, end);
+            }
             return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
+                return objectMapperService.makeObjectListNoGrouping(data);
             });
         };
+
 });
 

@@ -22,10 +22,7 @@ angular
   ])
   .config(function($routeProvider) {
     $routeProvider
-      .when('/', {
-        redirectTo: '/timemap/winterwar'
-      })
-      .when('/timemap/:era?', {
+      .when('/:era?', {
         templateUrl: 'views/simile_map.html',
         controller: 'SimileMapCtrl',
         controllerAs: 'timemapCtrl',

@@ -225,44 +225,50 @@ angular.module('eventsApp')
             return _.isArray(val) ? val : [val];
         }
 
-        function someArray(a, b) {
-            return _.some(a, function(ap) {
-                return _.some(b, function(bp) {
-                    return _.isEqual(ap, bp);
-                });
-            });
-        }
-
-        function containsAny(a, b) {
-            return _.intersection(a, b).length;
-        }
-
         function isInProximity(event, photo) {
-            if (!(event.places && photo.place_id)) {
+            if (!event.places) {
                 return false;
             }
             var ap = _.pluck(event.places, 'id');
-            var bp = arrayfy(photo, 'place_id');
+            var bp = photo.place_id;
             var am = arrayfy(event, 'municipality_id');
-            var bm = arrayfy(photo, 'municipality_id');
+            var bm = photo.municipality_id;
 
-            if (!(ap && bp)) {
-                return false;
-            }
+            var f = _.contains;
 
-            var f = containsAny;
-
-            var yes = f(ap, bp) || f(ap, bm) || f(bp, am) || f(am, bm);
+            var yes = f(ap, bp) || f(ap, bm) || f(am, bp) || f(am, bm);
 
             return yes;
         }
 
-        var allPhotos = [];
+        var distinctPhotoData = [];
         var photoSettings = { 
             beforeOffset: 0,
             afterOffset: 0,
             inProximity: true
         };
+
+        function setPhotoHighlight(entry) {
+            var start = new Date(entry.start);
+            start.setDate(start.getDate() - photoSettings.beforeOffset);
+            var end = new Date(entry.options.event.end_time);
+            end.setDate(end.getDate() + photoSettings.afterOffset);
+
+            if (_.some(distinctPhotoData, function(photo) {
+                var d = new Date(photo.created);
+
+                if (d >= start && d <= end && (!photoSettings.inProximity ||
+                        isInProximity(entry.options.event, photo))) {
+                    return true;
+                }
+
+                return false;
+            })) {
+                entry.options.hasPhoto = true;
+                entry.options.theme = TimeMapTheme.create(entry.options.theme,
+                        { eventTextColor: '#000099' });
+            }
+        }
 
         function createEventObject(e) {
             var entry = {
@@ -311,27 +317,6 @@ angular.module('eventsApp')
             return entry;
         }
 
-        function setPhotoHighlight(entry) {
-            var start = new Date(entry.start);
-            start.setDate(start.getDate() - photoSettings.beforeOffset);
-            var end = new Date(entry.options.event.end_time);
-            end.setDate(end.getDate() + photoSettings.afterOffset);
-            
-            if (_.some(allPhotos, function(photo) {
-                var d = new Date(photo.created);
-
-                if (d >= start && d <= end && (!photoSettings.inProximity ||
-                        isInProximity(entry.options.event, photo))) {
-                    return true;
-                }
-                return false;
-            })) {
-                entry.options.hasPhoto = true;
-                entry.options.theme = TimeMapTheme.create(entry.options.theme,
-                        { eventTextColor: '#000099' });
-            }
-        }
-
         var oldTheme;
         var oldEvent;
 
@@ -355,8 +340,9 @@ angular.module('eventsApp')
             return eventService.getEventsByTimeSpan(start, end).then(function(data) {
                 return data;
             }).then(function(data) {
-                return photoService.getPhotosWithPlaceByTimeSpan(start, end).then(function(photos) {
-                    allPhotos = photos;
+                return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
+                .then(function(photos) {
+                    distinctPhotoData = photos;
                     angular.extend(photoSettings, photoConfig);
 
                     var bandDecorators1, bandDecorators2;

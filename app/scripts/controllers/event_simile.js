@@ -212,6 +212,7 @@ angular.module('eventsApp')
     };
 
     var infoWindowCallback = function(item) {
+        console.log(item);
         $location.search('uri', item.opts.event.id);
         self.current = item;
         fetchRelatedPeople(item.opts.event);

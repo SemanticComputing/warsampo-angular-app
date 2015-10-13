@@ -75,5 +75,16 @@ ObjectMapper.prototype.makeObjectList = function(objects) {
     return obj_list;
 };
 
+ObjectMapper.prototype.makeObjectListNoGrouping = function(objects) {
+    // Create a list of the SPARQL results where each triple is treated
+    // as a separated object.
+    var self = this;
+    var obj_list = _.transform(objects, function(result, obj) {
+        obj = self.makeObject(obj);
+        result.push(obj);
+    });
+    return obj_list;
+};
+
 angular.module('eventsApp')
     .service('objectMapperService', ObjectMapper);
