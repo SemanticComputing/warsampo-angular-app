@@ -325,10 +325,13 @@ angular.module('eventsApp')
         var era = $routeParams.era;
         var event_uri = $routeParams.uri;
         if (event_uri) {
-            eventService.getEventById(event_uri).then(function(e) {
+            return eventService.getEventById(event_uri).then(function(e) {
                 if (e) {
                     return self.createTimeMapForEvent(e);
+                } else {
+                    return $location.path("/winterwar");
                 }
+
             });
         } else if (era) {
             switch(era.toLowerCase()) {
@@ -340,7 +343,7 @@ angular.module('eventsApp')
                 }
             }
         }
-        $location.path("/winterwar");
+        return $location.path("/winterwar");
     };
 
     self.visualize();
