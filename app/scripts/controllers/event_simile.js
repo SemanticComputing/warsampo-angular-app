@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($routeParams, $location, 
-              $anchorScroll, $timeout, $window, $scope, $rootScope,
+              $anchorScroll, $timeout, $window, $scope, $rootScope, $route,
               eventService, photoService, casualtyService, actorService, timemapService) {
 
     var self = this;
@@ -211,8 +211,22 @@ angular.module('eventsApp')
         getCasualtyCount();
     };
 
+    // Set listener to prevent reload when it is not desired.
+    $scope.$on('$routeUpdate', function() {
+        if (!self.noReload) {
+            $route.reload();
+        } else {
+            self.noReload = false;
+        }
+    });
+
     var infoWindowCallback = function(item) {
-        $location.search('uri', item.opts.event.id);
+        // Change the URL but don't reload the page
+        if ($location.search().uri !== item.opts.event.id) {
+            self.noReload = true;
+            $location.search('uri', item.opts.event.id);
+        }
+
         self.current = item;
         fetchRelatedPeople(item.opts.event);
         fetchImages(item);
