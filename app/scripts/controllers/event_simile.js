@@ -327,24 +327,20 @@ angular.module('eventsApp')
         if (event_uri) {
             eventService.getEventById(event_uri).then(function(e) {
                 if (e) {
-                    self.createTimeMapForEvent(e);
+                    return self.createTimeMapForEvent(e);
                 }
             });
         } else if (era) {
             switch(era.toLowerCase()) {
                 case 'winterwar': {
-                    self.showWinterWar();
-                    break;
+                    return self.showWinterWar();
                 }
                 case 'continuationwar': {
-                    self.showContinuationWar();
-                    break;
-                }
-                default: {
-                    $location.path("/winterwar");
+                    return self.showContinuationWar();
                 }
             }
         }
+        $location.path("/winterwar");
     };
 
     self.visualize();
