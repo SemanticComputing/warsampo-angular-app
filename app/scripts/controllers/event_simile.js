@@ -329,7 +329,8 @@ angular.module('eventsApp')
                 if (e) {
                     return self.createTimeMapForEvent(e);
                 } else {
-                    return $location.path("/winterwar");
+                    $location.url($location.path());
+                    return self.showWinterWar();
                 }
 
             });
@@ -343,7 +344,9 @@ angular.module('eventsApp')
                 }
             }
         }
-        return $location.path("/winterwar");
+        $location.path('/winterwar');
+        $location.url($location.path());
+        return self.showWinterWar();
     };
 
     self.visualize();
