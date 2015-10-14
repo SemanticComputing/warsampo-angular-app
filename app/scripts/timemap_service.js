@@ -48,6 +48,13 @@
 
 // Timeline.createBandInfo from version 2.3.1
 
+Timeline._Band.prototype.updateEventTrackInfo = function(A, B) {
+    this._eventTrackIncrement = B;
+    if (true || A > this._eventTracksNeeded) {
+      this._eventTracksNeeded = A
+    }
+}
+
 Timeline.createBandInfo = function(params) {
     var theme = ("theme" in params) ? params.theme : Timeline.getDefaultTheme();
 
@@ -155,7 +162,7 @@ Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {
             targetWidth += parseInt(timeline._bandInfos[i].width);
         }
 
-        if (targetWidth > currentWidth || okToShrink) {
+        if (targetWidth > currentWidth || okToShrink || true) {
             // yes, let's change the size
             newWidth = targetWidth;
             changeTimelineWidth();
@@ -183,7 +190,7 @@ Timeline._Band.prototype.setAutoWidth = function() {
                                    this._theme.event.track.offset;
     var bandInfo = this._bandInfo;
     
-    if (desiredWidth > bandInfo.width) {
+    if (desiredWidth > bandInfo.width || true) {
         bandInfo.width = desiredWidth;
     }
 };
@@ -273,7 +280,7 @@ angular.module('eventsApp')
         function createEventObject(e) {
             var entry = {
                 start: new Date(e.start_time),
-                title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
+                title: e.description.length < 55 ? e.description : e.description.substr(0, 55) + '...',
                 options: {
                     theme: eventTypeThemes[e.type] || 'orange',
                     descTitle: eventService.createTitle(e),
@@ -321,7 +328,7 @@ angular.module('eventsApp')
         var oldEvent;
 
         var openInfoWindow = function(event, callback) {
-            var band = event.timeline.getBand(0);
+            var band = event.timeline.getBand(1);
             var start = band.getMinVisibleDate();
             if (oldEvent) {
                 oldEvent.changeTheme(oldTheme);
@@ -369,7 +376,7 @@ angular.module('eventsApp')
                         timelineId: "timeline",     // Id of timeline div element (required)
                         options: {
                             eventIconPath: "vendor/timemap/images/",
-                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); },
+                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
                         },
                         datasets: [{
                             id: "warsa",
@@ -383,17 +390,17 @@ angular.module('eventsApp')
                         bandInfo: [
                         {
                             theme: theme,
-                            width: "240",
-                            intervalPixels: 155,
-                            intervalUnit: Timeline.DateTime.DAY,
-                            decorators: bandDecorators1
-                        },
-                        {
-                            theme: theme,
                             overview: true,
                             width: "40",
                             intervalPixels: 100,
                             intervalUnit: Timeline.DateTime.MONTH,
+                            decorators: bandDecorators1
+                        },
+                        {
+                            theme: theme,
+                            width: "240",
+                            intervalPixels: 155,
+                            intervalUnit: Timeline.DateTime.DAY,
                             decorators: bandDecorators2
                         }]
                     });
@@ -406,4 +413,3 @@ angular.module('eventsApp')
             });
         };
     });
-

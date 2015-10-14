@@ -152,7 +152,7 @@ angular.module('eventsApp')
     };
 
     var getCasualtyLocations = function() {
-        var band = tm.timeline.getBand(0);
+        var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         return casualtyService.getCasualtyLocationsByTime(formatDate(start), formatDate(end))
@@ -167,7 +167,7 @@ angular.module('eventsApp')
     };
 
     var getCasualtyCount = function() {
-        var band = tm.timeline.getBand(0);
+        var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         self.minVisibleDate = start;
@@ -248,7 +248,7 @@ angular.module('eventsApp')
             tm = timemap;
             map = timemap.getNativeMap();
             map.setOptions({ zoomControl: true });
-            var band = tm.timeline.getBand(0);
+            var band = tm.timeline.getBand(1);
 
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
@@ -329,7 +329,7 @@ angular.module('eventsApp')
                 return _.isEqual(item.opts.event.id, e.id);
             });
             self.current = item;
-            tm.timeline.getBand(0).setCenterVisibleDate(new Date(e.start_time));
+            tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
             tm.setSelected(item);
             item.openInfoWindow();
         });

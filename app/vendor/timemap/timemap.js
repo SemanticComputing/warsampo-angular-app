@@ -440,9 +440,9 @@ TimeMap.prototype = {
             resizeTimerID, x, painter;
         
         // synchronize & highlight timeline bands
-        for (x=1; x < bands.length; x++) {
+        for (x=0; x < bands.length - 1; x++) {
             if (opts.syncBands) {
-                bands[x].syncWith = 0;
+                bands[x].syncWith = 1;
             }
             bands[x].highlight = true;
         }
@@ -2218,7 +2218,7 @@ TimeMapItem.prototype = {
      */
     onVisibleTimeline: function() {
         var item = this,
-            topband = item.timeline.getBand(0),
+            topband = item.timeline.getBand(1),
             maxVisibleDate = topband.getMaxVisibleDate().getTime(),
             minVisibleDate = topband.getMinVisibleDate().getTime(),
             itemStart = item.getStartTime(),
