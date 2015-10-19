@@ -3,8 +3,6 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
-.angular-google-map-container { height: 400px; }
-
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -14,14 +12,6 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 
 body {
   padding: 0;
-}
-
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing,
-.footer {
-  padding-left: 15px;
-  padding-right: 15px;
 }
 
 /* Custom page header */
@@ -40,31 +30,11 @@ body {
 .footer {
   padding-top: 19px;
   color: #777;
-  border-top: 1px solid #e5e5e5;
+  /*border-top: 1px solid #e5e5e5;*/
 }
 
 .container-narrow > hr {
   margin: 30px 0;
-}
-
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-
-  .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-  }
-}
-
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-
-  p + h4 {
-    margin-top: 28px;
-  }
 }
 
 /* Responsive: Portrait tablets and up */
@@ -72,14 +42,9 @@ body {
 
   /* Remove the padding we set earlier */
   .header,
-  .marketing,
   .footer {
     padding-left: 0;
     padding-right: 0;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
   }
 }
 
@@ -99,60 +64,7 @@ body {
     width: 350px;
 }
 
-.image-container {
-}
-
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
-
-.animate-paginate, .animate-right {
-    top: 0;
-}
-
-.animate-right {
-    left: 0;
-}
-
-.animate-paginate.ng-enter,
-.animate-paginate.ng-hide-remove,
-.animate-right.ng-hide-remove {
-  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-}
-
-.animate-paginate.ng-leave, .animate-paginate.ng-hide-add, .animate-right.ng-hide-add {
-  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-}
-
-.animate-paginate.ng-enter, .animate-paginate.ng-hide,
-.animate-paginate.ng-leave.ng-leave-active {
-  left: -9999px;
-}
-
-.animate-paginate.ng-hide-add,
-.animate-paginate.ng-leave,
-.animate-paginate.ng-enter.ng-enter-active {
-  left: 0;
-}
-
-.animate-image {
-    @extend .animate-paginate;
-}
-
-.animate-image.ng-leave,
-.animate-paginate.ng-enter,
-.animate-paginate.ng-leave {
-    position: absolute;
-}
-
-.animate-image.ng-enter,
-.animate-right.ng-hide-add,
-.animate-right.ng-hide-remove {
-  /*transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;*/
-  position: relative;
-}
-
-.animate-right.ng-hide {
-  left: -9999px;
-}
 
 .animate-top {
     opacity: 1;
@@ -189,10 +101,6 @@ body {
     top: 0;
 }
 
-.pagination-nav {
-    height: 50px;
-}
-
 .navbar {
     margin-bottom: 0;
 }
@@ -214,14 +122,6 @@ body {
 .no-side-padding {
     padding-left: 0;
     padding-right: 0;
-}
-
-figure {
-    width: -webkit-min-content;
-    width: -moz-min-content;
-    width: min-content;
-    margin-right: 10px;
-    margin-top: 10px;
 }
 
 .center-align {
