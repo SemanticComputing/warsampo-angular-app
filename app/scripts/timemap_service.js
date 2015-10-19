@@ -48,6 +48,13 @@
 
 // Timeline.createBandInfo from version 2.3.1
 
+Timeline._Band.prototype.updateEventTrackInfo = function(A, B) {
+    this._eventTrackIncrement = B;
+    if (true || A > this._eventTracksNeeded) {
+      this._eventTracksNeeded = A
+    }
+}
+
 Timeline.createBandInfo = function(params) {
     var theme = ("theme" in params) ? params.theme : Timeline.getDefaultTheme();
 
@@ -155,7 +162,7 @@ Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {
             targetWidth += parseInt(timeline._bandInfos[i].width);
         }
 
-        if (targetWidth > currentWidth || okToShrink) {
+        if (targetWidth > currentWidth || okToShrink || true) {
             // yes, let's change the size
             newWidth = targetWidth;
             changeTimelineWidth();
@@ -183,9 +190,45 @@ Timeline._Band.prototype.setAutoWidth = function() {
                                    this._theme.event.track.offset;
     var bandInfo = this._bandInfo;
     
-    if (desiredWidth > bandInfo.width) {
+    if (desiredWidth > bandInfo.width || true) {
         bandInfo.width = desiredWidth;
     }
+};
+
+// Support for mobile devices
+
+Timeline._Band.prototype._onTouchStart=function(D,A,E)
+{
+    if(A.touches.length == 1)
+    {
+        var touch = A.changedTouches[0];
+        this._dragX=touch.clientX;
+        this._dragY=touch.clientY;
+        this._dragging=true;
+    }
+}
+
+Timeline._Band.prototype._onTouchMove=function(D,A,E)
+{
+    if(A.touches.length == 1)
+    {
+        A.preventDefault();
+        A.stopPropagation(); 
+        A.stopImmediatePropagation();         
+        var touch = A.changedTouches[0];
+        var C=touch.clientX-this._dragX;
+        var B=touch.clientY-this._dragY;
+        this._dragX=touch.clientX;
+        this._dragY=touch.clientY;
+        this._moveEther(this._timeline.isHorizontal()?C:B);
+        this._positionHighlight();
+        this._fireOnScroll();
+        this._setSyncWithBandDate();
+    } 
+};
+
+Timeline._Band.prototype._onTouchEnd=function(){
+        this._dragging=false;
 };
 
 /* End patches */
@@ -273,7 +316,7 @@ angular.module('eventsApp')
         function createEventObject(e) {
             var entry = {
                 start: new Date(e.start_time),
-                title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
+                title: e.description.length < 55 ? e.description : e.description.substr(0, 55) + '...',
                 options: {
                     theme: eventTypeThemes[e.type] || 'orange',
                     descTitle: eventService.createTitle(e),
@@ -321,7 +364,7 @@ angular.module('eventsApp')
         var oldEvent;
 
         var openInfoWindow = function(event, callback) {
-            var band = event.timeline.getBand(0);
+            var band = event.timeline.getBand(1);
             var start = band.getMinVisibleDate();
             if (oldEvent) {
                 oldEvent.changeTheme(oldTheme);
@@ -363,13 +406,14 @@ angular.module('eventsApp')
                     var theme = Timeline.ClassicTheme.create();
                     theme.timeline_start = new Date(start);
                     theme.timeline_stop = new Date(end);
+                    theme.mouseWheel = 'default';
 
                     var tm = TimeMap.init({
                         mapId: "map",               // Id of map div element (required)
                         timelineId: "timeline",     // Id of timeline div element (required)
                         options: {
                             eventIconPath: "vendor/timemap/images/",
-                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); },
+                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
                         },
                         datasets: [{
                             id: "warsa",
@@ -383,19 +427,26 @@ angular.module('eventsApp')
                         bandInfo: [
                         {
                             theme: theme,
-                            width: "240",
-                            intervalPixels: 155,
-                            intervalUnit: Timeline.DateTime.DAY,
-                            decorators: bandDecorators1
-                        },
-                        {
-                            theme: theme,
                             overview: true,
                             width: "40",
                             intervalPixels: 100,
                             intervalUnit: Timeline.DateTime.MONTH,
+                            decorators: bandDecorators1
+                        },
+                        {
+                            theme: theme,
+                            width: "240",
+                            intervalPixels: 155,
+                            intervalUnit: Timeline.DateTime.DAY,
                             decorators: bandDecorators2
                         }]
+                    });
+
+                    // Add listeners for touch events for mobile support
+                    [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
+                        SimileAjax.DOM.registerEventWithObject(band._div,"touchmove",band,"_onTouchMove");
+                        SimileAjax.DOM.registerEventWithObject(band._div,"touchend",band,"_onTouchEnd");
+                        SimileAjax.DOM.registerEventWithObject(band._div,"touchstart",band,"_onTouchStart");
                     });
 
                     return tm;
@@ -406,4 +457,3 @@ angular.module('eventsApp')
             });
         };
     });
-

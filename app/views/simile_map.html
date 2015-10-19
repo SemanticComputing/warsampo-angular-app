@@ -68,7 +68,9 @@
         <div ng-if="!timemapCtrl.current">
           <h3>Valitse tapahtuma aikajanalta tai kartalta.</h3>
           <p>
-            Aikajanaa voi liikuttaa vetämällä hiirellä. Asetuksia, kuten valokuvien haun aikahaarkukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset".
+            Aikajanaa voi liikuttaa vetämällä hiirellä.
+            Asetuksia, kuten valokuvien haun aikahaarkukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset".
+            Tekstiltään sinisiin tapahtumiin liittyy valokuvia (asetusten mukaisesti).
           </p>
           <p>
             Kartalla näkyvät kullakin hetkellä (ylemmällä) aikajanalla näkyvissä olevat tapahtumat, jos niiden paikka on tiedossa.
@@ -146,13 +148,12 @@
   </div>
   <div class="col-lg-7 col-lg-pull-5 col-md-12">
     <div id="timemap" ng-show="!timemapCtrl.showPhotos" class="animate-right">
-      <div id="timelinecontainer">
-        <div id=timeline></div>
-      </div>
       <div id="mapcontainer">
         <div id="map"></div>
+      </div>
+      <div id="timelinecontainer">
+        <div id=timeline></div>
       </div>
     </div>
   </div>
 </div>
-
