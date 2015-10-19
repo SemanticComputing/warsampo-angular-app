@@ -101,7 +101,7 @@ angular.module('eventsApp')
     };
 
     self.showPhotoGallery = function() {
-        blueimp.Gallery($('#photo-thumbs a'), $('#blueimp-gallery').data());
+        blueimp.Gallery($('#photo-container a'), $('#blueimp-gallery').data());
     };
 
     var fetchImages = function(item) {
