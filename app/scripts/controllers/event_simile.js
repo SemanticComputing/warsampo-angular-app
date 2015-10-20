@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($routeParams, $location, 
-              $anchorScroll, $timeout, $window, $scope, $rootScope,
+              $anchorScroll, $timeout, $window, $scope, $rootScope, $route,
               eventService, photoService, casualtyService, actorService, timemapService) {
 
     var self = this;
@@ -19,12 +19,12 @@ angular.module('eventsApp')
     // Images related to currently selected event
     self.images = undefined;
     // Current image page
-    self.currentImages = [];
-    self.currentImagePage = 1;
-    self.imagePageSize = 1;
     self.photoDaysBefore = 1;
     self.photoDaysAfter = 3;
     self.photoPlace = true;
+    self.photoDaysBeforeSetting = self.photoDaysBefore;
+    self.photoDaysAfterSetting = self.photoDaysAfter;
+    self.photoPlaceSetting = self.photoPlace;
     self.showCasualtyHeatmap = true;
     self.showPhotos = false;
     var tm, map, heatmap;
@@ -36,6 +36,26 @@ angular.module('eventsApp')
     self.settingsVisible = false;
     $rootScope.showSettings = function() {
         self.settingsVisible = !self.settingsVisible;
+    };
+
+    self.getEventTitleWithLinks = function(event) {
+        var time = eventService.createTitle(event);
+        var place;
+
+        if (event.place) {
+            var link = "<a href={0}>{1}</a>";
+            if (_.isArray(event.place)) {
+                place = _(event.place).pluck('label').forEach(function(p) {
+                    return link.format(p.id, p.label);
+                }).join(", ");
+            } else {
+                place = link.format(event.place.id, event.place.label);
+            }
+
+            return place + ' ' + time; 
+        }
+
+        return time;
     };
 
     function changeDateAndFormat(date, days) {
@@ -80,16 +100,18 @@ angular.module('eventsApp')
         });
     };
 
+    self.showPhotoGallery = function() {
+        blueimp.Gallery($('#photo-container a'), $('#blueimp-gallery').data());
+    };
+
     var fetchImages = function(item) {
         self.isLoadingImages = true;
 
         self.images = [];
-        self.currentImages = [];
         var place_ids;
         if (self.photoPlace) {
-            place_ids = item.opts.place_uri;
+            place_ids = _.pluck(item.opts.event.places, 'id');
             if (!place_ids) {
-                self.currentImages = [];
                 self.isLoadingImages = false;
                 setTimeout(function(){ $scope.$apply(); });
                 return;
@@ -101,10 +123,16 @@ angular.module('eventsApp')
         .then(function(imgs) {
             self.isLoadingImages = false;
             imgs.forEach(function(img) {
+                img.thumbnail = img.url.replace("_r500", "_r100");
                 self.images.push(img);
             });
-            self.currentImages = _.take(imgs, self.imagePageSize);
         });
+    };
+
+    self.photoConfigChanged = function() {
+        return (self.photoDaysBefore !== self.photoDaysBeforeSetting) ||
+            (self.photoDaysAfter !== self.photoDaysAfterSetting) ||
+            (self.photoPlace !== self.photoPlaceSetting);
     };
 
     self.fetchImages = function() {
@@ -113,14 +141,18 @@ angular.module('eventsApp')
         }
     };
 
-    self.imagePageChanged = function() {
-        var start = (self.currentImagePage - 1) * self.imagePageSize;
-        var end = start + self.imagePageSize;
-        self.currentImages = self.images.slice(start, end);
+    self.updateTimeline = function() {
+        self.photoDaysBefore = self.photoDaysBeforeSetting;
+        self.photoDaysAfter = self.photoDaysAfterSetting;
+        self.photoPlace = self.photoPlaceSetting;
+        self.current = undefined;
+        self.images = [];
+
+        self.visualize();
     };
 
     var getCasualtyLocations = function() {
-        var band = tm.timeline.getBand(0);
+        var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         return casualtyService.getCasualtyLocationsByTime(formatDate(start), formatDate(end))
@@ -135,7 +167,7 @@ angular.module('eventsApp')
     };
 
     var getCasualtyCount = function() {
-        var band = tm.timeline.getBand(0);
+        var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         self.minVisibleDate = start;
@@ -181,25 +213,35 @@ angular.module('eventsApp')
 
     var infoWindowCallback = function(item) {
         item.opts = item.options;
+        // Change the URL but don't reload the page
+        if ($location.search().uri !== item.opts.event.id) {
+            self.noReload = true;
+            $location.search('uri', item.opts.event.id);
+        }
+
         self.current = item;
         fetchRelatedPeople(item.opts.event);
         fetchImages(item);
     };
 
-    var onScrollListener = function(band) {
-        clearHeatmap();
-    };
 
     self.createTimeMap = function(start, end, highlights) {
-        timemapService.createTimemap(start, end, highlights, infoWindowCallback)
+
+        var photoConfig = {
+            beforeOffset: self.photoDaysBefore,
+            afterOffset: self.photoDaysAfter,
+            inProximity: self.photoPlace
+        };
+
+        return timemapService.createTimemap(start, end, highlights, infoWindowCallback, photoConfig)
         .then(function(timemap) {
+            $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
+                markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
             tm = timemap;
-            console.log(tm);
             map = timemap.map;
             //map.setOptions({ zoomControl: true });
-            var band = tm.timeline.getBand(0);
-            band.addOnScrollListener(onScrollListener);
-
+            var band = tm.timeline.getBand(1);
+            band.addOnScrollListener(clearHeatmap);
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
             getCasualtyLocations().then(function(locations) {
@@ -246,17 +288,75 @@ angular.module('eventsApp')
         }
     ];
 
-    self.showWinterWar = function() {
-        self.createTimeMap('1939-07-01', '1940-04-30', winterWarHighlights);
+    var winterWarTimeSpan = {
+        start: '1939-07-01',
+        end: '1940-04-30'
     };
-    self.showContinuationWar = function() {
-        self.createTimeMap('1941-06-01', '1944-12-31', continuationWarHighlights);
+    var continuationWarTimeSpan = {
+        start: '1941-06-01',
+        end: '1944-12-31'
     };
 
-    if ($routeParams.era.toLowerCase() === 'continuationwar') {
-        self.showContinuationWar();
-    } else {
-        self.showWinterWar();
-    }
+    self.showWinterWar = function() {
+        return self.createTimeMap(winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
+    };
+    self.showContinuationWar = function() {
+        return self.createTimeMap(continuationWarTimeSpan.start,
+                continuationWarTimeSpan.end, continuationWarHighlights);
+    };
+    var getCreateFunction = function(start, end) {
+        if (start >= new Date(winterWarTimeSpan.start) &&
+                end <= new Date(winterWarTimeSpan.end)) {
+            return self.showWinterWar;
+        } else {
+            return self.showContinuationWar;
+        }
+    };
+
+    self.createTimeMapForEvent = function(e) {
+        var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
+        show().then(function() {
+            var band = tm.timeline.getBand(1);
+            var item = _.find(band.getEventSource().getEventIterator(
+                    band.getMinDate(), band.getMaxDate())._events._a, function(item) {
+                return _.isEqual(item._obj.options.event.id, e.id);
+            });
+            console.log(item);
+            self.current = item;
+            band.setCenterVisibleDate(new Date(e.start_time));
+            tm.setSelected(item);
+            item.openInfoWindow();
+        });
+    };
+
+    self.visualize = function() {
+        var era = $routeParams.era;
+        var event_uri = $routeParams.uri;
+        if (event_uri) {
+            return eventService.getEventById(event_uri).then(function(e) {
+                if (e) {
+                    return self.createTimeMapForEvent(e);
+                } else {
+                    $location.url($location.path());
+                    return self.showWinterWar();
+                }
+
+            });
+        } else if (era) {
+            switch(era.toLowerCase()) {
+                case 'winterwar': {
+                    return self.showWinterWar();
+                }
+                case 'continuationwar': {
+                    return self.showContinuationWar();
+                }
+            }
+        }
+        $location.path('/winterwar');
+        $location.url($location.path());
+        return self.showWinterWar();
+    };
+
+    self.visualize();
 
 });

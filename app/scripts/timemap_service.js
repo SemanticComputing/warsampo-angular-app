@@ -48,6 +48,13 @@
 
 // Timeline.createBandInfo from version 2.3.1
 
+Timeline._Band.prototype.updateEventTrackInfo = function(A, B) {
+    this._eventTrackIncrement = B;
+    if (true || A > this._eventTracksNeeded) {
+      this._eventTracksNeeded = A
+    }
+}
+
 Timeline.createBandInfo = function(params) {
     var theme = ("theme" in params) ? params.theme : Timeline.getDefaultTheme();
 
@@ -155,7 +162,7 @@ Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {
             targetWidth += parseInt(timeline._bandInfos[i].width);
         }
 
-        if (targetWidth > currentWidth || okToShrink) {
+        if (targetWidth > currentWidth || okToShrink || true) {
             // yes, let's change the size
             newWidth = targetWidth;
             changeTimelineWidth();
@@ -183,12 +190,49 @@ Timeline._Band.prototype.setAutoWidth = function() {
                                    this._theme.event.track.offset;
     var bandInfo = this._bandInfo;
     
-    if (desiredWidth > bandInfo.width) {
+    if (desiredWidth > bandInfo.width || true) {
         bandInfo.width = desiredWidth;
     }
 };
 
+// Support for mobile devices
+
+Timeline._Band.prototype._onTouchStart=function(D,A,E)
+{
+    if(A.touches.length == 1)
+    {
+        var touch = A.changedTouches[0];
+        this._dragX=touch.clientX;
+        this._dragY=touch.clientY;
+        this._dragging=true;
+    }
+}
+
+Timeline._Band.prototype._onTouchMove=function(D,A,E)
+{
+    if(A.touches.length == 1)
+    {
+        A.preventDefault();
+        A.stopPropagation(); 
+        A.stopImmediatePropagation();         
+        var touch = A.changedTouches[0];
+        var C=touch.clientX-this._dragX;
+        var B=touch.clientY-this._dragY;
+        this._dragX=touch.clientX;
+        this._dragY=touch.clientY;
+        this._moveEther(this._timeline.isHorizontal()?C:B);
+        this._positionHighlight();
+        this._fireOnScroll();
+        this._setSyncWithBandDate();
+    } 
+};
+
+Timeline._Band.prototype._onTouchEnd=function(){
+        this._dragging=false;
+};
+
 /* End patches */
+
 
 var eventTypeThemes = {
     "Sotatoimi": "red",
@@ -198,7 +242,7 @@ var eventTypeThemes = {
 };
 
 angular.module('eventsApp')
-    .service('timemapService', function($q, eventService) {
+    .service('timemapService', function($q, eventService, photoService) {
 
         this.setOnMouseUpListener = function(fun) {
             Timeline._Band.prototype._onMouseUp = function() {
@@ -216,43 +260,102 @@ angular.module('eventsApp')
             };
         };
 
+        function arrayfy(obj, value) {
+            var val = obj[value];
+            if (!val) {
+                return;
+            }
+            return _.isArray(val) ? val : [val];
+        }
+
+        function isInProximity(event, photo) {
+            if (!event.places) {
+                return false;
+            }
+            var ap = _.pluck(event.places, 'id');
+            var bp = photo.place_id;
+            var am = arrayfy(event, 'municipality_id');
+            var bm = photo.municipality_id;
+
+            var f = _.contains;
+
+            var yes = f(ap, bp) || f(ap, bm) || f(am, bp) || f(am, bm);
+
+            return yes;
+        }
+
+        var distinctPhotoData = [];
+        var photoSettings = { 
+            beforeOffset: 0,
+            afterOffset: 0,
+            inProximity: true
+        };
+
+        function setPhotoHighlight(entry) {
+            var start = new Date(entry.start);
+            start.setDate(start.getDate() - photoSettings.beforeOffset);
+            var end = new Date(entry.options.event.end_time);
+            end.setDate(end.getDate() + photoSettings.afterOffset);
+
+            if (_.some(distinctPhotoData, function(photo) {
+                var d = new Date(photo.created);
+
+                if (d >= start && d <= end && (!photoSettings.inProximity ||
+                        isInProximity(entry.options.event, photo))) {
+                    return true;
+                }
+
+                return false;
+            })) {
+                entry.options.hasPhoto = true;
+                entry.options.theme = TimeMapTheme.create(entry.options.theme,
+                        { eventTextColor: '#000099' });
+            }
+        }
 
         function createEventObject(e) {
             var entry = {
-                start: e.start_time,
-                title: e.description.length < 20 ? e.description : e.description.substr(0, 20) + '...',
+                start: new Date(e.start_time),
+                title: e.description.length < 55 ? e.description : e.description.substr(0, 55) + '...',
                 options: {
-                    theme: eventTypeThemes[e.type],
-                    place_uri: e.place_id,
+                    theme: eventTypeThemes[e.type] || 'orange',
                     descTitle: eventService.createTitle(e),
                     description: e.description,
                     event: e
                 }
             };
+            var end_time;
             if (e.start_time !== e.end_time) {
-                var end_time = new Date(e.end_time);
+                end_time = new Date(e.end_time);
                 end_time.setHours(23);
                 end_time.setMinutes(59);
                 entry.end = end_time;
+            } else {
+                end_time = entry.start;
             }
 
-            if (e.points) {
-                if (e.points.length === 1) {
-                    entry.point = e.points[0];
+            var points = _(e.places).pluck('point').compact().value();
+            var polygons = _(e.places).pluck('polygon').compact().value();
+            if (points.length) {
+
+                if (points.length === 1) {
+                    entry.point = points[0];
                 }
                 else {
                     entry.placemarks = [{
-                        polyline: e.points
+                        polyline: points
                     }];
-                    e.points.forEach(function(point) {
+                    points.forEach(function(point) {
                         entry.placemarks.push({ point: point });
                     });
                 }
-            } else if (e.polygons) {
+            } else if (polygons.length) {
+                // What if there are multiple polygons?
                 entry.polygon = e.polygons[0];
             } else {
                 entry.options.noPlacemarkLoad = true;
             }
+            setPhotoHighlight(entry);
 
             return entry;
         }
@@ -261,7 +364,7 @@ angular.module('eventsApp')
         var oldEvent;
 
         var openInfoWindow = function(event, callback) {
-            var band = event.timeline.getBand(0);
+            var band = event.timeline.getBand(1);
             var start = band.getMinVisibleDate();
             if (oldEvent) {
                 oldEvent.changeTheme(oldTheme);
@@ -276,69 +379,81 @@ angular.module('eventsApp')
 
         };
 
-        this.createTimemap = function(start, end, highlights, infoWindowCallback) {
-            return (function() {
-                return (start && end) ? eventService.getEventsByTimeSpan(start, end) : eventService.getAllEvents();
-            })().then(function(data) {
+        this.createTimemap = function(start, end, highlights, infoWindowCallback, photoConfig) {
+            return eventService.getEventsByTimeSpan(start, end).then(function(data) {
+                return data;
+            }).then(function(data) {
+                return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
+                .then(function(photos) {
+                    distinctPhotoData = photos;
+                    angular.extend(photoSettings, photoConfig);
 
-                var bandDecorators1, bandDecorators2;
-                if (highlights) {
-                    bandDecorators1 = [];
-                    bandDecorators2 = [];
-                    highlights.forEach(function(hl) {
-                        bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
-                        bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
+                    var bandDecorators1, bandDecorators2;
+                    if (highlights) {
+                        bandDecorators1 = [];
+                        bandDecorators2 = [];
+                        highlights.forEach(function(hl) {
+                            bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
+                            bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
+                        });
+                    }
+
+                    var res = [];
+                    data.forEach(function(e) {
+                        res.push(createEventObject(e));
                     });
-                }
 
-                var res = [];
-                data.forEach(function(e) {
-                    res.push(createEventObject(e));
-                });
+                    var theme = Timeline.ClassicTheme.create();
+                    theme.timeline_start = new Date(start);
+                    theme.timeline_stop = new Date(end);
+                    theme.mouseWheel = 'default';
 
-                var theme = Timeline.ClassicTheme.create();
-                theme.timeline_start = new Date(start);
-                theme.timeline_stop = new Date(end);
-
-                var tm = TimeMap.init({
-                    mapId: "map",               // Id of map div element (required)
-                    timelineId: "timeline",     // Id of timeline div element (required)
-                    options: {
-                        eventIconPath: "vendor/timemap/images/",
-                        openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); },
-                    },
-                    datasets: [{
-                        id: "warsa",
-                        title: "Itsenäisen Suomen sotien tapahtumat",
-                        theme: "orange",
-                        type: "basic",
+                    var tm = TimeMap.init({
+                        mapId: "map",               // Id of map div element (required)
+                        timelineId: "timeline",     // Id of timeline div element (required)
                         options: {
-                            items: res
-                        }
-                    }],
-                    bandInfo: [
-                    {
-                        theme: theme,
-                        width: "240",
-                        intervalPixels: 155,
-                        intervalUnit: Timeline.DateTime.DAY,
-                        decorators: bandDecorators1
-                    },
-                    {
-                        theme: theme,
-                        overview: true,
-                        width: "40",
-                        intervalPixels: 100,
-                        intervalUnit: Timeline.DateTime.MONTH,
-                        decorators: bandDecorators2
-                    }]
-                });
+                            eventIconPath: "vendor/timemap/images/",
+                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
+                        },
+                        datasets: [{
+                            id: "warsa",
+                            title: "Itsenäisen Suomen sotien tapahtumat",
+                            theme: "orange",
+                            type: "basic",
+                            options: {
+                                items: res
+                            }
+                        }],
+                        bandInfo: [
+                        {
+                            theme: theme,
+                            overview: true,
+                            width: "40",
+                            intervalPixels: 100,
+                            intervalUnit: Timeline.DateTime.MONTH,
+                            decorators: bandDecorators1
+                        },
+                        {
+                            theme: theme,
+                            width: "240",
+                            intervalPixels: 155,
+                            intervalUnit: Timeline.DateTime.DAY,
+                            decorators: bandDecorators2
+                        }]
+                    });
 
-                return tm;
+                    // Add listeners for touch events for mobile support
+                    [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
+                        SimileAjax.DOM.registerEventWithObject(band._div,"touchmove",band,"_onTouchMove");
+                        SimileAjax.DOM.registerEventWithObject(band._div,"touchend",band,"_onTouchEnd");
+                        SimileAjax.DOM.registerEventWithObject(band._div,"touchstart",band,"_onTouchStart");
+                    });
+
+                    return tm;
+                });
 
             }, function(data) {
                 $q.reject(data);
             });
         };
     });
-
