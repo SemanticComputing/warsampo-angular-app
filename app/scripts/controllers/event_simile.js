@@ -38,6 +38,15 @@ angular.module('eventsApp')
         self.settingsVisible = !self.settingsVisible;
     };
 
+    // Set listener to prevent reload when it is not desired.
+    $scope.$on('$routeUpdate', function() {
+        if (!self.noReload) {
+            $route.reload();
+        } else {
+            self.noReload = false;
+        }
+    });
+
     self.getEventTitleWithLinks = function(event) {
         var time = eventService.createTitle(event);
         var place;
@@ -321,10 +330,8 @@ angular.module('eventsApp')
                     band.getMinDate(), band.getMaxDate())._events._a, function(item) {
                 return _.isEqual(item._obj.options.event.id, e.id);
             });
-            console.log(item);
             self.current = item;
             band.setCenterVisibleDate(new Date(e.start_time));
-            tm.setSelected(item);
             item.openInfoWindow();
         });
     };

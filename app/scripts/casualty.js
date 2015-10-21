@@ -96,7 +96,6 @@ angular.module('eventsApp')
 
         this.getCasualtyCountsByTimeGroupByType = function(start, end) {
             var qry = casualtyCountsByTimeGroupByTypeQry.format(start, end);
-            console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
             });
