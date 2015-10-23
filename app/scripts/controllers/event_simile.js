@@ -168,8 +168,7 @@ angular.module('eventsApp')
             .then(function(casualties) {
                 var res = [];
                 casualties.forEach(function(casualty) {
-                    var point = casualty.point.split(' ');
-                    res.push(new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1])));
+                    res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
                 });
                 return res;
             });
