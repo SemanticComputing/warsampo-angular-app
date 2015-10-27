@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('casualtyService', function(SparqlService, objectMapperService) {
-        var endpoint = new SparqlService('http://ldf.fi/narc-menehtyneet1939-45/sparql');
+        var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +

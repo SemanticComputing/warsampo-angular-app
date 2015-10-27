@@ -319,7 +319,7 @@ angular.module('eventsApp')
                 title: e.description.length < 55 ? e.description : e.description.substr(0, 55) + '...',
                 options: {
                     theme: eventTypeThemes[e.type] || 'orange',
-                    descTitle: eventService.createTitle(e),
+                    descTitle: e.timeSpanString,
                     description: e.description,
                     event: e
                 }

@@ -71,6 +71,7 @@ angular.module('eventsApp')
     var fetchRelatedPeople = function(item) {
         if (item.participant_id) {
             casualtyService.getCasualtyInfo(item.participant_id).then(function(participants) {
+                console.log(participants);
                 self.current.related_people = participants;
             });
             fetchActors(item);

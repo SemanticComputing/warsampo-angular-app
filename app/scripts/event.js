@@ -4,7 +4,8 @@
  * Service that provides an interface for fetching events from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .service('eventService', function(SparqlService, eventMapperService) {
+    .service('eventService', function($q, SparqlService, eventMapperService,
+                casualtyService, actorService) {
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
@@ -18,7 +19,8 @@ angular.module('eventsApp')
             ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
 
         var singleEventQry = prefixes +
-            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
+            ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ?place_id ' +
+            '           ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
             ' WHERE { ' +
             '   VALUES ?id { {0} } ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
@@ -56,7 +58,8 @@ angular.module('eventsApp')
             ' ORDER BY ?start_time ?end_time ';
 
         var eventQry = prefixes +
-            ' SELECT ?id ?start_time ?end_time ?description ?place_label ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
+            ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
+            '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
             ' WHERE { ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
             '       a ?type_id . ' +
@@ -119,65 +122,30 @@ angular.module('eventsApp')
         this.getEventById = function(id) {
             return endpoint.getObjects(singleEventQry.format('<' + id + '>')).then(function(data) {
                 if (data.length) {
-                    return eventMapperService.makeObjectList(data)[0];
+                    var event = eventMapperService.makeObjectList(data)[0];
+                    event.fetchCasualties = function() {
+                        if (event.participant_id) {
+                            return casualtyService.getCasualtyInfo(event.participant_id)
+                                .then(function(participants) {
+                                    event.relatedCasualties = participants;
+                            });
+                        } else {
+                            return $q.when();
+                        }
+                    };
+                    event.fetchActors = function() {
+                        return actorService.getActorInfo(event.participant_id).then(function(actors) {
+                            event.actors = actors;
+                        });
+                    };
+
+                    event.fetchRelated = function() {
+                        return event.fetchCasualties().then(event.fetchActors);
+                    };
+                    return event;
                 }
                 return null;
             });
         };
-
-        this.getExtremeDate = function(dates, min) {
-            if (_.isArray(dates)) {
-                var fun;
-                if (min) {
-                    fun = _.min;
-                } else {
-                    fun = _.max;
-                }
-                return new Date(fun(dates, function(date) {
-                    return new Date(date);
-                }));
-            }
-            if (!dates) {
-                return undefined;
-            }
-            return new Date(dates);
-        };
-
-        this.isFullYear = function(start, end) {
-            return start.getDate() === 1 && start.getMonth() === 0 && end.getDate() === 31 &&
-                end.getMonth() === 11;
-        };
-
-        this.formatDateRange = function(start, end) {
-            if (this.isFullYear(start, end)) {
-                var start_year = start.getFullYear();
-                var end_year = end.getFullYear();
-                return start_year === end_year ? start_year : start_year + '-' + end_year;
-            }
-            if (end - start) {
-                return start.toLocaleDateString() + '-' + end.toLocaleDateString();
-            }
-            return start.toLocaleDateString();
-        };
-
-        this.formatPlace = function(place) {
-            var res;
-            if (_.isArray(place)) {
-                res = _.pluck(place, 'label').join(", ");
-            } else {
-                res = place ? place.label : '';
-            }
-
-            return res;
-        };
-
-        this.createTitle = function(event) {
-            var start = this.getExtremeDate(event.start_time, true);
-            var end = this.getExtremeDate(event.end_time, false);
-            var time = this.formatDateRange(start, end);
-
-            //return place ? place + ' ' + time : time;
-            return time;
-        };
-});
+                });
 

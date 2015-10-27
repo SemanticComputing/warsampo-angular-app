@@ -1,0 +1,31 @@
+<div> <a id="pageTypeURL" href="/"><h1 id="pageType">Event</h1></a></div> 
+<!-- Each page has metadata column on the left and link column on the right -->
+<div class="row">
+  <div class="col-sm-8">
+    <div id="dataContent"><p ng-if="!ctrl.event">No metadata available about the object.</p>
+      <h2>
+        <span ng-repeat="place in ctrl.event.places">
+          <a target="hipla" ng-href="{{ place.hipla_url }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+        </span>
+        {{ ctrl.event.timeSpanString }} - {{ ctrl.event.type }}
+      </h2>
+      <p>{{ ctrl.event.description }}</p>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <h2 id="links-header" class="links-header-class">Links</h2>
+    <div id="linkContent"><p ng-if="!ctrl.event.hasLinks">No links found for this object.</p>
+      <div id="event-places" ng-repeat="place in ctrl.event.places">
+        <a target="hipla" ng-href="{{ place.hipla_url }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+      </div>
+      <div id="event-actors" ng-repeat="person in ctrl.event.actors">
+        <a ng-href="{{ person.id }}">{{ person.label }}</a>
+      </div>
+      <div style="text-transform: capitalize" id="event-casualties" ng-repeat="person in ctrl.event.relatedCasualties">
+        <a ng-href="{{ person.id }}">
+          {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
+        </a>{{ $last ? ' ' : ', ' }}
+      </div>
+    </div>
+  </div>
+</div>

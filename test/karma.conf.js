@@ -41,6 +41,7 @@ module.exports = function(config) {
       'bower_components/blueimp-gallery/js/blueimp-gallery-vimeo.js',
       'bower_components/blueimp-gallery/js/blueimp-gallery-youtube.js',
       'bower_components/blueimp-bootstrap-image-gallery/js/bootstrap-image-gallery.js',
+      'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
       'bower_components/lodash/lodash.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower

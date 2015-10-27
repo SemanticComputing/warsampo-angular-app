@@ -22,6 +22,11 @@ angular
   ])
   .config(function($routeProvider) {
     $routeProvider
+      .when('/page.html', {
+        templateUrl: 'views/page.html',
+        controller: 'PageCtrl',
+        controllerAs: 'ctrl'
+      })
       .when('/:era?', {
         templateUrl: 'views/simile_map.html',
         controller: 'SimileMapCtrl',

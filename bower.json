@@ -30,6 +30,7 @@
     },
     "bootstrap-sass-official": {
       "main": [
+        "assets/javascripts/bootstrap.js",
         "assets/stylesheets/_bootstrap.scss"
       ]
     },
