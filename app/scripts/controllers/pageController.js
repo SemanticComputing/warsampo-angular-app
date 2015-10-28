@@ -8,7 +8,9 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('PageCtrl', function($routeParams, $q, eventService) {
+  .controller('PageCtrl', function($routeParams, $q, $rootScope, eventService) {
+    $rootScope.showSettings = null;
+    $rootScope.showHelp = null;
     var self = this;
     if ($routeParams.uri) {
         self.isLoadingEvent = true;
@@ -28,7 +30,13 @@ angular.module('eventsApp')
         })
         .then(function(events) { 
             self.relatedEventsByPlace = _.filter(events[0], function(e) { return e.id !== self.event.id; });
+            if (_.isEmpty(self.relatedEventsByPlace)) {
+                self.relatedEventsByPlace = null;
+            }
             self.relatedEventsByTime = _.filter(events[1], function(e) { return e.id !== self.event.id; });
+            if (_.isEmpty(self.relatedEventsByTime)) {
+                self.relatedEventsByTime = null;
+            }
             self.isLoadingLinks = false;
         }).catch(function() {
             self.isLoadingEvent = false;

@@ -1,9 +1,10 @@
 <div> <a id="pageTypeURL" href="/"><h1 id="pageType">Event</h1></a></div> 
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
+  <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
-    <p ng-if="!ctrl.event && !ctrl.isLoadingEvent">No metadata available about the object.</p>
+    <p ng-if="!ctrl.event && !ctrl.isLoadingEvent">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.event">
       <h2>
         <span ng-repeat="place in ctrl.event.places">
@@ -12,8 +13,10 @@
         {{ ctrl.event.timeSpanString }} - {{ ctrl.event.type }}
       </h2>
       <p>{{ ctrl.event.description }}</p>
+      <p><a ng-href="#/?uri={{ ctrl.event.id }}">View on timeline</a></p>
     </div>
   </div>
+  <!-- Links -->
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class">Links</h2>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />

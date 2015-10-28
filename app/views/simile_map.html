@@ -44,6 +44,7 @@
           <p ng-repeat="unit in timemapCtrl.current.units" style="text-transform: capitalize">
             {{ unit.label.join(' / ') }}
           </p>
+          <p><a ng-href="#/page.html?uri={{ timemapCtrl.current.opts.event.id }}">Näytä tapahtuman tietosivu</a></p>
           <div ng-show="timemapCtrl.images.length === 0">
             <p ng-if="!timemapCtrl.isLoadingImages && !timemapCtrl.showPhotos">
             Ei tapahtumaan liittyviä kuvia.
