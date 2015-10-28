@@ -2,7 +2,9 @@
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
   <div class="col-sm-8">
-    <div id="dataContent"><p ng-if="!ctrl.event">No metadata available about the object.</p>
+    <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
+    <p ng-if="!ctrl.event && !ctrl.isLoadingEvent">No metadata available about the object.</p>
+    <div id="dataContent" ng-if="ctrl.event">
       <h2>
         <span ng-repeat="place in ctrl.event.places">
           <a target="hipla" ng-href="{{ place.hipla_url }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
@@ -14,17 +16,37 @@
   </div>
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class">Links</h2>
-    <div id="linkContent"><p ng-if="!ctrl.event.hasLinks">No links found for this object.</p>
-      <div id="event-places" ng-repeat="place in ctrl.event.places">
-        <a target="hipla" ng-href="{{ place.hipla_url }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+    <p ng-if="!ctrl.event || !ctrl.event.hasLinks">No links found for this object.</p>
+    <div id="linkContent">
+      <div class="related-events-by-time" ng-if="ctrl.relatedEventsByTime">
+        <h3>Other events at the same time</h3>
+        <ul class="list-group">
+          <li class="list-group-item" ng-repeat="event in ctrl.relatedEventsByTime">
+          <a ng-href="#/page.html?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          </li>
+        </ul>
       </div>
-      <div id="event-actors" ng-repeat="person in ctrl.event.actors">
-        <a ng-href="{{ person.id }}">{{ person.label }}</a>
+      <div class="related-events-by-place" ng-if="ctrl.relatedEventsByPlace">
+        <h3>Other events in the same place
+          <span id="event-place" ng-repeat="place in ctrl.event.places">
+            {{ $first ? '(' : '' }}<a target="hipla" ng-href="{{ place.hipla_url }}">{{ place.label }}</a>{{ $last ? ')' : ', ' }}
+          </span>
+        </h3>
+        <ul class="list-group">
+          <li class="list-group-item" ng-repeat="event in ctrl.relatedEventsByPlace">
+          <a ng-href="#/page.html?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          </li>
+        </ul>
       </div>
-      <div style="text-transform: capitalize" id="event-casualties" ng-repeat="person in ctrl.event.relatedCasualties">
-        <a ng-href="{{ person.id }}">
-          {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
-        </a>{{ $last ? ' ' : ', ' }}
+      <div class="related-people" ng-if="ctrl.event.actors || ctrl.event.relatedCasualties">
+        <h3>Related people</h3>
+        <ul class="list-group" id="event-actors" style="text-transform: capitalize">
+          <li class="list-group-item" ng-repeat="person in ctrl.event.actors"><a ng-href="{{ person.id }}">{{ person.label }}</a></li>
+          <li class="list-group-item" ng-repeat="person in ctrl.event.relatedCasualties"><a ng-href="{{ person.id }}">
+            {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
+          </a></li>
+        </ul>
       </div>
     </div>
   </div>

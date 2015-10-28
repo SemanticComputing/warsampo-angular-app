@@ -4,6 +4,8 @@
  * Service for transforming event SPARQL results into objects.
  */
 
+function Event() { }
+
 function EventMapper() {
     this.getExtremeDate = function(dates, min) {
         if (_.isArray(dates)) {
@@ -65,7 +67,7 @@ EventMapper.prototype.makeObject = function(event) {
     // Take the event as received and turn it into an object that
     // is easier to handle.
     // Make the location a list as to support multiple locations per event.
-    var e = {};
+    var e = new Event();
 
     e.hasLinks = true;
 
@@ -113,11 +115,15 @@ EventMapper.prototype.makeObject = function(event) {
     return e;
 };
 
+
 angular.module('eventsApp')
     .factory('eventMapperService', function(objectMapperService) {
         var proto = Object.getPrototypeOf(objectMapperService);
         EventMapper.prototype = angular.extend({}, proto, EventMapper.prototype);
 
         return new EventMapper();
+})
+    .factory('Event', function() {
+        return Event;
 });
 
