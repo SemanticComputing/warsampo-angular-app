@@ -23,18 +23,21 @@ angular
   ])
   .config(function($routeProvider) {
     $routeProvider
-      .when('/page.html', {
+      .when('/events/page', {
         templateUrl: 'views/page.html',
         controller: 'PageCtrl',
         controllerAs: 'ctrl'
       })
-      .when('/:era?', {
+      .when('/events/:era?', {
         templateUrl: 'views/simile_map.html',
         controller: 'SimileMapCtrl',
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/events'
       });
+  })
+  .config(function($locationProvider) {
+      $locationProvider.html5Mode(true);
   });

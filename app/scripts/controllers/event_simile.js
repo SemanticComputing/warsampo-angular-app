@@ -358,7 +358,7 @@ angular.module('eventsApp')
                 }
             }
         }
-        $location.path('/winterwar');
+        $location.path('events/winterwar');
         $location.url($location.path());
         return self.showWinterWar();
     };

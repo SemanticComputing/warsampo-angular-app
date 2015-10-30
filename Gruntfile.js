@@ -9,6 +9,8 @@
 
 module.exports = function (grunt) {
 
+  var modRewrite = require('connect-modrewrite');
+  //var history = require('connect-history-api-fallback');
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
@@ -80,6 +82,7 @@ module.exports = function (grunt) {
           open: true,
           middleware: function (connect) {
             return [
+              modRewrite(['!\\.html|\\.js|\\.css|\\.png|\\.jpg|\\.gif$ /index.html [L]']),
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
