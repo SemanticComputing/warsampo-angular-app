@@ -1,7 +1,9 @@
 <!doctype html>
 <html>
   <head>
+    <!-- build:base /dev/ -->
     <base href="/">
+    <!-- endbuild -->
     <meta charset="utf-8">
     <title>SotaSampo &ndash; Tapahtumat</title>
     <meta name="description" content="">
@@ -56,8 +58,8 @@
 
         <div class="collapse navbar-collapse" id="js-navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a ng-href="/winterwar">Talvisota</a></li>
-            <li><a ng-href="/continuationwar">Jatkosota</a></li>
+            <li><a ng-href="winterwar">Talvisota</a></li>
+            <li><a ng-href="continuationwar">Jatkosota</a></li>
             <li ng-show="showSettings"><a ng-click="showSettings()">Asetukset</a></li>
             <li ng-show="showHelp"><a ng-click="showHelp()">Ohjeet</a></li>
           </ul>

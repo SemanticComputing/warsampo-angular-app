@@ -14,11 +14,14 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-cdnify');
+  grunt.loadNpmTasks('grunt-replace');
+
   // Automatically load required Grunt tasks
   require('jit-grunt')(grunt, {
     useminPrepare: 'grunt-usemin',
-    ngtemplates: 'grunt-angular-templates',
-    cdnify: 'grunt-google-cdn'
+    ngtemplates: 'grunt-angular-templates'
+    //cdnify: 'grunt-google-cdn'
   });
 
   // Configurable paths for the application
@@ -283,6 +286,25 @@ module.exports = function (grunt) {
         ],
         patterns: {
           js: [[/(images\/[^''""]*\.(png|jpg|jpeg|gif|webp|svg))/g, 'Replacing references to images']]
+        },
+        blockReplacements: {
+            base: function(block) {
+                return '<base href="' + block.dest + '">';
+            },
+            vendorReplace: function(block) {
+                var res = [];
+                block.raw.forEach(function(s) {
+                    res.push(s.replace(/src="/g, 'src="' + block.dest));
+                });
+                return res;
+            }
+            /*,
+            js: function(block) {
+                return '<script src="/events/' + block.dest + '"></script>';
+            },
+            css: function(block) {
+                return '<link rel="stylesheet" href="/events/' + block.dest + '">';
+            }*/
         }
       }
     },
@@ -378,12 +400,53 @@ module.exports = function (grunt) {
       }
     },
 
+    cdnify: {
+        dist: {
+            options: {
+                base: 'events/',
+            },
+            files: [{
+                expand: true,
+                cwd: '<%= yeoman.dist %>',
+                src: [
+                    'scripts/*.js',
+                    'vendor/timemap/*/*.js',
+                    '**/*.{css,html}'
+                ],
+                dest: '<%= yeoman.dist %>'
+            }]
+        }
+    },
+
+    replace: {
+        dist: {
+            options: {
+                patterns: [
+                    {
+                        match: /eventIconPath: "vendor\/timemap\/images\/"/g,
+                        replacement: 'eventIconPath: "events/vendor/timemap/images/"'
+                    }
+                ]
+            },
+            files: [
+                { 
+                    expand: true,
+                    cwd: '.tmp/concat/scripts',
+                    src: ['*.js'],
+                    dest: '.tmp/concat/scripts'
+                }
+            ]
+        }
+    },
+
+    /*
     // Replace Google CDN references
     cdnify: {
       dist: {
         html: ['<%= yeoman.dist %>/*.html']
       }
     },
+    */
 
     // Copies remaining files to places other tasks can use
     copy: {
@@ -483,14 +546,15 @@ module.exports = function (grunt) {
     'autoprefixer',
     'ngtemplates',
     'concat',
+    'replace:dist',
     'ngAnnotate',
     'copy:dist',
-    //'cdnify',
     'cssmin',
     'uglify',
     'filerev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'cdnify'
   ]);
 
   grunt.registerTask('default', [
