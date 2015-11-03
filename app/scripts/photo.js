@@ -4,7 +4,7 @@
  * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .service('photoService', function(SparqlService, objectMapperService, photoMapperService) {
+    .service('photoService', function($q, SparqlService, objectMapperService, photoMapperService) {
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
@@ -107,5 +107,31 @@ angular.module('eventsApp')
             });
         };
 
+        this.getRelatedPhotosForEvent = function(event, photoSettings) {
+            var images = [];
+            var place_ids;
+            if (photoSettings.inProximity) {
+                place_ids = _.pluck(event.places, 'id');
+                if (!place_ids) {
+                    return $q.when();
+                }
+            }
+            return this.getPhotosByPlaceAndTimeSpan(place_ids, 
+                    changeDateAndFormat(event.start_time, -photoSettings.beforeOffset), 
+                    changeDateAndFormat(event.end_time, photoSettings.afterOffset))
+            .then(function(imgs) {
+                imgs.forEach(function(img) {
+                    img.thumbnail = img.url.replace("_r500", "_r100");
+                    images.push(img);
+                });
+                return images;
+            });
+        };
+
+        function changeDateAndFormat(date, days) {
+            var d = new Date(date);
+            d.setDate(d.getDate() + days);
+            return d.toISODateString();
+        }
 });
 

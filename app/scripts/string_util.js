@@ -11,3 +11,9 @@ if (!String.prototype.format) {
     });
   };
 }
+
+if (!Date.prototype.toISODateString) {
+    Date.prototype.toISODateString = function() {
+        return this.toISOString().slice(0, 10);
+    };
+}

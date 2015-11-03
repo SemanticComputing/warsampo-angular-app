@@ -379,79 +379,83 @@ angular.module('eventsApp')
 
         };
 
-        this.createTimemap = function(start, end, highlights, infoWindowCallback, photoConfig) {
-            return eventService.getEventsByTimeSpan(start, end).then(function(data) {
-                return data;
-            }).then(function(data) {
-                return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
-                .then(function(photos) {
-                    distinctPhotoData = photos;
-                    angular.extend(photoSettings, photoConfig);
+        this.createTimemap = function(start, end, events, highlights, infoWindowCallback, photoData, photoConfig) {
+            distinctPhotoData = photoData || [];
+            angular.extend(photoSettings, photoConfig);
 
-                    var bandDecorators1, bandDecorators2;
-                    if (highlights) {
-                        bandDecorators1 = [];
-                        bandDecorators2 = [];
-                        highlights.forEach(function(hl) {
-                            bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
-                            bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
-                        });
-                    }
-
-                    var res = [];
-                    data.forEach(function(e) {
-                        res.push(createEventObject(e));
-                    });
-
-                    var theme = Timeline.ClassicTheme.create();
-                    theme.timeline_start = new Date(start);
-                    theme.timeline_stop = new Date(end);
-                    theme.mouseWheel = 'default';
-
-                    var tm = TimeMap.init({
-                        mapId: "map",               // Id of map div element (required)
-                        timelineId: "timeline",     // Id of timeline div element (required)
-                        options: {
-                            eventIconPath: "vendor/timemap/images/",
-                            openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
-                        },
-                        datasets: [{
-                            id: "warsa",
-                            title: "Itsenäisen Suomen sotien tapahtumat",
-                            theme: "orange",
-                            type: "basic",
-                            options: {
-                                items: res
-                            }
-                        }],
-                        bandInfo: [
-                        {
-                            theme: theme,
-                            overview: true,
-                            width: "40",
-                            intervalPixels: 100,
-                            intervalUnit: Timeline.DateTime.MONTH,
-                            decorators: bandDecorators1
-                        },
-                        {
-                            theme: theme,
-                            width: "240",
-                            intervalPixels: 155,
-                            intervalUnit: Timeline.DateTime.DAY,
-                            decorators: bandDecorators2
-                        }]
-                    });
-
-                    // Add listeners for touch events for mobile support
-                    [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
-                        SimileAjax.DOM.registerEventWithObject(band._div,"touchmove",band,"_onTouchMove");
-                        SimileAjax.DOM.registerEventWithObject(band._div,"touchend",band,"_onTouchEnd");
-                        SimileAjax.DOM.registerEventWithObject(band._div,"touchstart",band,"_onTouchStart");
-                    });
-
-                    return tm;
+            var bandDecorators1, bandDecorators2;
+            if (highlights) {
+                bandDecorators1 = [];
+                bandDecorators2 = [];
+                highlights.forEach(function(hl) {
+                    bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
+                    bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
                 });
+            }
 
+            var res = [];
+            events.forEach(function(e) {
+                res.push(createEventObject(e));
+            });
+
+            var theme = Timeline.ClassicTheme.create();
+            theme.timeline_start = new Date(start);
+            theme.timeline_stop = new Date(end);
+            theme.mouseWheel = 'default';
+
+            var tm = TimeMap.init({
+                mapId: "map",               // Id of map div element (required)
+                timelineId: "timeline",     // Id of timeline div element (required)
+                options: {
+                    eventIconPath: "vendor/timemap/images/",
+                    openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
+                },
+                datasets: [{
+                    id: "warsa",
+                    title: "Itsenäisen Suomen sotien tapahtumat",
+                    theme: "orange",
+                    type: "basic",
+                    options: {
+                        items: res
+                    }
+                }],
+                bandInfo: [
+                {
+                    theme: theme,
+                    overview: true,
+                    width: "40",
+                    intervalPixels: 100,
+                    intervalUnit: Timeline.DateTime.MONTH,
+                    decorators: bandDecorators1
+                },
+                {
+                    theme: theme,
+                    width: "240",
+                    intervalPixels: 155,
+                    intervalUnit: Timeline.DateTime.DAY,
+                    decorators: bandDecorators2
+                }]
+            });
+
+            // Add listeners for touch events for mobile support
+            [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
+                SimileAjax.DOM.registerEventWithObject(band._div,"touchmove",band,"_onTouchMove");
+                SimileAjax.DOM.registerEventWithObject(band._div,"touchend",band,"_onTouchEnd");
+                SimileAjax.DOM.registerEventWithObject(band._div,"touchstart",band,"_onTouchStart");
+            });
+
+            tm.getNativeMap().setOptions({ zoomControl: true });
+
+            return tm;
+        };
+
+        this.createTimemapByTimeSpan = function(start, end, highlights, infoWindowCallback, photoConfig) {
+            var self = this;
+            return eventService.getEventsByTimeSpan(start, end).then(function(data) {
+                return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
+                    .then(function(photos) {
+                        return self.createTimemap(start, end, data, highlights, infoWindowCallback, photos, photoConfig);
+                    });
             }, function(data) {
                 $q.reject(data);
             });

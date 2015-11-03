@@ -21,7 +21,9 @@ angular.module('eventsApp')
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' + 
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' + 
-        ' PREFIX georss: <http://www.georss.org/georss/> ';
+        ' PREFIX georss: <http://www.georss.org/georss/> ' +
+        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
+        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
         var actorInfoQry = prefixes +
         ' SELECT ?id ?type ?label ?familyName ?firstName ' +
@@ -38,6 +40,59 @@ angular.module('eventsApp')
         '       foaf:firstName ?firstName . ' +
         '   } ' +
         ' } ';
+
+        var singleActorQry = prefixes + 
+        '  SELECT ?id ?start_time ?end_time ?description ?place_label ?commander ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant   ' +
+        '   WHERE {  ' +
+        '      ' +
+        '       VALUES ?participant { {0} } # actor_910, actor_1440  ' +
+        '      ' +
+        '       ?id crm:P4_has_time-span ?time_id ;  ' +
+        '           a ?type_id .  ' +
+        '           #FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>)  ' +
+        '           #FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>)  ' +
+        '       #?id skos:prefLabel ?description .  ' +
+        '        ' +
+        '       { ?id a crm:E66_Formation .  ' +
+        '        ?id crm:P95_has_formed ?participant .  ' +
+        '        ?id skos:prefLabel ?description .  ' +
+        '        OPTIONAL { ?actor crm:P3_has_note ?note . } ' +
+        '      }  ' +
+        '      UNION ' +
+        '      { ?id a etypes:TroopMovement .  ' +
+        '        ?id skos:prefLabel ?description .  ' +
+        '        ?id crm:P95_has_formed ?participant .  ' +
+        '      }  ' +
+        '      UNION  ' +
+        '      { ?id a etypes:Battle .  ' +
+        '        ?id skos:prefLabel ?description .  ' +
+        '        ?id crm:P11_had_participant ?participant .  ' +
+        '        OPTIONAL { ?id events:hadCommander ?commander . } ' +
+        '      } ' +
+        '          ' +
+        '       OPTIONAL { ?id crm:P7_took_place_at ?place_id .   ' +
+        '        ?place_id skos:prefLabel ?place_label .  ' +
+        '        OPTIONAL { ?place_id sch:polygon ?polygon . }  ' +
+        '        OPTIONAL {  ' +
+        '              ?place_id geo:lat ?lat ;  ' +
+        '                geo:long ?lon .  ' +
+        '        }  ' +
+        '        OPTIONAL {  ' +
+        '             GRAPH <http://ldf.fi/places/karelian_places> { ?place_id geosparql:sfWithin ?municipality .  }  ' +
+        '             GRAPH <http://ldf.fi/places/municipalities> {   ?municipality a suo:kunta .  }  ' +
+        '        }  ' +
+        '     }  ' +
+        '     GRAPH <http://ldf.fi/warsa/events/times> {  ' +
+        '       ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
+        '                crm:P82b_end_of_the_end ?end_time .  ' +
+        '       # {0}  # Placeholder for time filter ' +
+        '     }  ' +
+        '     GRAPH <http://ldf.fi/warsa/events/event_types> {  ' +
+        '       ?type_id skos:prefLabel ?type .  ' +
+        '       FILTER(langMatches(lang(?type), "FI"))   ' +
+        '     }  ' +
+        '   }  ' +
+        '   ORDER BY ?start_time ?end_time ';
 
 
         this.getActorInfo = function(ids) {

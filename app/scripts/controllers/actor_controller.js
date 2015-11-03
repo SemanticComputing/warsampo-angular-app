@@ -58,10 +58,19 @@ angular.module('eventsApp')
         return time;
     };
 
+    function changeDateAndFormat(date, days) {
+        var d = new Date(date);
+        d.setDate(d.getDate() + days);
+        return formatDate(d);
+    }
+
+    function formatDate(date) {
+        return date.toISOString().slice(0, 10);
+    }
+
     var fetchRelatedPeople = function(item) {
         if (item.participant_id) {
             casualtyService.getCasualtyInfo(item.participant_id).then(function(participants) {
-                console.log(participants);
                 self.current.related_people = participants;
             });
             fetchActors(item);
@@ -97,16 +106,26 @@ angular.module('eventsApp')
 
     var fetchImages = function(item) {
         self.isLoadingImages = true;
-        var photoConfig = {
-            inProximity: self.photoPlace,
-            beforeOffset: self.photoDaysBefore,
-            afterOffset: self.photoDaysAfter
-        };
 
         self.images = [];
-        photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
-            self.images = imgs;
+        var place_ids;
+        if (self.photoPlace) {
+            place_ids = _.pluck(item.opts.event.places, 'id');
+            if (!place_ids) {
+                self.isLoadingImages = false;
+                setTimeout(function(){ $scope.$apply(); });
+                return;
+            }
+        }
+        photoService.getPhotosByPlaceAndTimeSpan(place_ids, 
+                changeDateAndFormat(item.getStart(), -self.photoDaysBefore), 
+                changeDateAndFormat(item.getEnd(), self.photoDaysAfter))
+        .then(function(imgs) {
             self.isLoadingImages = false;
+            imgs.forEach(function(img) {
+                img.thumbnail = img.url.replace("_r500", "_r100");
+                self.images.push(img);
+            });
         });
     };
 
@@ -114,6 +133,12 @@ angular.module('eventsApp')
         return (self.photoDaysBefore !== self.photoDaysBeforeSetting) ||
             (self.photoDaysAfter !== self.photoDaysAfterSetting) ||
             (self.photoPlace !== self.photoPlaceSetting);
+    };
+
+    self.fetchImages = function() {
+        if (self.current) {
+            fetchImages(self.current);
+        }
     };
 
     self.updateTimeline = function() {
@@ -124,15 +149,20 @@ angular.module('eventsApp')
         self.images = [];
 
         self.visualize();
+        initSelector('unitSelector');
     };
 
     var getCasualtyLocations = function() {
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
-        return casualtyService.getCasualtyLocationsByTime(start.toISODateString(), end.toISODateString())
+        var unit='<'+eventService.currentUnit+'>';
+        
+        //console.log('getCasualtyLocations for '+unit);
+        return casualtyService.getCasualtyLocationsByTimeAndUnit(formatDate(start), formatDate(end), unit)
             .then(function(casualties) {
                 var res = [];
+                //console.log('getCasualtyLocations: '+casualties.length);
                 casualties.forEach(function(casualty) {
                     res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
                 });
@@ -146,7 +176,7 @@ angular.module('eventsApp')
         var end = band.getMaxVisibleDate();
         self.minVisibleDate = start;
         self.maxVisibleDate = end;
-        casualtyService.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
+        casualtyService.getCasualtyCountsByTimeGroupByType(formatDate(start), formatDate(end))
         .then(function(counts) {
             self.casualtyStats = counts;
             var count = 0;
@@ -198,7 +228,8 @@ angular.module('eventsApp')
         // Change the URL but don't reload the page
         if ($location.search().uri !== item.opts.event.id) {
             self.noReload = true;
-            $location.search('uri', item.opts.event.id);
+            console.log('infoWindowCallback '+$location.search().uri);
+            // $location.search('uri', item.opts.event.id);
         }
 
         self.current = item;
@@ -215,15 +246,28 @@ angular.module('eventsApp')
             inProximity: self.photoPlace
         };
 
-        return timemapService.createTimemapByTimeSpan(start, end, highlights,
-                infoWindowCallback, photoConfig)
+        return timemapService.createTimemap(start, end, highlights, infoWindowCallback, photoConfig)
         .then(function(timemap) {
             $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
                 markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
             tm = timemap;
             map = timemap.getNativeMap();
-            var band = tm.timeline.getBand(1);
+            map.setOptions({ zoomControl: true });
 
+				//	control not to ever zoom too close up:
+				var zminlistener = google.maps.event.addListener(map, "idle", function() { 
+					//console.log(map.getZoom());
+				  if (map.getZoom() > 8) map.setZoom(8); 
+				  if (map.getZoom() < 2) {
+				  		map.setZoom(5);
+				  		map.setCenter({lat: 62.0, lng: 25.0 });
+				  }
+				  //console.log('listener:'+map);
+				  google.maps.event.removeListener(zminlistener); 
+				});
+				
+            var band = tm.timeline.getBand(1);
+				
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
             band.addOnScrollListener(clearHeatmap);
@@ -288,12 +332,14 @@ angular.module('eventsApp')
                 continuationWarTimeSpan.end, continuationWarHighlights);
     };
     var getCreateFunction = function(start, end) {
+    	return self.showWinterWar;
+    	/*
         if (start >= new Date(winterWarTimeSpan.start) &&
                 end <= new Date(winterWarTimeSpan.end)) {
             return self.showWinterWar;
         } else {
             return self.showContinuationWar;
-        }
+        } */
     };
 
     self.createTimeMapForEvent = function(e) {
@@ -311,18 +357,21 @@ angular.module('eventsApp')
 
     self.visualize = function() {
         var era = $routeParams.era;
-        var event_uri = $routeParams.uri;
-        if (event_uri) {
-            return eventService.getEventById(event_uri).then(function(e) {
+        var uri = $routeParams.uri;
+        if (uri) {
+        		console.log(uri);
+            return eventService.getEventById(uri).then(function(e) {
+            	console.log(e);
                 if (e) {
+                		
                     return self.createTimeMapForEvent(e);
+                    
                 } else {
-                    $location.url($location.path());
+                    // $location.url($location.path());
                     return self.showWinterWar();
                 }
-
             });
-        } else if (era) {
+        } /*else if (era) {
             switch(era.toLowerCase()) {
                 case 'winterwar': {
                     return self.showWinterWar();
@@ -331,12 +380,38 @@ angular.module('eventsApp')
                     return self.showContinuationWar();
                 }
             }
-        }
-        $location.path('events/winterwar');
-        $location.url($location.path());
-        return self.showWinterWar();
+        } */
+        // $location.path('/X');
+        // $location.url($location.path());
+        
+        return self.showWinterWar();        
     };
 
     self.visualize();
-
+    initSelector('unitSelector');
+    
+    
+	 self.showUnit = function() {
+		
+		var uri = getSelectionUri('unitSelector');
+	    if (emptyValue(uri)) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
+	   // var label = getSelectionLabel('unitSelector');
+	   // if (emptyValue(label)) label = 'Jalkaväkirykmentti 37';
+		console.log(uri);
+		$location.url("?uri="+uri);
+		if (uri) {
+			// return self.visualize();
+		  	return eventService.getEventById(uri).then(function(e) {
+		   	console.log(e);
+		       if (e) {
+			       	// $location.url($location.path());
+		           return self.createTimeMapForEvent(e);
+		       } else {
+		           // $location.url($location.path());
+		       }
+		
+		   });
+		}
+	}
+	
 });
