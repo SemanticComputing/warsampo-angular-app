@@ -34,6 +34,12 @@ angular
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
       })
+      .when('/actors/', {
+        templateUrl: 'views/actor_timeline.html',
+        controller: 'ActorCtrl',
+        controllerAs: 'timemapCtrl',
+        reloadOnSearch: false
+      })
       .otherwise({
         redirectTo: '/events'
       });

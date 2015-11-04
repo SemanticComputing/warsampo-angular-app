@@ -379,10 +379,17 @@ angular.module('eventsApp')
 
         };
 
-        this.createTimemap = function(start, end, events, highlights, infoWindowCallback, photoData, photoConfig) {
-            distinctPhotoData = photoData || [];
-            angular.extend(photoSettings, photoConfig);
+        this.createTimemapWithPhotoHighlight = function(start, end, data,
+                highlights, infoWindowCallback, photoConfig, bandInfo) {
+            var self = this;
+            return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
+                .then(function(photos) {
+                    return self.createTimemap(start, end, data, highlights,
+                        infoWindowCallback, photos, photoConfig, bandInfo);
+                });
+        };
 
+        this.getDefaultBandInfo = function(start, end, highlights) {
             var bandDecorators1, bandDecorators2;
             if (highlights) {
                 bandDecorators1 = [];
@@ -393,15 +400,40 @@ angular.module('eventsApp')
                 });
             }
 
-            var res = [];
-            events.forEach(function(e) {
-                res.push(createEventObject(e));
-            });
-
             var theme = Timeline.ClassicTheme.create();
             theme.timeline_start = new Date(start);
             theme.timeline_stop = new Date(end);
             theme.mouseWheel = 'default';
+
+            var defaultBandInfo = [
+                {
+                    theme: theme,
+                    overview: true,
+                    width: "40",
+                    intervalPixels: 100,
+                    intervalUnit: Timeline.DateTime.MONTH,
+                    decorators: bandDecorators1
+                },
+                {
+                    theme: theme,
+                    width: "240",
+                    intervalPixels: 155,
+                    intervalUnit: Timeline.DateTime.DAY,
+                    decorators: bandDecorators2
+                }
+            ];
+            return defaultBandInfo;
+        };
+
+        this.createTimemap = function(start, end, events, highlights,
+                infoWindowCallback, photoData, photoConfig, bandInfo) {
+            distinctPhotoData = photoData || [];
+            angular.extend(photoSettings, photoConfig);
+
+            var res = [];
+            events.forEach(function(e) {
+                res.push(createEventObject(e));
+            });
 
             var tm = TimeMap.init({
                 mapId: "map",               // Id of map div element (required)
@@ -419,22 +451,7 @@ angular.module('eventsApp')
                         items: res
                     }
                 }],
-                bandInfo: [
-                {
-                    theme: theme,
-                    overview: true,
-                    width: "40",
-                    intervalPixels: 100,
-                    intervalUnit: Timeline.DateTime.MONTH,
-                    decorators: bandDecorators1
-                },
-                {
-                    theme: theme,
-                    width: "240",
-                    intervalPixels: 155,
-                    intervalUnit: Timeline.DateTime.DAY,
-                    decorators: bandDecorators2
-                }]
+                bandInfo: bandInfo || this.getDefaultBandInfo(start, end, highlights)
             });
 
             // Add listeners for touch events for mobile support
@@ -452,10 +469,20 @@ angular.module('eventsApp')
         this.createTimemapByTimeSpan = function(start, end, highlights, infoWindowCallback, photoConfig) {
             var self = this;
             return eventService.getEventsByTimeSpan(start, end).then(function(data) {
-                return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
-                    .then(function(photos) {
-                        return self.createTimemap(start, end, data, highlights, infoWindowCallback, photos, photoConfig);
-                    });
+                return self.createTimemapWithPhotoHighlight(start, end, data, highlights, infoWindowCallback, photoConfig);
+            }, function(data) {
+                $q.reject(data);
+            });
+        };
+
+        this.createTimemapByActor = function(actorId, start, end, highlights, infoWindowCallback, photoConfig) {
+            var bandInfo = this.getDefaultBandInfo(start, end, highlights);
+            bandInfo[1].intervalPixels = 50;
+
+            var self = this;
+            return eventService.getEventsByActor(actorId).then(function(data) {
+                return self.createTimemapWithPhotoHighlight(start, end, data,
+                    highlights, infoWindowCallback, photoConfig, bandInfo);
             }, function(data) {
                 $q.reject(data);
             });

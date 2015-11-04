@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SimileMapCtrl', function ($routeParams, $location, 
+  .controller('ActorCtrl', function ($routeParams, $location, 
               $anchorScroll, $timeout, $window, $scope, $rootScope, $route,
               eventService, photoService, casualtyService, actorService, timemapService) {
 
@@ -228,7 +228,6 @@ angular.module('eventsApp')
         // Change the URL but don't reload the page
         if ($location.search().uri !== item.opts.event.id) {
             self.noReload = true;
-            console.log('infoWindowCallback '+$location.search().uri);
             // $location.search('uri', item.opts.event.id);
         }
 
@@ -238,7 +237,7 @@ angular.module('eventsApp')
     };
 
 
-    self.createTimeMap = function(start, end, highlights) {
+    self.createTimeMap = function(id, start, end, highlights) {
 
         var photoConfig = {
             beforeOffset: self.photoDaysBefore,
@@ -246,7 +245,7 @@ angular.module('eventsApp')
             inProximity: self.photoPlace
         };
 
-        return timemapService.createTimemap(start, end, highlights, infoWindowCallback, photoConfig)
+        return timemapService.createTimemapByActor(id, start, end, highlights, infoWindowCallback, photoConfig)
         .then(function(timemap) {
             $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
                 markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
@@ -303,115 +302,36 @@ angular.module('eventsApp')
         }
     ];
 
-    var continuationWarHighlights = [
-        {
-            startDate: "1941-06-25",
-            endDate: "1944-09-19",
-            color:      "#FFC080",
-            opacity:    20,
-            startLabel: "Jatkosota",
-            endLabel:   "",
-            cssClass: "band-highlight"
-        }
-    ];
-
     var winterWarTimeSpan = {
         start: '1939-07-01',
         end: '1940-04-30'
     };
-    var continuationWarTimeSpan = {
-        start: '1941-06-01',
-        end: '1944-12-31'
+
+    self.showWinterWar = function(id) {
+        return self.createTimeMap(id, winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
     };
 
-    self.showWinterWar = function() {
-        return self.createTimeMap(winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
-    };
-    self.showContinuationWar = function() {
-        return self.createTimeMap(continuationWarTimeSpan.start,
-                continuationWarTimeSpan.end, continuationWarHighlights);
-    };
-    var getCreateFunction = function(start, end) {
-    	return self.showWinterWar;
-    	/*
-        if (start >= new Date(winterWarTimeSpan.start) &&
-                end <= new Date(winterWarTimeSpan.end)) {
-            return self.showWinterWar;
-        } else {
-            return self.showContinuationWar;
-        } */
-    };
-
-    self.createTimeMapForEvent = function(e) {
-        var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
-        show().then(function() {
-            var item = _.find(tm.getItems(), function(item) {
-                return _.isEqual(item.opts.event.id, e.id);
-            });
-            self.current = item;
-            tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
-            tm.setSelected(item);
-            item.openInfoWindow();
-        });
+    self.createTimeMapForActor = function(id) {
+        self.currentUnitId = id;
+        self.showWinterWar(id);
     };
 
     self.visualize = function() {
-        var era = $routeParams.era;
-        var uri = $routeParams.uri;
-        if (uri) {
-        		console.log(uri);
-            return eventService.getEventById(uri).then(function(e) {
-            	console.log(e);
-                if (e) {
-                		
-                    return self.createTimeMapForEvent(e);
-                    
-                } else {
-                    // $location.url($location.path());
-                    return self.showWinterWar();
-                }
-            });
-        } /*else if (era) {
-            switch(era.toLowerCase()) {
-                case 'winterwar': {
-                    return self.showWinterWar();
-                }
-                case 'continuationwar': {
-                    return self.showContinuationWar();
-                }
-            }
-        } */
-        // $location.path('/X');
-        // $location.url($location.path());
-        
-        return self.showWinterWar();        
+        var uri = $routeParams.uri || 'http://ldf.fi/warsa/actors/actor_940';
+        return self.showWinterWar(uri).then(initSelector('unitSelector'));
     };
 
     self.visualize();
-    initSelector('unitSelector');
     
     
-	 self.showUnit = function() {
-		
-		var uri = getSelectionUri('unitSelector');
-	    if (emptyValue(uri)) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
-	   // var label = getSelectionLabel('unitSelector');
-	   // if (emptyValue(label)) label = 'Jalkaväkirykmentti 37';
-		console.log(uri);
-		$location.url("?uri="+uri);
-		if (uri) {
-			// return self.visualize();
-		  	return eventService.getEventById(uri).then(function(e) {
-		   	console.log(e);
-		       if (e) {
-			       	// $location.url($location.path());
-		           return self.createTimeMapForEvent(e);
-		       } else {
-		           // $location.url($location.path());
-		       }
-		
-		   });
-		}
-	}
+    self.showUnit = function() {
+        var uri = getSelectionUri('unitSelector');
+        if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
+        self.noReload = true;
+        $location.search('uri', uri);
+        if (uri) {
+            return self.showWinterWar(uri);//.then(initSelector('unitSelector'));
+        }
+    };
 	
 });
