@@ -48,18 +48,16 @@ angular.module('eventsApp')
             '   VALUES ?id { {0} } ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
             '       a ?type_id . ' +
-            '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-            '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
             '       ?id skos:prefLabel ?description . ' +
-            '    OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
-            '    OPTIONAL { ?id crm:P7_took_place_at ?place_id .  ' +
-            '      ?place_id skos:prefLabel ?place_label . ' +
-            '      OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-            '      OPTIONAL { ' +
+            '       OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
+            '       OPTIONAL { ?id crm:P7_took_place_at ?place_id .  ' +
+            '       ?place_id skos:prefLabel ?place_label . ' +
+            '       OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
+            '       OPTIONAL { ' +
             '            ?place_id geo:lat ?lat ; ' +
             '              geo:long ?lon . ' +
-            '      } ' +
-            '      OPTIONAL { ' +
+            '       } ' +
+            '       OPTIONAL { ' +
             '           GRAPH <http://ldf.fi/places/karelian_places> { ' +
             '               ?place_id geosparql:sfWithin ?municipality . ' +
             '           } ' +
@@ -86,6 +84,7 @@ angular.module('eventsApp')
             ' WHERE { ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
             '       a ?type_id . ' +
+            '       {0} ' + // Placeholder for type filter
             '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
             '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
             '       ?id skos:prefLabel ?description . ' +
@@ -109,7 +108,7 @@ angular.module('eventsApp')
             '   GRAPH <http://ldf.fi/warsa/events/times> { ' +
             '     ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
             '              crm:P82b_end_of_the_end ?end_time . ' +
-            '     {0} ' + // Placeholder for time filter
+            '     {1} ' + // Placeholder for time filter
             '   } ' +
             '   GRAPH <http://ldf.fi/warsa/events/event_types> { ' +
             '     ?type_id skos:prefLabel ?type . ' +
@@ -206,10 +205,14 @@ angular.module('eventsApp')
             '   }  ' +
             '   ORDER BY ?start_time ?end_time ';
 
+        var eventTypeFilter = 
+            '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
+            '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ';
+
         var eventFilterWithinTimeSpan =
             'FILTER(?start_time >= "{0}"^^xsd:date && ?end_time <= "{1}"^^xsd:date)';
 
-        var eventsWithinTimeSpanQry = eventQry.format(eventFilterWithinTimeSpan);
+        var eventsWithinTimeSpanQry = eventQry.format(eventTypeFilter, eventFilterWithinTimeSpan);
 
         var eventFilterWithinTimeSpanRelaxed = 
             'FILTER( ' +
@@ -219,9 +222,9 @@ angular.module('eventsApp')
             '   ?end_time <= "{1}"^^xsd:date) ' + 
             ')';
 
-        var eventsWithinRelaxedTimeSpanQry = eventQry.format(eventFilterWithinTimeSpanRelaxed);
+        var eventsWithinRelaxedTimeSpanQry = eventQry.format("", eventFilterWithinTimeSpanRelaxed);
 
-        var allEventsQry = eventQry.format("");
+        var allEventsQry = eventQry.format("", "");
 
         this.getEventsByTimeSpan = function(start, end) {
             // Get events that occured between the dates start and end (inclusive).
@@ -278,6 +281,5 @@ angular.module('eventsApp')
                 return eventMapperService.makeObjectList(data);
             });
         };
-
 });
 

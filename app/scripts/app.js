@@ -34,16 +34,21 @@ angular
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
       })
-      .when('/actors/page', {
+      .when('/units/page', {
         templateUrl: 'views/unit_page.html',
         controller: 'UnitPageCtrl',
         controllerAs: 'ctrl'
       })
-      .when('/actors/', {
+      .when('/units/', {
         templateUrl: 'views/actor_timeline.html',
         controller: 'ActorCtrl',
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
+      })
+      .when('/times/page', {
+        templateUrl: 'views/time_page.html',
+        controller: 'TimePageCtrl',
+        controllerAs: 'ctrl'
       })
       .otherwise({
         redirectTo: '/events'

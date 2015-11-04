@@ -26,7 +26,7 @@
         <h3>Other events at the same time</h3>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="event in ctrl.relatedEventsByTime">
-          <a ng-href="events/page.html?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
         </ul>
       </div>
@@ -45,10 +45,14 @@
       <div class="related-people" ng-if="ctrl.event.actors || ctrl.event.relatedCasualties">
         <h3>Related people</h3>
         <ul class="list-group" id="event-actors" style="text-transform: capitalize">
-          <li class="list-group-item" ng-repeat="person in ctrl.event.actors"><a ng-href="{{ person.id }}">{{ person.label }}</a></li>
-          <li class="list-group-item" ng-repeat="person in ctrl.event.relatedCasualties"><a ng-href="{{ person.id }}">
+          <li class="list-group-item" ng-repeat="person in ctrl.event.actors">
+            <a ng-href="persons/page?uri={{ person.id }}">{{ person.label }}</a>
+          </li>
+          <li class="list-group-item" ng-repeat="person in ctrl.event.relatedCasualties">
+            <a ng-href="persons/page?uri?={{ person.id }}">
             {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
-          </a></li>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
