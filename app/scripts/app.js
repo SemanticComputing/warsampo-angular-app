@@ -34,6 +34,11 @@ angular
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
       })
+      .when('/actors/page', {
+        templateUrl: 'views/unit_page.html',
+        controller: 'UnitPageCtrl',
+        controllerAs: 'ctrl'
+      })
       .when('/actors/', {
         templateUrl: 'views/actor_timeline.html',
         controller: 'ActorCtrl',
