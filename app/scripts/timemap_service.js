@@ -439,6 +439,8 @@ angular.module('eventsApp')
                 mapId: "map",               // Id of map div element (required)
                 timelineId: "timeline",     // Id of timeline div element (required)
                 options: {
+                    // NB! THE FOLLOWING LINE (eventIconPath...) WILL BE REPLACED BY GRUNT BUILD!
+                    // Any change to the line will break the build as it currently stands.
                     eventIconPath: "vendor/timemap/images/",
                     openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
                 },
