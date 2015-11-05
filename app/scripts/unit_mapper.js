@@ -19,8 +19,8 @@ Unit.prototype.getLabel = function() {
 	} else {
 		label = label + this.abbrev.join(', ');
 	}
-	
-	return this.name.join(', ')+ " ("+label+")";
+	if (label != '') { label=" ("+label+")"; }
+	return this.name.join(', ')+ label;
 }
 
 

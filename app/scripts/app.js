@@ -44,6 +44,11 @@ angular
         controller: 'UnitPageCtrl',
         controllerAs: 'ctrl'
       })
+      .when('/persons/page', {
+        templateUrl: 'views/person_page.html',
+        controller: 'PersonPageCtrl',
+        controllerAs: 'ctrl'
+      })
       .when('/units/', {
         templateUrl: 'views/actor_timeline.html',
         controller: 'ActorCtrl',
