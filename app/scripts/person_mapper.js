@@ -7,46 +7,77 @@
 function Person() { }
 
 Person.prototype.getLabel = function() {
-	if (!_.isArray(this.name)) { this.name= [this.name]; }
-	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }
-	
-	return this.fname + ' ' +this.sname;
-	
-	/* console.log('Abbrev ',this.abbrev);
-	console.log('Name ', this.name); */
-	var label = '';
-	if (!_.isArray(this.abbrev)) {
-		label = label + this.abbrev;
-	} else {
-		label = label + this.abbrev.join(', ');
-	}
-	if (label != '') { label=" ("+label+")"; }
-	return this.name.join(', ')+ label;
+	var label=this.sname;
+	if ('fname' in this && this.fname != '') { label += ', '+this.fname; }
+	if (!'note' in this) { this.note='' };
+	if (!'rank' in this) { this.rank='' };
+	return label;
 }
 
-
-Person.prototype.removeNameAbbrevs=function(names,abbrevs) {
-	var abb2=[];
-	for (var i=0; i<abbrevs.length; i++) {
-		if (names.indexOf(abbrevs[i])<0) {
-			abb2.push(abbrevs[i]);
-		}	
+Person.prototype.getDescription = function() {
+	var arr=[];
+	if (this.birth || this.death) {
+		arr.push(this.birth + ' – ' + this.death);
 	}
-	return abb2;
+	if (this.rank) arr.push(this.rank);
+	arr=arr.concat(this.promotions);
+	if (this.note) arr.push(this.note);
+	
+	return arr;
 }
 
-/*
-Unit.prototype.getNotes = function() {
-	var notes = '';
-	if (!_.isArray(this.note)) {
-		notes = this.note;
-	} else {
-		notes = this.note.join('<br>');
+Person.prototype.processLifeEvents = function(events) {
+	this.promotions=[];
+	var em=new EventMapper();
+	console.log(events);
+	for (var i=0; i<events.length; i++) {
+		var 	e=events[i], 
+				etype=e.idclass, 
+				edate=e.start_time, edate2=e.end_time;
+		edate=em.getExtremeDate(edate, true);
+		edate2=em.getExtremeDate(edate2, false);
+		edate=em.formatDateRange(edate,edate2);
+		
+		if (etype.indexOf('Death')>-1) {
+			this.death = edate;
+		} else if (etype.indexOf('Birth')>-1) {
+			this.birth = edate;
+		} else if (etype.indexOf('Promotion')>-1) {
+			this.promotions.push(e.rank+' '+edate);
+		}
+	}
+	if (!this.birth) this.birth='';
+	if (!this.death) this.death='';
+}
+
+Person.prototype.processRelatedEvents = function(events) {
+	
+	var eventlist=[];
+	var battles=[];
+	var units=[];
+	var em=new EventMapper();
+	
+	for (var i=0; i<events.length; i++) {
+		var 	e=events[i], 
+				etype=e.idclass; 
+		
+		if (etype.indexOf('Battle')>-1) {
+			battles.push(e);
+		} else if (etype.indexOf('PersonJoining')>-1) {
+			// Linking to unit, not to an event of joining
+			if ('unit' in e) e.id = e.unit;
+			units.push(e);
+		} else {
+			eventlist.push(e);
+		}
 	}
 	
-	return notes;
+	if (eventlist.length) this.events=eventlist;
+	if (battles.length) this.battles=battles;
+	//if (units.length) this.units=units;
+	// console.log(this.events);
 }
-*/
+
 
 function PersonMapper() { }
 
@@ -59,9 +90,10 @@ PersonMapper.prototype.makeObject = function(obj) {
     _.forIn(obj, function(value, key) {
         o[key] = value.value;
     });
-	 // if (_.isArray(o.note)) { o.note=o.note[0]; }
+    
     return o;
 };
+
 
 angular.module('eventsApp')
 .factory('personMapperService', function(objectMapperService) {

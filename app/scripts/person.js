@@ -9,17 +9,27 @@ angular.module('eventsApp')
         
         var personService = this;
 
+        Person.prototype.fetchLifeEvents = function() {
+            var self = this;
+            return personService.getLifeEvents(self.id).then(function(events) {
+            	self.processLifeEvents(events);
+            });
+        };
+        
         Person.prototype.fetchRelatedEvents = function() {
             var self = this;
-            return eventService.getEventsByActor(self.id).then(function(events) {
-                self.relatedEvents = events;
+            return personService.getRelatedEvents(self.id).then(function(events) {
+            	console.log(events);
+            	self.processRelatedEvents(events);
             });
         };
         
         Person.prototype.fetchRelated = function() {
             var self = this;
-            return self.fetchRelatedEvents().then(function() { return self.fetchRelatedUnits(); }).then(function() {
-                if (self.relatedEvents || self.relatedUnits) {
+            return self.fetchLifeEvents().then(
+            	function() { return self.fetchRelatedUnits(); }).then(
+               function() { return self.fetchRelatedEvents(); }).then(
+            	function() {  if (self.battles || self.events || self.units ) {
                     self.hasLinks = true;
                 }
             });
@@ -27,11 +37,12 @@ angular.module('eventsApp')
 			
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
-            return unitService.getSuperunit(self.id).then(function(units) {
+            return personService.getRelatedUnits(self.id).then(function(units) {
+            	console.log('got related units.');
             	console.log(units);
-            	if (_.isArray(units)) { units=units[0]; }
-            	if (_.isArray(units.name)) { units.name=units.name[0]; }
-               self.relatedUnits = [units];
+            	//if (_.isArray(units)) { units=units[0]; }
+            	//if (_.isArray(units.name)) { units.name=units.name[0]; }
+               self.units = units;
             });
         };
         
@@ -56,52 +67,122 @@ angular.module('eventsApp')
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
-
-        var personQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?sname ?fname ?note WHERE { 
-			        ?id a atypes:MilitaryPerson ;
-				          foaf:familyName ?sname ;
-				          foaf:firstName  ?fname .
-			        OPTIONAL {?id crm:P3_has_note ?note . }
-			        VALUES ?id  { {0} }
-				}  
+        
+		var personQry = prefixes + hereDoc(function() {/*!
+				SELECT DISTINCT ?id ?sname ?fname ?note ?rank WHERE { 
+					  VALUES ?id { {0} }
+					  ?id foaf:familyName ?sname .
+					  OPTIONAL { ?id foaf:firstName ?fname . }
+					  OPTIONAL { ?id crm:P3_has_note ?note . }
+					  OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . }
+				} 
+  		 */});
+  		 
+        var personLifeEventsQry = prefixes + hereDoc(function() {/*!
+				SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank  WHERE { 
+		    
+  		 VALUES ?person { {0} }
+			{ ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . }
+		  	 UNION 
+            { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . }
+          UNION 
+            { ?id a etypes:Promotion ; crm:P11_had_participant ?person . 
+            OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . }
+            }
+  
+            ?id a ?idclass .
+            ?id crm:P4_has_time-span ?time . 
+            ?time crm:P82a_begin_of_the_begin ?start_time .
+            ?time crm:P82b_end_of_the_end ?end_time .
+          
+		} ORDER BY ?start_time
         */});
         
-        var relatedUnitQry = prefixes + hereDoc(function() {/*!
-            SELECT DISTINCT ?id ?name ?abbrev WHERE { 
-                ?ejoin a etypes:UnitJoining ;
-                    crm:P143_joined ?unit ;
-                    crm:P144_joined_with ?id .
-
-                ?ename a etypes:UnitNaming ;
-                     skos:prefLabel ?name ;
-                     crm:P95_has_formed ?id .
-                OPTIONAL {?ename skos:altLabel ?abbrev . }
-                
-                # OPTIONAL { ?id crm:P3_has_note ?note . }
-                VALUES ?unit  { {0} }
-				}
-        */});
-        
-        this.getById = function(id) {
+        var relatedEventQry = prefixes + hereDoc(function() {/*!
+        SELECT DISTINCT ?id ?idclass ?description ?unit ?role ?start_time WHERE { 
+    		  VALUES ?person { {0} } . # { :person_7 } # 
+			    
+			    { ?id a etypes:Battle ; 
+			      	crm:P11_had_participant ?person ; 
+			      	events:hadUnit ?unit ; 
+			      	skos:prefLabel ?description . }
+			    UNION
+			    { ?id crm:P11_had_participant ?person ; 
+			    	skos:prefLabel ?description . }
+			    UNION 
+			    { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person .
+			      {
+			      ?id crm:P107_1_kind_of_member ?role . 
+			      ?id crm:P144_joined_with ?unit. 
+			      ?unit skos:prefLabel ?description . 
+			      }
+			    } 
+			    
+			   ?id a ?idclass .
+			  	 
+			    OPTIONAL {
+			      ?id crm:P4_has_time-span ?time . 
+			      ?time crm:P82a_begin_of_the_begin ?start_time ; 
+			      		crm:P82b_end_of_the_end ?end_time . 
+			    }
+			  	
+			    OPTIONAL { 
+			      ?id crm:P7_took_place_at ?place_id .
+			      OPTIONAL {
+			        ?place_id skos:prefLabel ?place_label . 
+			        ?place_id geo:lat ?lat ;  geo:long ?lon . 
+			      }
+			    }
+			} ORDER BY ?start_time ?end_time
+		*/});
+       
+       var relatedUnitQry = prefixes + hereDoc(function() {/*!
+			   SELECT DISTINCT ?id ?description ?role WHERE {
+				VALUES ?person { {0} } . # { :person_7 } # 
+			    { ?evt a etypes:PersonJoining ;
+			          crm:P143_joined ?person .
+                OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
+			          ?evt  crm:P144_joined_with ?id . 
+			     } UNION { 
+			          ?person owl:sameAs ?mennytmies .
+			          ?mennytmies a foaf:Person .
+			          ?mennytmies casualties:osasto ?id . 
+			    }
+			    OPTIONAL { ?id skos:prefLabel ?description . }
+			} 
+			*/});
+			
+			
+		this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-            	console.log(data);
                 if (data.length) {
-                    return personMapperService.makeObjectList(data)[0];
+                	  return personMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
             });
         };
-
-		this.getSuperunit = function(unit) {
-            var qry = relatedUnitQry.format("<{0}>".format(unit));
+        
+		this.getRelatedUnits = function(id) {
+				var qry = relatedUnitQry.format("<{0}>".format(id));
+				return endpoint.getObjects(qry).then(function(data) {
+            	return personMapperService.makeObjectListNoGrouping(data);
+            });
+        };
+        
+		this.getRelatedEvents = function(id) {
+				var qry = relatedEventQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-                if (data.length) {
-                    return unitMapperService.makeObjectList(data)[0];
-                }
-                return $q.reject("Does not exist");
+            	return personMapperService.makeObjectList(data);
             });
         };
+        
+		this.getLifeEvents = function(id) {
+				var qry = personLifeEventsQry.format("<{0}>".format(id));
+				return endpoint.getObjects(qry).then(function(data) {
+            	return personMapperService.makeObjectListNoGrouping(data);
+            });
+        };
+        
 });
 
