@@ -49,8 +49,13 @@ ObjectMapper.prototype.mergeObjects = function(first, second) {
         if (b && !a) {
             return b;
         }
+        
         return [a, b];
     });
+};
+
+ObjectMapper.prototype.postProcess = function(objects) {
+    return objects;
 };
 
 ObjectMapper.prototype.makeObjectList = function(objects) {
@@ -72,7 +77,7 @@ ObjectMapper.prototype.makeObjectList = function(objects) {
             result.push(obj);
         }                
     });
-    return obj_list;
+    return self.postProcess(obj_list);
 };
 
 ObjectMapper.prototype.makeObjectListNoGrouping = function(objects) {

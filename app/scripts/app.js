@@ -23,6 +23,11 @@ angular
   ])
   .config(function($routeProvider) {
     $routeProvider
+      .when('/page', {
+        templateUrl: 'views/semantic_page.html',
+        controller: 'SemanticPageCtrl',
+        controllerAs: 'ctrl'
+      })
       .when('/events/page', {
         templateUrl: 'views/page.html',
         controller: 'PageCtrl',
