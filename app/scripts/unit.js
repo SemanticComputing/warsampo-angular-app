@@ -6,6 +6,8 @@
 angular.module('eventsApp')
     .service('unitService', function($q, SparqlService, unitMapperService,
                 Unit, eventService) {
+        
+        var unitService = this;
 
         Unit.prototype.fetchRelatedEvents = function() {
             var self = this;
@@ -16,14 +18,23 @@ angular.module('eventsApp')
         
         Unit.prototype.fetchRelated = function() {
             var self = this;
-            return self.fetchRelatedEvents().then(function() {
-                if (self.relatedEvents) {
+            return self.fetchRelatedEvents().then(function() { return self.fetchRelatedUnits(); }).then(function() {
+                if (self.relatedEvents || self.relatedUnits) {
                     self.hasLinks = true;
                 }
             });
         };
-
-
+			
+		  Unit.prototype.fetchRelatedUnits = function() {
+		  		var self = this;
+            return unitService.getSuperunit(self.id).then(function(units) {
+            	console.log(units);
+            	if (_.isArray(units)) { units=units[0]; }
+            	if (_.isArray(units.name)) { units.name=units.name[0]; }
+               self.relatedUnits = [units];
+            });
+        };
+        
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
@@ -57,6 +68,23 @@ angular.module('eventsApp')
                 VALUES ?id  { {0} }
             } 
         */});
+        
+        var relatedUnitQry = prefixes + hereDoc(function() {/*!
+            SELECT DISTINCT ?id ?name ?abbrev WHERE { 
+                ?ejoin a etypes:UnitJoining ;
+                    crm:P143_joined ?unit ;
+                    crm:P144_joined_with ?id .
+
+                ?ename a etypes:UnitNaming ;
+                     skos:prefLabel ?name ;
+                     crm:P95_has_formed ?id .
+                OPTIONAL {?ename skos:altLabel ?abbrev . }
+                
+                # OPTIONAL { ?id crm:P3_has_note ?note . }
+                VALUES ?unit  { {0} }
+				}
+        */});
+        
         this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -67,5 +95,14 @@ angular.module('eventsApp')
             });
         };
 
+		this.getSuperunit = function(unit) {
+            var qry = relatedUnitQry.format("<{0}>".format(unit));
+            return endpoint.getObjects(qry).then(function(data) {
+                if (data.length) {
+                    return unitMapperService.makeObjectList(data)[0];
+                }
+                return $q.reject("Does not exist");
+            });
+        };
 });
 
