@@ -4,19 +4,19 @@
  * Service that provides an interface for fetching actor data.
  */
 angular.module('eventsApp')
-    .service('unitService', function($q, SparqlService, unitMapperService,
-                Unit, eventService) {
+    .service('personService', function($q, SparqlService, personMapperService,
+                Person, eventService) {
         
-        var unitService = this;
+        var personService = this;
 
-        Unit.prototype.fetchRelatedEvents = function() {
+        Person.prototype.fetchRelatedEvents = function() {
             var self = this;
             return eventService.getEventsByActor(self.id).then(function(events) {
                 self.relatedEvents = events;
             });
         };
         
-        Unit.prototype.fetchRelated = function() {
+        Person.prototype.fetchRelated = function() {
             var self = this;
             return self.fetchRelatedEvents().then(function() { return self.fetchRelatedUnits(); }).then(function() {
                 if (self.relatedEvents || self.relatedUnits) {
@@ -25,7 +25,7 @@ angular.module('eventsApp')
             });
         };
 			
-		  Unit.prototype.fetchRelatedUnits = function() {
+		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return unitService.getSuperunit(self.id).then(function(units) {
             	console.log(units);
@@ -57,16 +57,14 @@ angular.module('eventsApp')
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
-        var unitQry = prefixes + hereDoc(function() {/*!
-            SELECT DISTINCT ?id ?name ?abbrev ?note WHERE { 
-                ?ename a etypes:UnitNaming .
-                ?ename skos:prefLabel ?name .
-                OPTIONAL {?ename skos:altLabel ?abbrev . }
-                ?ename crm:P95_has_formed ?id .
-                OPTIONAL {?id crm:P3_has_note ?note . }
-        
-                VALUES ?id  { {0} }
-            } 
+        var personQry = prefixes + hereDoc(function() {/*!
+				SELECT DISTINCT ?id ?sname ?fname ?note WHERE { 
+			        ?id a atypes:MilitaryPerson ;
+				          foaf:familyName ?sname ;
+				          foaf:firstName  ?fname .
+			        OPTIONAL {?id crm:P3_has_note ?note . }
+			        VALUES ?id  { {0} }
+				}  
         */});
         
         var relatedUnitQry = prefixes + hereDoc(function() {/*!
@@ -86,10 +84,11 @@ angular.module('eventsApp')
         */});
         
         this.getById = function(id) {
-            var qry = unitQry.format("<{0}>".format(id));
+            var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
+            	console.log(data);
                 if (data.length) {
-                    return unitMapperService.makeObjectList(data)[0];
+                    return personMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
             });

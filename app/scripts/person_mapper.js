@@ -4,14 +4,15 @@
  * Service for transforming event SPARQL results into objects.
  */
 
-function Unit() { }
+function Person() { }
 
-Unit.prototype.getLabel = function() {
+Person.prototype.getLabel = function() {
 	if (!_.isArray(this.name)) { this.name= [this.name]; }
 	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }
-		
-	this.abbrev=this.removeNameAbbrevs(this.name,this.abbrev);
-	/* console.log('Abbrev ',this.abbrev); 
+	
+	return this.fname + ' ' +this.sname;
+	
+	/* console.log('Abbrev ',this.abbrev);
 	console.log('Name ', this.name); */
 	var label = '';
 	if (!_.isArray(this.abbrev)) {
@@ -24,7 +25,7 @@ Unit.prototype.getLabel = function() {
 }
 
 
-Unit.prototype.removeNameAbbrevs=function(names,abbrevs) {
+Person.prototype.removeNameAbbrevs=function(names,abbrevs) {
 	var abb2=[];
 	for (var i=0; i<abbrevs.length; i++) {
 		if (names.indexOf(abbrevs[i])<0) {
@@ -47,13 +48,13 @@ Unit.prototype.getNotes = function() {
 }
 */
 
-function UnitMapper() { }
+function PersonMapper() { }
 
-UnitMapper.prototype.makeObject = function(obj) {
+PersonMapper.prototype.makeObject = function(obj) {
     // Take the event as received and turn it into an object that
     // is easier to handle.
     // Make the location a list as to support multiple locations per event.
-    var o = new Unit();
+    var o = new Person();
 
     _.forIn(obj, function(value, key) {
         o[key] = value.value;
@@ -63,13 +64,13 @@ UnitMapper.prototype.makeObject = function(obj) {
 };
 
 angular.module('eventsApp')
-.factory('unitMapperService', function(objectMapperService) {
+.factory('personMapperService', function(objectMapperService) {
     var proto = Object.getPrototypeOf(objectMapperService);
-    UnitMapper.prototype = angular.extend({}, proto, UnitMapper.prototype);
+    PersonMapper.prototype = angular.extend({}, proto, PersonMapper.prototype);
 
-    return new UnitMapper();
+    return new PersonMapper();
 })
-.factory('Unit', function() {
-    return Unit;
+.factory('Person', function() {
+    return Person;
 });
 
