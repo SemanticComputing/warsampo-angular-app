@@ -18,8 +18,11 @@ angular.module('eventsApp')
         
         Unit.prototype.fetchRelated = function() {
             var self = this;
-            return self.fetchRelatedEvents().then(function() { return self.fetchRelatedUnits(); }).then(function() {
-                if (self.relatedEvents || self.relatedUnits) {
+            return self.fetchRelatedEvents().then(
+            	function() { return self.fetchRelatedUnits(); }).then(
+            	function() { return self.fetchRelatedPersons(); }).then(
+            	function() {
+                if (self.relatedEvents || self.relatedUnits || self.relatedPersons ) {
                     self.hasLinks = true;
                 }
             });
@@ -32,6 +35,16 @@ angular.module('eventsApp')
             	if (_.isArray(units)) { units=units[0]; }
             	if (_.isArray(units.name)) { units.name=units.name[0]; }
                self.relatedUnits = [units];
+            });
+        };
+        
+        Unit.prototype.fetchRelatedPersons = function() {
+		  		var self = this;
+            return unitService.getPersons(self.id).then(function(persons) {
+            	console.log(persons);
+            	//if (_.isArray(units)) { units=units[0]; }
+            	//if (_.isArray(units.name)) { units.name=units.name[0]; }
+               self.relatedPersons = persons;
             });
         };
         
@@ -85,6 +98,22 @@ angular.module('eventsApp')
 				}
         */});
         
+        var relatedPersonQry = prefixes + hereDoc(function() {/*!
+			   SELECT DISTINCT ?id ?name ?role WHERE {
+				VALUES ?unit { {0} } . # { :person_7 } # 
+			    { ?evt a etypes:PersonJoining ;
+			          crm:P143_joined ?id .
+                OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
+			          ?evt  crm:P144_joined_with ?unit . 
+			     } UNION { 
+			          ?id owl:sameAs ?mennytmies .
+			          ?mennytmies a foaf:Person .
+			          ?mennytmies casualties:osasto ?unit . 
+			    }
+			    ?id skos:prefLabel ?name .
+			} LIMIT 10
+			*/});
+			
         this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -98,10 +127,14 @@ angular.module('eventsApp')
 		this.getSuperunit = function(unit) {
             var qry = relatedUnitQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
-                if (data.length) {
-                    return unitMapperService.makeObjectList(data)[0];
-                }
-                return $q.reject("Does not exist");
+                return unitMapperService.makeObjectList(data)[0];
+            });
+        };
+        
+        this.getPersons = function(unit) {
+            var qry = relatedPersonQry.format("<{0}>".format(unit));
+            return endpoint.getObjects(qry).then(function(data) {
+                return unitMapperService.makeObjectList(data)
             });
         };
 });

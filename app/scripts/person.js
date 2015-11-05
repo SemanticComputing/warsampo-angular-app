@@ -34,7 +34,7 @@ angular.module('eventsApp')
                 }
             });
         };
-			
+		
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
@@ -42,10 +42,20 @@ angular.module('eventsApp')
             	console.log(units);
             	//if (_.isArray(units)) { units=units[0]; }
             	//if (_.isArray(units.name)) { units.name=units.name[0]; }
-               self.units = units;
+               if(units.length) self.units = units;
             });
         };
-        
+      
+      	Person.prototype.fetchNationalBib = function() {
+      		var self = this;
+            return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
+            	console.log('got NationalBib.');
+            	console.log(nb);
+            	
+               if(nb.length) self.nb = nb;
+            });
+      	}  
+      	
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
@@ -151,8 +161,15 @@ angular.module('eventsApp')
 			    OPTIONAL { ?id skos:prefLabel ?description . }
 			} 
 			*/});
-			
-			
+		
+		// new SparqlService("http://ldf.fi/history/sparql");
+		var nationalBibliographyQry = prefixes + hereDoc(function() {/*!
+			   SELECT  ?person ?name WHERE {
+					?person rdfs:label ?name .
+				    FILTER (regex(?name, "^.*{0},.*{1}.*$", "i"))
+				}
+			*/});
+		
 		this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -184,5 +201,13 @@ angular.module('eventsApp')
             });
         };
         
+      this.getNationalBibliography = function(sukunimi,etunimi) {
+				var qry = nationalBibliographyQry.format("<{0}>".format(id));
+				var end2 = new SparqlService("http://ldf.fi/history/sparql");
+            return end2.getObjects(qry).then(function(data) {
+            	console.log(data);
+            	return personMapperService.makeObjectList(data);
+            });
+        };
 });
 
