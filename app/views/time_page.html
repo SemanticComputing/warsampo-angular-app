@@ -21,7 +21,7 @@
         <h3>Tapahtumat tähän aikaan</h3>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="event in ctrl.time.events">
-          <a ng-href="events/page.html?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
         </ul>
       </div>

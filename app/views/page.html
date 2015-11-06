@@ -33,12 +33,12 @@
       <div class="related-events-by-place" ng-if="ctrl.relatedEventsByPlace">
         <h3>Other events in the same place
           <span id="event-place" ng-repeat="place in ctrl.event.places">
-            {{ $first ? '(' : '' }}<a target="hipla" ng-href="{{ place.hipla_url }}">{{ place.label }}</a>{{ $last ? ')' : ', ' }}
+            {{ $first ? '(' : '' }}<a target="_self" ng-href="places/page?uri={{ place.id }}">{{ place.label }} <span class="glyphicon glyphicon-new-window" style="font-size:0.7em;" aria-hidden="true"></span></a>{{ $last ? ')' : ', ' }}
           </span>
         </h3>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="event in ctrl.relatedEventsByPlace">
-          <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          <a ng-href="places/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
         </ul>
       </div>

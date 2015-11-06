@@ -58,8 +58,8 @@
 
         <div class="collapse navbar-collapse" id="js-navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a ng-href="winterwar">Talvisota</a></li>
-            <li><a ng-href="continuationwar">Jatkosota</a></li>
+            <li><a ng-href="events/winterwar">Talvisota</a></li>
+            <li><a ng-href="events/continuationwar">Jatkosota</a></li>
             <li ng-show="showSettings"><a ng-click="showSettings()">Asetukset</a></li>
             <li ng-show="showHelp"><a ng-click="showHelp()">Ohjeet</a></li>
           </ul>
@@ -155,7 +155,7 @@
        ga('send', 'pageview');
     </script>
 -->
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=visualization"></script>
+  <script src="http://maps.google.com/maps/api/js?v=3&libraries=visualization"></script>
   <!-- build:js({.,app}) scripts/vendor.js -->
   <script src="vendor/thumbnail-scroller/jquery.mThumbnailScroller.js"></script>
   <!-- bower:js -->

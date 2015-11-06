@@ -60,9 +60,14 @@ angular
         controller: 'TimePageCtrl',
         controllerAs: 'ctrl'
       })
+      .when('/photographs/page', {
+        templateUrl: 'views/semantic_page.html',
+        controller: 'SemanticPageCtrl',
+        controllerAs: 'ctrl'
+      });/*
       .otherwise({
         redirectTo: '/events'
-      });
+      });*/
   })
   .config(function($locationProvider) {
       $locationProvider.html5Mode(true);
