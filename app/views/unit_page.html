@@ -21,13 +21,15 @@
   </div>
   <!-- Links -->
   <div class="col-sm-4">
-  <h3 id="links-header" class="links-header-class">Muita osastoja</h3>
-    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-      <ul class="list-group">
-          <li class="list-group-item" ng-repeat="unit in ctrl.unit.relatedUnits">
-          <a ng-href="units/page?uri={{ unit.id }}">{{ unit.name }}</a>
-          </li>
-        </ul>
+  <div ng-if="ctrl.unit.relatedUnits">
+	  <h3 id="links-header" class="links-header-class">Muita osastoja</h3>
+	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+	      <ul class="list-group">
+	          <li class="list-group-item" ng-repeat="unit in ctrl.unit.relatedUnits">
+	          <a ng-href="units/page?uri={{ unit.id }}">{{ unit.name }}</a>
+	          </li>
+	       </ul>
+     </div>
     <div ng-if="ctrl.unit.battles">
 	    <h3 id="links-header" class="links-header-class">Taistelut</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />

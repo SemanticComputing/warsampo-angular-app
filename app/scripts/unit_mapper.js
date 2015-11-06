@@ -37,6 +37,7 @@ Unit.prototype.removeNameAbbrevs=function(names,abbrevs) {
 Unit.prototype.getDescription = function() {
 	var arr=[];
 	// arr=arr.concat(this.);
+	if (this.commanders) arr = arr.concat(this.commanders);
 	if (this.description) arr = arr.concat(this.description);
 	if (this.note) arr = arr.concat(this.note);
 	

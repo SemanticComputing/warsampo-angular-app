@@ -19,7 +19,6 @@ angular.module('eventsApp')
         Person.prototype.fetchRelatedEvents = function() {
             var self = this;
             return personService.getRelatedEvents(self.id).then(function(events) {
-            	//console.log(events);
             	self.processRelatedEvents(events);
             });
         };
@@ -76,12 +75,18 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
 		var personQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?sname ?fname ?note ?rank WHERE { 
+				SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?birth_time ?death_time WHERE { 
 					  VALUES ?id { {0} }
 					  ?id foaf:familyName ?sname .
 					  OPTIONAL { ?id foaf:firstName ?fname . }
 					  OPTIONAL { ?id crm:P3_has_note ?note . }
 					  OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . }
+					  OPTIONAL { 
+				      	?id owl:sameAs ?mennytmies .
+				      	?mennytmies a foaf:Person .
+				    		OPTIONAL { ?mennytmies casualties:syntymaeaika ?birth_time . }
+				   		OPTIONAL { ?mennytmies casualties:kuolinaika ?death_time . }
+				  		}
 				} 
   		 */});
   		 
@@ -211,9 +216,9 @@ angular.module('eventsApp')
         };
         
       this.getNationalBibliography = function(sukunimi,etunimi) {
-      		console.log(etunimi);
       		var rgx ="XZYZ-FHWEJ";
       		if (etunimi) {
+      			if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
       			var etu1 = (etunimi === 'Carl Gustaf Emil') ? etunimi :etunimi.split(' ')[0];
 	      		// ^.*Talvela,.*Paavo.*[(].*[)]$
 	      		var rgx = "^.*"+sukunimi+",.*"+etu1+".*[(].*[)]$"; 
