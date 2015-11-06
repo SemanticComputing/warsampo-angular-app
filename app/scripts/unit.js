@@ -45,7 +45,6 @@ angular.module('eventsApp')
 							self.relatedUnits.push(unit);
 							}
             	}
-               // if (units.length) self.relatedUnits = units;
             });
         };
         
@@ -59,7 +58,30 @@ angular.module('eventsApp')
         Unit.prototype.fetchRelatedPersons = function() {
 		  		var self = this;
             return unitService.getPersons(self.id).then(function(persons) {
-            	if (persons.length) self.relatedPersons = persons;
+            	console.log(persons);
+            	var 	em=new EventMapper(),
+            			arr = [], arr2=[];
+            	for (var i=0; i<persons.length; i++) {
+            		var p=persons[i];
+            		if ('name' in p) {
+            			if (_.isArray(p.name)) p.name = p.name[0];
+            			arr.push(p);
+	            		if ('role' in p) { 
+	            			var pname =p.role+' '+p.name; 
+	            			if ('start_time' in p) {
+	            				var edate=p.start_time;
+	            				var edate2= ('end_time' in p) ? p.end_time : edate;
+									edate=em.getExtremeDate(edate, true);
+									edate2=em.getExtremeDate(edate2, false);
+									edate=em.formatDateRange(edate,edate2);
+	            				arr2.push(pname + ', '+edate); // +"–");
+	            			} else arr2.push(pname);
+	            		}
+	            		
+	            	}
+            	}
+            	if (arr.length) self.relatedPersons = arr;
+            	if (arr2.length) self.commanders = arr2;
             });
         };
         
@@ -152,9 +174,17 @@ angular.module('eventsApp')
 					  	} GROUP BY ?id ?name  LIMIT 2 
 					 } UNION {
 						SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE {
-					                 ?ejoin a etypes:UnitJoining ;
-					                    crm:P143_joined ?id ;
-					                    crm:P144_joined_with ?unit .
+										{?ejoin a etypes:UnitJoining ;
+								                    crm:P143_joined ?id ;
+								                    crm:P144_joined_with ?unit .
+								      } UNION { ?ejoin a etypes:UnitJoining ;
+								                    crm:P143_joined ?unit ;
+								                    crm:P144_joined_with ?superunit .
+								                 ?ejoin2 a etypes:UnitJoining ;
+								                    crm:P143_joined ?id ;
+								                    crm:P144_joined_with ?superunit .   
+								        FILTER ( ?unit != ?id )
+								      }
 					                
 					                ?s ?p ?id .
 					                
@@ -165,24 +195,33 @@ angular.module('eventsApp')
 					      			
 					                VALUES ?unit  { {0} }
 					                
-					    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 4 }
+					    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 }
 					}
         */});
         
         var relatedPersonQry = prefixes + hereDoc(function() {/*!
-			   SELECT DISTINCT ?id ?name ?role WHERE {
-				VALUES ?unit { {0} } . # { :person_7 } # 
-			    { ?evt a etypes:PersonJoining ;
-			          crm:P143_joined ?id .
-                OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
-			          ?evt  crm:P144_joined_with ?unit . 
-			     } UNION { 
-			          ?id owl:sameAs ?mennytmies .
-			          ?mennytmies a foaf:Person .
-			          ?mennytmies casualties:osasto ?unit . 
-			    }
-			    ?id skos:prefLabel ?name .
-			} LIMIT 10
+			     
+				SELECT DISTINCT ?id ?name ?role ?start_time ?end_time (COUNT(?s) AS ?no) WHERE {
+  VALUES ?unit { {0} } .
+    { ?evt a etypes:PersonJoining ;
+    crm:P143_joined ?id .
+    OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
+    ?evt  crm:P144_joined_with ?unit . 
+    OPTIONAL {
+    	?evt crm:P4_has_time-span ?time . 
+    	?time crm:P82a_begin_of_the_begin ?start_time ; 
+          crm:P82b_end_of_the_end ?end_time . 
+  	}
+  } UNION { 
+    ?id owl:sameAs ?mennytmies .
+    ?mennytmies a foaf:Person .
+    ?mennytmies casualties:osasto ?unit .
+  }
+  OPTIONAL { ?s ?p ?id . }
+  
+    ?id skos:prefLabel ?name .
+  } GROUP BY ?id ?name ?role ?no ?start_time ?end_time 
+	ORDER BY DESC(?no) LIMIT 8
 			*/});
 			
         this.getById = function(id) {

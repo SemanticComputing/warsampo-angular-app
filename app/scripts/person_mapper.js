@@ -16,6 +16,17 @@ Person.prototype.getLabel = function() {
 
 Person.prototype.getDescription = function() {
 	var arr=[];
+	var em=new EventMapper();
+	if (this.birth_time) {
+		var edate=em.getExtremeDate(this.birth_time, true);
+		this.birth = em.formatDateRange(edate,edate);
+		delete this.birth_time;
+	}
+	if (this.death_time) {
+		var edate=em.getExtremeDate(this.death_time, true);
+		this.death = em.formatDateRange(edate,edate);
+		delete this.death_time;
+	}
 	if (this.birth || this.death) {
 		arr.push(this.birth + ' – ' + this.death);
 	}
