@@ -32,11 +32,13 @@ angular.module('eventsApp')
     $rootScope.showHelp = function() {
         self.current = undefined;
     };
+    //$('#show-help').click($rootScope.showHelp);
 
     self.settingsVisible = false;
     $rootScope.showSettings = function() {
         self.settingsVisible = !self.settingsVisible;
     };
+    //$('#show-settings').click($rootScope.showSettings);
 
     self.getEventTitleWithLinks = function(event) {
         var time = eventService.createTitle(event);

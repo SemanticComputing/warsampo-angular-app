@@ -92,6 +92,10 @@ module.exports = function (grunt) {
                 connect.static('./bower_components')
               ),
               connect().use(
+                '/page-templates',
+                connect.static('./page-templates')
+              ),
+              connect().use(
                 '/app/styles',
                 connect.static('./app/styles')
               ),
