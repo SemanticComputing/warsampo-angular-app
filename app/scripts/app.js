@@ -64,6 +64,11 @@ angular
         templateUrl: 'views/semantic_page.html',
         controller: 'SemanticPageCtrl',
         controllerAs: 'ctrl'
+      })
+      .when('/casualties/page', {
+        templateUrl: 'views/semantic_page.html',
+        controller: 'SemanticPageCtrl',
+        controllerAs: 'ctrl'
       });/*
       .otherwise({
         redirectTo: '/events'

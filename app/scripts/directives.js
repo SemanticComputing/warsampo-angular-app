@@ -16,4 +16,35 @@ angular.module('eventsApp')
             });
         }
     };
+})
+.directive('pageLink', function() {
+    return {
+        restrict:'A',
+        link: function(scope, element, attrs) {
+            var path;
+            var target;
+            var objId = attrs.id;
+            if (_.includes(objId, '/events/')) {
+                path = 'events/page';
+            } else if (_.includes(objId, '/photographs/')) {
+                path = 'photographs/page';
+            } else if (_.includes(objId, '/person_')) {
+                path = 'persons/page';
+            } else if (_.includes(objId, '/unit_')) {
+                path = 'units/page';
+            } else if (_.includes(objId, '/narc-menehtyneet')) {
+                path = 'casualties/page';
+            } else if (_.includes(objId, '/places/')) {
+                path = 'places/page';
+                target = "_self";
+            } else {
+                path = "page";
+            }
+
+            element.attr('href', path + '?uri=' + objId);
+            if (target) {
+                element.attr('target', target);
+            }
+        }
+    };
 });

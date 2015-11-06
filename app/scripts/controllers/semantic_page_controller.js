@@ -12,6 +12,23 @@ angular.module('eventsApp')
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
+
+    self.countRelations = function(obj) {
+        var count = 0;
+        _.forEach(_.values(obj.properties), function(vals) {
+            count = count + vals.length;
+        });
+        return count;
+    };
+
+    self.getPropertyList = function(obj) {
+        var list = [];
+        _.forEach(_.values(obj.properties), function(vals) {
+            list = list.concat(vals);
+        });
+        return list;
+    };
+
     if ($routeParams.uri) {
         self.isLoadingEvent = true;
         self.isLoadingLinks = true;

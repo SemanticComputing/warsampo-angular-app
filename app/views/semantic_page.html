@@ -1,21 +1,24 @@
-<div> <a id="pageTypeURL" href="/"><h1 id="pageType">{{ ctrl.obj.type.label }}</h1></a></div> 
+<div><h1 id="pageType">{{ ctrl.obj.type.label }}</h1></div> 
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
-    <p ng-if="!ctrl.obj && !ctrl.isLoadingEvent">No metadata available for this object.</p>
+    <p ng-if="!ctrl.obj && !ctrl.isLoadingEvent">Metadataa ei löytynyt</p>
     <div id="dataContent" ng-if="ctrl.obj">
       <h2>
         {{ ctrl.obj.label }}
       </h2>
       <p>{{ ctrl.obj.description }}</p>
+      <img ng-if="ctrl.obj.imageUrl" ng-src="{{ ctrl.obj.imageUrl }}" />
+      <img ng-if="ctrl.obj.lat"
+      ng-src="https://maps.googleapis.com/maps/api/staticmap?size=600x300&zoom=5&markers=color:red%7C{{ ctrl.obj.lat }},{{ ctrl.obj.lon }}" />
       <div ng-repeat="(key, v) in ctrl.obj.properties">
-        <h2>{{ v[0].ref.label }}</h2>
+        <h2>{{ v[0].pred_label }}</h2>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="val in v">
-            <a ng-if="val.type === 'uri'" ng-href="page?uri={{ val.value }}">{{ val.label }}</a>
-            <span ng-if="val.type !== 'uri'">{{ val.value }}</span>
+            <a ng-if="val.type === 'uri'" page-link data-id="{{ val.value }}">{{ val.label }}</a>
+            <p ng-if="val.type !== 'uri'">{{ val.value }}</p>
           </li>
         </ul>
       </div>
@@ -23,17 +26,24 @@
   </div>
   <!-- Links -->
   <div class="col-sm-4">
-    <h2 id="links-header" class="links-header-class">Links</h2>
+    <h2 id="links-header" class="links-header-class">Linkit</h2>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.obj || !ctrl.obj.hasLinks">No links found for this object.</p>
+    <p ng-if="!ctrl.isLoadingLinks && !(ctrl.obj && ctrl.obj.hasLinks)">Linkkejä ei löytynyt</p>
     <div id="linkContent">
-      <div class="related" ng-repeat="rel in ctrl.obj.related">
-        <h3>{{ rel.label }}</h3>
-        <ul class="list-group" ng-repeat="(propKey, propVal) in rel.properties">
-          <li class="list-group-item" ng-repeat="(k, val) in propVal">
-            <a ng-href="page?uri={{ val.value }}">{{ val.label }}</a>
-          </li>
-        </ul>
+      <div class="related" ng-repeat="rel in ctrl.obj.related"
+        ng-init="relCount = ctrl.countRelations(rel); show = relCount <= 10">
+        <h3 ng-click="show = !show">
+          <a>{{ rel.label }} ({{ relCount }})
+          <span class="glyphicon glyphicon-menu-right" ng-show="!show"></span>
+          <span class="glyphicon glyphicon-menu-down" ng-show="show"></span></a>
+        </h3>
+        <div collapse="!show">
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="val in ctrl.getPropertyList(rel)">
+            <a page-link data-id="{{ val.value }}">{{ val.label }} ({{ val.pred_label }})</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
