@@ -44,7 +44,7 @@ angular.module('eventsApp')
             	console.log(persons);
             	//if (_.isArray(units)) { units=units[0]; }
             	//if (_.isArray(units.name)) { units.name=units.name[0]; }
-               self.relatedPersons = persons;
+               if (persons.length) self.relatedPersons = persons;
             });
         };
         
