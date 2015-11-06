@@ -19,7 +19,7 @@ angular.module('eventsApp')
         Person.prototype.fetchRelatedEvents = function() {
             var self = this;
             return personService.getRelatedEvents(self.id).then(function(events) {
-            	console.log(events);
+            	//console.log(events);
             	self.processRelatedEvents(events);
             });
         };
@@ -29,7 +29,8 @@ angular.module('eventsApp')
             return self.fetchLifeEvents().then(
             	function() { return self.fetchRelatedUnits(); }).then(
                function() { return self.fetchRelatedEvents(); }).then(
-            	function() {  if (self.battles || self.events || self.units ) {
+               function() { return self.fetchNationalBib(); }).then(
+               function() {  if (self.battles || self.events || self.units ) {
                     self.hasLinks = true;
                 }
             });
@@ -38,21 +39,16 @@ angular.module('eventsApp')
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
-            	console.log('got related units.');
-            	console.log(units);
-            	//if (_.isArray(units)) { units=units[0]; }
-            	//if (_.isArray(units.name)) { units.name=units.name[0]; }
-               if(units.length) self.units = units;
+            	if (units.length) self.units = units;
             });
         };
       
       	Person.prototype.fetchNationalBib = function() {
       		var self = this;
             return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
-            	console.log('got NationalBib.');
-            	console.log(nb);
-            	
-               if(nb.length) self.nb = nb;
+            	//console.log('got NationalBib.');
+            	//console.log(nb);
+            	if (nb.length) self.nationals = nb;
             });
       	}  
       	
@@ -67,6 +63,7 @@ angular.module('eventsApp')
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
+        ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
         ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
         ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
@@ -109,7 +106,7 @@ angular.module('eventsApp')
         */});
         
         var relatedEventQry = prefixes + hereDoc(function() {/*!
-        SELECT DISTINCT ?id ?idclass ?description ?unit ?role ?start_time WHERE { 
+        SELECT DISTINCT ?id ?idclass ?description ?unit ?role ?link ?start_time WHERE { 
     		  VALUES ?person { {0} } . # { :person_7 } # 
 			    
 			    { ?id a etypes:Battle ; 
@@ -127,6 +124,13 @@ angular.module('eventsApp')
 			      ?unit skos:prefLabel ?description . 
 			      }
 			    } 
+			    UNION
+			    {
+               ?id a <http://ldf.fi/warsa/articles/article/Article> ;
+               dcterms:hasFormat ?link ;
+               <http://purl.org/dc/elements/1.1/title> ?description ;
+               dcterms:subject ?person .
+             }
 			    
 			   ?id a ?idclass .
 			  	 
@@ -163,11 +167,16 @@ angular.module('eventsApp')
 			*/});
 		
 		// new SparqlService("http://ldf.fi/history/sparql");
-		var nationalBibliographyQry = prefixes + hereDoc(function() {/*!
-			   SELECT  ?person ?name WHERE {
-					?person rdfs:label ?name .
-				    FILTER (regex(?name, "^.*{0},.*{1}.*$", "i"))
-				}
+		var nationalBibliographyQry = hereDoc(function() {/*!
+					PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+					PREFIX kb: <http://ldf.fi/history/kb>
+					PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+					
+					SELECT  ?id ?label WHERE {
+					  ?id a crm:E21_Person .
+					  ?id rdfs:label ?label .
+					  FILTER (regex(?label, "{0}", "i"))
+					}
 			*/});
 		
 		this.getById = function(id) {
@@ -202,10 +211,18 @@ angular.module('eventsApp')
         };
         
       this.getNationalBibliography = function(sukunimi,etunimi) {
-				var qry = nationalBibliographyQry.format("<{0}>".format(id));
+      		console.log(etunimi);
+      		var rgx ="XZYZ-FHWEJ";
+      		if (etunimi) {
+      			var etu1 = (etunimi === 'Carl Gustaf Emil') ? etunimi :etunimi.split(' ')[0];
+	      		// ^.*Talvela,.*Paavo.*[(].*[)]$
+	      		var rgx = "^.*"+sukunimi+",.*"+etu1+".*[(].*[)]$"; 
+					var qry = nationalBibliographyQry.format("{0}".format());
+				}
+				var qry = nationalBibliographyQry.format("{0}".format(rgx));
+				console.log(qry);
 				var end2 = new SparqlService("http://ldf.fi/history/sparql");
             return end2.getObjects(qry).then(function(data) {
-            	console.log(data);
             	return personMapperService.makeObjectList(data);
             });
         };

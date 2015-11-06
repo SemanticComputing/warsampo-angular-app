@@ -19,6 +19,7 @@ angular.module('eventsApp')
         Unit.prototype.fetchRelated = function() {
             var self = this;
             return self.fetchRelatedEvents().then(
+            	function() { return self.fetchUnitEvents(); }).then(
             	function() { return self.fetchRelatedUnits(); }).then(
             	function() { return self.fetchRelatedPersons(); }).then(
             	function() {
@@ -30,21 +31,35 @@ angular.module('eventsApp')
 			
 		  Unit.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
-            return unitService.getSuperunit(self.id).then(function(units) {
+            return unitService.getRelatedUnit(self.id).then(function(units) {
             	console.log(units);
-            	if (_.isArray(units)) { units=units[0]; }
-            	if (_.isArray(units.name)) { units.name=units.name[0]; }
-               self.relatedUnits = [units];
+            	// if (_.isArray(units)) { units=units[0]; }
+            	// if (_.isArray(units.name)) { units.name=units.name[0]; }
+            	self.relatedUnits=[];
+            	for (var i=0; i<units.length; i++) {
+            		var unit=units[i];
+						if ('id' in unit) { 
+							if ('name' in unit && _.isArray(unit.name)) {
+								unit.name=unit.name[0];
+							}
+							self.relatedUnits.push(unit);
+							}
+            	}
+               // if (units.length) self.relatedUnits = units;
+            });
+        };
+        
+        Unit.prototype.fetchUnitEvents = function() {
+		  		var self = this;
+            return unitService.getUnitEvents(self.id).then(function(events) {
+            	self.processUnitEvents(events);
             });
         };
         
         Unit.prototype.fetchRelatedPersons = function() {
 		  		var self = this;
             return unitService.getPersons(self.id).then(function(persons) {
-            	console.log(persons);
-            	//if (_.isArray(units)) { units=units[0]; }
-            	//if (_.isArray(units.name)) { units.name=units.name[0]; }
-               self.relatedPersons = persons;
+            	if (persons.length) self.relatedPersons = persons;
             });
         };
         
@@ -82,20 +97,76 @@ angular.module('eventsApp')
             } 
         */});
         
-        var relatedUnitQry = prefixes + hereDoc(function() {/*!
-            SELECT DISTINCT ?id ?name ?abbrev WHERE { 
-                ?ejoin a etypes:UnitJoining ;
-                    crm:P143_joined ?unit ;
-                    crm:P144_joined_with ?id .
+        var unitEventQry = prefixes + hereDoc(function() {/*!
+        SELECT * WHERE { 
+				  VALUES ?unit  { {0} }
+				  {
+				    ?id a crm:E66_Formation ;
+				    	crm:P95_has_formed ?unit .
+				  } UNION {
+				    ?id a etypes:UnitNaming ;
+				      	crm:P95_has_formed ?unit .
+				  } UNION {
+				   	?id a etypes:TroopMovement ;
+				    	crm:P95_has_formed ?unit .
+				  } UNION {
+				    ?id a etypes:Battle ;
+				    	crm:P11_had_participant ?unit .
+				  }
+				  
+				  ?id a ?idclass .
+				  
+					OPTIONAL { ?id skos:prefLabel ?name . }
+				    OPTIONAL { ?id skos:altLabel ?abbrev . }
+				   
+				  OPTIONAL {
+				    ?id crm:P4_has_time-span ?time . 
+				    ?time crm:P82a_begin_of_the_begin ?start_time ; 
+				          crm:P82b_end_of_the_end ?end_time . 
+				  }
+				
+				  OPTIONAL { 
+				    ?id crm:P7_took_place_at ?place_id .
+				    OPTIONAL {
+				      ?place_id skos:prefLabel ?place_label .
+				    }
+				  }
+				  
+				} ORDER BY ?start_time ?end_time
+				*/});
 
-                ?ename a etypes:UnitNaming ;
-                     skos:prefLabel ?name ;
-                     crm:P95_has_formed ?id .
-                OPTIONAL {?ename skos:altLabel ?abbrev . }
-                
-                # OPTIONAL { ?id crm:P3_has_note ?note . }
-                VALUES ?unit  { {0} }
-				}
+        var relatedUnitQry = prefixes + hereDoc(function() {/*!
+            SELECT ?id ?name ?abbrev WHERE { 
+					  { SELECT ?id ?name  WHERE {
+					                  ?ejoin a etypes:UnitJoining ;
+					                    crm:P143_joined ?unit ;
+					                    crm:P144_joined_with ?id .
+					                
+					                ?ename a etypes:UnitNaming ;
+					                     skos:prefLabel ?name ;
+					                     crm:P95_has_formed ?id .
+					      			OPTIONAL { ?ename skos:altLabel ?abbrev . }
+					      
+					                VALUES ?unit  { {0} }
+					                
+					  	} GROUP BY ?id ?name  LIMIT 2 
+					 } UNION {
+						SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE {
+					                 ?ejoin a etypes:UnitJoining ;
+					                    crm:P143_joined ?id ;
+					                    crm:P144_joined_with ?unit .
+					                
+					                ?s ?p ?id .
+					                
+					                ?ename a etypes:UnitNaming ;
+					                     skos:prefLabel ?name ;
+					                     crm:P95_has_formed ?id .
+					                OPTIONAL {?ename skos:altLabel ?abbrev . }
+					      			
+					                VALUES ?unit  { {0} }
+					                
+					    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 4 }
+					}
         */});
         
         var relatedPersonQry = prefixes + hereDoc(function() {/*!
@@ -124,10 +195,18 @@ angular.module('eventsApp')
             });
         };
 
-		this.getSuperunit = function(unit) {
+		this.getUnitEvents = function(id) {
+				var qry = unitEventQry.format("<{0}>".format(id));
+				//console.log(qry);
+            return endpoint.getObjects(qry).then(function(data) {
+            	return unitMapperService.makeObjectListNoGrouping(data);
+            });
+        };
+        
+		this.getRelatedUnit = function(unit) {
             var qry = relatedUnitQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
-                return unitMapperService.makeObjectList(data)[0];
+                return unitMapperService.makeObjectList(data);
             });
         };
         

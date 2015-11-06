@@ -34,6 +34,62 @@ Unit.prototype.removeNameAbbrevs=function(names,abbrevs) {
 	return abb2;
 }
 
+Unit.prototype.getDescription = function() {
+	var arr=[];
+	// arr=arr.concat(this.);
+	if (this.description) arr = arr.concat(this.description);
+	if (this.note) arr = arr.concat(this.note);
+	
+	var arr2=[];
+	for (var i=0; i<arr.length; i++) {
+		if (arr2.indexOf(arr[i])<0) arr2.push(arr[i]);
+	}
+	return arr2;
+}
+
+Unit.prototype.processUnitEvents = function(events) {
+	var battles=[], formations=[], description=[], places={};
+	var em=new EventMapper();
+	for (var i=0; i<events.length; i++) {
+		var 	e=events[i], 
+				etype=e.idclass, 
+				edate='', edate2='', eplace=''; 
+		if ('start_time' in e && 'end_time' in e) {
+			edate=e.start_time, edate2=e.end_time;
+			edate=em.getExtremeDate(edate, true);
+			edate2=em.getExtremeDate(edate2, false);
+			edate=em.formatDateRange(edate,edate2);
+		}
+		if ('place_label' in e) {
+			eplace=', '+e.place_label;
+		}
+		if (edate!='') edate=edate+': ';
+
+		if (etype.indexOf('Battle')>-1) {
+			e.description = e.name;
+			battles.push(e);
+		} else if (etype.indexOf('Formation')>-1) {
+			formations.push(edate+'Perustaminen: '+e.name+eplace);
+		} else if (etype.indexOf('TroopMovement')>-1) {
+			description.push(edate+e.name+eplace);
+		} 
+		
+		if ('place_id' in e && 'place_label' in e) {
+			places[e.place_label]=e.place_id;
+			// places.push({id:e.place_id, label:e.place_label});
+		}
+	}
+	
+	if (battles.length) this.battles=battles;
+	if (formations.length) description=formations.concat(description);
+	if (description.length) this.description=description;
+	
+	for (var pr in places) {
+		if (!this.places) this.places=[];
+		this.places.push({label:pr, id:places[pr]});
+	}
+}
+
 /*
 Unit.prototype.getNotes = function() {
 	var notes = '';

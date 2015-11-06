@@ -29,7 +29,7 @@ Person.prototype.getDescription = function() {
 Person.prototype.processLifeEvents = function(events) {
 	this.promotions=[];
 	var em=new EventMapper();
-	console.log(events);
+	// console.log(events);
 	for (var i=0; i<events.length; i++) {
 		var 	e=events[i], 
 				etype=e.idclass, 
@@ -44,17 +44,18 @@ Person.prototype.processLifeEvents = function(events) {
 			this.birth = edate;
 		} else if (etype.indexOf('Promotion')>-1) {
 			this.promotions.push(e.rank+' '+edate);
-		}
+		} 
 	}
 	if (!this.birth) this.birth='';
 	if (!this.death) this.death='';
 }
 
 Person.prototype.processRelatedEvents = function(events) {
-	
 	var eventlist=[];
 	var battles=[];
 	var units=[];
+	var articles=[];
+	
 	var em=new EventMapper();
 	
 	for (var i=0; i<events.length; i++) {
@@ -67,6 +68,8 @@ Person.prototype.processRelatedEvents = function(events) {
 			// Linking to unit, not to an event of joining
 			if ('unit' in e) e.id = e.unit;
 			units.push(e);
+		} else if (etype.indexOf('Article')>-1 ) {
+			articles.push(e);
 		} else {
 			eventlist.push(e);
 		}
@@ -74,7 +77,9 @@ Person.prototype.processRelatedEvents = function(events) {
 	
 	if (eventlist.length) this.events=eventlist;
 	if (battles.length) this.battles=battles;
-	//if (units.length) this.units=units;
+	if (articles.length) this.articles=articles;
+	if (articles.length) console.log(this.articles);
+		
 	// console.log(this.events);
 }
 

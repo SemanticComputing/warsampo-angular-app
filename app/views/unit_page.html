@@ -12,8 +12,8 @@
       <h2>
         {{ ctrl.unit.getLabel() }}
       </h2>
-      <p ng-repeat="note in ctrl.unit.note">
-      {{ note }}
+      <p ng-repeat="desc in ctrl.unit.getDescription() track by $index">
+      {{ desc }}
       </p>
       <!-- <p> {{ ctrl.unit.getNotes() }} </p> -->
       <p><a ng-href="actors/?uri={{ ctrl.unit.id }}">View on timeline</a></p>
@@ -23,33 +23,37 @@
   <div class="col-sm-4">
   <h3 id="links-header" class="links-header-class">Muita osastoja</h3>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.unit || !ctrl.unit.hasLinks">Ei näytettävää sisältöä.</p>
-    <!--
-      <p ng-repeat="relatedEvent in ctrl.unit.relatedEvents">{{ relatedEvent.description }}</p> -->
       <ul class="list-group">
           <li class="list-group-item" ng-repeat="unit in ctrl.unit.relatedUnits">
           <a ng-href="units/page?uri={{ unit.id }}">{{ unit.name }}</a>
           </li>
         </ul>
-    <div ng-if="ctrl.unit.actors || ctrl.event.relatedEvents">
-    <h3 id="links-header" class="links-header-class">Taistelut</h3>
-    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.unit || !ctrl.unit.hasLinks">Ei näytettävää sisältöä.</p>
-     <ul class="list-group">
-          <li class="list-group-item" ng-repeat="event in ctrl.unit.relatedEvents">
+    <div ng-if="ctrl.unit.battles">
+	    <h3 id="links-header" class="links-header-class">Taistelut</h3>
+	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+	     <ul class="list-group">
+          <li class="list-group-item" ng-repeat="event in ctrl.unit.battles">
           <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
        </ul>
-     </div>
+     </div> 
      <div ng-if="ctrl.unit.relatedPersons">
     <h3 id="links-header" class="links-header-class">Henkilöitä</h3>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.unit || !ctrl.unit.hasLinks">Ei näytettävää sisältöä.</p>
-     <ul class="list-group">
+    <ul class="list-group">
           <li class="list-group-item" ng-repeat="person in ctrl.unit.relatedPersons">
           <a ng-href="persons/page?uri={{ person.id }}">{{ person.name }}</a>
           </li>
        </ul>
      </div>
+     <div ng-if="ctrl.unit.places">
+	    <h3 id="links-header" class="links-header-class">Paikat</h3>
+	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+	     <ul class="list-group">
+          <li class="list-group-item" ng-repeat="place in ctrl.unit.places">
+          <a ng-href="places/page?uri={{ place.id }}">{{ place.label }}</a>
+          </li>
+       </ul>
+     </div> 
   </div>
 </div>
