@@ -44,7 +44,6 @@ Person.prototype.getDescription = function() {
 Person.prototype.processLifeEvents = function(events) {
 	this.promotions=[];
 	var em=new EventMapper();
-	// console.log(events);
 	for (var i=0; i<events.length; i++) {
 		var 	e=events[i], 
 				etype=e.idclass, 
@@ -93,9 +92,7 @@ Person.prototype.processRelatedEvents = function(events) {
 	if (eventlist.length) this.events=eventlist;
 	if (battles.length) this.battles=battles;
 	if (articles.length) this.articles=articles;
-	if (articles.length) console.log(this.articles);
 		
-	// console.log(this.events);
 }
 
 

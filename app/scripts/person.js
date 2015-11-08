@@ -23,6 +23,7 @@ angular.module('eventsApp')
             });
         };
         
+        //	for info page:
         Person.prototype.fetchRelated = function() {
             var self = this;
             return self.fetchLifeEvents().then(
@@ -34,22 +35,47 @@ angular.module('eventsApp')
                 }
             });
         };
-		
+			
+			//	for demo page:
+			Person.prototype.fetchRelated2 = function() {
+            var self = this;
+            
+            return self.fetchLifeEvents().then(
+            	function() { return self.fetchRelatedUnits(); }).then(
+               function() { return self.fetchRelatedEvents(); }).then(
+               function() { return self.fetchNationalBib(); }).then(
+               function() { return self.fetchRelatedPhotos(); }).then(
+               function() {  if (self.battles || self.events || self.units || self.nationals || self.images ) {
+                    self.hasLinks = true;
+                }
+            });
+        };
+        
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
             	if (units.length) self.units = units;
             });
         };
-      
+      Person.prototype.fetchRelatedPhotos = function() {
+		  		var self = this;
+            return personService.getRelatedPhotos(self.id).then(function(imgs) {
+            	if (imgs.length) {
+            		imgs.forEach(function(img) {
+                    img.thumbnail = img.url.replace("_r500", "_r100");
+                   });
+                self.images = imgs;
+                }
+            });
+        };
+        
       	Person.prototype.fetchNationalBib = function() {
       		var self = this;
             return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
-            	//console.log('got NationalBib.');
-            	//console.log(nb);
             	if (nb.length) self.nationals = nb;
             });
       	}  
+      	
       	
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
@@ -192,8 +218,18 @@ angular.module('eventsApp')
 			    ?id foaf:familyName ?fname .
 			    FILTER (regex(?name, "^.*{0}.*$", "i")) 
 			}  # ORDER BY lcase(?fname)
-				LIMIT 50 */});
+				LIMIT 200 */});
 		
+		var photoQuery = prefixes + hereDoc(function() {/*!
+		SELECT * WHERE { 
+			VALUES ?person { {0} } .
+			?id dcterms:subject ?person . 
+			?id dcterms:created ?created .
+    		?id a <http://purl.org/dc/dcmitype/Image> .
+    		?id dcterms:description ?description .
+    		?id <http://schema.org/contentUrl> ?url . }
+    		*/});
+    	
 		this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -227,7 +263,12 @@ angular.module('eventsApp')
             	return personMapperService.makeObjectListNoGrouping(data);
             });
         };
-        
+       this.getRelatedPhotos = function(id) {
+				var qry = photoQuery.format("<{0}>".format(id));
+				return endpoint.getObjects(qry).then(function(data) {
+					return personMapperService.makeObjectList(data);
+            });
+        };
       this.getNationalBibliography = function(sukunimi,etunimi) {
       		var rgx ="XZYZ-FHWEJ";
       		if (etunimi) {
@@ -248,10 +289,8 @@ angular.module('eventsApp')
     		
         this.getItems = function (regx, controller) {
         		var qry = selectorQuery.format("{0}".format(regx));
-				console.log(qry);
 				return endpoint.getObjects(qry).then(function(data) {
-					console.log(data);
-            	var arr= personMapperService.makeObjectListNoGrouping(data);
+					var arr= personMapperService.makeObjectListNoGrouping(data);
             	controller.items=arr;
             	return arr;
             });
