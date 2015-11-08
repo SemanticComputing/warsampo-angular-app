@@ -32,7 +32,6 @@ angular.module('eventsApp')
 		  Unit.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return unitService.getRelatedUnit(self.id).then(function(units) {
-            	console.log(units);
             	// if (_.isArray(units)) { units=units[0]; }
             	// if (_.isArray(units.name)) { units.name=units.name[0]; }
             	self.relatedUnits=[];
@@ -58,13 +57,13 @@ angular.module('eventsApp')
         Unit.prototype.fetchRelatedPersons = function() {
 		  		var self = this;
             return unitService.getPersons(self.id).then(function(persons) {
-            	console.log(persons);
             	var 	em=new EventMapper(),
             			arr = [], arr2=[];
             	for (var i=0; i<persons.length; i++) {
             		var p=persons[i];
             		if ('name' in p) {
             			if (_.isArray(p.name)) p.name = p.name[0];
+            			if ('rank' in p && p.name.indexOf(' ')<0) p.name = p.rank +' '+ p.name;
             			arr.push(p);
 	            		if ('role' in p) { 
 	            			var pname =p.role+' '+p.name; 
@@ -80,6 +79,7 @@ angular.module('eventsApp')
 	            		
 	            	}
             	}
+            	
             	if (arr.length) self.relatedPersons = arr;
             	if (arr2.length) self.commanders = arr2;
             });
@@ -201,30 +201,31 @@ angular.module('eventsApp')
         
         var relatedPersonQry = prefixes + hereDoc(function() {/*!
 			     
-				SELECT DISTINCT ?id ?name ?role ?start_time ?end_time (COUNT(?s) AS ?no) WHERE {
-  VALUES ?unit { {0} } .
-    { ?evt a etypes:PersonJoining ;
-    crm:P143_joined ?id .
-    OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
-    ?evt  crm:P144_joined_with ?unit . 
-    OPTIONAL {
-    	?evt crm:P4_has_time-span ?time . 
-    	?time crm:P82a_begin_of_the_begin ?start_time ; 
-          crm:P82b_end_of_the_end ?end_time . 
-  	}
-  } UNION { 
-    ?id owl:sameAs ?mennytmies .
-    ?mennytmies a foaf:Person .
-    ?mennytmies casualties:osasto ?unit .
-  }
-  OPTIONAL { ?s ?p ?id . }
-  
-    ?id skos:prefLabel ?name .
-  } GROUP BY ?id ?name ?role ?no ?start_time ?end_time 
-	ORDER BY DESC(?no) LIMIT 8
+			SELECT DISTINCT ?id ?name ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE {
+			  VALUES ?unit { {0} } .
+			    { ?evt a etypes:PersonJoining ;
+			    crm:P143_joined ?id .
+			    OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
+			    ?evt  crm:P144_joined_with ?unit . 
+			    OPTIONAL {
+			    	?evt crm:P4_has_time-span ?time . 
+			    	?time crm:P82a_begin_of_the_begin ?start_time ; 
+			          crm:P82b_end_of_the_end ?end_time . 
+			  	}
+			  } UNION { 
+			    ?id owl:sameAs ?mennytmies .
+			    ?mennytmies a foaf:Person .
+			    ?mennytmies casualties:osasto ?unit .
+			  }
+			  OPTIONAL { ?s ?p ?id . }
+			  
+			    ?id skos:prefLabel ?name .
+			    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . }
+			  } GROUP BY ?id ?name ?role ?no ?rank ?start_time ?end_time 
+				ORDER BY DESC(?no) LIMIT 8
 			*/});
 			
-        this.getById = function(id) {
+		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
@@ -249,7 +250,7 @@ angular.module('eventsApp')
             });
         };
         
-        this.getPersons = function(unit) {
+		this.getPersons = function(unit) {
             var qry = relatedPersonQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectList(data)

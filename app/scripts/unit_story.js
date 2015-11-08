@@ -11,8 +11,6 @@ function init() {
 //////////////////////////////////////////
 /// SELECTOR
 
-
-
 function initSelector(id) {
 	var endpoint = "http://ldf.fi/warsa/sparql"; 
 	var query  = hereDoc(function() {/*!

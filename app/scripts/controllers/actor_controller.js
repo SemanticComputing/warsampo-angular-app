@@ -333,5 +333,15 @@ angular.module('eventsApp')
             return self.showWinterWar(uri);//.then(initSelector('unitSelector'));
         }
     };
-	
+	 
+	 self.showPerson = function() {
+	 	console.log('showPerson');
+        var uri = getSelectionUri('unitSelector');
+        if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
+        self.noReload = true;
+        $location.search('uri', uri);
+        if (uri) {
+            return self.showWinterWar(uri);//.then(initSelector('unitSelector'));
+        }
+    };
 });

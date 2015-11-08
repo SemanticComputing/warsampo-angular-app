@@ -6,11 +6,15 @@
 
 function Person() { }
 
+
 Person.prototype.getLabel = function() {
 	var label=this.sname;
-	if ('fname' in this && this.fname != '') { label += ', '+this.fname; }
 	if (!'note' in this) { this.note='' };
 	if (!'rank' in this) { this.rank='' };
+	
+	if ('fname' in this && this.fname != '') { 
+		label += ', '+this.fname; 
+		} // else if (this.rank != '') label = this.rank +' '+label;
 	return label;
 }
 

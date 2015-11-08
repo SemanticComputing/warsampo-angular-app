@@ -29,7 +29,7 @@ angular.module('eventsApp')
             	function() { return self.fetchRelatedUnits(); }).then(
                function() { return self.fetchRelatedEvents(); }).then(
                function() { return self.fetchNationalBib(); }).then(
-               function() {  if (self.battles || self.events || self.units ) {
+               function() {  if (self.battles || self.events || self.units || self.nationals ) {
                     self.hasLinks = true;
                 }
             });
@@ -184,11 +184,24 @@ angular.module('eventsApp')
 					}
 			*/});
 		
+		var selectorQuery  = prefixes + hereDoc(function() {/*!
+			SELECT DISTINCT ?name ?id WHERE { 
+			    
+			    ?id a atypes:MilitaryPerson .
+			    ?id skos:prefLabel ?name .
+			    ?id foaf:familyName ?fname .
+			    FILTER (regex(?name, "^.*{0}.*$", "i")) 
+			}  # ORDER BY lcase(?fname)
+				LIMIT 50 */});
+		
 		this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-                if (data.length) {
-                	  return personMapperService.makeObjectList(data)[0];
+            	var n=data.length;
+                if (n) {
+                	// because of temporary multiple labels in casualties data set:
+                		data=[data[n-1]];
+                	return personMapperService.makeObjectListNoGrouping(data)[0];
                 }
                 return $q.reject("Does not exist");
             });
@@ -225,11 +238,24 @@ angular.module('eventsApp')
 					var qry = nationalBibliographyQry.format("{0}".format());
 				}
 				var qry = nationalBibliographyQry.format("{0}".format(rgx));
-				console.log(qry);
 				var end2 = new SparqlService("http://ldf.fi/history/sparql");
             return end2.getObjects(qry).then(function(data) {
             	return personMapperService.makeObjectList(data);
             });
         };
+        
+        
+    		
+        this.getItems = function (regx, controller) {
+        		var qry = selectorQuery.format("{0}".format(regx));
+				console.log(qry);
+				return endpoint.getObjects(qry).then(function(data) {
+					console.log(data);
+            	var arr= personMapperService.makeObjectListNoGrouping(data);
+            	controller.items=arr;
+            	return arr;
+            });
+        	// return this.items;
+        }
 });
 

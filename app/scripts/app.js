@@ -55,6 +55,13 @@ angular
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
       })
+      .when('/persons/', {
+        templateUrl: 'views/person_timeline.html',
+        controller: 'PersonDemoCtrl',
+        controllerAs: 'ctrl'
+        /* controllerAs: 'timemapCtrl',
+        reloadOnSearch: false */
+      })
       .when('/times/page', {
         templateUrl: 'views/time_page.html',
         controller: 'TimePageCtrl',

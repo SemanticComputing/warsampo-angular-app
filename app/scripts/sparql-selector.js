@@ -186,7 +186,6 @@ function initKeyActions () {   // Set update action for all input fields; they u
 function initSelectorWidget (selectorId) {
 	// elem = document.getElementById(selectorId);
 	var elem = document.getElementById("unitSelector-SELECT");
-	// console.log(elem);
 	if (elem) {
 		buildWidgetElement(elem); // Update related SELECT component
 		elem.setAttribute("initialResults",elem.innerHTML);
