@@ -8,11 +8,11 @@ angular.module('eventsApp')
             element.error(function() {
                 var src;
                 if (element.data('thumbnail')) {
-                    src = 'images/no-image-sm.png';
+                    src = '/images/no-image-sm.png';
                 } else {
-                    src = 'images/no-image.png';
+                    src = '/images/no-image.png';
                 }
-                if (element.attr('src') !== src) {
+                if (!_.contains(element.attr('src'), src)) {
                     element.attr('src', src);
                 } else {
                     element.attr('src', '');
@@ -21,7 +21,7 @@ angular.module('eventsApp')
         }
     };
 })
-.directive('related', function() {
+.directive('relatedLinks', function() {
     return {
         restrict:'E',
         scope: {
@@ -55,6 +55,7 @@ angular.module('eventsApp')
                 target = "_self";
             } else {
                 path = "page";
+                target = "_self";
             }
 
             element.attr('href', path + '?uri=' + objId);

@@ -101,136 +101,121 @@ angular.module('eventsApp')
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
-		var personQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time ?casualty WHERE { 
-					  VALUES ?id { {0} }
-					  ?id foaf:familyName ?sname .
-					  OPTIONAL { ?id foaf:firstName ?fname . }
-					  OPTIONAL { ?id crm:P3_has_note ?note . }
-					  OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }
-					  OPTIONAL { 
-				      	?id owl:sameAs ?casualty .
-				      	?casualty a foaf:Person .
-				    		OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }
-				   		OPTIONAL { ?casualty casualties:kuolinaika ?death_time . }
-				  		}
-				} 
-  		 */});
+		var personQry = prefixes +
+		   ' 	SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time ?casualty WHERE { ' +
+		   ' 		  VALUES ?id { {0} }' +
+		   ' 		  ?id foaf:familyName ?sname .' +
+		   ' 		  OPTIONAL { ?id foaf:firstName ?fname . }' +
+		   ' 		  OPTIONAL { ?id crm:P3_has_note ?note . }' +
+		   ' 		  OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }' +
+		   ' 		  OPTIONAL { ' +
+		   ' 	      	?id owl:sameAs ?casualty .' +
+		   ' 	      	?casualty a foaf:Person .' +
+		   ' 	    		OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
+		   ' 	   		OPTIONAL { ?casualty casualties:kuolinaika ?death_time . }' +
+		   ' 	  		}' +
+		   ' 	} ';
   		 
-        var personLifeEventsQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank ?rankid WHERE { 
-		    
-  		 VALUES ?person { {0} }
-			{ ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . }
-		  	 UNION 
-            { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . }
-          UNION 
-            { ?id a etypes:Promotion ; crm:P11_had_participant ?person . 
-            OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }
-            }
-  
-            ?id a ?idclass .
-            ?id crm:P4_has_time-span ?time . 
-            ?time crm:P82a_begin_of_the_begin ?start_time .
-            ?time crm:P82b_end_of_the_end ?end_time .
-          
-		} ORDER BY ?start_time 
-        */});
+        var personLifeEventsQry = prefixes +
+        ' SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank ?rankid WHERE { ' +
+  	   '  VALUES ?person { {0} } ' +
+	   ' 	{ ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
+	   '   	 UNION  ' +
+       '     { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . } ' +
+       '   UNION  ' +
+       '     { ?id a etypes:Promotion ; crm:P11_had_participant ?person .  ' +
+       '     OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . } ' +
+       '     } ' +
+       '     ?id a ?idclass . ' +
+       '     ?id crm:P4_has_time-span ?time .  ' +
+       '     ?time crm:P82a_begin_of_the_begin ?start_time . ' +
+       '     ?time crm:P82b_end_of_the_end ?end_time . ' +
+	   ' } ORDER BY ?start_time  ';
         
-        var relatedEventQry = prefixes + hereDoc(function() {/*!
-        SELECT DISTINCT ?id ?idclass ?description ?unit ?role ?link ?start_time WHERE { 
-    		  VALUES ?person { {0} } . # { :person_7 } # 
-			    
-			    { ?id a etypes:Battle ; 
-			      	crm:P11_had_participant ?person ; 
-			      	events:hadUnit ?unit ; 
-			      	skos:prefLabel ?description . }
-			    UNION
-			    { ?id crm:P11_had_participant ?person ; 
-			    	skos:prefLabel ?description . }
-			    UNION 
-			    { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person .
-			      {
-			      ?id crm:P107_1_kind_of_member ?role . 
-			      ?id crm:P144_joined_with ?unit. 
-			      ?unit skos:prefLabel ?description . 
-			      }
-			    } 
-			    UNION
-			    {
-               ?id a <http://ldf.fi/warsa/articles/article/Article> ;
-               dcterms:hasFormat ?link ;
-               <http://purl.org/dc/elements/1.1/title> ?description ;
-               dcterms:subject ?person .
-             }
-			    
-			   ?id a ?idclass .
-			  	 
-			    OPTIONAL {
-			      ?id crm:P4_has_time-span ?time . 
-			      ?time crm:P82a_begin_of_the_begin ?start_time ; 
-			      		crm:P82b_end_of_the_end ?end_time . 
-			    }
-			  	
-			    OPTIONAL { 
-			      ?id crm:P7_took_place_at ?place_id .
-			      OPTIONAL {
-			        ?place_id skos:prefLabel ?place_label . 
-			        ?place_id geo:lat ?lat ;  geo:long ?lon . 
-			      }
-			    }
-			} ORDER BY ?start_time ?end_time
-		*/});
+        var relatedEventQry = prefixes +
+       ' SELECT DISTINCT ?id ?idclass ?description ?unit ?role ?link ?start_time WHERE { ' +
+       ' 	  VALUES ?person { {0} } . ' +
+	   ' 	    { ?id a etypes:Battle ; ' +
+	   ' 	      	crm:P11_had_participant ?person ; ' +
+	   ' 	      	events:hadUnit ?unit ; ' +
+	   ' 	      	skos:prefLabel ?description . }' +
+	   ' 	    UNION ' +
+	   ' 	    { ?id crm:P11_had_participant ?person ;  ' +
+	   ' 	    	skos:prefLabel ?description . } ' +
+	   ' 	    UNION  ' +
+	   ' 	    { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
+	   ' 	      { ' +
+	   ' 	      ?id crm:P107_1_kind_of_member ?role .  ' +
+	   ' 	      ?id crm:P144_joined_with ?unit. ' +
+	   ' 	      ?unit skos:prefLabel ?description . '+
+	   ' 	      } '+
+	   ' 	    }  '+
+	   ' 	    UNION '+
+	   ' 	    { '+
+       '        ?id a <http://ldf.fi/warsa/articles/article/Article> ; '+
+       '        dcterms:hasFormat ?link ; '+
+       '        <http://purl.org/dc/elements/1.1/title> ?description ; '+
+       '        dcterms:subject ?person . '+
+       '      } ' +
+	   ' 	   ?id a ?idclass . ' +
+	   ' 	    OPTIONAL { ' +
+	   ' 	      ?id crm:P4_has_time-span ?time .  ' +
+	   ' 	      ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
+	   ' 	      		crm:P82b_end_of_the_end ?end_time .  ' +
+	   ' 	    } ' +
+	   ' 	    OPTIONAL { ' +
+	   ' 	      ?id crm:P7_took_place_at ?place_id . ' +
+	   ' 	      OPTIONAL { ' +
+	   ' 	        ?place_id skos:prefLabel ?place_label .  ' +
+	   ' 	        ?place_id geo:lat ?lat ;  geo:long ?lon .  ' +
+	   ' 	      } ' +
+	   ' 	    } ' +
+	   ' 	} ORDER BY ?start_time ?end_time ';
        
-       var relatedUnitQry = prefixes + hereDoc(function() {/*!
-			   SELECT DISTINCT ?id ?description ?role WHERE {
-				VALUES ?person { {0} } . # { :person_7 } # 
-			    { ?evt a etypes:PersonJoining ;
-			          crm:P143_joined ?person .
-                OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
-			          ?evt  crm:P144_joined_with ?id . 
-			     } UNION { 
-			          ?person owl:sameAs ?mennytmies .
-			          ?mennytmies a foaf:Person .
-			          ?mennytmies casualties:osasto ?id . 
-			    }
-			   ?id skos:prefLabel ?description .
-			} 
-			*/});
+       var relatedUnitQry = prefixes +
+		   '    SELECT DISTINCT ?id ?description ?role WHERE { ' +
+		   ' 	VALUES ?person { {0} } . ' +
+		   '     { ?evt a etypes:PersonJoining ; ' +
+		   '           crm:P143_joined ?person . ' +
+           '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
+		   '           ?evt  crm:P144_joined_with ?id .  ' +
+		   '      } UNION {  ' +
+		   '           ?person owl:sameAs ?mennytmies . ' +
+		   '           ?mennytmies a foaf:Person . ' +
+		   '           ?mennytmies casualties:osasto ?id .  ' +
+		   '     } ' +
+		   '    ?id skos:prefLabel ?description . ' +
+		   ' }  ';
 		
-		// new SparqlService("http://ldf.fi/history/sparql");
-		var nationalBibliographyQry = hereDoc(function() {/*!
-					PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-					PREFIX kb: <http://ldf.fi/history/kb>
-					PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
-					
-					SELECT  ?id ?label WHERE {
-					  ?id a crm:E21_Person .
-					  ?id rdfs:label ?label .
-					  FILTER (regex(?label, "{0}", "i"))
-					}
-			*/});
+		var nationalBibliographyQry =
+			   ' 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
+			   ' 	PREFIX kb: <http://ldf.fi/history/kb> ' +
+			   ' 	PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
+			   ' 	SELECT  ?id ?label WHERE { ' +
+			   ' 	  ?id a crm:E21_Person . ' +
+			   ' 	  ?id rdfs:label ?label . ' +
+			   ' 	  FILTER (regex(?label, "{0}", "i")) ' +
+			   ' 	} ';
 		
-		var selectorQuery  = prefixes + hereDoc(function() {/*!
-			SELECT DISTINCT ?name ?id WHERE { 
-				GRAPH <http://ldf.fi/warsa/actors> {
-				    ?id a atypes:MilitaryPerson .
-				    ?id skos:prefLabel ?name .
-				    ?id foaf:familyName ?fname .
-				    FILTER (regex(?name, "^.*{0}.*$", "i"))
-				}
-			}  # ORDER BY lcase(?fname)
-			LIMIT 200 */});
+		var selectorQuery  = prefixes +
+		  '  SELECT DISTINCT ?name ?id WHERE { ' +
+		  '  	GRAPH <http://ldf.fi/warsa/actors> { ' +
+		  '  	    ?id a atypes:MilitaryPerson . ' +
+		  '  	    ?id skos:prefLabel ?name . ' +
+		  '  	    ?id foaf:familyName ?fname . ' +
+		  '  	    FILTER (regex(?name, "^.*{0}.*$", "i")) ' +
+		  '  	} ' +
+		  '  } ' +
+		  '  LIMIT 200 ';
 		
-		var photoQuery = prefixes + hereDoc(function() {/*!
-		SELECT * WHERE { 
-			VALUES ?person { {0} } .
-			?id a <http://purl.org/dc/dcmitype/Image> .
-    		?id dcterms:subject ?person . 
-			?id dcterms:created ?created .
-    		?id dcterms:description ?description .
-    		?id <http://schema.org/contentUrl> ?url . }
-    		*/});
+		var photoQuery = prefixes +
+   ' 	SELECT * WHERE {  ' +
+   ' 		VALUES ?person { {0} } . ' +
+   ' 		?id a <http://purl.org/dc/dcmitype/Image> . ' +
+   ' 		?id dcterms:subject ?person .  ' +
+   ' 		?id dcterms:created ?created . ' +
+   ' 		?id dcterms:description ?description . ' +
+   ' 		?id <http://schema.org/contentUrl> ?url . } ';
     	
 		this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));
