@@ -20,6 +20,7 @@ Person.prototype.getLabel = function() {
 
 Person.prototype.getDescription = function() {
 	var arr=[];
+	//arr[0]="<a href='link'>test</a>";
 	var em=new EventMapper();
 	if (this.birth_time) {
 		var edate=em.getExtremeDate(this.birth_time, true);

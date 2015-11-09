@@ -8,19 +8,19 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('PersonPageCtrl', function($routeParams, $q, $rootScope, eventService, personService) {
+  .controller('RankPageCtrl', function($routeParams, $q, $rootScope, eventService, rankService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
     if ($routeParams.uri) {
         self.isLoadingEvent = true;
         self.isLoadingLinks = false;
-        personService.getById($routeParams.uri)
-        .then(function(person) {
-            self.person = person; 
+        rankService.getById($routeParams.uri)
+        .then(function(rank) {
+            self.rank = rank; 
             self.isLoadingEvent = false;
 
-            return person.fetchRelated();
+            return rank.fetchRelatedPersons();
         }).catch(function() {
             self.isLoadingEvent = false;
             self.isLoadingLinks = false;
