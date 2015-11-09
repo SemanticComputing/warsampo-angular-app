@@ -21,6 +21,16 @@ angular.module('eventsApp')
         }
     };
 })
+.directive('related', function() {
+    return {
+        restrict:'E',
+        scope: {
+            title: "=",
+            related: "="
+        },
+        templateUrl: "views/link_collapse_partial.html"
+    };
+})
 .directive('pageLink', function() {
     return {
         restrict:'A',
@@ -28,7 +38,9 @@ angular.module('eventsApp')
             var path;
             var target;
             var objId = attrs.id;
-            if (_.includes(objId, '/events/')) {
+            if (_.includes(objId, '/times/')) {
+                path = 'times/page';
+            } else if (_.includes(objId, '/events/')) {
                 path = 'events/page';
             } else if (_.includes(objId, '/photographs/')) {
                 path = 'photographs/page';

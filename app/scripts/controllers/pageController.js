@@ -8,10 +8,30 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('PageCtrl', function($routeParams, $q, $rootScope, eventService) {
-    //$rootScope.showSettings = null;
+  .controller('PageCtrl', function($routeParams, $q, $rootScope, eventService,
+              photoService, Settings) {
+
     $rootScope.showHelp = null;
+
     var self = this;
+    self.images = [];
+
+    var fetchImages = function(event) {
+        self.isLoadingImages = true;
+        var photoConfig = Settings.getPhotoConfig();
+        self.images = [];
+        photoService.getRelatedPhotosForEvent(event, photoConfig).then(function(imgs) {
+            self.images = imgs;
+            self.isLoadingImages = false;
+        });
+    };
+
+    self.fetchImages = function() {
+        fetchImages(self.event);
+    };
+
+    Settings.setApplyFunction(self.fetchImages);
+
     if ($routeParams.uri) {
         self.isLoadingEvent = true;
         self.isLoadingLinks = true;
@@ -20,7 +40,7 @@ angular.module('eventsApp')
             self.event = event; 
             self.isLoadingEvent = false;
 
-            return event.fetchRelated();
+            return $q.all(event.fetchRelated(), fetchImages(event));
         })
         .then(function() { 
             var placeEventPromise = eventService.getEventsByPlaceId(_.pluck(self.event.places, 'id'));

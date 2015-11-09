@@ -33,6 +33,8 @@ angular.module('eventsApp')
         Settings.photoDaysAfter = self.photoDaysAfterSetting;
         Settings.photoPlace = self.photoPlaceSetting;
         Settings.showCasualtyHeatmap = self.showCasualtyHeatmap;
+
+        Settings.apply();
     };
 
     self.updateHeatmap = function() {

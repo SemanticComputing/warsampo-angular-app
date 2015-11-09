@@ -17,8 +17,18 @@ angular.module('eventsApp')
         self.heatmapUpdater();
     };
 
+    self.updater = function() { };
+
+    self.apply = function() {
+        self.updater();
+    };
+
     self.setHeatmapUpdater = function(fun) {
         self.heatmapUpdater = fun;
+    };
+
+    self.setApplyFunction = function(fun) {
+        self.updater = fun;
     };
 
     self.getPhotoConfig = function() {

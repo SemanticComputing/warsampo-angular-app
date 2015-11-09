@@ -74,6 +74,7 @@ EventMapper.prototype.makeObject = function(event) {
     e.id = event.id.value;
     e.type = event.type ? event.type.value : '';
     e.description = event.description.value;
+    e.label = e.description;
     e.time_id = event.time_id.value;
     e.start_time = event.start_time.value;
     e.end_time = event.end_time.value;

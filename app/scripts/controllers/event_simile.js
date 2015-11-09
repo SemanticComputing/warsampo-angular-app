@@ -80,7 +80,6 @@ angular.module('eventsApp')
     var fetchImages = function(item) {
         self.isLoadingImages = true;
         var photoConfig = Settings.getPhotoConfig();
-        console.log(photoConfig);
         self.images = [];
         photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
             self.images = imgs;
@@ -89,9 +88,6 @@ angular.module('eventsApp')
     };
 
     self.updateTimeline = function() {
-        self.current = undefined;
-        self.images = [];
-
         self.visualize();
     };
 
@@ -189,11 +185,16 @@ angular.module('eventsApp')
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
             band.addOnScrollListener(clearHeatmap);
+            if (highlights) {
+                tm.timeline.getBand(1).setMaxVisibleDate(new Date(highlights[0].startDate));
+            }
+            tm.timeline.setAutoWidth();
             getCasualtyLocations().then(function(locations) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: locations,
                     radius: 20
                 });
+                Settings.setApplyFunction(self.updateTimeline);
                 Settings.setHeatmapUpdater(self.updateHeatmap);
                 self.updateHeatmap();
             });

@@ -243,7 +243,8 @@ angular.module('eventsApp')
         };
 
         this.getEventById = function(id) {
-            return endpoint.getObjects(singleEventQry.format('<' + id + '>')).then(function(data) {
+            var qry = singleEventQry.format('<' + id + '>');
+            return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
                     return eventMapperService.makeObjectList(data)[0];
                 }
