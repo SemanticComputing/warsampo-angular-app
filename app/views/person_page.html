@@ -31,7 +31,7 @@
 	    <p ng-if="!ctrl.person || !ctrl.person.hasLinks">Ei näytettävää sisältöä.</p>
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="event in ctrl.person.events">
-          <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          <a page-link data-id="{{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
        </ul>
      </div>
@@ -41,7 +41,7 @@
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="event in ctrl.person.units">
-          <a ng-href="units/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          <a page-link data-id="{{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
        </ul>
      </div> 
@@ -51,7 +51,7 @@
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="event in ctrl.person.battles">
-          <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+          <a page-link data-id="{{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
        </ul>
      </div> 
@@ -61,7 +61,7 @@
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="rank in ctrl.person.rankLinks">
-          <a ng-href="ranks/page?uri={{ rank.id }}">{{ rank.label | words:10 }}</a>
+          <a page-link data-id="{{ rank.id }}">{{ rank.label | words:10 }}</a>
           </li>
        </ul>
      </div>

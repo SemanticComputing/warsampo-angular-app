@@ -46,8 +46,10 @@ angular.module('eventsApp')
                 path = 'photographs/page';
             } else if (_.includes(objId, '/person_')) {
                 path = 'persons/page';
-            } else if (_.includes(objId, '/unit_')) {
+            } else if (_.includes(objId, '/actor_')) {
                 path = 'units/page';
+            } else if (_.includes(objId, '/ranks/')) {
+                path = 'ranks/page';
             } else if (_.includes(objId, '/narc-menehtyneet')) {
                 path = 'casualties/page';
             } else if (_.includes(objId, '/places/')) {
