@@ -102,7 +102,6 @@ angular.module('eventsApp')
            '             ?id a foaf:Person . ' +
            '             VALUES ?unit { {2} } ' +
            '             ?id casualties:kuolinaika ?death_date . ' +
-           '             # FILTER(?death_date >= "{0}"^^xsd:date && ?death_date <= "{1}"^^xsd:date) ' +
            '             FILTER(?death_date >= "1939-09-09"^^xsd:date && ?death_date <= "1940-03-30"^^xsd:date) ' +
            '             ?id casualties:kuolinkunta ?kunta . ' +
            '             ?id casualties:osasto ?unit . ' +

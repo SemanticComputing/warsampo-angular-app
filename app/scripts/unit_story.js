@@ -18,7 +18,6 @@ function initSelector(id) {
 '     PREFIX events: <http://ldf.fi/warsa/events/> ' +
 '     PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/>  ' +
 '     PREFIX etypes: <http://ldf.fi/warsa/events/event_types/>  ' +
-'     # PREFIX ranks: <http://ldf.fi/warsa/actors/ranks/> ' +
 '     PREFIX dcterms: <http://purl.org/dc/terms/>  ' +
 '     PREFIX foaf: <http://xmlns.com/foaf/0.1/>  ' +
 '     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  ' +
