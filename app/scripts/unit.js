@@ -62,8 +62,8 @@ angular.module('eventsApp')
             	for (var i=0; i<persons.length; i++) {
             		var p=persons[i];
             		if ('name' in p) {
-            			if (_.isArray(p.name)) p.name = p.name[0];
-            			if ('rank' in p && p.name.indexOf(' ')<0) p.name = p.rank +' '+ p.name;
+            			if (_.isArray(p.name)) {p.name = p.name[0];}
+            			if ('rank' in p && p.name.indexOf(' ')<0) {p.name = p.rank +' '+ p.name;}
             			arr.push(p);
 	            		if ('role' in p) { 
 	            			var pname =p.role+' '+p.name; 
@@ -73,15 +73,15 @@ angular.module('eventsApp')
 									edate=em.getExtremeDate(edate, true);
 									edate2=em.getExtremeDate(edate2, false);
 									edate=em.formatDateRange(edate,edate2);
-	            				arr2.push(pname + ', '+edate); // +"–");
-	            			} else arr2.push(pname);
+	            				arr2.push(pname + ', '+edate);
+	            			} else { arr2.push(pname); }
 	            		}
 	            		
 	            	}
             	}
             	
-            	if (arr.length) self.relatedPersons = arr;
-            	if (arr2.length) self.commanders = arr2;
+            	if (arr.length) {self.relatedPersons = arr;}
+            	if (arr2.length) {self.commanders = arr2;}
             });
         };
         
@@ -237,8 +237,7 @@ angular.module('eventsApp')
 
 		this.getUnitEvents = function(id) {
 				var qry = unitEventQry.format("<{0}>".format(id));
-				//console.log(qry);
-            return endpoint.getObjects(qry).then(function(data) {
+				return endpoint.getObjects(qry).then(function(data) {
             	return unitMapperService.makeObjectListNoGrouping(data);
             });
         };
@@ -253,7 +252,7 @@ angular.module('eventsApp')
 		this.getPersons = function(unit) {
             var qry = relatedPersonQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
-                return unitMapperService.makeObjectList(data)
+                return unitMapperService.makeObjectList(data);
             });
         };
 });

@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('rankService', function($q, SparqlService, rankMapperService,
-                Rank, eventService) {
+                Rank) {
         
         var rankService = this;
 				
@@ -18,7 +18,6 @@ angular.module('eventsApp')
             			pers.label = ('fname' in pers) ? pers.fname +' '+pers.sname : pers.sname;
             		}
             		self.persons = persons;
-            		
             	}
             });
         };
@@ -58,17 +57,18 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
 		var rankQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?label ?abbrev WHERE { 
+				SELECT DISTINCT ?id ?label ?abbrev ?comment WHERE { 
 			        VALUES ?id { {0} } . # <http://ldf.fi/warsa/actors/ranks/Kersantti> 
 				    ?id a <http://ldf.fi/warsa/actors/ranks/Rank> .
 				    ?id skos:prefLabel ?label .
+				    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment . }
 				    OPTIONAL { ?id skos:altLabel ?abbrev . }
 				}   
   		 */});
   		 
         var rankPersonQry = prefixes + hereDoc(function() {/*!
 				SELECT DISTINCT ?id ?sname ?fname WHERE { 
-			        VALUES ?rank { {0} } .
+			       VALUES ?rank { {0} } .
 				    ?id a atypes:MilitaryPerson .
 			  
 			        { ?id :hasRank ?rank . } 
@@ -81,14 +81,13 @@ angular.module('eventsApp')
 			        ?id foaf:familyName ?sname .
 					OPTIONAL { ?id foaf:firstName ?fname . }
 			  
-				}   LIMIT 20
+				}  LIMIT 20
         */});
         
         
 		this.getById = function(id) {
             var qry = rankQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-            	var n=data.length;
             	if (data.length) {
                 	return rankMapperService.makeObjectList(data)[0];
                 }

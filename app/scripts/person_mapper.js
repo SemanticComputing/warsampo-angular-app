@@ -9,14 +9,14 @@ function Person() { }
 
 Person.prototype.getLabel = function() {
 	var label=this.sname;
-	if (!'note' in this) { this.note='' };
-	if (!'rank' in this) { this.rank='' };
+	if (!('note' in this)) { this.note='' };
+	if (!('rank' in this)) { this.rank='' };
 	
 	if ('fname' in this && this.fname != '') { 
 		label += ', '+this.fname; 
-		} // else if (this.rank != '') label = this.rank +' '+label;
+		} 
 	return label;
-}
+};
 
 Person.prototype.getDescription = function() {
 	var arr=[];
@@ -35,15 +35,24 @@ Person.prototype.getDescription = function() {
 	if (this.birth || this.death) {
 		arr.push(this.birth + ' – ' + this.death);
 	}
-	if (this.rank) arr.push(this.rank);
+	if (this.rank) { 
+		arr.push(this.rank);
+	}
 	arr=arr.concat(this.promotions);
-	if (this.note) arr.push(this.note);
+	if (this.note) { 
+		arr.push(this.note);
+	}
 	
 	return arr;
-}
+};
 
 Person.prototype.processLifeEvents = function(events) {
 	this.promotions=[];
+	this.rankLinks=[];
+	if ('rank' in this && 'rankid' in this) {
+		this.rankLinks.push({id:this.rankid, label:this.rank});
+	}
+	
 	var em=new EventMapper();
 	for (var i=0; i<events.length; i++) {
 		var 	e=events[i], 
@@ -59,11 +68,12 @@ Person.prototype.processLifeEvents = function(events) {
 			this.birth = edate;
 		} else if (etype.indexOf('Promotion')>-1) {
 			this.promotions.push(e.rank+' '+edate);
-		} 
+			this.rankLinks.push({id:e.rankid, label:e.rank});
+		}
 	}
-	if (!this.birth) this.birth='';
-	if (!this.death) this.death='';
-}
+	if (!this.birth) {this.birth='';}
+	if (!this.death) {this.death='';}
+};
 
 Person.prototype.processRelatedEvents = function(events) {
 	var eventlist=[];
@@ -90,11 +100,11 @@ Person.prototype.processRelatedEvents = function(events) {
 		}
 	}
 	
-	if (eventlist.length) this.events=eventlist;
-	if (battles.length) this.battles=battles;
-	if (articles.length) this.articles=articles;
+	if (eventlist.length) {this.events=eventlist;}
+	if (battles.length) {this.battles=battles;}
+	if (articles.length) {this.articles=articles;}
 		
-}
+};
 
 
 function PersonMapper() { }

@@ -53,12 +53,30 @@
           </li>
        </ul>
      </div> 
+     <div ng-if="ctrl.person.rankLinks">
+	    <h3 id="links-header" class="links-header-class">Sotilasarvot</h3>
+	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+	     <ul class="list-group">
+          <li class="list-group-item" ng-repeat="rank in ctrl.person.rankLinks">
+          <a ng-href="ranks/page?uri={{ rank.id }}">{{ rank.label | words:10 }}</a>
+          </li>
+       </ul>
+     </div>
+     <div ng-if="ctrl.person.casualty">
+	    <h3 id="links-header" class="links-header-class">Menehtyneet-tietokanta</h3>
+	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+	     <ul class="list-group">
+          <li class="list-group-item" >
+          <a ng-href="casualties/page?uri={{ ctrl.person.casualty }}">{{ ctrl.person.getLabel() | words:10 }}</a>
+          </li>
+       </ul>
+     </div>
       <div ng-if="ctrl.person.articles">
 	    <h3 id="links-header" class="links-header-class">Kansa Taisteli -artikkelit</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="art in ctrl.person.articles">
-          <a ng-href="{{ art.link }}" target="kata">{{ art.description | words:10 }}</a>
+          <a ng-href="{{ art.link }}">{{ art.description | words:10 }}</a>
           </li>
        </ul>
      </div> 

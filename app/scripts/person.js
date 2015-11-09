@@ -54,9 +54,10 @@ angular.module('eventsApp')
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
-            	if (units.length) self.units = units;
+            	if (units.length) { self.units = units; }
             });
         };
+        
       Person.prototype.fetchRelatedPhotos = function() {
 		  		var self = this;
             return personService.getRelatedPhotos(self.id).then(function(imgs) {
@@ -72,9 +73,9 @@ angular.module('eventsApp')
       	Person.prototype.fetchNationalBib = function() {
       		var self = this;
             return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
-            	if (nb.length) self.nationals = nb;
+            	if (nb.length) { self.nationals = nb; }
             });
-      	}  
+      	};
       	
       	
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
@@ -101,23 +102,23 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
 		var personQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?birth_time ?death_time WHERE { 
+				SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time ?casualty WHERE { 
 					  VALUES ?id { {0} }
 					  ?id foaf:familyName ?sname .
 					  OPTIONAL { ?id foaf:firstName ?fname . }
 					  OPTIONAL { ?id crm:P3_has_note ?note . }
-					  OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . }
+					  OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }
 					  OPTIONAL { 
-				      	?id owl:sameAs ?mennytmies .
-				      	?mennytmies a foaf:Person .
-				    		OPTIONAL { ?mennytmies casualties:syntymaeaika ?birth_time . }
-				   		OPTIONAL { ?mennytmies casualties:kuolinaika ?death_time . }
+				      	?id owl:sameAs ?casualty .
+				      	?casualty a foaf:Person .
+				    		OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }
+				   		OPTIONAL { ?casualty casualties:kuolinaika ?death_time . }
 				  		}
 				} 
   		 */});
   		 
         var personLifeEventsQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank  WHERE { 
+				SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank ?rankid WHERE { 
 		    
   		 VALUES ?person { {0} }
 			{ ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . }
@@ -125,7 +126,7 @@ angular.module('eventsApp')
             { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . }
           UNION 
             { ?id a etypes:Promotion ; crm:P11_had_participant ?person . 
-            OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . }
+            OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }
             }
   
             ?id a ?idclass .
@@ -133,7 +134,7 @@ angular.module('eventsApp')
             ?time crm:P82a_begin_of_the_begin ?start_time .
             ?time crm:P82b_end_of_the_end ?end_time .
           
-		} ORDER BY ?start_time
+		} ORDER BY ?start_time 
         */});
         
         var relatedEventQry = prefixes + hereDoc(function() {/*!
@@ -193,7 +194,7 @@ angular.module('eventsApp')
 			          ?mennytmies a foaf:Person .
 			          ?mennytmies casualties:osasto ?id . 
 			    }
-			    OPTIONAL { ?id skos:prefLabel ?description . }
+			   ?id skos:prefLabel ?description .
 			} 
 			*/});
 		
@@ -212,20 +213,21 @@ angular.module('eventsApp')
 		
 		var selectorQuery  = prefixes + hereDoc(function() {/*!
 			SELECT DISTINCT ?name ?id WHERE { 
-			    
-			    ?id a atypes:MilitaryPerson .
-			    ?id skos:prefLabel ?name .
-			    ?id foaf:familyName ?fname .
-			    FILTER (regex(?name, "^.*{0}.*$", "i")) 
+				GRAPH <http://ldf.fi/warsa/actors> {
+				    ?id a atypes:MilitaryPerson .
+				    ?id skos:prefLabel ?name .
+				    ?id foaf:familyName ?fname .
+				    FILTER (regex(?name, "^.*{0}.*$", "i"))
+				}
 			}  # ORDER BY lcase(?fname)
-				LIMIT 200 */});
+			LIMIT 200 */});
 		
 		var photoQuery = prefixes + hereDoc(function() {/*!
 		SELECT * WHERE { 
 			VALUES ?person { {0} } .
-			?id dcterms:subject ?person . 
+			?id a <http://purl.org/dc/dcmitype/Image> .
+    		?id dcterms:subject ?person . 
 			?id dcterms:created ?created .
-    		?id a <http://purl.org/dc/dcmitype/Image> .
     		?id dcterms:description ?description .
     		?id <http://schema.org/contentUrl> ?url . }
     		*/});
@@ -246,7 +248,7 @@ angular.module('eventsApp')
 		this.getRelatedUnits = function(id) {
 				var qry = relatedUnitQry.format("<{0}>".format(id));
 				return endpoint.getObjects(qry).then(function(data) {
-            	return personMapperService.makeObjectListNoGrouping(data);
+					return personMapperService.makeObjectListNoGrouping(data);
             });
         };
         
@@ -263,12 +265,14 @@ angular.module('eventsApp')
             	return personMapperService.makeObjectListNoGrouping(data);
             });
         };
+        
        this.getRelatedPhotos = function(id) {
 				var qry = photoQuery.format("<{0}>".format(id));
 				return endpoint.getObjects(qry).then(function(data) {
 					return personMapperService.makeObjectList(data);
             });
         };
+        
       this.getNationalBibliography = function(sukunimi,etunimi) {
       		var rgx ="XZYZ-FHWEJ";
       		if (etunimi) {
