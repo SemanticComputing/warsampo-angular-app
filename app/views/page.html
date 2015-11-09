@@ -11,7 +11,7 @@
         <span ng-repeat="place in ctrl.event.places">
           <a page-link data-id="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
         </span>
-        {{ ctrl.event.timeSpanString }} - {{ ctrl.event.type }}
+        <a page-link data-id="{{ ctrl.event.time_id }}">{{ ctrl.event.timeSpanString }}</a> - {{ ctrl.event.type }}
       </h2>
       <p>{{ ctrl.event.description }}</p>
       <p><a ng-href="events/?uri={{ ctrl.event.id }}">Näytä aikajanalla</a></p>
@@ -44,8 +44,8 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.event || !ctrl.event.hasLinks">Linkkejä ei löytynyt</p>
     <div id="linkContent">
-      <related title="'Muita tapahtumia samalla aikaan'" related="ctrl.relatedEventsByTime" />
-      <related title="'Muita tapahtumia samaan alueella'" related="ctrl.relatedEventsByPlace" />
+      <related title="'Muita tapahtumia samaan aikaan'" related="ctrl.relatedEventsByTime" />
+      <related title="'Muita tapahtumia samalla alueella'" related="ctrl.relatedEventsByPlace" />
       <related title="'Tapahtumaan liittyviä henkilöitä'" related="ctrl.event.actors" />
     </div>
   </div>
