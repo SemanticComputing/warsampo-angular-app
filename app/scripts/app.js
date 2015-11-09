@@ -49,6 +49,11 @@ angular
         controller: 'PersonPageCtrl',
         controllerAs: 'ctrl'
       })
+      .when('/ranks/page', {
+        templateUrl: 'views/rank_page.html',
+        controller: 'RankPageCtrl',
+        controllerAs: 'ctrl'
+      })
       .when('/units/', {
         templateUrl: 'views/actor_timeline.html',
         controller: 'ActorCtrl',
@@ -58,9 +63,8 @@ angular
       .when('/persons/', {
         templateUrl: 'views/person_timeline.html',
         controller: 'PersonDemoCtrl',
-        controllerAs: 'ctrl'
-        /* controllerAs: 'timemapCtrl',
-        reloadOnSearch: false */
+        controllerAs: 'ctrl',
+         reloadOnSearch: false
       })
       .when('/times/page', {
         templateUrl: 'views/time_page.html',
