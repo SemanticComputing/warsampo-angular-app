@@ -1,0 +1,105 @@
+<div ng-include="'views/setting_accordion.html'"></div>
+<div class="row">
+  <div class="col-sm-2">
+    <input type="text" value="" id="personsearch" class="textfield" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
+    <br>
+    <select ng-model="ctrl.selectedItem" ng-change="ctrl.updatePerson()" size="32" class="textfield" id="personselect"
+            ng-options="item as item.name for item in ctrl.items"></select>
+	</div>
+	<div class="col-sm-6">
+    <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
+    <p ng-if="!ctrl.person && !ctrl.isLoadingEvent">No metadata available for this object.</p>
+    <div id="dataContent" ng-if="ctrl.person">
+      <h2>{{ ctrl.person.getLabel() }}</h2>
+      <p ng-repeat="desc in ctrl.person.getDescription()">{{ desc }}</p>
+      <p><a ng-href="persons/page?uri={{ ctrl.person.id }}">Näytä henkilön tietosivu</a></p>
+    </div>
+  <!--</div> -->
+  <!-- Links -->
+  <!-- <div class="col-sm-4"> -->
+    <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>
+    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+    <!--<p ng-if="!ctrl.person.hasLinks">No links found for this object.</p>-->
+    <div id="linkContent">
+      
+	    <div ng-if="ctrl.person.events">
+		    <h3 id="links-header" class="links-header-class">Tapahtumat</h3>
+		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+		    <p ng-if="!ctrl.person || !ctrl.person.hasLinks">Ei näytettävää sisältöä.</p>
+		     <ul class="list-group">
+	          <li class="list-group-item" ng-repeat="event in ctrl.person.events">
+	          <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+	          </li>
+	       </ul>
+	     </div>
+	     
+	      <div ng-if="ctrl.person.units">
+		    <h3 id="links-header" class="links-header-class">Joukko-osastot</h3>
+		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+		     <ul class="list-group">
+	          <li class="list-group-item" ng-repeat="event in ctrl.person.units">
+	          <a ng-href="units/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+	          </li>
+	       </ul>
+	     </div> 
+	     
+	      <div ng-if="ctrl.person.battles">
+		    <h3 id="links-header" class="links-header-class">Taistelut</h3>
+		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+		     <ul class="list-group">
+	          <li class="list-group-item" ng-repeat="event in ctrl.person.battles">
+	          <a ng-href="events/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+	          </li>
+	       </ul>
+	     </div> 
+	     
+	      <div ng-if="ctrl.person.articles">
+		    <h3 id="links-header" class="links-header-class">Kansa Taisteli -artikkelit</h3>
+		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+		     <ul class="list-group">
+	          <li class="list-group-item" ng-repeat="art in ctrl.person.articles">
+	          <a ng-href="{{ art.link }}" target="kata">{{ art.description | words:10 }}</a>
+	          </li>
+	       </ul>
+	     </div>
+	          
+	     <div ng-if="ctrl.person.nationals">
+		    <h3 id="links-header" class="links-header-class">Kansallisbibliografia</h3>
+		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+		     <ul class="list-group">
+	          <li class="list-group-item" ng-repeat="link in ctrl.person.nationals">
+	          <a ng-href="{{ link.id }}" target="natbib">{{ link.label | words:10 }}</a>
+	          </li>
+	       </ul>
+	     </div>
+	     
+     		<div ng-if="ctrl.person && ctrl.person.images.length">
+     		 <h3 id="links-header" class="links-header-class">Valokuvat</h3>
+            <p ng-show="ctrl.person"> <!--&& !ctrl.person.showPhotos">-->
+            {{ ctrl.person.images.length }} kuvaa
+            </p>
+            <!--
+            <div id="photo-thumbs">
+              <div id="photo-container">
+                <a ng-cloak ng-repeat="img in timemapCtrl.images"
+                  ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
+                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
+                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
+              </div>
+            </div>
+            -->
+            <div id="photo-thumbs">
+              <div id="photo-container">
+                <a ng-cloak ng-repeat="img in ctrl.person.images" 
+                	ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
+                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
+                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
+              </div>
+            </div>
+            
+          </div>
+          
+     		</div>
+     </div>
+</div>
+
