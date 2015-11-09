@@ -1,24 +1,24 @@
-<div class="row flat-accordion">
+<div class="row flat-accordion" ng-controller="SettingCtrl as ctrl">
   <div class="col-md-12 no-side-padding">
       <div class="form-inline">
         <accordion>
-        <accordion-group is-open="timemapCtrl.settingsVisible">
+        <accordion-group is-open="ctrl.settingsVisible">
           <label for="photo-days-before">Valokuvien aikahaarukka 
             <input min="0" name="photo-days-before"
-              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysBeforeSetting" /> päivää ennen
+              class="form-control input-short" type="number" ng-model="ctrl.photoDaysBeforeSetting" /> päivää ennen
             </label>
           <label for="photo-days-after">
             <input min="0" name="photo-days-after"
-              class="form-control input-short" type="number" ng-model="timemapCtrl.photoDaysAfterSetting" /> päivää jälkeen tapahtuman.
+              class="form-control input-short" type="number" ng-model="ctrl.photoDaysAfterSetting" /> päivää jälkeen tapahtuman.
           </label>
           <label for="photo-place">
             <input name="photo-place"
-              class="form-control" type="CHECKBOX" ng-model="timemapCtrl.photoPlaceSetting" /> Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.
+              class="form-control" type="CHECKBOX" ng-model="ctrl.photoPlaceSetting" /> Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.
           </label>
-          <button class="btn btn-primary" ng-click="timemapCtrl.updateTimeline()" ng-if="timemapCtrl.photoConfigChanged()">Päivitä</button>
+          <button class="btn btn-primary" ng-click="ctrl.update()" ng-if="ctrl.photoConfigChanged()">Päivitä</button>
           <label for="heatmap-toggle">
-            <input ng-change="timemapCtrl.updateHeatmap()" name="heatmap-toggle"
-              class="form-control" type="CHECKBOX" ng-model="timemapCtrl.showCasualtyHeatmap" /> Näytä lämpökartta menehtyneistä.
+            <input ng-change="ctrl.updateHeatmap()" name="heatmap-toggle"
+              class="form-control" type="CHECKBOX" ng-model="ctrl.showCasualtyHeatmap" /> Näytä lämpökartta menehtyneistä.
           </label>
         </accordion-group>
         </accordion>

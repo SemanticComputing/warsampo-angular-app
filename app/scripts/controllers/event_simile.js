@@ -8,8 +8,8 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SimileMapCtrl', function ($routeParams, $location, 
-              $anchorScroll, $timeout, $window, $scope, $rootScope, $route,
+  .controller('SimileMapCtrl', function ($routeParams, $location, $anchorScroll,
+              $timeout, $window, $scope, $rootScope, $route, Settings,
               eventService, photoService, casualtyService, actorService, timemapService) {
 
     var self = this;
@@ -19,23 +19,10 @@ angular.module('eventsApp')
     // Images related to currently selected event
     self.images = undefined;
     // Current image page
-    self.photoDaysBefore = 1;
-    self.photoDaysAfter = 3;
-    self.photoPlace = true;
-    self.photoDaysBeforeSetting = self.photoDaysBefore;
-    self.photoDaysAfterSetting = self.photoDaysAfter;
-    self.photoPlaceSetting = self.photoPlace;
-    self.showCasualtyHeatmap = true;
-    self.showPhotos = false;
     var tm, map, heatmap;
 
     $rootScope.showHelp = function() {
         self.current = undefined;
-    };
-
-    self.settingsVisible = false;
-    $rootScope.showSettings = function() {
-        self.settingsVisible = !self.settingsVisible;
     };
 
     self.getEventTitleWithLinks = function(event) {
@@ -61,7 +48,6 @@ angular.module('eventsApp')
     var fetchRelatedPeople = function(item) {
         if (item.participant_id) {
             casualtyService.getCasualtyInfo(item.participant_id).then(function(participants) {
-                console.log(participants);
                 self.current.related_people = participants;
             });
             fetchActors(item);
@@ -93,12 +79,8 @@ angular.module('eventsApp')
 
     var fetchImages = function(item) {
         self.isLoadingImages = true;
-        var photoConfig = {
-            inProximity: self.photoPlace,
-            beforeOffset: self.photoDaysBefore,
-            afterOffset: self.photoDaysAfter
-        };
-
+        var photoConfig = Settings.getPhotoConfig();
+        console.log(photoConfig);
         self.images = [];
         photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
             self.images = imgs;
@@ -106,16 +88,7 @@ angular.module('eventsApp')
         });
     };
 
-    self.photoConfigChanged = function() {
-        return (self.photoDaysBefore !== self.photoDaysBeforeSetting) ||
-            (self.photoDaysAfter !== self.photoDaysAfterSetting) ||
-            (self.photoPlace !== self.photoPlaceSetting);
-    };
-
     self.updateTimeline = function() {
-        self.photoDaysBefore = self.photoDaysBeforeSetting;
-        self.photoDaysAfter = self.photoDaysAfterSetting;
-        self.photoPlace = self.photoPlaceSetting;
         self.current = undefined;
         self.images = [];
 
@@ -154,7 +127,7 @@ angular.module('eventsApp')
     };
 
     var heatmapListener = function() {
-        if (self.showCasualtyHeatmap) {
+        if (Settings.showCasualtyHeatmap) {
             getCasualtyLocations().then(function(locations) {
                 heatmap.setData(locations);
                 heatmap.setMap(map);
@@ -169,16 +142,11 @@ angular.module('eventsApp')
     };
 
     self.updateHeatmap = function() {
-        if (self.showCasualtyHeatmap) {
+        if (Settings.showCasualtyHeatmap) {
             heatmapListener();
         } else {
             heatmap.setMap(null);
         }
-    };
-
-    var onMouseUpListener = function() {
-        heatmapListener();
-        getCasualtyCount();
     };
 
     // Set listener to prevent reload when it is not desired.
@@ -202,14 +170,14 @@ angular.module('eventsApp')
         fetchImages(item);
     };
 
+    var onMouseUpListener = function() {
+        heatmapListener();
+        getCasualtyCount();
+    };
 
     self.createTimeMap = function(start, end, highlights) {
 
-        var photoConfig = {
-            beforeOffset: self.photoDaysBefore,
-            afterOffset: self.photoDaysAfter,
-            inProximity: self.photoPlace
-        };
+        var photoConfig = Settings.getPhotoConfig();
 
         return timemapService.createTimemapByTimeSpan(start, end, highlights,
                 infoWindowCallback, photoConfig)
@@ -226,6 +194,7 @@ angular.module('eventsApp')
                     data: locations,
                     radius: 20
                 });
+                Settings.setHeatmapUpdater(self.updateHeatmap);
                 self.updateHeatmap();
             });
         });
@@ -304,6 +273,7 @@ angular.module('eventsApp')
     };
 
     self.visualize = function() {
+
         var era = $routeParams.era;
         var event_uri = $routeParams.uri;
         if (event_uri) {

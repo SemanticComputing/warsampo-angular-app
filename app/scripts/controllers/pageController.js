@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
   .controller('PageCtrl', function($routeParams, $q, $rootScope, eventService) {
-    $rootScope.showSettings = null;
+    //$rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
     if ($routeParams.uri) {

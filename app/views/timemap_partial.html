@@ -18,7 +18,7 @@
           </p>
           <p><a ng-href="events/page?uri={{ timemapCtrl.current.opts.event.id }}">Näytä tapahtuman tietosivu</a></p>
           <div ng-show="timemapCtrl.images.length === 0">
-            <p ng-if="!timemapCtrl.isLoadingImages && !timemapCtrl.showPhotos">
+            <p ng-if="!timemapCtrl.isLoadingImages">
             Ei tapahtumaan liittyviä kuvia.
             </p>
             <p ng-if="timemapCtrl.isLoadingImages">
@@ -26,7 +26,7 @@
             </p>
           </div>
           <div ng-show="!timemapCtrl.isLoadingImages && timemapCtrl.images.length">
-            <p ng-show="!timemapCtrl.showPhotos">
+            <p>
             {{ timemapCtrl.images.length }} kuvaa
             </p>
             <div id="photo-thumbs">
@@ -121,7 +121,7 @@
     </div>
   </div>
   <div class="col-lg-7 col-lg-pull-5 col-md-12">
-    <div id="timemap" ng-show="!timemapCtrl.showPhotos" class="animate-right">
+    <div id="timemap" class="animate-right">
       <div id="mapcontainer">
         <div id="map"></div>
       </div>
