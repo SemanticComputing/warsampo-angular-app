@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('rankService', function($q, SparqlService, rankMapperService,
-                Rank, eventService) {
+                Rank) {
         
         var rankService = this;
 				
@@ -68,7 +68,7 @@ angular.module('eventsApp')
   		 
         var rankPersonQry = prefixes + hereDoc(function() {/*!
 				SELECT DISTINCT ?id ?sname ?fname WHERE { 
-			        VALUES ?rank { {0} } .
+			       VALUES ?rank { {0} } .
 				    ?id a atypes:MilitaryPerson .
 			  
 			        { ?id :hasRank ?rank . } 
@@ -81,14 +81,13 @@ angular.module('eventsApp')
 			        ?id foaf:familyName ?sname .
 					OPTIONAL { ?id foaf:firstName ?fname . }
 			  
-				}   LIMIT 20
+				}  LIMIT 20
         */});
         
         
 		this.getById = function(id) {
             var qry = rankQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-            	var n=data.length;
             	if (data.length) {
                 	return rankMapperService.makeObjectList(data)[0];
                 }

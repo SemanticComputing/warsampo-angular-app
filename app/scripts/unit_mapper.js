@@ -11,17 +11,16 @@ Unit.prototype.getLabel = function() {
 	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }
 		
 	this.abbrev=this.removeNameAbbrevs(this.name,this.abbrev);
-	/* console.log('Abbrev ',this.abbrev); 
-	console.log('Name ', this.name); */
+	
 	var label = '';
 	if (!_.isArray(this.abbrev)) {
 		label = label + this.abbrev;
 	} else {
 		label = label + this.abbrev.join(', ');
 	}
-	if (label != '') { label=" ("+label+")"; }
+	if (label !== '') { label=" ("+label+")"; }
 	return this.name.join(', ')+ label;
-}
+};
 
 
 Unit.prototype.removeNameAbbrevs=function(names,abbrevs) {
@@ -32,21 +31,21 @@ Unit.prototype.removeNameAbbrevs=function(names,abbrevs) {
 		}	
 	}
 	return abb2;
-}
+};
 
 Unit.prototype.getDescription = function() {
 	var arr=[];
 	// arr=arr.concat(this.);
-	if (this.commanders) arr = arr.concat(this.commanders);
-	if (this.description) arr = arr.concat(this.description);
-	if (this.note) arr = arr.concat(this.note);
+	if (this.commanders) {arr = arr.concat(this.commanders); }
+	if (this.description) {arr = arr.concat(this.description);}
+	if (this.note) {arr = arr.concat(this.note);}
 	
 	var arr2=[];
 	for (var i=0; i<arr.length; i++) {
-		if (arr2.indexOf(arr[i])<0) arr2.push(arr[i]);
+		if (arr2.indexOf(arr[i])<0) { arr2.push(arr[i]);}
 	}
 	return arr2;
-}
+};
 
 Unit.prototype.processUnitEvents = function(events) {
 	var battles=[], formations=[], description=[], places={};
@@ -56,7 +55,7 @@ Unit.prototype.processUnitEvents = function(events) {
 				etype=e.idclass, 
 				edate='', edate2='', eplace=''; 
 		if ('start_time' in e && 'end_time' in e) {
-			edate=e.start_time, edate2=e.end_time;
+			edate=e.start_time; edate2=e.end_time;
 			edate=em.getExtremeDate(edate, true);
 			edate2=em.getExtremeDate(edate2, false);
 			edate=em.formatDateRange(edate,edate2);
@@ -64,7 +63,7 @@ Unit.prototype.processUnitEvents = function(events) {
 		if ('place_label' in e) {
 			eplace=', '+e.place_label;
 		}
-		if (edate!='') edate=edate+': ';
+		if (edate!=='') {edate=edate+': ';}
 
 		if (etype.indexOf('Battle')>-1) {
 			e.description = e.name;
@@ -81,15 +80,15 @@ Unit.prototype.processUnitEvents = function(events) {
 		}
 	}
 	
-	if (battles.length) this.battles=battles;
-	if (formations.length) description=formations.concat(description);
-	if (description.length) this.description=description;
+	if (battles.length) {this.battles=battles;}
+	if (formations.length) {description=formations.concat(description);}
+	if (description.length) {this.description=description;}
 	
 	for (var pr in places) {
-		if (!this.places) this.places=[];
+		if (!this.places) {this.places=[];}
 		this.places.push({label:pr, id:places[pr]});
 	}
-}
+};
 
 /*
 Unit.prototype.getNotes = function() {

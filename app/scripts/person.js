@@ -54,7 +54,7 @@ angular.module('eventsApp')
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
-            	if (units.length) self.units = units;
+            	if (units.length) { self.units = units; }
             });
         };
         
@@ -73,9 +73,9 @@ angular.module('eventsApp')
       	Person.prototype.fetchNationalBib = function() {
       		var self = this;
             return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
-            	if (nb.length) self.nationals = nb;
+            	if (nb.length) { self.nationals = nb; }
             });
-      	}  
+      	};
       	
       	
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
@@ -102,17 +102,17 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
 		var personQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time WHERE { 
+				SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time ?casualty WHERE { 
 					  VALUES ?id { {0} }
 					  ?id foaf:familyName ?sname .
 					  OPTIONAL { ?id foaf:firstName ?fname . }
 					  OPTIONAL { ?id crm:P3_has_note ?note . }
 					  OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }
 					  OPTIONAL { 
-				      	?id owl:sameAs ?mennytmies .
-				      	?mennytmies a foaf:Person .
-				    		OPTIONAL { ?mennytmies casualties:syntymaeaika ?birth_time . }
-				   		OPTIONAL { ?mennytmies casualties:kuolinaika ?death_time . }
+				      	?id owl:sameAs ?casualty .
+				      	?casualty a foaf:Person .
+				    		OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }
+				   		OPTIONAL { ?casualty casualties:kuolinaika ?death_time . }
 				  		}
 				} 
   		 */});
@@ -134,7 +134,7 @@ angular.module('eventsApp')
             ?time crm:P82a_begin_of_the_begin ?start_time .
             ?time crm:P82b_end_of_the_end ?end_time .
           
-		} ORDER BY ?start_time
+		} ORDER BY ?start_time 
         */});
         
         var relatedEventQry = prefixes + hereDoc(function() {/*!
@@ -248,8 +248,7 @@ angular.module('eventsApp')
 		this.getRelatedUnits = function(id) {
 				var qry = relatedUnitQry.format("<{0}>".format(id));
 				return endpoint.getObjects(qry).then(function(data) {
-					console.log(data);
-            	return personMapperService.makeObjectListNoGrouping(data);
+					return personMapperService.makeObjectListNoGrouping(data);
             });
         };
         

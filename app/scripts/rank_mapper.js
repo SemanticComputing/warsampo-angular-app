@@ -9,17 +9,15 @@ function Rank() { }
 Rank.prototype.getLabel = function() {
 	if (_.isArray(this.label)) { this.label= this.label[0]; }
 	return this.label;
-}
+};
 
 
 
 Rank.prototype.getDescription = function() {
 	var arr=[];
-	// arr=arr.concat(this.);
-	if (this.comment) arr = arr.concat(this.comment);
-	
+	if (this.comment) { arr = arr.concat(this.comment); }
 	return arr;
-}
+};
 
 
 
