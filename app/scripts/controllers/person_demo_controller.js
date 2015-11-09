@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('PersonDemoCtrl', function($routeParams, $location, $q, $rootScope, eventService, personService) {
+  .controller('PersonDemoCtrl', function($routeParams, $location, $q, $scope, $rootScope, eventService, personService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
@@ -54,6 +54,15 @@ angular.module('eventsApp')
     }
 	}
 	
+	// Set listener to prevent reload when it is not desired.
+    $scope.$on('$routeUpdate', function() {
+        if (!self.noReload) {
+            $route.reload();
+        } else {
+            self.noReload = false;
+        }
+    });
+    
 	if ($routeParams.uri) { 
 		this.updateByUri($routeParams.uri); 
 	} else { 
