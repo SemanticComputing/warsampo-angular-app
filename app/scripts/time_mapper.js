@@ -18,6 +18,8 @@ TimeMapper.prototype.makeObject = function(obj) {
         o[key] = value.value;
     });
 
+    o.timeString = new Date(o.label).toLocaleDateString();
+
     return o;
 };
 

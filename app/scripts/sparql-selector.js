@@ -262,24 +262,22 @@ function createSelector(id,endpoint,query,param) {
 	if(!param['inputSize']) param['inputSize']=26;
 	if(!param['selectSize']) param['selectSize']=30;
 	if(!param['selectWidth']) param['selectWidth']=190;
-	var DEFAULT_QUERY = hereDoc(function() {/*!
-	   'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/>
-		PREFIX histo: <http://ldf.fi/history/histo/>
-		PREFIX kb: <http://ldf.fi/history/kb/>
-
-		SELECT DISTINCT ?term ?uri 
-		WHERE {
-		GRAPH <http://ldf.fi/history/kb> {
-		?uri a cidoc:E21_Person .
-		?uri rdfs:label ?term .
-		FILTER (regex(?term, "^<INPUT>.*$", "i"))
-		}
-		}
-		ORDER BY lcase(?term)
-		LIMIT 100
-		'
-	*/});
+	var DEFAULT_QUERY = '' +
+	'   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
+	'	PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/> ' +
+	'	PREFIX histo: <http://ldf.fi/history/histo/> ' +
+	'	PREFIX kb: <http://ldf.fi/history/kb/> ' +
+	'	SELECT DISTINCT ?term ?uri  ' +
+	'	WHERE { ' +
+	'	GRAPH <http://ldf.fi/history/kb> { ' +
+	'	?uri a cidoc:E21_Person . ' +
+	'	?uri rdfs:label ?term . ' +
+	'	FILTER (regex(?term, "^<INPUT>.*$", "i")) ' +
+	'	} ' +
+	'	} ' +
+	'	ORDER BY lcase(?term) ' +
+	'	LIMIT 100 ' +
+	'	';
 	endpoint = (endpoint || "http://fuseki2.onki.fi/history/sparql");
 	query = (query || DEFAULT_QUERY);
 	
