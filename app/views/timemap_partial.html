@@ -33,7 +33,7 @@
               <div id="photo-container">
                 <a ng-cloak ng-repeat="img in timemapCtrl.images" ng-click="timemapCtrl.showPhotoGallery()"
                   data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-                  <img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
+                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
               </div>
             </div>
           </div>

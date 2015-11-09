@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('eventsApp')
-.directive('img', function() {
+.directive('fallbackImg', function() {
     return {
-        restrict:'E',
+        restrict:'A',
         link: function(scope, element) {
             element.error(function() {
                 var src;
@@ -12,7 +12,11 @@ angular.module('eventsApp')
                 } else {
                     src = 'images/no-image.png';
                 }
-                element.attr('src', src);
+                if (element.attr('src') !== src) {
+                    element.attr('src', src);
+                } else {
+                    element.attr('src', '');
+                }
             });
         }
     };
