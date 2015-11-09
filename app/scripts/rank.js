@@ -56,33 +56,28 @@ angular.module('eventsApp')
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
-		var rankQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?label ?abbrev ?comment WHERE { 
-			        VALUES ?id { {0} } . # <http://ldf.fi/warsa/actors/ranks/Kersantti> 
-				    ?id a <http://ldf.fi/warsa/actors/ranks/Rank> .
-				    ?id skos:prefLabel ?label .
-				    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment . }
-				    OPTIONAL { ?id skos:altLabel ?abbrev . }
-				}   
-  		 */});
+		var rankQry = prefixes +
+		   ' 	SELECT DISTINCT ?id ?label ?abbrev ?comment WHERE {  ' +
+		   '         VALUES ?id { {0} } . # <http://ldf.fi/warsa/actors/ranks/Kersantti>  ' +
+		   ' 	    ?id a <http://ldf.fi/warsa/actors/ranks/Rank> . ' +
+		   ' 	    ?id skos:prefLabel ?label . ' +
+		   ' 	    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment . } ' +
+		   ' 	    OPTIONAL { ?id skos:altLabel ?abbrev . } ' +
+		   ' 	}    ';
   		 
-        var rankPersonQry = prefixes + hereDoc(function() {/*!
-				SELECT DISTINCT ?id ?sname ?fname WHERE { 
-			       VALUES ?rank { {0} } .
-				    ?id a atypes:MilitaryPerson .
-			  
-			        { ?id :hasRank ?rank . } 
-			        UNION {
-			         ?evt a etypes:Promotion .
-			         ?evt :hasRank ?rank .
-			          ?evt crm:P11_had_participant ?id .
-			        }
-			        
-			        ?id foaf:familyName ?sname .
-					OPTIONAL { ?id foaf:firstName ?fname . }
-			  
-				}  LIMIT 20
-        */});
+        var rankPersonQry = prefixes +
+		   ' 	SELECT DISTINCT ?id ?sname ?fname WHERE { ' +
+		   '        VALUES ?rank { {0} } .' +
+		   ' 	    ?id a atypes:MilitaryPerson .' +
+		   '         { ?id :hasRank ?rank . } ' +
+		   '         UNION {' +
+		   '          ?evt a etypes:Promotion .' +
+		   '          ?evt :hasRank ?rank .' +
+		   '           ?evt crm:P11_had_participant ?id .' +
+		   '         } ' +
+		   '         ?id foaf:familyName ?sname . ' +
+		   ' 		OPTIONAL { ?id foaf:firstName ?fname . } ' +
+		   ' 	}  LIMIT 20 ';
         
         
 		this.getById = function(id) {

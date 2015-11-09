@@ -107,123 +107,104 @@ angular.module('eventsApp')
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
-        var unitQry = prefixes + hereDoc(function() {/*!
-            SELECT DISTINCT ?id ?name ?abbrev ?note WHERE { 
-                ?ename a etypes:UnitNaming .
-                ?ename skos:prefLabel ?name .
-                OPTIONAL {?ename skos:altLabel ?abbrev . }
-                ?ename crm:P95_has_formed ?id .
-                OPTIONAL {?id crm:P3_has_note ?note . }
+        var unitQry = prefixes +
+          '  SELECT DISTINCT ?id ?name ?abbrev ?note WHERE {  ' +
+          '      ?ename a etypes:UnitNaming . ' +
+          '      ?ename skos:prefLabel ?name . ' +
+          '      OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
+          '      ?ename crm:P95_has_formed ?id . ' +
+          '      OPTIONAL {?id crm:P3_has_note ?note . } ' +
+          '      VALUES ?id  { {0} } ' +
+          '  } ';
         
-                VALUES ?id  { {0} }
-            } 
-        */});
-        
-        var unitEventQry = prefixes + hereDoc(function() {/*!
-        SELECT * WHERE { 
-				  VALUES ?unit  { {0} }
-				  {
-				    ?id a crm:E66_Formation ;
-				    	crm:P95_has_formed ?unit .
-				  } UNION {
-				    ?id a etypes:UnitNaming ;
-				      	crm:P95_has_formed ?unit .
-				  } UNION {
-				   	?id a etypes:TroopMovement ;
-				    	crm:P95_has_formed ?unit .
-				  } UNION {
-				    ?id a etypes:Battle ;
-				    	crm:P11_had_participant ?unit .
-				  }
-				  
-				  ?id a ?idclass .
-				  
-					OPTIONAL { ?id skos:prefLabel ?name . }
-				    OPTIONAL { ?id skos:altLabel ?abbrev . }
-				   
-				  OPTIONAL {
-				    ?id crm:P4_has_time-span ?time . 
-				    ?time crm:P82a_begin_of_the_begin ?start_time ; 
-				          crm:P82b_end_of_the_end ?end_time . 
-				  }
-				
-				  OPTIONAL { 
-				    ?id crm:P7_took_place_at ?place_id .
-				    OPTIONAL {
-				      ?place_id skos:prefLabel ?place_label .
-				    }
-				  }
-				  
-				} ORDER BY ?start_time ?end_time
-				*/});
+        var unitEventQry = prefixes +
+      '  SELECT * WHERE { ' +
+	  '  		  VALUES ?unit  { {0} } ' +
+	  '  		  { ' +
+	  '  		    ?id a crm:E66_Formation ; ' +
+	  '  		    	crm:P95_has_formed ?unit . ' +
+	  '  		  } UNION { ' +
+	  '  		    ?id a etypes:UnitNaming ; ' +
+	  '  		      	crm:P95_has_formed ?unit . ' +
+	  '  		  } UNION { ' +
+	  '  		   	?id a etypes:TroopMovement ; ' +
+	  '  		    	crm:P95_has_formed ?unit . ' +
+	  '  		  } UNION { ' +
+	  '  		    ?id a etypes:Battle ; ' +
+	  '  		    	crm:P11_had_participant ?unit . ' +
+	  '  		  } ' +
+	  '  		  ?id a ?idclass . ' +
+	  '  			OPTIONAL { ?id skos:prefLabel ?name . } ' +
+	  '  		    OPTIONAL { ?id skos:altLabel ?abbrev . } ' +
+	  '  		  OPTIONAL { ' +
+	  '  		    ?id crm:P4_has_time-span ?time .  ' +
+	  '  		    ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
+	  '  		          crm:P82b_end_of_the_end ?end_time .  ' +
+	  '  		  } ' +
+	  '  		  OPTIONAL {  ' +
+	  '  		    ?id crm:P7_took_place_at ?place_id . ' +
+	  '  		    OPTIONAL { ' +
+	  '  		      ?place_id skos:prefLabel ?place_label . ' +
+	  '  		    } ' +
+	  '  		  } ' +
+	  '  		} ORDER BY ?start_time ?end_time ';
 
-        var relatedUnitQry = prefixes + hereDoc(function() {/*!
-            SELECT ?id ?name ?abbrev WHERE { 
-					  { SELECT ?id ?name  WHERE {
-					                  ?ejoin a etypes:UnitJoining ;
-					                    crm:P143_joined ?unit ;
-					                    crm:P144_joined_with ?id .
-					                
-					                ?ename a etypes:UnitNaming ;
-					                     skos:prefLabel ?name ;
-					                     crm:P95_has_formed ?id .
-					      			OPTIONAL { ?ename skos:altLabel ?abbrev . }
-					      
-					                VALUES ?unit  { {0} }
-					                
-					  	} GROUP BY ?id ?name  LIMIT 2 
-					 } UNION {
-						SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE {
-										{?ejoin a etypes:UnitJoining ;
-								                    crm:P143_joined ?id ;
-								                    crm:P144_joined_with ?unit .
-								      } UNION { ?ejoin a etypes:UnitJoining ;
-								                    crm:P143_joined ?unit ;
-								                    crm:P144_joined_with ?superunit .
-								                 ?ejoin2 a etypes:UnitJoining ;
-								                    crm:P143_joined ?id ;
-								                    crm:P144_joined_with ?superunit .   
-								        FILTER ( ?unit != ?id )
-								      }
-					                
-					                ?s ?p ?id .
-					                
-					                ?ename a etypes:UnitNaming ;
-					                     skos:prefLabel ?name ;
-					                     crm:P95_has_formed ?id .
-					                OPTIONAL {?ename skos:altLabel ?abbrev . }
-					      			
-					                VALUES ?unit  { {0} }
-					                
-					    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 }
-					}
-        */});
+        var relatedUnitQry = prefixes +
+         '   SELECT ?id ?name ?abbrev WHERE {  ' +
+		 '   		  { SELECT ?id ?name  WHERE { ' +
+		 '   		                  ?ejoin a etypes:UnitJoining ; ' +
+		 '   		                    crm:P143_joined ?unit ; ' +
+		 '   		                    crm:P144_joined_with ?id . ' +
+		 '   		                ?ename a etypes:UnitNaming ; ' +
+		 '   		                     skos:prefLabel ?name ; ' +
+		 '   		                     crm:P95_has_formed ?id . ' +
+		 '   		      			OPTIONAL { ?ename skos:altLabel ?abbrev . } ' +
+		 '   		                VALUES ?unit  { {0} } ' +
+		 '   		  	} GROUP BY ?id ?name  LIMIT 2  ' +
+		 '   		 } UNION { ' +
+		 '   			SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE { ' +
+		 '   							{?ejoin a etypes:UnitJoining ; ' +
+		 '   					                    crm:P143_joined ?id ; ' +
+		 '   					                    crm:P144_joined_with ?unit . ' +
+		 '   					      } UNION { ?ejoin a etypes:UnitJoining ; ' +
+		 '   					                    crm:P143_joined ?unit ; ' +
+		 '   					                    crm:P144_joined_with ?superunit . ' +
+		 '   					                 ?ejoin2 a etypes:UnitJoining ; ' +
+		 '   					                    crm:P143_joined ?id ; ' +
+		 '   					                    crm:P144_joined_with ?superunit .    ' +
+		 '   					        FILTER ( ?unit != ?id ) ' +
+		 '   					      } ' +
+		 '   		                ?s ?p ?id . ' +
+		 '   		                ?ename a etypes:UnitNaming ; ' +
+		 '   		                     skos:prefLabel ?name ; ' +
+		 '   		                     crm:P95_has_formed ?id . ' +
+		 '   		                OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
+		 '   		                VALUES ?unit  { {0} } ' +
+		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
+		 '   		} ';
         
-        var relatedPersonQry = prefixes + hereDoc(function() {/*!
-			     
-			SELECT DISTINCT ?id ?name ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE {
-			  VALUES ?unit { {0} } .
-			    { ?evt a etypes:PersonJoining ;
-			    crm:P143_joined ?id .
-			    OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . }
-			    ?evt  crm:P144_joined_with ?unit . 
-			    OPTIONAL {
-			    	?evt crm:P4_has_time-span ?time . 
-			    	?time crm:P82a_begin_of_the_begin ?start_time ; 
-			          crm:P82b_end_of_the_end ?end_time . 
-			  	}
-			  } UNION { 
-			    ?id owl:sameAs ?mennytmies .
-			    ?mennytmies a foaf:Person .
-			    ?mennytmies casualties:osasto ?unit .
-			  }
-			  OPTIONAL { ?s ?p ?id . }
-			  
-			    ?id skos:prefLabel ?name .
-			    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . }
-			  } GROUP BY ?id ?name ?role ?no ?rank ?start_time ?end_time 
-				ORDER BY DESC(?no) LIMIT 8
-			*/});
+        var relatedPersonQry = prefixes +
+	   ' 	SELECT DISTINCT ?id ?name ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE { ' +
+	   ' 	  VALUES ?unit { {0} } . ' +
+	   ' 	    { ?evt a etypes:PersonJoining ; ' +
+	   ' 	    crm:P143_joined ?id . ' +
+	   ' 	    OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
+	   ' 	    ?evt  crm:P144_joined_with ?unit .  ' +
+	   ' 	    OPTIONAL { ' +
+	   ' 	    	?evt crm:P4_has_time-span ?time .  ' +
+	   ' 	    	?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
+	   ' 	          crm:P82b_end_of_the_end ?end_time .  ' +
+	   ' 	  	} ' +
+	   ' 	  } UNION {  ' +
+	   ' 	    ?id owl:sameAs ?mennytmies . ' +
+	   ' 	    ?mennytmies a foaf:Person . ' +
+	   ' 	    ?mennytmies casualties:osasto ?unit . ' +
+	   ' 	  } ' +
+	   ' 	  OPTIONAL { ?s ?p ?id . } ' +
+	   ' 	    ?id skos:prefLabel ?name . ' +
+	   ' 	    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
+	   ' 	  } GROUP BY ?id ?name ?role ?no ?rank ?start_time ?end_time  ' +
+	   ' 		ORDER BY DESC(?no) LIMIT 8 ';
 			
 		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));

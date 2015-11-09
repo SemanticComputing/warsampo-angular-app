@@ -17,7 +17,7 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.time || !ctrl.time.hasLinks">No links found for this object.</p>
     <div id="linkContent">
-      <related-links title="'Tapahtumia tähän aikaan'" related="ctrl.time.events" />
+      <related-links title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></related-links>
       <div class="related-people" ng-if="ctrl.time.actors || ctrl.time.relatedCasualties">
         <h3>Tähän aikaan kaatuneita</h3>
         <ul class="list-group" id="time-actors" style="text-transform: capitalize">

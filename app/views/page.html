@@ -44,10 +44,9 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.event || !ctrl.event.hasLinks">Linkkejä ei löytynyt</p>
     <div id="linkContent">
-      <related-links title="'Muita tapahtumia samaan aikaan'" data-related="ctrl.relatedEventsByTime" />
-      <related-links title="'Muita tapahtumia samalla alueella'" data-related="ctrl.relatedEventsByPlace" />
-      {{ ctrl.relatedEventsByPlace }}
-      <related-links title="'Tapahtumaan liittyviä henkilöitä'" data-related="ctrl.event.actors" />
+      <related-links title="'Muita tapahtumia samaan aikaan'" data-related="ctrl.relatedEventsByTime"></related-links>
+      <related-links title="'Muita tapahtumia samalla alueella'" data-related="ctrl.relatedEventsByPlace"></related-links>
+      <related-links title="'Tapahtumaan liittyviä henkilöitä'" data-related="ctrl.event.actors"></related-links>
     </div>
   </div>
 </div>
