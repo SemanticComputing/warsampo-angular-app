@@ -58,7 +58,7 @@ angular.module('eventsApp')
         
 		var rankQry = prefixes +
 		   ' 	SELECT DISTINCT ?id ?label ?abbrev ?comment WHERE {  ' +
-		   '         VALUES ?id { {0} } . # <http://ldf.fi/warsa/actors/ranks/Kersantti>  ' +
+		   '         VALUES ?id { {0} } .   ' +
 		   ' 	    ?id a <http://ldf.fi/warsa/actors/ranks/Rank> . ' +
 		   ' 	    ?id skos:prefLabel ?label . ' +
 		   ' 	    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment . } ' +
@@ -98,8 +98,6 @@ angular.module('eventsApp')
         };
         
 		
-        
-        
     		
         
 });
