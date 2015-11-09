@@ -263,7 +263,7 @@ function createSelector(id,endpoint,query,param) {
 	if(!param['selectSize']) param['selectSize']=30;
 	if(!param['selectWidth']) param['selectWidth']=190;
 	var DEFAULT_QUERY = '' +
-	'   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
+	'   \'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
 	'	PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/> ' +
 	'	PREFIX histo: <http://ldf.fi/history/histo/> ' +
 	'	PREFIX kb: <http://ldf.fi/history/kb/> ' +
@@ -276,8 +276,7 @@ function createSelector(id,endpoint,query,param) {
 	'	} ' +
 	'	} ' +
 	'	ORDER BY lcase(?term) ' +
-	'	LIMIT 100 ' +
-	'	';
+	'	LIMIT 100 \'';
 	endpoint = (endpoint || "http://fuseki2.onki.fi/history/sparql");
 	query = (query || DEFAULT_QUERY);
 	

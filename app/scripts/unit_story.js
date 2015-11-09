@@ -14,7 +14,7 @@ function init() {
 function initSelector(id) {
 	var endpoint = "http://ldf.fi/warsa/sparql"; 
 	var query  = '' + 
-'     PREFIX : <http://ldf.fi/warsa/actors/>  ' + 
+'     \'PREFIX : <http://ldf.fi/warsa/actors/>  ' + 
 '     PREFIX events: <http://ldf.fi/warsa/events/> ' +
 '     PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/>  ' +
 '     PREFIX etypes: <http://ldf.fi/warsa/events/event_types/>  ' +
@@ -41,7 +41,7 @@ function initSelector(id) {
 '     ?place_id geo:lat ?lat . ' +
 '     FILTER (regex(?term, "^.*<INPUT>.*$", "i"))  ' +
 ' }   ORDER BY lcase(?term) ' +
-' 	LIMIT 1000 ';
+' 	LIMIT 1000 \'';
 	var param = {selectSize: 32};
 	createSelector(id,endpoint,query,param); 	
 }
