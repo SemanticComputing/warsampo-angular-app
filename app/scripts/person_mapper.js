@@ -44,6 +44,11 @@ Person.prototype.getDescription = function() {
 
 Person.prototype.processLifeEvents = function(events) {
 	this.promotions=[];
+	this.rankLinks=[];
+	if ('rank' in this && 'rankid' in this) {
+		this.rankLinks.push({id:this.rankid, label:this.rank});
+	}
+	
 	var em=new EventMapper();
 	for (var i=0; i<events.length; i++) {
 		var 	e=events[i], 
@@ -59,7 +64,8 @@ Person.prototype.processLifeEvents = function(events) {
 			this.birth = edate;
 		} else if (etype.indexOf('Promotion')>-1) {
 			this.promotions.push(e.rank+' '+edate);
-		} 
+			this.rankLinks.push({id:e.rankid, label:e.rank});
+		}
 	}
 	if (!this.birth) this.birth='';
 	if (!this.death) this.death='';

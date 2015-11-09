@@ -16,15 +16,9 @@ Rank.prototype.getLabel = function() {
 Rank.prototype.getDescription = function() {
 	var arr=[];
 	// arr=arr.concat(this.);
-	if (this.commanders) arr = arr.concat(this.commanders);
-	if (this.description) arr = arr.concat(this.description);
-	if (this.note) arr = arr.concat(this.note);
+	if (this.comment) arr = arr.concat(this.comment);
 	
-	var arr2=[];
-	for (var i=0; i<arr.length; i++) {
-		if (arr2.indexOf(arr[i])<0) arr2.push(arr[i]);
-	}
-	return arr2;
+	return arr;
 }
 
 
