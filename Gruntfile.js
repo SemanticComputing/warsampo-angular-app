@@ -467,6 +467,7 @@ module.exports = function (grunt) {
             'images/{,*/}*.{webp}',
             'vendor/timemap/**',
             'styles/fonts/{,*/}*.*',
+            'events/views/*'
           ]
         }, {
           expand: true,

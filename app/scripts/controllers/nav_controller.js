@@ -10,7 +10,7 @@
 angular.module('eventsApp')
 .controller('NavCtrl', function($scope, $compile) {
     $("#nav").load("/page-templates/navbar-fi.html", function() {
-        $("#subnav").load("views/subnav.html", function() {
+        $("#subnav").load("events/views/subnav.html", function() {
             $("#nav").attr('done', true);
             $compile(angular.element('#nav').contents())($scope);
         });
