@@ -32,13 +32,11 @@ angular.module('eventsApp')
     $rootScope.showHelp = function() {
         self.current = undefined;
     };
-    //$('#show-help').click($rootScope.showHelp);
 
     self.settingsVisible = false;
     $rootScope.showSettings = function() {
         self.settingsVisible = !self.settingsVisible;
     };
-    //$('#show-settings').click($rootScope.showSettings);
 
     self.getEventTitleWithLinks = function(event) {
         var time = eventService.createTitle(event);
@@ -91,10 +89,6 @@ angular.module('eventsApp')
                 setActor(participants);
             }
         });
-    };
-
-    self.showPhotoGallery = function() {
-        blueimp.Gallery($('#photo-container a'), $('#blueimp-gallery').data());
     };
 
     var fetchImages = function(item) {
@@ -220,8 +214,6 @@ angular.module('eventsApp')
         return timemapService.createTimemapByTimeSpan(start, end, highlights,
                 infoWindowCallback, photoConfig)
         .then(function(timemap) {
-            $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
-                markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
             tm = timemap;
             map = timemap.getNativeMap();
             var band = tm.timeline.getBand(1);
