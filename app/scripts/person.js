@@ -4,31 +4,77 @@
  * Service that provides an interface for fetching actor data.
  */
 angular.module('eventsApp')
-    .service('rankService', function($q, SparqlService, personMapperService,
-                Rank, eventService) {
+    .service('personService', function($q, SparqlService, personMapperService,
+                Person, eventService) {
         
-        var rankService = this;
+        var personService = this;
 
-        
-        Rank.prototype.fetchRelatedPeople = function() {
+        Person.prototype.fetchLifeEvents = function() {
             var self = this;
-            return rankService.getRelatedEvents(self.id).then(function(events) {
+            return personService.getLifeEvents(self.id).then(function(events) {
+            	self.processLifeEvents(events);
+            });
+        };
+        
+        Person.prototype.fetchRelatedEvents = function() {
+            var self = this;
+            return personService.getRelatedEvents(self.id).then(function(events) {
             	self.processRelatedEvents(events);
             });
         };
         
         //	for info page:
-        Rank.prototype.fetchRelated = function() {
+        Person.prototype.fetchRelated = function() {
             var self = this;
             return self.fetchLifeEvents().then(
-            	function() { return self.fetchRelatedPeople(); }).then(
-               function() {  if (self.people) {
+            	function() { return self.fetchRelatedUnits(); }).then(
+               function() { return self.fetchRelatedEvents(); }).then(
+               function() { return self.fetchNationalBib(); }).then(
+               function() {  if (self.battles || self.events || self.units || self.nationals ) {
                     self.hasLinks = true;
                 }
             });
         };
 			
-			
+			//	for demo page:
+			Person.prototype.fetchRelated2 = function() {
+            var self = this;
+            
+            return self.fetchLifeEvents().then(
+            	function() { return self.fetchRelatedUnits(); }).then(
+               function() { return self.fetchRelatedEvents(); }).then(
+               function() { return self.fetchNationalBib(); }).then(
+               function() { return self.fetchRelatedPhotos(); }).then(
+               function() {  if (self.battles || self.events || self.units || self.nationals || self.images ) {
+                    self.hasLinks = true;
+                }
+            });
+        };
+        
+		  Person.prototype.fetchRelatedUnits = function() {
+		  		var self = this;
+            return personService.getRelatedUnits(self.id).then(function(units) {
+            	if (units.length) self.units = units;
+            });
+        };
+      Person.prototype.fetchRelatedPhotos = function() {
+		  		var self = this;
+            return personService.getRelatedPhotos(self.id).then(function(imgs) {
+            	if (imgs.length) {
+            		imgs.forEach(function(img) {
+                    img.thumbnail = img.url.replace("_r500", "_r100");
+                   });
+                self.images = imgs;
+                }
+            });
+        };
+        
+      	Person.prototype.fetchNationalBib = function() {
+      		var self = this;
+            return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
+            	if (nb.length) self.nationals = nb;
+            });
+      	}  
       	
       	
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
@@ -54,7 +100,7 @@ angular.module('eventsApp')
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
-		var rankQry = prefixes + hereDoc(function() {/*!
+		var personQry = prefixes + hereDoc(function() {/*!
 				SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?birth_time ?death_time WHERE { 
 					  VALUES ?id { {0} }
 					  ?id foaf:familyName ?sname .
@@ -164,7 +210,15 @@ angular.module('eventsApp')
 					}
 			*/});
 		
-		
+		var selectorQuery  = prefixes + hereDoc(function() {/*!
+			SELECT DISTINCT ?name ?id WHERE { 
+			    
+			    ?id a atypes:MilitaryPerson .
+			    ?id skos:prefLabel ?name .
+			    ?id foaf:familyName ?fname .
+			    FILTER (regex(?name, "^.*{0}.*$", "i")) 
+			}  # ORDER BY lcase(?fname)
+				LIMIT 200 */});
 		
 		var photoQuery = prefixes + hereDoc(function() {/*!
 		SELECT * WHERE { 
@@ -177,7 +231,7 @@ angular.module('eventsApp')
     		*/});
     	
 		this.getById = function(id) {
-            var qry = rankQry.format("<{0}>".format(id));
+            var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
             	var n=data.length;
                 if (n) {
@@ -232,5 +286,15 @@ angular.module('eventsApp')
         };
         
         
+    		
+        this.getItems = function (regx, controller) {
+        		var qry = selectorQuery.format("{0}".format(regx));
+				return endpoint.getObjects(qry).then(function(data) {
+					var arr= personMapperService.makeObjectListNoGrouping(data);
+            	controller.items=arr;
+            	return arr;
+            });
+        	// return this.items;
+        }
 });
 
