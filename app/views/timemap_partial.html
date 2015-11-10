@@ -5,7 +5,7 @@
         <div ng-show="timemapCtrl.current">
           <h3>
             <span ng-repeat="place in timemapCtrl.current.opts.event.places">
-              <a page-link data-id="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+              <a page-link="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
             </span>
             {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}
           </h3>
@@ -16,7 +16,7 @@
           <p ng-repeat="unit in timemapCtrl.current.units" style="text-transform: capitalize">
             {{ unit.label.join(' / ') }}
           </p>
-          <p><a ng-href="events/page?uri={{ timemapCtrl.current.opts.event.id }}">Näytä tapahtuman tietosivu</a></p>
+          <p><a page-link="{{ timemapCtrl.current.opts.event.id }}">Näytä tapahtuman tietosivu</a></p>
           <div ng-show="timemapCtrl.images.length === 0">
             <p ng-if="!timemapCtrl.isLoadingImages">
             Ei tapahtumaan liittyviä kuvia.

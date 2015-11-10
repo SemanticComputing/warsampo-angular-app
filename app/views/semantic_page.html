@@ -17,7 +17,7 @@
         <h2>{{ v[0].pred_label }}</h2>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="val in v">
-            <a ng-if="val.type === 'uri'" page-link data-id="{{ val.value }}">{{ val.label }}</a>
+            <a ng-if="val.type === 'uri'" page-link="{{ val.value }}">{{ val.label }}</a>
             <p ng-if="val.type !== 'uri'">{{ val.value }}</p>
           </li>
         </ul>
@@ -40,7 +40,7 @@
         <div collapse="!show">
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="val in ctrl.getPropertyList(rel)">
-            <a page-link data-id="{{ val.value }}">{{ val.label }} ({{ val.pred_label }})</a>
+            <a page-link="{{ val.value }}">{{ val.label }} ({{ val.pred_label }})</a>
             </li>
           </ul>
         </div>

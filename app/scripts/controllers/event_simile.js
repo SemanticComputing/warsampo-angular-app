@@ -171,6 +171,20 @@ angular.module('eventsApp')
         getCasualtyCount();
     };
 
+    self.afterCreateInit = function() {
+        getCasualtyCount();
+        tm.timeline.setAutoWidth();
+        getCasualtyLocations().then(function(locations) {
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: locations,
+                radius: 20
+            });
+            Settings.setApplyFunction(self.updateTimeline);
+            Settings.setHeatmapUpdater(self.updateHeatmap);
+            self.updateHeatmap();
+        });
+    };
+
     self.createTimeMap = function(start, end, highlights) {
 
         var photoConfig = Settings.getPhotoConfig();
@@ -182,22 +196,11 @@ angular.module('eventsApp')
             map = timemap.getNativeMap();
             var band = tm.timeline.getBand(1);
 
-            getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
             band.addOnScrollListener(clearHeatmap);
             if (highlights) {
                 tm.timeline.getBand(1).setMaxVisibleDate(new Date(highlights[0].startDate));
             }
-            tm.timeline.setAutoWidth();
-            getCasualtyLocations().then(function(locations) {
-                heatmap = new google.maps.visualization.HeatmapLayer({
-                    data: locations,
-                    radius: 20
-                });
-                Settings.setApplyFunction(self.updateTimeline);
-                Settings.setHeatmapUpdater(self.updateHeatmap);
-                self.updateHeatmap();
-            });
         });
     };
 
@@ -262,7 +265,7 @@ angular.module('eventsApp')
 
     self.createTimeMapForEvent = function(e) {
         var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
-        show().then(function() {
+        return show().then(function() {
             var item = _.find(tm.getItems(), function(item) {
                 return _.isEqual(item.opts.event.id, e.id);
             });
@@ -277,8 +280,9 @@ angular.module('eventsApp')
 
         var era = $routeParams.era;
         var event_uri = $routeParams.uri;
+        var promise = null;
         if (event_uri) {
-            return eventService.getEventById(event_uri).then(function(e) {
+            promise = eventService.getEventById(event_uri).then(function(e) {
                 if (e) {
                     return self.createTimeMapForEvent(e);
                 } else {
@@ -290,15 +294,20 @@ angular.module('eventsApp')
         } else if (era) {
             switch(era.toLowerCase()) {
                 case 'winterwar': {
-                    return self.showWinterWar();
+                    promise = self.showWinterWar();
+                    break;
                 }
                 case 'continuationwar': {
-                    return self.showContinuationWar();
+                    promise = self.showContinuationWar();
+                    break;
                 }
             }
+        } else {
+            $location.path('events/winterwar').replace();
+            promise = self.showWinterWar();
         }
-        $location.path('events/winterwar').replace();
-        return self.showWinterWar();
+
+        return promise.then(self.afterCreateInit);
     };
 
     self.visualize();

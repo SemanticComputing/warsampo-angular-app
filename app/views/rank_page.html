@@ -26,7 +26,7 @@
 	    <p ng-if="!ctrl.rank || !ctrl.rank.persons">Ei näytettävää sisältöä.</p>
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="person in ctrl.rank.persons">
-          <a ng-href="persons/page?uri={{ person.id }}">{{ person.label | words:10 }}</a>
+          <a page-link="{{ person.id }}">{{ person.label | words:10 }}</a>
           </li>
        </ul>
      </div>

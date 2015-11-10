@@ -8,7 +8,7 @@
   <div collapse="!show">
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="thing in related">
-      <a page-link data-id="{{ thing.id }}">{{ thing.label | words:10 }}</a>
+      <a page-link="{{ thing.id }}">{{ thing.label | words:10 }}</a>
       </li>
     </ul>
   </div>
