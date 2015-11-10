@@ -147,7 +147,7 @@ angular.module('eventsApp')
 
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
             var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
-            //console.log(qry);
+            // console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
             });

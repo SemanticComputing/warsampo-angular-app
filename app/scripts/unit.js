@@ -69,8 +69,7 @@ angular.module('eventsApp')
 							self.subUnits.push(unit);
 						}
             	}
-            	// console.log("self.subUnits");            	
-            	// console.log(self.subUnits);
+            	// console.log("self.subUnits"); console.log(self.subUnits);
             });
         };
         
@@ -265,6 +264,14 @@ angular.module('eventsApp')
 			
 			
 		var selectorQuery  = prefixes +
+			'SELECT DISTINCT ?name ?id WHERE {        '+
+			'  ?ename a etypes:UnitNaming .      ?ename skos:prefLabel ?name .       '+
+			'  ?ename crm:P95_has_formed ?id .       '+
+			'  FILTER (regex(?name, "^.*{0}.*$", "i"))    '+
+			'}  ORDER BY lcase(?name)  	 '+
+			'LIMIT 1000  ';
+			
+		var selectorQueryOLD  = prefixes +
 			'SELECT DISTINCT ?name ?id WHERE {        '+
 			'  ?ename a etypes:UnitNaming .      ?ename skos:prefLabel ?name .       '+
 			'  ?ename crm:P95_has_formed ?id .       '+

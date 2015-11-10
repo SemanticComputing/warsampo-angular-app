@@ -158,9 +158,10 @@ angular.module('eventsApp')
         var end = band.getMaxVisibleDate();
         var unit='<'+self.current.id+'>';
         if (self.current.subUnits) {
-        		//console.log("self.current.subUnits"+self.current.subUnits);
-        		for (var i=0; i<self.current.subUnits; i++) { unit = unit + ' <'+self.current.subUnits[i].id+'>'; }
-        }
+        		// console.log("self.current.subUnits"+self.current.subUnits);
+        		for (var i=0; i<self.current.subUnits.length; i++) { unit = unit + ' <'+self.current.subUnits[i].id+'>'; }
+        		// console.log('all units '+unit);
+        } 
          return casualtyService.getCasualtyLocationsByTimeAndUnit(formatDate(start), formatDate(end), unit)
             .then(function(casualties) {
                 var res = [];
