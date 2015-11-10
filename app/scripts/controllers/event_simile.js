@@ -277,6 +277,7 @@ angular.module('eventsApp')
 
     self.visualize = function() {
 
+        self.isLoadingTimemap = true;
         var era = $routeParams.era;
         var event_uri = $routeParams.uri;
         var promise = null;
@@ -306,7 +307,9 @@ angular.module('eventsApp')
             promise = self.showWinterWar();
         }
 
-        return promise.then(self.afterCreateInit);
+        return promise.then(self.afterCreateInit).then(function() {
+            self.isLoadingTimemap = false;
+        });
     };
 
     self.visualize();
