@@ -13,17 +13,17 @@ angular.module('eventsApp')
     $rootScope.showHelp = null;
     var self = this;
     if ($routeParams.uri) {
-        self.isLoadingEvent = true;
-        self.isLoadingLinks = false;
+        self.isLoadingRank = true;
+        self.isLoadingPersons = false;
         rankService.getById($routeParams.uri)
         .then(function(rank) {
             self.rank = rank; 
-            self.isLoadingEvent = false;
-
-            return rank.fetchRelatedPersons();
+            self.isLoadingRank = false;
+				self.isLoadingPersons = true;
+            return rank.fetchRelated();
         }).catch(function() {
-            self.isLoadingEvent = false;
-            self.isLoadingLinks = false;
+            self.isLoadingRank = false;
+            self.isLoadingPersons = false;
         });
     }
 });

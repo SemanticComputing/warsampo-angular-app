@@ -6,9 +6,6 @@
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.person && !ctrl.isLoadingEvent">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.person">
-      <!-- <h2>
-        {{ ctrl.unit.name }} ({{ ctrl.unit.abbrev }})
-      </h2> -->
       <h2>
         {{ ctrl.person.getLabel() }}
       </h2>

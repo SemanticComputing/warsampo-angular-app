@@ -66,7 +66,7 @@ angular.module('eventsApp')
 	if ($routeParams.uri) { 
 		this.updateByUri($routeParams.uri); 
 	} else { 
-		this.selectedItem = { name: "Carl Gustaf Emil Mannerheim", id: "http://ldf.fi/warsa/actors/person_1" };
+		this.selectedItem = { name: "Talvela, Paavo Juho", id: "http://ldf.fi/warsa/actors/person_50" };
 		this.updatePerson(); 
 	}
 });

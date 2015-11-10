@@ -12,6 +12,7 @@ angular.module('eventsApp')
         Rank.prototype.fetchRelatedPersons = function() {
             var self = this;
             return rankService.getRelatedPersons(self.id).then(function(persons) {
+            	self.isLoadingPersons=false;
             	if (persons.length) {
             		for (var i=0; i<persons.length; i++) {
             			var pers=persons[i];
@@ -32,7 +33,7 @@ angular.module('eventsApp')
             });
         };
 			
-      	
+      
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
@@ -92,6 +93,7 @@ angular.module('eventsApp')
         
 		this.getRelatedPersons = function(id) {
 				var qry = rankPersonQry.format("<{0}>".format(id));
+				// console.log(qry);
 				return endpoint.getObjects(qry).then(function(data) {
 					return rankMapperService.makeObjectListNoGrouping(data);
             });

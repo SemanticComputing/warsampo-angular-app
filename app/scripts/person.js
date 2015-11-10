@@ -215,7 +215,7 @@ angular.module('eventsApp')
    ' 		?id dcterms:subject ?person .  ' +
    ' 		?id dcterms:created ?created . ' +
    ' 		?id dcterms:description ?description . ' +
-   ' 		?id <http://schema.org/contentUrl> ?url . } ';
+   ' 		?id <http://schema.org/contentUrl> ?url . } LIMIT 150 ';
     	
 		this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));

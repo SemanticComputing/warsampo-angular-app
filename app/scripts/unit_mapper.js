@@ -90,18 +90,7 @@ Unit.prototype.processUnitEvents = function(events) {
 	}
 };
 
-/*
-Unit.prototype.getNotes = function() {
-	var notes = '';
-	if (!_.isArray(this.note)) {
-		notes = this.note;
-	} else {
-		notes = this.note.join('<br>');
-	}
-	
-	return notes;
-}
-*/
+
 
 function UnitMapper() { }
 
