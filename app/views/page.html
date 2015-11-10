@@ -28,14 +28,7 @@
         {{ ctrl.images.length }} kuvaa
         </p>
       </div>
-      <div id="photo-thumbs">
-        <div id="photo-container">
-          <a ng-cloak ng-repeat="img in ctrl.images"
-            ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
-            data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-            <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
-        </div>
-      </div>
+      <photo-scroller images="ctrl.images"></photo-scroller>
     </div>
   </div>
   <!-- Links -->

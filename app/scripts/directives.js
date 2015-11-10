@@ -31,6 +31,15 @@ angular.module('eventsApp')
         templateUrl: "views/link_collapse_partial.html"
     };
 })
+.directive('photoScroller', function() {
+    return {
+        restrict:'E',
+        scope: {
+            images: "="
+        },
+        templateUrl: "views/photo_scroller_partial.html"
+    };
+})
 .directive('pageLink', function() {
     return {
         restrict:'A',
