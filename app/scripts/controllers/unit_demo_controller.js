@@ -150,20 +150,20 @@ angular.module('eventsApp')
         self.images = [];
 
         self.visualize();
-        //initSelector('unitSelector');
     };
 
     var getCasualtyLocations = function() {
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
-        var unit='<'+eventService.currentUnit+'>';
-        
-        //console.log('getCasualtyLocations for '+unit);
-        return casualtyService.getCasualtyLocationsByTimeAndUnit(formatDate(start), formatDate(end), unit)
+        var unit='<'+self.current.id+'>';
+        if (self.current.subUnits) {
+        		//console.log("self.current.subUnits"+self.current.subUnits);
+        		for (var i=0; i<self.current.subUnits; i++) { unit = unit + ' <'+self.current.subUnits[i].id+'>'; }
+        }
+         return casualtyService.getCasualtyLocationsByTimeAndUnit(formatDate(start), formatDate(end), unit)
             .then(function(casualties) {
                 var res = [];
-                //console.log('getCasualtyLocations: '+casualties.length);
                 casualties.forEach(function(casualty) {
                     res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
                 });
@@ -237,7 +237,7 @@ angular.module('eventsApp')
             afterOffset: self.photoDaysAfter,
             inProximity: self.photoPlace
         };
-
+			
         return timemapService.createTimemapByActor(id, start, end, highlights, infoWindowCallback, photoConfig)
         .then(function(timemap) {
             $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
@@ -248,13 +248,11 @@ angular.module('eventsApp')
 
 				//	control not to ever zoom too close up:
 				var zminlistener = google.maps.event.addListener(map, "idle", function() { 
-					//console.log(map.getZoom());
-				  if (map.getZoom() > 8) map.setZoom(8); 
+					if (map.getZoom() > 8) map.setZoom(8); 
 				  if (map.getZoom() < 2) {
 				  		map.setZoom(5);
 				  		map.setCenter({lat: 62.0, lng: 25.0 });
 				  }
-				  //console.log('listener:'+map);
 				  google.maps.event.removeListener(zminlistener); 
 				});
 				
@@ -328,7 +326,6 @@ angular.module('eventsApp')
     };
 	 
 	 self.showPerson = function() {
-	 	console.log('showPerson');
         var uri = getSelectionUri('unitSelector');
         if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
         self.noReload = true;
@@ -343,7 +340,7 @@ angular.module('eventsApp')
         self.isLoadingLinks = false;
         unitService.getById(uri)
         .then(function(unit) {
-        		console.log(unit.name);
+        		
         		if (_.isArray(unit.name)) {
         			var arr=unit.name;
         			unit.name=arr.shift();
@@ -352,8 +349,7 @@ angular.module('eventsApp')
             self.current = unit; 
             self.isLoadingEvent = false;
 				self.createTimeMapForActor(uri);
-            unit.fetchRelated();
-            // console.log(unit); 
+            self.current.fetchRelated2();
             return;
         }).catch(function() {
             self.isLoadingEvent = false;
@@ -393,7 +389,6 @@ angular.module('eventsApp')
     
     
 	if ($routeParams.uri) { 
-		// console.log($routeParams.uri);
 		self.updateByUri($routeParams.uri); 
 	} else { 
 		self.current = { name: "Jalkaväkirykmentti 37", id: "http://ldf.fi/warsa/actors/actor_940" };

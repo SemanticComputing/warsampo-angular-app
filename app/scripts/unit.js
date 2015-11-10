@@ -5,10 +5,11 @@
  */
 angular.module('eventsApp')
     .service('unitService', function($q, SparqlService, unitMapperService,
-                Unit, eventService) {
+                Unit, eventService, casualtyService) {
         
         var unitService = this;
-
+			
+			
         Unit.prototype.fetchRelatedEvents = function() {
             var self = this;
             return eventService.getEventsByActor(self.id).then(function(events) {
@@ -29,11 +30,22 @@ angular.module('eventsApp')
             });
         };
 			
+		 Unit.prototype.fetchRelated2 = function() {
+            var self = this;
+            return self.fetchRelatedEvents().then(
+            	function() { return self.fetchSubUnits(); }).then(
+            	function() { return self.fetchUnitEvents(); }).then(
+            	function() { return self.fetchRelatedPersons(); }).then(
+            	function() {
+                if (self.relatedEvents || self.subUnits || self.relatedPersons ) {
+                    self.hasLinks = true;
+                }
+            });
+        };
+        
 		  Unit.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return unitService.getRelatedUnit(self.id).then(function(units) {
-            	// if (_.isArray(units)) { units=units[0]; }
-            	// if (_.isArray(units.name)) { units.name=units.name[0]; }
             	self.relatedUnits=[];
             	for (var i=0; i<units.length; i++) {
             		var unit=units[i];
@@ -44,6 +56,21 @@ angular.module('eventsApp')
 							self.relatedUnits.push(unit);
 							}
             	}
+            });
+        };
+        
+        Unit.prototype.fetchSubUnits = function() {
+		  		var self = this;
+            return unitService.getSubUnits(self.id).then(function(units) {
+            	self.subUnits=[];
+            	for (var i=0; i<units.length; i++) {
+            		var unit=units[i];
+						if ('id' in unit) { 
+							self.subUnits.push(unit);
+						}
+            	}
+            	// console.log("self.subUnits");            	
+            	// console.log(self.subUnits);
             });
         };
         
@@ -82,6 +109,16 @@ angular.module('eventsApp')
             	
             	if (arr.length) {self.relatedPersons = arr;}
             	if (arr2.length) {self.commanders = arr2;}
+            });
+        };
+        
+        Unit.prototype.fetchCasualties = function() {
+            var self = this;
+            // console.log("fetchCasualties");
+            return casualtyService.getCasualtyLocationsByTimeAndUnit("1939-09-09","1940-03-30",self.id)
+                .then(function(participants) {
+                	console.log(participants);
+                    self.relatedCasualties = participants;
             });
         };
         
@@ -183,6 +220,26 @@ angular.module('eventsApp')
 		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
 		 '   		} ';
         
+        var subUnitQry = prefixes +
+'SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?names)' +
+'    WHERE { ' +
+'    VALUES ?unit { {0} } ' +
+'' +
+' { 	?evt a etypes:UnitJoining .' +
+'	?evt crm:P143_joined ?id .' +
+'   	?evt crm:P144_joined_with ?unit .' +
+'  } UNION {' +
+'    ?evt a etypes:UnitJoining .' +
+'	?evt crm:P143_joined ?id2 .' +
+'   	?evt crm:P144_joined_with ?unit .' +
+'    ?evt2 a etypes:UnitJoining .' +
+'	?evt2 crm:P143_joined ?id .' +
+'   	?evt2 crm:P144_joined_with ?id2 .' +
+'  }' +
+'	?id a atypes:MilitaryUnit .' +
+'	?id skos:prefLabel ?name .' +
+'} GROUP BY ?id ';
+
         var relatedPersonQry = prefixes +
 	   ' 	SELECT DISTINCT ?id ?name ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE { ' +
 	   ' 	  VALUES ?unit { {0} } . ' +
@@ -208,25 +265,24 @@ angular.module('eventsApp')
 			
 			
 		var selectorQuery  = prefixes +
-'SELECT DISTINCT ?name ?id WHERE {        '+
-'  ?ename a etypes:UnitNaming .      ?ename skos:prefLabel ?name .       '+
-'  ?ename crm:P95_has_formed ?id .       '+
-'  { ?evt a crm:E66_Formation . ?evt crm:P95_has_formed ?id . }       '+
-'  UNION       '+
-'  { ?evt a etypes:Battle . ?evt crm:P11_had_participant ?id . }       '+
-'  UNION        '+
-'  { ?evt a etypes:TroopMovement . ?evt crm:P95_has_formed ?id . }       '+
-'  ?evt crm:P7_took_place_at ?place_id .       '+
-'  ?place_id geo:lat ?lat .       '+
-'  FILTER (regex(?name, "^.*{0}.*$", "i"))    '+
-'}  ORDER BY lcase(?name)  	 '+
-'LIMIT 1000  ';
+			'SELECT DISTINCT ?name ?id WHERE {        '+
+			'  ?ename a etypes:UnitNaming .      ?ename skos:prefLabel ?name .       '+
+			'  ?ename crm:P95_has_formed ?id .       '+
+			'  { ?evt a crm:E66_Formation . ?evt crm:P95_has_formed ?id . }       '+
+			'  UNION       '+
+			'  { ?evt a etypes:Battle . ?evt crm:P11_had_participant ?id . }       '+
+			'  UNION        '+
+			'  { ?evt a etypes:TroopMovement . ?evt crm:P95_has_formed ?id . }       '+
+			'  ?evt crm:P7_took_place_at ?place_id .       '+
+			'  ?place_id geo:lat ?lat .       '+
+			'  FILTER (regex(?name, "^.*{0}.*$", "i"))    '+
+			'}  ORDER BY lcase(?name)  	 '+
+			'LIMIT 1000  ';
 		  
 		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-            	
-                if (data.length) {
+            	 if (data.length) {
                     return unitMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
@@ -246,6 +302,13 @@ angular.module('eventsApp')
                 return unitMapperService.makeObjectList(data);
             });
         };
+        
+        this.getSubUnits = function(unit) {
+            var qry = subUnitQry.format("<{0}>".format(unit));
+            return endpoint.getObjects(qry).then(function(data) {
+                return unitMapperService.makeObjectList(data);
+            });
+        }
         
 		this.getPersons = function(unit) {
             var qry = relatedPersonQry.format("<{0}>".format(unit));

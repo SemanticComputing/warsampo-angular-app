@@ -19,8 +19,7 @@ angular.module('eventsApp')
         .then(function(unit) {
             self.unit = unit; 
             self.isLoadingEvent = false;
-
-            return unit.fetchRelated();
+				return unit.fetchRelated();
         }).catch(function() {
             self.isLoadingEvent = false;
             self.isLoadingLinks = false;
