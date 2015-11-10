@@ -1,4 +1,4 @@
-<div class="related" ng-show="related"
+<div class="related" ng-if="related"
   ng-init="show = related.length <= 10">
   <h3 ng-click="show = !show">
     <a>{{ title }} ({{ related.length }})
