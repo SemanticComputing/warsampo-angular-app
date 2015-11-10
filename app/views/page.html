@@ -9,9 +9,9 @@
     <div id="dataContent" ng-if="ctrl.event">
       <h2>
         <span ng-repeat="place in ctrl.event.places">
-          <a page-link="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+          <a page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
         </span>
-        <a page-link="{{ ctrl.event.time_id }}">{{ ctrl.event.timeSpanString }}</a> - {{ ctrl.event.type }}
+        <a page-link="ctrl.event.time_id">{{ ctrl.event.timeSpanString }}</a> - {{ ctrl.event.type }}
       </h2>
       <p>{{ ctrl.event.description }}</p>
       <p><a ng-href="events/?uri={{ ctrl.event.id }}">Näytä aikajanalla</a></p>

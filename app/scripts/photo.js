@@ -24,7 +24,7 @@ angular.module('eventsApp')
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
 
         var photosByPlaceAndTimeQry = prefixes +
-        '  SELECT ?id ?created ?description ?place_id ?place_label ?url ?ref_municipality ?ref_place_id ' +
+        '  SELECT ?id ?created ?description ?place_id ?place_label ?url ?thumbnail_url ?ref_municipality ?ref_place_id ' +
         '  WHERE { ' +
         '     VALUES ?ref_place_id { {0} }    ' +
         '     GRAPH warsa:photographs { ' +
@@ -32,6 +32,7 @@ angular.module('eventsApp')
         '         FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
         '         ?id skos:prefLabel ?description ;          ' +
         '         sch:contentUrl ?url ;          ' +
+        '         sch:thumbnailUrl ?thumbnail_url ;          ' +
         '         dc:spatial ?place_id .    ' +
         '     } ' +
         '     OPTIONAL { ' +
@@ -44,13 +45,14 @@ angular.module('eventsApp')
         ' }  ';
 
         var photosByTimeQry =  prefixes +
-        ' SELECT ?id ?created ?description ?url ?place_id ' +
+        ' SELECT ?id ?created ?description ?url ?thumbnail_url ?place_id ' +
         ' WHERE { ' +
         '     GRAPH warsa:photographs { ' +
         '        ?id dc:created ?created . ' +
         '        FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
         '        ?id skos:prefLabel ?description ; ' +
         '           sch:contentUrl ?url . ' +
+        '           sch:thumbnailUrl ?thumbnail_url . ' +
         '        OPTIONAL { ?id dc:spatial ?place_id . } ' +
         '     } ' +
         ' } ';
@@ -62,7 +64,6 @@ angular.module('eventsApp')
         '       ?id dc:created ?created . ' +
         '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
         '       ?id skos:prefLabel ?description ; ' +
-        '       sch:contentUrl ?url ; ' +
         '       dc:spatial ?place_id . ' +
         '     } ' +
         '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality_id . ?municipality_id a suo:kunta . } ' +
@@ -96,6 +97,7 @@ angular.module('eventsApp')
         };
 
         this.getDistinctPhotoData = function(start, end, getPlace) {
+            // start and end as strings
             var qry;
             if (getPlace) {
                 qry = minimalPhotosWithPlaceByTimeQry.format(start, end);
@@ -126,6 +128,11 @@ angular.module('eventsApp')
                 });
                 return images;
             });
+        };
+
+        this.getByTimeSpan = function(start, end) {
+            // start and end as strings
+            return this.getPhotosByPlaceAndTimeSpan(null, start, end);
         };
 
         function changeDateAndFormat(date, days) {

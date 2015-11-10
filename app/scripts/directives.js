@@ -41,11 +41,10 @@ angular.module('eventsApp')
     };
 })
 .directive('pageLink', function() {
-    return {
-        restrict:'A',
-        link: function(scope, element, attrs) {
+    var link = function(scope, element, attrs) {
+        var setSrc = function(value) {
             var path, target, params;
-            var objId = attrs.pageLink;
+            var objId = value;
             if (_.includes(objId, '/times/')) {
                 path = 'times/page';
             } else if (_.includes(objId, '/events/')) {
@@ -74,6 +73,15 @@ angular.module('eventsApp')
             if (target) {
                 element.attr('target', target);
             }
-        }
+        };
+
+        scope.$watch(attrs.pageLink, function(value) {
+            setSrc(value);
+        });
+    };
+
+    return {
+        restrict:'A',
+        link: link
     };
 });

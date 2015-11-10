@@ -3,12 +3,13 @@
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
-    <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
-    <p ng-if="!ctrl.time && !ctrl.isLoadingEvent">No metadata available for this object.</p>
+    <img ng-show="ctrl.isLoadingObj" src="images/loading.gif" />
+    <p ng-if="!ctrl.time && !ctrl.isLoadingObj">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.time">
       <h2>
         {{ ctrl.time.timeString }}
       </h2>
+      <photo-scroller images="ctrl.time.photos"></photo-scroller>
     </div>
   </div>
   <!-- Links -->

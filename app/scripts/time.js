@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('timeService', function($q, SparqlService, timeMapperService, Time,
-                casualtyService, eventService) {
+                casualtyService, eventService, photoService) {
 
         Time.prototype.fetchEvents = function() {
             var self = this;
@@ -15,13 +15,23 @@ angular.module('eventsApp')
             });
         };
 
+        Time.prototype.fetchPhotos = function() {
+            var self = this;
+            return photoService.getByTimeSpan(self.bob, self.eoe)
+                .then(function(photos) {
+                    self.photos = photos;
+            });
+        };
+
         Time.prototype.fetchRelated = function() {
             var self = this;
-            return self.fetchEvents().then(function() {
-                if (self.events) {
-                    self.hasLinks = true;
-                }
-            });
+            return self.fetchEvents()
+                .then(function() { return self.fetchPhotos(); })
+                .then(function() {
+                    if (self.events) {
+                        self.hasLinks = true;
+                    }
+                });
         };
 
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');

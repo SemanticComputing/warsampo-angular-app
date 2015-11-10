@@ -269,7 +269,6 @@ angular.module('eventsApp')
             var item = _.find(tm.getItems(), function(item) {
                 return _.isEqual(item.opts.event.id, e.id);
             });
-            self.current = item;
             tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
             tm.setSelected(item);
             item.openInfoWindow();

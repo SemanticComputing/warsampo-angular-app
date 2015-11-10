@@ -8,23 +8,24 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('TimePageCtrl', function($routeParams, $q, $rootScope, timeService) {
+  .controller('TimePageCtrl', function($routeParams, $q, $rootScope, timeService,
+              photoService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
     if ($routeParams.uri) {
-        self.isLoadingEvent = true;
+        self.isLoadingObj = true;
         self.isLoadingLinks = true;
         timeService.getById($routeParams.uri)
         .then(function(time) {
             self.time = time; 
-            self.isLoadingEvent = false;
+            self.isLoadingObj = false;
 
             return self.time.fetchRelated();
         }).then(function() {
             self.isLoadingLinks = false;
         }).catch(function() {
-            self.isLoadingEvent = false;
+            self.isLoadingObj = false;
             self.isLoadingLinks = false;
         });
     }
