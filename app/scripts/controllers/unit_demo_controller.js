@@ -346,7 +346,9 @@ angular.module('eventsApp')
             self.current = unit; 
             self.isLoadingEvent = false;
 				self.createTimeMapForActor(uri);
-            //return unit.fetchRelated();
+            unit.fetchRelated();
+            console.log(unit); 
+            return;
         }).catch(function() {
             self.isLoadingEvent = false;
             self.isLoadingLinks = false;
@@ -365,7 +367,8 @@ angular.module('eventsApp')
 	this.updateUnit = function () {
 		if (this.current && this.current.id) {
 			var uri=this.current.id;
-			console.log('updateActor: '+uri);
+			console.log('updateActor: '+this.current.name);
+			this.label = this.current.name;
 			if (typeof $location !== 'undefined' && $location.search().uri != uri) {
             self.noReload = true;
             $location.search('uri', uri);

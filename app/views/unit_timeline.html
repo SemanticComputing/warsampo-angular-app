@@ -18,17 +18,17 @@
     <div class="row">
       <div class="col-md-12">
         <div ng-show="ctrl.current">
-        	<h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.current.name }}</h3>
+        	<h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
 			<p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
-          <h3 ng-if="ctrl.current.opts.descTitle">
+          <h3 ng-if="ctrl.current.opts.descTitle"> 
             <span ng-repeat="place in ctrl.current.opts.event.places">
               <a page-link="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
             </span>
             {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
           </h3>
           <p>{{ ctrl.current.opts.description }}</p>
-          <p ng-repeat="person in ctrl.current.commanders" style="text-transform: capitalize">
-            {{ person.label }}
+          <p ng-repeat="person in ctrl.current.relatedPersons" style="text-transform: capitalize">
+            {{ person.name }}
           </p>
           <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
             {{ unit.label.join(' / ') }}
