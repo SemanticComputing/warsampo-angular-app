@@ -206,9 +206,26 @@ angular.module('eventsApp')
 	   ' 	  } GROUP BY ?id ?name ?role ?no ?rank ?start_time ?end_time  ' +
 	   ' 		ORDER BY DESC(?no) LIMIT 8 ';
 			
+			
+		var selectorQuery  = prefixes +
+'SELECT DISTINCT ?name ?id WHERE {        '+
+'  ?ename a etypes:UnitNaming .      ?ename skos:prefLabel ?name .       '+
+'  ?ename crm:P95_has_formed ?id .       '+
+'  { ?evt a crm:E66_Formation . ?evt crm:P95_has_formed ?id . }       '+
+'  UNION       '+
+'  { ?evt a etypes:Battle . ?evt crm:P11_had_participant ?id . }       '+
+'  UNION        '+
+'  { ?evt a etypes:TroopMovement . ?evt crm:P95_has_formed ?id . }       '+
+'  ?evt crm:P7_took_place_at ?place_id .       '+
+'  ?place_id geo:lat ?lat .       '+
+'  FILTER (regex(?name, "^.*{0}.*$", "i"))    '+
+'}  ORDER BY lcase(?name)  	 '+
+'LIMIT 1000  ';
+		  
 		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
+            	
                 if (data.length) {
                     return unitMapperService.makeObjectList(data)[0];
                 }
@@ -236,5 +253,14 @@ angular.module('eventsApp')
                 return unitMapperService.makeObjectList(data);
             });
         };
+        
+        this.getItems = function (regx, controller) {
+        		var qry = selectorQuery.format("{0}".format(regx));
+        		return endpoint.getObjects(qry).then(function(data) {
+        			var arr= unitMapperService.makeObjectListNoGrouping(data);
+					controller.items=arr;
+            	return arr;
+            });
+        }
 });
 

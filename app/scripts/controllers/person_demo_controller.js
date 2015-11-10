@@ -41,7 +41,7 @@ angular.module('eventsApp')
    }
    this.getItems();
 
-	this.updatePerson = function () {
+	this.updateActor = function () {
 		if (this.selectedItem && this.selectedItem.id) {
 			var uri=this.selectedItem.id;
 			
@@ -67,7 +67,7 @@ angular.module('eventsApp')
 		this.updateByUri($routeParams.uri); 
 	} else { 
 		this.selectedItem = { name: "Talvela, Paavo Juho", id: "http://ldf.fi/warsa/actors/person_50" };
-		this.updatePerson(); 
+		this.updateActor(); 
 	}
 });
 

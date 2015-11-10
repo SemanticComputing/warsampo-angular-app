@@ -51,9 +51,9 @@ angular
         controllerAs: 'ctrl'
       })
       .when(lang + '/units/', {
-        templateUrl: 'views/actor_timeline.html',
-        controller: 'ActorCtrl',
-        controllerAs: 'timemapCtrl',
+        templateUrl: 'views/unit_timeline.html',
+        controller: 'UnitDemoCtrl',
+        controllerAs: 'ctrl',
         reloadOnSearch: false
       })
       .when(lang + '/persons/', {
