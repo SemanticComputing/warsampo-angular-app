@@ -5,12 +5,7 @@
     <select ng-model="ctrl.current" ng-change="ctrl.updateUnit()" size="32" class="form-control" id="unitselect"
             ng-options="item as item.name for item in ctrl.items"></select>
 	</div>
-	<!--
-  <div class="col-sm-3">
-    <button ng-click="ctrl.showUnit()" class="form-control" >Show on the map</button>
-    <div class="form-control" id="unitSelector">Selected:</div>
-  </div>
-  -->
+	
   <div class="col-sm-9">
     <!-- <div ng-include="'views/timemap_partial.html'"></div> -->
     <div class="row">
@@ -19,7 +14,8 @@
       <div class="col-md-12">
         <div ng-show="ctrl.current">
         	<h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
-			<p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
+        	<p ng-if="ctrl.current && ctrl.current.altNames">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join(', ') }}</p>
+        	<p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
           <h3 ng-if="ctrl.current.opts.descTitle"> 
             <span ng-repeat="place in ctrl.current.opts.event.places">
               <a page-link="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
@@ -57,7 +53,7 @@
           </div>
         </div>
         <div ng-if="!ctrl.current">
-          <h3>Valitse tapahtuma aikajanalta tai kartalta.</h3>
+          <h3>Valitse osasto valikosta.</h3>
           <p>
             Aikajanaa voi liikuttaa vetämällä hiirellä.
             Asetuksia, kuten valokuvien haun aikahaarkukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset".
@@ -87,7 +83,7 @@
             </div>
           </div>
         </div>
-        <div class="row" ng-repeat="person in ctrl.current.related_people">
+        <div class="row" ng-repeat="person in ctrl.current.relatedPersons">
           <div class="col-md-12" style="text-transform: capitalize">
             <h4>
               {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}

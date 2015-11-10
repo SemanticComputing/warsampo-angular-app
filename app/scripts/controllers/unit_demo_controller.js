@@ -81,7 +81,7 @@ angular.module('eventsApp')
     var fetchActors = function(item) {
         var actorTypePrefix = 'http://ldf.fi/warsa/actors/actor_types/';
 
-        actorService.getActorInfo(item.participant_id).then(function(participants) {
+        unitService.getActorInfo(item.participant_id).then(function(participants) {
             self.current.commanders = [];
             self.current.units = [];
             var setActor = function(actor) {
@@ -343,11 +343,17 @@ angular.module('eventsApp')
         self.isLoadingLinks = false;
         unitService.getById(uri)
         .then(function(unit) {
+        		console.log(unit.name);
+        		if (_.isArray(unit.name)) {
+        			var arr=unit.name;
+        			unit.name=arr.shift();
+        			unit.altNames=arr;
+        		}
             self.current = unit; 
             self.isLoadingEvent = false;
 				self.createTimeMapForActor(uri);
             unit.fetchRelated();
-            console.log(unit); 
+            // console.log(unit); 
             return;
         }).catch(function() {
             self.isLoadingEvent = false;
@@ -367,7 +373,6 @@ angular.module('eventsApp')
 	this.updateUnit = function () {
 		if (this.current && this.current.id) {
 			var uri=this.current.id;
-			console.log('updateActor: '+this.current.name);
 			this.label = this.current.name;
 			if (typeof $location !== 'undefined' && $location.search().uri != uri) {
             self.noReload = true;
@@ -388,7 +393,7 @@ angular.module('eventsApp')
     
     
 	if ($routeParams.uri) { 
-		console.log($routeParams.uri);
+		// console.log($routeParams.uri);
 		self.updateByUri($routeParams.uri); 
 	} else { 
 		self.current = { name: "Jalkaväkirykmentti 37", id: "http://ldf.fi/warsa/actors/actor_940" };
