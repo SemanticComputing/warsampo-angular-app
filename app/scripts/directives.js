@@ -37,7 +37,7 @@ angular.module('eventsApp')
         link: function(scope, element, attrs) {
             var path;
             var target;
-            var objId = attrs.id;
+            var objId = attrs.pageLink;
             if (_.includes(objId, '/times/')) {
                 path = 'times/page';
             } else if (_.includes(objId, '/events/')) {

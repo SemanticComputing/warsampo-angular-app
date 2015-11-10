@@ -307,7 +307,7 @@ angular.module('eventsApp')
             promise = self.showWinterWar();
         }
 
-        return promise.then(function() { self.afterCreateInit(); });
+        return promise.then(self.afterCreateInit);
     };
 
     self.visualize();

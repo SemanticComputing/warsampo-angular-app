@@ -26,7 +26,7 @@
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	      <ul class="list-group">
 	          <li class="list-group-item" ng-repeat="unit in ctrl.unit.relatedUnits">
-	          <a page-link data-id="{{ unit.id }}">{{ unit.name }}</a>
+	          <a page-link="{{ unit.id }}">{{ unit.name }}</a>
 	          </li>
 	       </ul>
      </div>
@@ -35,7 +35,7 @@
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="event in ctrl.unit.battles">
-          <a page-link data-id="{{ event.id }}">{{ event.description | words:10 }}</a>
+          <a page-link="{{ event.id }}">{{ event.description | words:10 }}</a>
           </li>
        </ul>
      </div> 
@@ -44,7 +44,7 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <ul class="list-group">
           <li class="list-group-item" ng-repeat="person in ctrl.unit.relatedPersons">
-          <a page-link data-id="{{ person.id }}">{{ person.name }}</a>
+          <a page-link="{{ person.id }}">{{ person.name }}</a>
           </li>
        </ul>
      </div>
@@ -53,7 +53,7 @@
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="place in ctrl.unit.places">
-          <a page-link data-id="{{ place.id }}">{{ place.label }}</a>
+          <a page-link="{{ place.id }}">{{ place.label }}</a>
           </li>
        </ul>
      </div> 
