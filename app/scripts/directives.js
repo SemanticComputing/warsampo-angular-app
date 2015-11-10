@@ -35,8 +35,7 @@ angular.module('eventsApp')
     return {
         restrict:'A',
         link: function(scope, element, attrs) {
-            var path;
-            var target;
+            var path, target, params;
             var objId = attrs.pageLink;
             if (_.includes(objId, '/times/')) {
                 path = 'times/page';
@@ -54,13 +53,15 @@ angular.module('eventsApp')
                 path = 'casualties/page';
             } else if (_.includes(objId, '/places/')) {
                 path = 'places/page';
-                target = "_self";
+                target = '_self';
+                params = '&oldMap=true';
             } else {
                 path = "page";
                 target = "_self";
             }
 
-            element.attr('href', path + '?uri=' + objId);
+            var url = path + '?uri=' + objId + (params ? params : '');
+            element.attr('href', url);
             if (target) {
                 element.attr('target', target);
             }
