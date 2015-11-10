@@ -28,7 +28,7 @@ angular.module('eventsApp')
             return self.fetchEvents()
                 .then(function() { return self.fetchPhotos(); })
                 .then(function() {
-                    if (self.events) {
+                    if (self.events || self.photos) {
                         self.hasLinks = true;
                     }
                 });

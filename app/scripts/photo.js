@@ -51,7 +51,7 @@ angular.module('eventsApp')
         '        ?id dc:created ?created . ' +
         '        FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
         '        ?id skos:prefLabel ?description ; ' +
-        '           sch:contentUrl ?url . ' +
+        '           sch:contentUrl ?url ; ' +
         '           sch:thumbnailUrl ?thumbnail_url . ' +
         '        OPTIONAL { ?id dc:spatial ?place_id . } ' +
         '     } ' +
@@ -110,7 +110,6 @@ angular.module('eventsApp')
         };
 
         this.getRelatedPhotosForEvent = function(event, photoSettings) {
-            var images = [];
             var place_ids;
             if (photoSettings.inProximity) {
                 place_ids = _.pluck(event.places, 'id');
@@ -120,14 +119,7 @@ angular.module('eventsApp')
             }
             return this.getPhotosByPlaceAndTimeSpan(place_ids, 
                     changeDateAndFormat(event.start_time, -photoSettings.beforeOffset), 
-                    changeDateAndFormat(event.end_time, photoSettings.afterOffset))
-            .then(function(imgs) {
-                imgs.forEach(function(img) {
-                    img.thumbnail = img.url.replace("_r500", "_r100");
-                    images.push(img);
-                });
-                return images;
-            });
+                    changeDateAndFormat(event.end_time, photoSettings.afterOffset));
         };
 
         this.getByTimeSpan = function(start, end) {

@@ -14,6 +14,7 @@ PhotoMapper.prototype.makeObject = function(photo) {
 
     e.id = photo.id.value;
     e.url = photo.url.value;
+    e.thumbnail = photo.thumbnail_url.value;
     e.description = photo.description ? photo.description.value : '';
     e.created = photo.created ? photo.created.value : undefined;
     e.participant_id = photo.participant ? photo.participant.value : '';
