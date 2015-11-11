@@ -18,7 +18,7 @@
         	<p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
           <h3 ng-if="ctrl.current.opts.descTitle"> 
             <span ng-repeat="place in ctrl.current.opts.event.places">
-              <a page-link="{{ place.id }}">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+              <a page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
             </span>
             {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
           </h3>
@@ -42,14 +42,7 @@
             <p>
             {{ ctrl.images.length }} kuvaa
             </p>
-            <div id="photo-thumbs">
-              <div id="photo-container">
-                <a ng-cloak ng-repeat="img in ctrl.images"
-                  ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
-                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
-              </div>
-            </div>
+            <photo-scroller images="ctrl.images"></photo-scroller>
           </div>
         </div>
         <div ng-if="!ctrl.current">

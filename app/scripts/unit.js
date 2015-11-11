@@ -340,7 +340,7 @@ angular.module('eventsApp')
             return endpoint.getObjects(qry).then(function(data) {
             	 return unitMapperService.makeObjectList(data);
             });
-        }
+        };
         
 		this.getPersons = function(unit) {
             var qry = relatedPersonQry.format("<{0}>".format(unit));
@@ -350,13 +350,11 @@ angular.module('eventsApp')
         };
         
         this.getItems = function (regx, controller) {
-        		var qry = selectorQuery.format("{0}".format(regx));
-        		return endpoint.getObjects(qry).then(function(data) {
-        			var arr= unitMapperService.makeObjectListNoGrouping(data);
-					controller.items=arr;
-            	return arr;
+            var qry = selectorQuery.format("{0}".format(regx));
+            return endpoint.getObjects(qry).then(function(data) {
+                return unitMapperService.makeObjectListNoGrouping(data);
             });
-        }
+        };
         
         this.getActorInfo = function(ids) {
             var qry;
@@ -369,7 +367,7 @@ angular.module('eventsApp')
             }
             qry = actorInfoQry.format(ids);
             return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
+                return unitMapperService.makeObjectList(data);
             });
         };
 });

@@ -10,33 +10,18 @@
 angular.module('eventsApp')
   .controller('UnitDemoCtrl', function ($routeParams, $location, 
               $anchorScroll, $timeout, $window, $scope, $rootScope, $route,
-              eventService, photoService, casualtyService, unitService, timemapService) {
+              eventService, photoService, casualtyService, unitService,
+              Settings, timemapService) {
 
     var self = this;
-	 self.unitService=unitService;
+    self.unitService=unitService;
 
-    // The currently selected event
-    //self.current = undefined;
     // Images related to currently selected event
     self.images = undefined;
-    // Current image page
-    self.photoDaysBefore = 1;
-    self.photoDaysAfter = 3;
-    self.photoPlace = true;
-    self.photoDaysBeforeSetting = self.photoDaysBefore;
-    self.photoDaysAfterSetting = self.photoDaysAfter;
-    self.photoPlaceSetting = self.photoPlace;
-    self.showCasualtyHeatmap = true;
-    self.showPhotos = false;
     var tm, map, heatmap;
 
     $rootScope.showHelp = function() {
         self.current = undefined;
-    };
-
-    self.settingsVisible = false;
-    $rootScope.showSettings = function() {
-        self.settingsVisible = !self.settingsVisible;
     };
 
     self.getEventTitleWithLinks = function(event) {
@@ -58,16 +43,6 @@ angular.module('eventsApp')
 
         return time;
     };
-
-    function changeDateAndFormat(date, days) {
-        var d = new Date(date);
-        d.setDate(d.getDate() + days);
-        return formatDate(d);
-    }
-
-    function formatDate(date) {
-        return date.toISOString().slice(0, 10);
-    }
 
     var fetchRelatedPeople = function(item) {
         if (item.participant_id) {
@@ -101,57 +76,6 @@ angular.module('eventsApp')
         });
     };
 
-    self.showPhotoGallery = function() {
-        blueimp.Gallery($('#photo-container a'), $('#blueimp-gallery').data());
-    };
-
-    var fetchImages = function(item) {
-        self.isLoadingImages = true;
-
-        self.images = [];
-        var place_ids;
-        if (self.photoPlace) {
-            place_ids = _.pluck(item.opts.event.places, 'id');
-            if (!place_ids) {
-                self.isLoadingImages = false;
-                setTimeout(function(){ $scope.$apply(); });
-                return;
-            }
-        }
-        photoService.getPhotosByPlaceAndTimeSpan(place_ids, 
-                changeDateAndFormat(item.getStart(), -self.photoDaysBefore), 
-                changeDateAndFormat(item.getEnd(), self.photoDaysAfter))
-        .then(function(imgs) {
-            self.isLoadingImages = false;
-            imgs.forEach(function(img) {
-                img.thumbnail = img.url.replace("_r500", "_r100");
-                self.images.push(img);
-            });
-        });
-    };
-
-    self.photoConfigChanged = function() {
-        return (self.photoDaysBefore !== self.photoDaysBeforeSetting) ||
-            (self.photoDaysAfter !== self.photoDaysAfterSetting) ||
-            (self.photoPlace !== self.photoPlaceSetting);
-    };
-
-    self.fetchImages = function() {
-        if (self.current) {
-            fetchImages(self.current);
-        }
-    };
-
-    self.updateTimeline = function() {
-        self.photoDaysBefore = self.photoDaysBeforeSetting;
-        self.photoDaysAfter = self.photoDaysAfterSetting;
-        self.photoPlace = self.photoPlaceSetting;
-        self.current = undefined;
-        self.images = [];
-			
-        self.visualize();
-    };
-
     var getCasualtyLocations = function() {
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
@@ -162,7 +86,7 @@ angular.module('eventsApp')
         		for (var i=0; i<self.current.subUnits.length; i++) { unit = unit + ' <'+self.current.subUnits[i].id+'>'; }
         		// console.log('all units '+unit.length+ ":");
         } 
-         return casualtyService.getCasualtyLocationsByTimeAndUnit(formatDate(start), formatDate(end), unit)
+         return casualtyService.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
             	//console.log('casualties');
                 var res = [];
@@ -179,7 +103,7 @@ angular.module('eventsApp')
         var end = band.getMaxVisibleDate();
         self.minVisibleDate = start;
         self.maxVisibleDate = end;
-        casualtyService.getCasualtyCountsByTimeGroupByType(formatDate(start), formatDate(end))
+        casualtyService.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
         .then(function(counts) {
             self.casualtyStats = counts;
             var count = 0;
@@ -191,7 +115,7 @@ angular.module('eventsApp')
     };
 
     var heatmapListener = function() {
-        if (self.showCasualtyHeatmap) {
+        if (Settings.showCasualtyHeatmap) {
             getCasualtyLocations().then(function(locations) {
                 heatmap.setData(locations);
                 heatmap.setMap(map);
@@ -206,7 +130,7 @@ angular.module('eventsApp')
     };
 
     self.updateHeatmap = function() {
-        if (self.showCasualtyHeatmap) {
+        if (Settings.showCasualtyHeatmap) {
             heatmapListener();
         } else {
             heatmap.setMap(null);
@@ -218,15 +142,17 @@ angular.module('eventsApp')
         getCasualtyCount();
     };
 
+    var fetchImages = function(item) {
+        self.isLoadingImages = true;
+        var photoConfig = Settings.getPhotoConfig();
+        self.images = [];
+        photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
+            self.images = imgs;
+            self.isLoadingImages = false;
+        });
+    };
     
     var infoWindowCallback = function(item) {
-        // Change the URL but don't reload the page
-        if ($location.search().uri !== item.opts.event.id) {
-            self.noReload = true;
-            // $location.search('uri', item.opts.event.id);
-        }
-			
-        self.current = item;
         fetchRelatedPeople(item.opts.event);
         fetchImages(item);
     };
@@ -235,39 +161,34 @@ angular.module('eventsApp')
     self.createTimeMap = function(id, start, end, highlights) {
 			console.log('createTimeMap '+id);
 			
-        var photoConfig = {
-            beforeOffset: self.photoDaysBefore,
-            afterOffset: self.photoDaysAfter,
-            inProximity: self.photoPlace
-        };
+        var photoConfig = Settings.getPhotoConfig();
 			
         return timemapService.createTimemapByActor(id, start, end, highlights, infoWindowCallback, photoConfig)
         .then(function(timemap) {
-            $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
-                markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
             tm = timemap;
             map = timemap.getNativeMap();
             map.setOptions({ zoomControl: true });
 
-				//	control not to ever zoom too close up:
-				var zminlistener = google.maps.event.addListener(map, "idle", function() { 
-					if (map.getZoom() > 8) map.setZoom(8); 
-				  if (map.getZoom() < 2) {
-				  		map.setZoom(5);
-				  		map.setCenter({lat: 62.0, lng: 25.0 });
-				  }
-				  google.maps.event.removeListener(zminlistener); 
-				});
-				
+            //	control not to ever zoom too close up:
+            var zminlistener = google.maps.event.addListener(map, "idle", function() { 
+                if (map.getZoom() > 8) map.setZoom(8); 
+                if (map.getZoom() < 2) {
+                    map.setZoom(5);
+                    map.setCenter({lat: 62.0, lng: 25.0 });
+                }
+                google.maps.event.removeListener(zminlistener); 
+            });
+
             var band = tm.timeline.getBand(1);
-				
+
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
             band.addOnScrollListener(clearHeatmap);
+            tm.timeline.setAutoWidth();
             getCasualtyLocations().then(function(locations) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: locations,
-                    radius: 20
+                        radius: 20
                 });
                 self.updateHeatmap();
             });
@@ -285,15 +206,15 @@ angular.module('eventsApp')
     };
 
     var winterWarHighlights = [
-        {
-            startDate: "1939-11-30",
+    {
+        startDate: "1939-11-30",
             endDate: "1940-03-13",
             color:      "#94BFFF",
             opacity:    20,
             startLabel: "Talvisota",
             endLabel:   "",
             cssClass: "band-highlight"
-        }
+    }
     ];
 
     var winterWarTimeSpan = {
@@ -302,25 +223,16 @@ angular.module('eventsApp')
     };
 
     self.showWinterWar = function(id) {
-    	console.log('showWinterWar');
+        console.log('showWinterWar');
         return self.createTimeMap(id, winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
     };
 
     self.createTimeMapForActor = function(id) {
-    	//console.log('showWinterWar');
+        //console.log('showWinterWar');
         self.currentUnitId = id;
-        self.showWinterWar(id);
+        return self.showWinterWar(id);
     };
 
-    self.visualize = function() {
-    	//console.log('visualize');
-        var uri = $routeParams.uri || 'http://ldf.fi/warsa/actors/actor_940';
-        return self.showWinterWar(uri); //.then(initSelector('unitSelector'));
-    };
-
-    // self.visualize();
-    
-    
     self.showUnit = function() {
         var uri = getSelectionUri('unitSelector');
         //console.log('showUnit '+uri+' ,'+this.current.id);
@@ -331,8 +243,8 @@ angular.module('eventsApp')
             return self.showWinterWar(uri);//.then(initSelector('unitSelector'));
         }
     };
-	 
-	 self.showPerson = function() {
+
+    self.showPerson = function() {
         var uri = getSelectionUri('unitSelector');
         if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
         self.noReload = true;
@@ -341,51 +253,51 @@ angular.module('eventsApp')
             return self.showWinterWar(uri);//.then(initSelector('unitSelector'));
         }
     };
-    
+
     this.updateByUri = function(uri) {
-	 	  self.isLoadingEvent = true;
+        self.isLoadingEvent = true;
         self.isLoadingLinks = false;
-        unitService.getById(uri)
-        .then(function(unit) {
-        		
-        		if (_.isArray(unit.name)) {
-        			var arr=unit.name;
-        			unit.name=arr.shift();
-        			unit.altNames=arr;
-        		}
+        unitService.getById(uri).then(function(unit) {
+            if (_.isArray(unit.name)) {
+                var arr=unit.name;
+                unit.name=arr.shift();
+                unit.altNames=arr;
+            }
             self.current = unit; 
             self.isLoadingEvent = false;
-				self.createTimeMapForActor(uri);
             self.current.fetchRelated2();
-            return;
+            return self.createTimeMapForActor(uri);
         }).catch(function() {
             self.isLoadingEvent = false;
             self.isLoadingLinks = false;
         });
-	 }
-	 
-    this.items= []; 
-    this.queryregex="";
-    
-    
-   this.getItems= function () {
-   	unitService.getItems(this.queryregex,this);
-   }
-   this.getItems();
-	
-	this.updateUnit = function () {
-		if (this.current && this.current.id) {
-			var uri=this.current.id;
-			this.label = this.current.name;
-			if (typeof $location !== 'undefined' && $location.search().uri != uri) {
-            self.noReload = true;
-            $location.search('uri', uri);
-         }
-			this.updateByUri(uri);
-    	}
-	}
-	
-	// Set listener to prevent reload when it is not desired.
+    };
+
+    self.items= []; 
+    self.queryregex="";
+
+
+    this.getItems= function () {
+        unitService.getItems(this.queryregex,this).then(function(data) {
+            self.items = data;
+        });
+    };
+
+    this.getItems();
+
+    this.updateUnit = function () {
+        if (this.current && this.current.id) {
+            var uri=this.current.id;
+            this.label = this.current.name;
+            if ($location.search().uri != uri) {
+                self.noReload = true;
+                $location.search('uri', uri);
+            }
+            this.updateByUri(uri);
+        }
+    };
+
+    // Set listener to prevent reload when it is not desired.
     $scope.$on('$routeUpdate', function() {
         if (!self.noReload) {
             $route.reload();
@@ -393,13 +305,13 @@ angular.module('eventsApp')
             self.noReload = false;
         }
     });
-    
-    
-	if ($routeParams.uri) { 
-		self.updateByUri($routeParams.uri); 
-	} else { 
-		self.current = { name: "Jalkaväkirykmentti 37", id: "http://ldf.fi/warsa/actors/actor_940" };
-		self.updateUnit();
-	}
-	
+
+
+    if ($routeParams.uri) { 
+        self.updateByUri($routeParams.uri); 
+    } else { 
+        self.current = { name: "Jalkaväkirykmentti 37", id: "http://ldf.fi/warsa/actors/actor_940" };
+        self.updateUnit();
+    }
+
 });
