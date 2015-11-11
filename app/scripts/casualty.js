@@ -49,6 +49,26 @@ angular.module('eventsApp')
         ' } ' +
         ' GROUP BY ?id ?description ';
 
+			var casualtyCountsByTimeGroupAndUnitByTypeQry = prefixes +
+        'PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/>	' +
+			'SELECT ?id ?description (COUNT(?id) AS ?count)  WHERE {  	' +
+			'  { SELECT ?subunit 	' +
+			'    	WHERE { 	' +
+			'      		VALUES ?unit { {2} } .	' +
+			'          ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
+			'          ?subunit a atypes:MilitaryUnit . 	' +
+			'    	} 	' +
+			'  	} UNION {	' +
+			'    	VALUES ?subunit { {2} } .	' +
+			'   }	' +
+			'  	' +
+			'  ?cas_id casualties:kuolinaika ?death_date .         	' +
+			'        FILTER(?death_date >= "{0}"^^xsd:date && ?death_date <= "{1}"^^xsd:date) ' +
+        '  ?cas_id casualties:menehtymisluokka ?id . 	' +
+			'  ?cas_id casualties:osasto ?subunit .	' +
+			'  ?id skos:prefLabel ?description . 	' +
+			'}  GROUP BY ?id ?description 	';
+        
         var casualtyInfoQry = prefixes +
         ' SELECT * ' +
         ' WHERE { ' +
@@ -80,34 +100,7 @@ angular.module('eventsApp')
         '    ?menehtymisluokka_id skos:prefLabel ?menehtymisluokka . ' +
         ' } ';
 
-			var casualtyLocationsByTimeAndUnitQry_OLD = '' +
-		   ' 	PREFIX : <http://ldf.fi/warsa/actors/>  ' +
-           '     PREFIX events: <http://ldf.fi/warsa/events/> ' +
-           '     PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/>  ' +
-           '     PREFIX etypes: <http://ldf.fi/warsa/events/event_types/>  ' +
-           '     PREFIX ranks: <http://ldf.fi/warsa/actors/ranks/> ' +
-           '     PREFIX dcterms: <http://purl.org/dc/terms/>  ' +
-           '     PREFIX foaf: <http://xmlns.com/foaf/0.1/>  ' +
-           '     PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
-           '     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  ' +
-           '     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
-           '     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>  ' +
-           '     PREFIX xml: <http://www.w3.org/XML/1998/namespace>  ' +
-           '     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>  ' +
-           '     PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>  ' +
-           '     PREFIX owl: <http://www.w3.org/2002/07/owl#>  ' +
-           '     PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
-           '     SELECT ?id ?lat ?lon  ' +
-           '     WHERE {  ' +
-           '             ?id a foaf:Person . ' +
-           '             VALUES ?unit { {2} } ' +
-           '             ?id casualties:kuolinaika ?death_date . ' +
-           '             FILTER(?death_date >= "1939-09-09"^^xsd:date && ?death_date <= "1940-03-30"^^xsd:date) ' +
-           '             ?id casualties:kuolinkunta ?kunta . ' +
-           '             ?id casualties:osasto ?unit . ' +
-           '             ?kunta geo:lat ?lat ; geo:long ?lon .  ' +
-           '     }  ';
-           
+			  
 			var casualtyLocationsByTimeAndUnitQry = '' +
 				'PREFIX : <http://ldf.fi/warsa/actors/> 	' +
 				'PREFIX events: <http://ldf.fi/warsa/events/>	' +
@@ -139,8 +132,8 @@ angular.module('eventsApp')
 				'    }	' +
 				'  	?id a foaf:Person .   	' +
 				'	?id casualties:kuolinaika ?death_date .        	' +
-				'	FILTER(?death_date <= "1940-03-30"^^xsd:date && ?death_date >= "1939-09-09"^^xsd:date )              	' +
-				'	?id casualties:kuolinkunta ?kunta . 	' +
+				'  FILTER(?death_date >= "{0}"^^xsd:date && ?death_date <= "{1}"^^xsd:date) ' +
+        		'	?id casualties:kuolinkunta ?kunta . 	' +
 				'	?kunta geo:lat ?lat ; geo:long ?lon . 	' +
 				'  	?id casualties:osasto ?subunit .	' +
 				'}	';
@@ -166,6 +159,13 @@ angular.module('eventsApp')
             });
         };
 
+			this.getCasualtyCountsByTimeGroupAndUnitByType = function(start, end, unit) {
+            var qry = casualtyCountsByTimeGroupAndUnitByTypeQry.format(start, end, unit);
+            return endpoint.getObjects(qry).then(function(data) {
+                return objectMapperService.makeObjectList(data);
+            });
+        };
+        
         this.getCasualtyInfo = function(ids) {
             var qry;
             if (_.isArray(ids)) {

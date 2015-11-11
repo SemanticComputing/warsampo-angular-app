@@ -61,19 +61,13 @@ angular.module('eventsApp')
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         var unit='<'+self.current.id+'>';
-        /*
-        if (self.current.subUnits) {
-        		// console.log("self.current.subUnits"+self.current.subUnits);
-        		for (var i=0; i<self.current.subUnits.length; i++) { unit = unit + ' <'+self.current.subUnits[i].id+'>'; }
-        		// console.log('all units '+unit.length+ ":");
-        } */
+        
          return casualtyService.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
             	 var res = [];
                 casualties.forEach(function(casualty) {
                     res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
                 });
-                //self.casualtyCount = res.length;
                 return res;
             });
     };
@@ -82,10 +76,13 @@ angular.module('eventsApp')
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
+        var unit='<'+self.current.id+'>';
+        
         self.minVisibleDate = start;
         self.maxVisibleDate = end;
-        casualtyService.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
+        casualtyService.getCasualtyCountsByTimeGroupAndUnitByType(start.toISODateString(), end.toISODateString(), unit)
         .then(function(counts) {
+        	
             self.casualtyStats = counts;
             var count = 0;
             counts.forEach(function(type) {

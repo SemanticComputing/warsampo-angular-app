@@ -64,7 +64,7 @@
         </div>
         <hr/>
         <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
-          <p>Menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate.toLocaleDateString() }} - {{ ctrl.maxVisibleDate.toLocaleDateString() }}: {{ ctrl.casualtyCount }}</p>
+          <p>Osastosta menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate.toLocaleDateString() }} - {{ ctrl.maxVisibleDate.toLocaleDateString() }}: {{ ctrl.casualtyCount }}</p>
         </div>
         <div class="row animate-text" ng-if="ctrl.showCasualtyStats" ng-repeat="casualtyClass in ctrl.casualtyStats">
           <div ng-if="casualtyClass.id">
