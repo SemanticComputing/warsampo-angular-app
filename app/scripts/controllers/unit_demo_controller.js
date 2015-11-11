@@ -160,7 +160,10 @@ angular.module('eventsApp')
             });
 
             var band = tm.timeline.getBand(1);
-
+				if (!tm.getItems().length) {
+					band.setCenterVisibleDate(new Date(winterWarHighlights[0].startDate))
+				}
+				
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
             band.addOnScrollListener(clearHeatmap);

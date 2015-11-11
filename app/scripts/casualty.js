@@ -180,7 +180,7 @@ angular.module('eventsApp')
                 return objectMapperService.makeObjectList(data);
             });
         };
-
+			
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
             var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
             return endpoint.getObjects(qry).then(function(data) {
