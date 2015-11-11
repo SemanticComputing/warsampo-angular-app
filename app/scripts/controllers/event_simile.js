@@ -184,16 +184,6 @@ angular.module('eventsApp')
         });
     };
 
-    var worldWarHighlight = {
-        startDate: "1939-09-01",
-        endDate: "1945-09-02",
-        color:      "#F2F2F2",
-        opacity:    20,
-        startLabel: "Toinen maailmansota",
-        endLabel:   "",
-        cssClass: "band-highlight"
-    };
-
     var winterWarHighlights = [
         {
             startDate: "1939-11-30",
