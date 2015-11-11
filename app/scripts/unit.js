@@ -69,7 +69,7 @@ angular.module('eventsApp')
 							self.subUnits.push(unit);
 						}
             	}
-            	// console.log("self.subUnits"); console.log(self.subUnits);
+            	// console.log("self.subUnits: "+self.subUnits.length); console.log(self.subUnits);
             });
         };
         
@@ -219,25 +219,33 @@ angular.module('eventsApp')
 		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
 		 '   		} ';
         
-        var subUnitQry = prefixes +
-'SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?names)' +
-'    WHERE { ' +
-'    VALUES ?unit { {0} } ' +
-'' +
-' { 	?evt a etypes:UnitJoining .' +
-'	?evt crm:P143_joined ?id .' +
-'   	?evt crm:P144_joined_with ?unit .' +
-'  } UNION {' +
-'    ?evt a etypes:UnitJoining .' +
-'	?evt crm:P143_joined ?id2 .' +
-'   	?evt crm:P144_joined_with ?unit .' +
-'    ?evt2 a etypes:UnitJoining .' +
-'	?evt2 crm:P143_joined ?id .' +
-'   	?evt2 crm:P144_joined_with ?id2 .' +
-'  }' +
-'	?id a atypes:MilitaryUnit .' +
-'	?id skos:prefLabel ?name .' +
-'} GROUP BY ?id ';
+        var subUnitQryOLD = prefixes +
+			'SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?names)' +
+			'    WHERE { ' +
+			'    VALUES ?unit { {0} } ' +
+			'' +
+			' { 	?evt a etypes:UnitJoining .' +
+			'	?evt crm:P143_joined ?id .' +
+			'   	?evt crm:P144_joined_with ?unit .' +
+			'  } UNION {' +
+			'    ?evt a etypes:UnitJoining .' +
+			'	?evt crm:P143_joined ?id2 .' +
+			'   	?evt crm:P144_joined_with ?unit .' +
+			'    ?evt2 a etypes:UnitJoining .' +
+			'	?evt2 crm:P143_joined ?id .' +
+			'   	?evt2 crm:P144_joined_with ?id2 .' +
+			'  }' +
+			'	?id a atypes:MilitaryUnit .' +
+			'	?id skos:prefLabel ?name .' +
+			'} GROUP BY ?id ';
+
+		var subUnitQry = prefixes +
+			'SELECT DISTINCT ?id	'+
+    		'WHERE { 	'+
+    		'	VALUES ?unit { {0} } 	'+
+  			'	?unit (^crm:P144_joined_with/crm:P143_joined)+ ?id .	'+
+    		'	?id a atypes:MilitaryUnit .	'+
+			'} GROUP BY ?id ';
 
         var relatedPersonQry = prefixes +
 	   ' 	SELECT DISTINCT ?id ?name ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE { ' +
@@ -285,7 +293,23 @@ angular.module('eventsApp')
 			'  FILTER (regex(?name, "^.*{0}.*$", "i"))    '+
 			'}  ORDER BY lcase(?name)  	 '+
 			'LIMIT 1000  ';
-		  
+		 
+		var actorInfoQry = prefixes +
+        ' SELECT ?id ?type ?label ?familyName ?firstName ' +
+        ' FROM <http://ldf.fi/warsa/actors> ' +
+        ' FROM <http://ldf.fi/warsa/actors/actor_types> ' +
+        ' FROM NAMED <http://ldf.fi/warsa/events> ' +
+        ' WHERE { ' +
+        '   VALUES ?id { {0} } ' +
+        '   ?id ' +
+        '       a ?type ; ' +
+        '       skos:prefLabel ?label . ' +
+        '   OPTIONAL { ?id ' +
+        '       foaf:familyName ?familyName ; ' +
+        '       foaf:firstName ?firstName . ' +
+        '   } ' +
+        ' } ';
+        
 		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -312,8 +336,9 @@ angular.module('eventsApp')
         
         this.getSubUnits = function(unit) {
             var qry = subUnitQry.format("<{0}>".format(unit));
+            // console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
-                return unitMapperService.makeObjectList(data);
+            	 return unitMapperService.makeObjectList(data);
             });
         }
         
@@ -332,5 +357,20 @@ angular.module('eventsApp')
             	return arr;
             });
         }
+        
+        this.getActorInfo = function(ids) {
+            var qry;
+            if (_.isArray(ids)) {
+                ids = "<{0}>".format(ids.join("> <"));
+            } else if (ids) {
+                ids = "<{0}>".format(ids);
+            } else {
+                return $q.when(null);
+            }
+            qry = actorInfoQry.format(ids);
+            return endpoint.getObjects(qry).then(function(data) {
+                return objectMapperService.makeObjectList(data);
+            });
+        };
 });
 

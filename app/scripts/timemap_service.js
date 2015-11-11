@@ -478,11 +478,13 @@ angular.module('eventsApp')
         };
 
         this.createTimemapByActor = function(actorId, start, end, highlights, infoWindowCallback, photoConfig) {
+        	
             var bandInfo = this.getDefaultBandInfo(start, end, highlights);
             bandInfo[1].intervalPixels = 50;
 
             var self = this;
             return eventService.getEventsByActor(actorId).then(function(data) {
+            		console.log('createTimemapByActor ', data);
                 return self.createTimemapWithPhotoHighlight(start, end, data,
                     highlights, infoWindowCallback, photoConfig, bandInfo);
             }, function(data) {

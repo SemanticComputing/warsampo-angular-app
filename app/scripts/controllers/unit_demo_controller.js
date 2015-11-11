@@ -80,7 +80,7 @@ angular.module('eventsApp')
 
     var fetchActors = function(item) {
         var actorTypePrefix = 'http://ldf.fi/warsa/actors/actor_types/';
-
+			
         unitService.getActorInfo(item.participant_id).then(function(participants) {
             self.current.commanders = [];
             self.current.units = [];
@@ -148,7 +148,7 @@ angular.module('eventsApp')
         self.photoPlace = self.photoPlaceSetting;
         self.current = undefined;
         self.images = [];
-
+			
         self.visualize();
     };
 
@@ -160,10 +160,11 @@ angular.module('eventsApp')
         if (self.current.subUnits) {
         		// console.log("self.current.subUnits"+self.current.subUnits);
         		for (var i=0; i<self.current.subUnits.length; i++) { unit = unit + ' <'+self.current.subUnits[i].id+'>'; }
-        		// console.log('all units '+unit);
+        		// console.log('all units '+unit.length+ ":");
         } 
          return casualtyService.getCasualtyLocationsByTimeAndUnit(formatDate(start), formatDate(end), unit)
             .then(function(casualties) {
+            	//console.log('casualties');
                 var res = [];
                 casualties.forEach(function(casualty) {
                     res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
@@ -232,7 +233,8 @@ angular.module('eventsApp')
 
 
     self.createTimeMap = function(id, start, end, highlights) {
-
+			console.log('createTimeMap '+id);
+			
         var photoConfig = {
             beforeOffset: self.photoDaysBefore,
             afterOffset: self.photoDaysAfter,
@@ -300,17 +302,20 @@ angular.module('eventsApp')
     };
 
     self.showWinterWar = function(id) {
+    	console.log('showWinterWar');
         return self.createTimeMap(id, winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
     };
 
     self.createTimeMapForActor = function(id) {
+    	//console.log('showWinterWar');
         self.currentUnitId = id;
         self.showWinterWar(id);
     };
 
     self.visualize = function() {
+    	//console.log('visualize');
         var uri = $routeParams.uri || 'http://ldf.fi/warsa/actors/actor_940';
-        return self.showWinterWar(uri).then(initSelector('unitSelector'));
+        return self.showWinterWar(uri); //.then(initSelector('unitSelector'));
     };
 
     // self.visualize();
@@ -318,6 +323,7 @@ angular.module('eventsApp')
     
     self.showUnit = function() {
         var uri = getSelectionUri('unitSelector');
+        //console.log('showUnit '+uri+' ,'+this.current.id);
         if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
         self.noReload = true;
         $location.search('uri', uri);
