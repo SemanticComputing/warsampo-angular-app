@@ -39,7 +39,8 @@ angular.module('eventsApp')
             ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
             ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
             ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-            ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
+            ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> '+
+            ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ';
 
         var singleEventQry = prefixes +
             ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ?place_id ' +
@@ -204,7 +205,64 @@ angular.module('eventsApp')
             '     }  ' +
             '   }  ' +
             '   ORDER BY ?start_time ?end_time ';
-
+            
+			var eventsByUnitQry = prefixes +
+				'SELECT ?id ?start_time ?end_time ?time_id ?description ?note ?place_label ?commander ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant      		' +
+				'WHERE {   		' +
+				'  {  VALUES ?participant { {0} }		' +
+				'  	{ ?id a crm:E66_Formation ;          		' +
+				'        	crm:P95_has_formed ?participant ;          		' +
+				'      		skos:prefLabel ?description .          		' +
+				'      OPTIONAL { ?id crm:P3_has_note ?note . }       		' +
+				'    } UNION       		' +
+				'  { ?id a etypes:TroopMovement ;     		' +
+				'			skos:prefLabel ?description ;          		' +
+				'			crm:P95_has_formed ?participant .        		' +
+				'    }        		' +
+				'  } 		' +
+				'  UNION       		' +
+				'    {{ SELECT ?participant 		' +
+				'      WHERE { 		' +
+				'        VALUES ?unit { {0} } .		' +
+				'        ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant .		' +
+				'        ?participant a atypes:MilitaryUnit . 		' +
+				'      } 		' +
+				'    } UNION {		' +
+				'      VALUES ?participant { {0} } .		' +
+				'    }		' +
+				'    ?id a etypes:Battle .          		' +
+				'    ?id skos:prefLabel ?description .          		' +
+				'    ?id crm:P11_had_participant ?participant .          		' +
+				'    OPTIONAL { ?id events:hadCommander ?commander . }       		' +
+				'  } 		' +
+				'  		' +
+				'  ?id crm:P4_has_time-span ?time_id ;             		' +
+				'      a ?type_id . 		' +
+				'  		' +
+				'  OPTIONAL { 		' +
+				'    ?id crm:P7_took_place_at ?place_id .           		' +
+				'    ?place_id skos:prefLabel ?place_label .          		' +
+				'    OPTIONAL { ?place_id sch:polygon ?polygon . }          		' +
+				'    OPTIONAL { ?place_id geo:lat ?lat ; geo:long ?lon . }          		' +
+				'    OPTIONAL {               		' +
+				'      GRAPH <http://ldf.fi/places/karelian_places> { 		' +
+				'        ?place_id geosparql:sfWithin ?municipality .  }               		' +
+				'      GRAPH <http://ldf.fi/places/municipalities> {   		' +
+				'        ?municipality a suo:kunta .  }          		' +
+				'    }       		' +
+				'  }		' +
+				'  		' +
+				'  GRAPH <http://ldf.fi/warsa/events/times> {         		' +
+				'    ?time_id crm:P82a_begin_of_the_begin ?start_time ;                  		' +
+				'             crm:P82b_end_of_the_end ?end_time .       		' +
+				'		FILTER (?start_time<=?end_time) . ' +
+				'  }       		' +
+				'  GRAPH <http://ldf.fi/warsa/events/event_types> { 		' +
+				'    ?type_id skos:prefLabel ?type .         		' +
+				'    FILTER(langMatches(lang(?type), "FI")) 		' +
+				'  }     		' +
+				'} ORDER BY ?start_time ?end_time		';
+	
         var eventTypeFilter = 
             '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
             '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ';
@@ -277,10 +335,14 @@ angular.module('eventsApp')
         };
 
         this.getEventsByActor = function(id) {
-            var qry = eventsByActorQry.format("<{0}>".format(id));
+            var qry = eventsByUnitQry.format("<{0}>".format(id));
+            //console.log('getEventsByUnit');
+            //console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
+            	// console.log(data);
                 return eventMapperService.makeObjectList(data);
             });
         };
+        
 });
 

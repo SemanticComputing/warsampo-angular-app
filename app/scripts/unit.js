@@ -69,7 +69,7 @@ angular.module('eventsApp')
 							self.subUnits.push(unit);
 						}
             	}
-            	// console.log("self.subUnits: "+self.subUnits.length); console.log(self.subUnits);
+            	console.log("self.subUnits: "+self.subUnits.length); console.log(self.subUnits);
             });
         };
         

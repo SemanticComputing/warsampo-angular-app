@@ -157,6 +157,7 @@ angular.module('eventsApp')
             });
 
             var band = tm.timeline.getBand(1);
+            // console.log(tm.getItems().length);
 				if (!tm.getItems().length) {
 					band.setCenterVisibleDate(new Date(winterWarHighlights[0].startDate))
 				}
@@ -211,9 +212,8 @@ angular.module('eventsApp')
         return self.showWinterWar(id);
     };
 
-    self.showUnit = function() {
+    self.showUnit_OLD_REMOVABLE = function() {
         var uri = getSelectionUri('unitSelector');
-        //console.log('showUnit '+uri+' ,'+this.current.id);
         if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
         self.noReload = true;
         $location.search('uri', uri);
