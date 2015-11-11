@@ -11,7 +11,7 @@
           </h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
           <p ng-repeat="person in timemapCtrl.current.commanders" style="text-transform: capitalize">
-            {{ person.label }}
+          <a page-link="person.id">{{ person.label }}</a>
           </p>
           <p ng-repeat="unit in timemapCtrl.current.units" style="text-transform: capitalize">
             {{ unit.label.join(' / ') }}
