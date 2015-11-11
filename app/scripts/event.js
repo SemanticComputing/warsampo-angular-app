@@ -336,11 +336,8 @@ angular.module('eventsApp')
 
         this.getEventsByActor = function(id) {
             var qry = eventsByUnitQry.format("<{0}>".format(id));
-            //console.log('getEventsByUnit');
-            //console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
-            	// console.log(data);
-                return eventMapperService.makeObjectList(data);
+            	return eventMapperService.makeObjectList(data);
             });
         };
         

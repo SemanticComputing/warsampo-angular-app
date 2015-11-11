@@ -23,13 +23,16 @@
             {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
           </h3>
           <p>{{ ctrl.current.opts.description }}</p>
-          <p ng-repeat="person in ctrl.current.relatedPersons" style="text-transform: capitalize">
-            {{ person.name }}
-          </p>
+          <a ng-repeat="person in ctrl.current.relatedPersons" ng-href="persons/page?uri={{ person.id }}" >
+            <p style="text-transform: capitalize">{{ person.name }}</p> 
+          </a>
           <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
             {{ unit.label.join(' / ') }}
           </p>
           <!-- <p><a page-link="{{ ctrl.current.opts.event.id }}">Näytä tapahtuman tietosivu</a></p> -->
+          <div ng-show="ctrl.current.relatedEvents.length ===0">
+          	Ei osastoon liittyviä tapahtumia.
+          </div>
           <div ng-show="ctrl.images.length === 0">
             <p ng-if="!ctrl.isLoadingImages">
             Ei tapahtumaan liittyviä kuvia.
