@@ -61,18 +61,19 @@ angular.module('eventsApp')
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
         var unit='<'+self.current.id+'>';
+        /*
         if (self.current.subUnits) {
         		// console.log("self.current.subUnits"+self.current.subUnits);
         		for (var i=0; i<self.current.subUnits.length; i++) { unit = unit + ' <'+self.current.subUnits[i].id+'>'; }
         		// console.log('all units '+unit.length+ ":");
-        } 
+        } */
          return casualtyService.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
-            	//console.log('casualties');
-                var res = [];
+            	 var res = [];
                 casualties.forEach(function(casualty) {
                     res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
                 });
+                //self.casualtyCount = res.length;
                 return res;
             });
     };
@@ -140,9 +141,7 @@ angular.module('eventsApp')
 
 
     self.createTimeMap = function(id, start, end, highlights) {
-			console.log('createTimeMap '+id);
-			
-        var photoConfig = Settings.getPhotoConfig();
+			var photoConfig = Settings.getPhotoConfig();
 			
         return timemapService.createTimemapByActor(id, start, end, highlights, infoWindowCallback, photoConfig)
         .then(function(timemap) {
@@ -204,12 +203,10 @@ angular.module('eventsApp')
     };
 
     self.showWinterWar = function(id) {
-        console.log('showWinterWar');
         return self.createTimeMap(id, winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
     };
 
     self.createTimeMapForActor = function(id) {
-        //console.log('showWinterWar');
         self.currentUnitId = id;
         return self.showWinterWar(id);
     };

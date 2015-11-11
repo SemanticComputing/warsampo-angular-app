@@ -484,8 +484,7 @@ angular.module('eventsApp')
 
             var self = this;
             return eventService.getEventsByActor(actorId).then(function(data) {
-            		console.log('createTimemapByActor ', data);
-                return self.createTimemapWithPhotoHighlight(start, end, data,
+            	return self.createTimemapWithPhotoHighlight(start, end, data,
                     highlights, infoWindowCallback, photoConfig, bandInfo);
             }, function(data) {
                 $q.reject(data);

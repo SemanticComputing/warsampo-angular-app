@@ -33,11 +33,11 @@ angular.module('eventsApp')
 		 Unit.prototype.fetchRelated2 = function() {
             var self = this;
             return self.fetchRelatedEvents().then(
-            	function() { return self.fetchSubUnits(); }).then(
+            	// function() { return self.fetchSubUnits(); }).then(
             	function() { return self.fetchUnitEvents(); }).then(
             	function() { return self.fetchRelatedPersons(); }).then(
             	function() {
-                if (self.relatedEvents || self.subUnits || self.relatedPersons ) {
+                if (self.relatedEvents || self.relatedPersons ) {
                     self.hasLinks = true;
                 }
             });
@@ -116,7 +116,8 @@ angular.module('eventsApp')
             // console.log("fetchCasualties");
             return casualtyService.getCasualtyLocationsByTimeAndUnit("1939-09-09","1940-03-30",self.id)
                 .then(function(participants) {
-                	console.log(participants);
+                	console.log("participants :"+participants.length);
+                	// console.log(participants);
                     self.relatedCasualties = participants;
             });
         };
