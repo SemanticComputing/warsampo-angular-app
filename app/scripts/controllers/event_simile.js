@@ -25,26 +25,6 @@ angular.module('eventsApp')
         self.current = undefined;
     };
 
-    self.getEventTitleWithLinks = function(event) {
-        var time = eventService.createTitle(event);
-        var place;
-
-        if (event.place) {
-            var link = "<a href={0}>{1}</a>";
-            if (_.isArray(event.place)) {
-                place = _(event.place).pluck('label').forEach(function(p) {
-                    return link.format(p.id, p.label);
-                }).join(", ");
-            } else {
-                place = link.format(event.place.id, event.place.label);
-            }
-
-            return place + ' ' + time; 
-        }
-
-        return time;
-    };
-
     var fetchRelatedPeople = function(item) {
         if (item.participant_id) {
             casualtyService.getCasualtyInfo(item.participant_id).then(function(participants) {
