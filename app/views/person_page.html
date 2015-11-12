@@ -78,11 +78,11 @@
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
           <li class="list-group-item" ng-repeat="art in ctrl.person.articles">
-          <a ng-href="{{ art.link }}">{{ art.description | words:10 }}</a>
+          <a ng-href="http://sotasampo.fi/page?uri={{ art.id }}">{{ art.description | words:10 }}</a>
           </li>
        </ul>
-     </div> 
-          
+     </div>
+     
      <div ng-if="ctrl.person.nationals">
 	    <h3 id="links-header" class="links-header-class">Kansallisbibliografia</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />

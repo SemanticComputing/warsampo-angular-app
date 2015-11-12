@@ -45,7 +45,7 @@ angular.module('eventsApp')
                function() { return self.fetchRelatedEvents(); }).then(
                function() { return self.fetchNationalBib(); }).then(
                function() { return self.fetchRelatedPhotos(); }).then(
-               function() {  if (self.battles || self.events || self.units || self.nationals || self.images ) {
+               function() {  if (self.battles || self.events || self.units || self.nationals || self.images || self.articles ) {
                     self.hasLinks = true;
                 }
             });
@@ -155,7 +155,9 @@ angular.module('eventsApp')
        '        ?id a <http://ldf.fi/warsa/articles/article/Article> ; '+
        '        dcterms:hasFormat ?link ; '+
        '        <http://purl.org/dc/elements/1.1/title> ?description ; '+
-       '        dcterms:subject ?person . '+
+       '        { ?id dcterms:subject ?person . }  '+
+       '        UNION  '+
+       '        { ?author skos:relatedMatch ?person . ?id <http://ldf.fi/warsa/articles/article/author> ?author . } '+
        '      } ' +
 	   ' 	   ?id a ?idclass . ' +
 	   ' 	    OPTIONAL { ' +
@@ -239,7 +241,7 @@ angular.module('eventsApp')
         
 		this.getRelatedEvents = function(id) {
 				var qry = relatedEventQry.format("<{0}>".format(id));
-            return endpoint.getObjects(qry).then(function(data) {
+				return endpoint.getObjects(qry).then(function(data) {
             	return personMapperService.makeObjectList(data);
             });
         };

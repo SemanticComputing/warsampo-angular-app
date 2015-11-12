@@ -82,7 +82,6 @@ Person.prototype.processRelatedEvents = function(events) {
 	var articles=[];
 	
 	var em=new EventMapper();
-	
 	for (var i=0; i<events.length; i++) {
 		var 	e=events[i], 
 				etype=e.idclass; 
