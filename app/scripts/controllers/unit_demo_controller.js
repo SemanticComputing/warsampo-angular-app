@@ -59,6 +59,7 @@ angular.module('eventsApp')
     var getCasualtyLocations = function() {
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
+        // start = new Date(winterWarHighlights[0].startDate);
         var end = band.getMaxVisibleDate();
         var unit='<'+self.current.id+'>';
         
@@ -68,10 +69,49 @@ angular.module('eventsApp')
                 casualties.forEach(function(casualty) {
                     res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
                 });
+                // averagePath(casualties);
                 return res;
             });
     };
-
+    
+    var averagePath = function (casualties) {
+		var obj={};
+		for (var i=0; i<casualties.length; i++) {
+			var c=casualties[i], dd=c.death_date;
+			if (!(dd in obj)) { obj[dd]={lat:0, lon:0, N:0}; }
+			obj[dd].lat += parseFloat(c.lat);
+			obj[dd].lon += parseFloat(c.lon);
+			obj[dd].N += 1;
+		}
+		
+		var res = [];
+		for (var pr in obj) {
+			var o=obj[pr], f=1.0/o.N;
+			res.push({ date:pr, coord: new google.maps.LatLng(parseFloat(o.lat * f), parseFloat(o.lon * f))});
+		}
+		
+		res.sort(function(a, b){return a.date>b.date ? 1 : -1;});
+		
+		for (var i=0; i<res.length; i++) { res[i]=res[i].coord; }
+		drawUnitPath(res);
+    }
+    
+    self.unitPath = false;
+	 var drawUnitPath = function (coords) {
+			if (self.unitPath) { self.unitPath.setMap(null); } 
+			if (coords.length) {
+				self.unitPath = new google.maps.Polyline({
+						    path: coords,
+						    geodesic: true,
+						    strokeColor: '#0000FF',
+						    strokeOpacity: 1.0,
+						    strokeWeight: 2
+						  });
+				self.unitPath.setMap(map);
+				// console.log('path added');
+			}
+		}
+		
     var getCasualtyCount = function() {
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
@@ -97,6 +137,7 @@ angular.module('eventsApp')
             getCasualtyLocations().then(function(locations) {
                 heatmap.setData(locations);
                 heatmap.setMap(map);
+                
             });
         }
     };
@@ -157,8 +198,7 @@ angular.module('eventsApp')
             });
 
             var band = tm.timeline.getBand(1);
-            // console.log(tm.getItems().length);
-				if (!tm.getItems().length) {
+            if (!tm.getItems().length) {
 					band.setCenterVisibleDate(new Date(winterWarHighlights[0].startDate))
 				}
 				
@@ -218,7 +258,7 @@ angular.module('eventsApp')
         self.noReload = true;
         $location.search('uri', uri);
         if (uri) {
-            return self.showWinterWar(uri);//.then(initSelector('unitSelector'));
+            return self.showWinterWar(uri);
         }
     };
 
@@ -228,7 +268,7 @@ angular.module('eventsApp')
         self.noReload = true;
         $location.search('uri', uri);
         if (uri) {
-            return self.showWinterWar(uri);//.then(initSelector('unitSelector'));
+            return self.showWinterWar(uri);
         }
     };
 

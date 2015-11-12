@@ -119,7 +119,7 @@ angular.module('eventsApp')
 				'PREFIX owl: <http://www.w3.org/2002/07/owl#> 	' +
 				'PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>	' +
 				'	' +
-				'SELECT ?id ?lat ?lon ?subunit    	' +
+				'SELECT ?id ?lat ?lon ?death_date ?subunit    	' +
 				'WHERE {	' +
 				'   { SELECT ?subunit 	' +
 				'    	WHERE { 	' +
@@ -184,7 +184,7 @@ angular.module('eventsApp')
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
             var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
             return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
+            	return objectMapperService.makeObjectList(data);
             });
         };
 
