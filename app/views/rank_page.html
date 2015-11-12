@@ -19,17 +19,6 @@
     <h2 id="links-header" class="links-header-class">Linkit</h2>
     <img ng-show="ctrl.rank.isLoadingPersons" src="images/loading.gif" />
     <div id="linkContent">
-      
-    <div ng-if="ctrl.rank.persons">
-	    <h3 id="links-header" class="links-header-class">Henkilöt</h3>
-	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-	    <p ng-if="!ctrl.rank || !ctrl.rank.persons">Ei näytettävää sisältöä.</p>
-	     <ul class="list-group">
-          <li class="list-group-item" ng-repeat="person in ctrl.rank.persons">
-          <a page-link="person.id">{{ person.label | words:10 }}</a>
-          </li>
-       </ul>
-     </div>
-      
+    <related-links title="'Henkilöitä'" data-related="ctrl.rank.persons"></related-links>
   </div>
 </div>

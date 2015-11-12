@@ -54,7 +54,14 @@ angular.module('eventsApp')
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
-            	if (units.length) { self.units = units; }
+            	if (units.length) {
+            		for (var i=0; i<units.length; i++) { 
+            			var unit=units[i];
+            			if ('label' in unit && _.isArray(unit.label) ) {
+            				unit.label = unit.label[0];
+            			}
+            		} 
+            		self.units = units; }
             });
         };
         
@@ -133,7 +140,7 @@ angular.module('eventsApp')
 	   ' } ORDER BY ?start_time  ';
         
         var relatedEventQry = prefixes +
-       ' SELECT DISTINCT ?id ?idclass ?description ?unit ?role ?link ?start_time WHERE { ' +
+       ' SELECT DISTINCT ?id ?idclass ?description (?description AS ?label) ?unit ?role ?link ?start_time WHERE { ' +
        ' 	  VALUES ?person { {0} } . ' +
 	   ' 	    { ?id a etypes:Battle ; ' +
 	   ' 	      	crm:P11_had_participant ?person ; ' +
@@ -146,7 +153,7 @@ angular.module('eventsApp')
 	   ' 	    { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
 	   ' 	      { ' +
 	   ' 	      ?id crm:P107_1_kind_of_member ?role .  ' +
-	   ' 	      ?id crm:P144_joined_with ?unit. ' +
+	   ' 	      ?id crm:P144_joined_with ?unit . ' +
 	   ' 	      ?unit skos:prefLabel ?description . '+
 	   ' 	      } '+
 	   ' 	    }  '+
@@ -174,7 +181,7 @@ angular.module('eventsApp')
 	   ' 	    } ' +
 	   ' 	} ORDER BY ?start_time ?end_time ';
        
-       var relatedUnitQry = prefixes +
+       var relatedUnitQry_OLD = prefixes +
 		   '    SELECT DISTINCT ?id ?description ?role WHERE { ' +
 		   ' 	VALUES ?person { {0} } . ' +
 		   '     { ?evt a etypes:PersonJoining ; ' +
@@ -188,7 +195,22 @@ angular.module('eventsApp')
 		   '     } ' +
 		   '    ?id skos:prefLabel ?description . ' +
 		   ' }  ';
-		
+		   
+		var relatedUnitQry = prefixes +
+		   '    SELECT DISTINCT ?id ?label ?role WHERE { ' +
+		   ' 	VALUES ?person { {0} } . ' +
+		   '     { ?evt a etypes:PersonJoining ; ' +
+		   '           crm:P143_joined ?person . ' +
+           '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
+		   '           ?evt  crm:P144_joined_with ?id .  ' +
+		   '      } UNION {  ' +
+		   '           ?person owl:sameAs ?mennytmies . ' +
+		   '           ?mennytmies a foaf:Person . ' +
+		   '           ?mennytmies casualties:osasto ?id .  ' +
+		   '     } ' +
+		   '    ?id skos:prefLabel ?label . ' +
+		   ' }  ';
+		   
 		var nationalBibliographyQry =
 			   ' 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
 			   ' 	PREFIX kb: <http://ldf.fi/history/kb> ' +

@@ -22,6 +22,12 @@
     <p ng-if="!ctrl.person.hasLinks">No links found for this object.</p>
     <div id="linkContent">
       
+      <related-links title="'Tapahtumat'" data-related="ctrl.person.events"></related-links>
+      <related-links title="'Joukko-osastot'" data-related="ctrl.person.units"></related-links>
+      <related-links title="'Taistelut'" data-related="ctrl.person.battles"></related-links>
+      <related-links title="'Sotilasarvot'" data-related="ctrl.person.ranks"></related-links>
+      
+      <!--
     <div ng-if="ctrl.person.events">
 	    <h3 id="links-header" class="links-header-class">Tapahtumat</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
@@ -53,26 +59,27 @@
        </ul>
      </div> 
      
-     <div ng-if="ctrl.person.rankLinks">
+     <div ng-if="ctrl.person.ranks">
 	    <h3 id="links-header" class="links-header-class">Sotilasarvot</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
-          <li class="list-group-item" ng-repeat="rank in ctrl.person.rankLinks">
+          <li class="list-group-item" ng-repeat="rank in ctrl.person.ranks">
           <a page-link="rank.id">{{ rank.label | words:10 }}</a>
           </li>
        </ul>
      </div>
-     <!--
-     <div ng-if="ctrl.person.casualty">
-	    <h3 id="links-header" class="links-header-class">Menehtyneet-tietokanta</h3>
+     
+     <div ng-if="ctrl.person.units">
+	    <h3 id="links-header" class="links-header-class">Joukko-osastot</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 	     <ul class="list-group">
-          <li class="list-group-item" >
-          <a ng-href="casualties/page?uri={{ ctrl.person.casualty }}">{{ ctrl.person.getLabel() | words:10 }}</a>
+          <li class="list-group-item" ng-repeat="event in ctrl.person.units">
+          <a page-link="event.id">{{ event.label | words:10 }}</a>
           </li>
        </ul>
-     </div>
+     </div> 
      -->
+     
       <div ng-if="ctrl.person.articles">
 	    <h3 id="links-header" class="links-header-class">Kansa Taisteli -artikkelit</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />

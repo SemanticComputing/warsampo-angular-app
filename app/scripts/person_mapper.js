@@ -48,9 +48,9 @@ Person.prototype.getDescription = function() {
 
 Person.prototype.processLifeEvents = function(events) {
 	this.promotions=[];
-	this.rankLinks=[];
+	this.ranks=[];
 	if ('rank' in this && 'rankid' in this) {
-		this.rankLinks.push({id:this.rankid, label:this.rank});
+		this.ranks.push({id:this.rankid, label:this.rank});
 	}
 	
 	var em=new EventMapper();
@@ -68,11 +68,12 @@ Person.prototype.processLifeEvents = function(events) {
 			this.birth = edate;
 		} else if (etype.indexOf('Promotion')>-1) {
 			this.promotions.push(e.rank+' '+edate);
-			this.rankLinks.push({id:e.rankid, label:e.rank});
+			this.ranks.push({id:e.rankid, label:e.rank});
 		}
 	}
 	if (!this.birth) {this.birth='';}
 	if (!this.death) {this.death='';}
+	
 };
 
 Person.prototype.processRelatedEvents = function(events) {
@@ -86,12 +87,16 @@ Person.prototype.processRelatedEvents = function(events) {
 		var 	e=events[i], 
 				etype=e.idclass; 
 		
+		// if (! ('label' in e)) { e.label=e.description; }
 		if (etype.indexOf('Battle')>-1) {
 			battles.push(e);
 		} else if (etype.indexOf('PersonJoining')>-1) {
 			// Linking to unit, not to an event of joining
 			if ('unit' in e) e.id = e.unit;
-			units.push(e);
+			if ('label' in e && _.isArray(e.label) ) {
+         	e.label = e.label[0];
+         }
+         units.push(e);
 		} else if (etype.indexOf('Article')>-1 ) {
 			articles.push(e);
 		} else {
@@ -102,7 +107,7 @@ Person.prototype.processRelatedEvents = function(events) {
 	if (eventlist.length) {this.events=eventlist;}
 	if (battles.length) {this.battles=battles;}
 	if (articles.length) {this.articles=articles;}
-		
+	if (units.length) {this.units=units;}
 };
 
 

@@ -50,8 +50,8 @@ angular.module('eventsApp')
             	for (var i=0; i<units.length; i++) {
             		var unit=units[i];
 						if ('id' in unit) { 
-							if ('name' in unit && _.isArray(unit.name)) {
-								unit.name=unit.name[0];
+							if ('label' in unit && _.isArray(unit.label)) {
+								unit.label=unit.label[0];
 							}
 							self.relatedUnits.push(unit);
 							}
@@ -59,7 +59,7 @@ angular.module('eventsApp')
             });
         };
         
-        Unit.prototype.fetchSubUnits = function() {
+        Unit.prototype.fetchSubUnits_OLD = function() {
 		  		var self = this;
             return unitService.getSubUnits(self.id).then(function(units) {
             	self.subUnits=[];
@@ -69,7 +69,6 @@ angular.module('eventsApp')
 							self.subUnits.push(unit);
 						}
             	}
-            	console.log("self.subUnits: "+self.subUnits.length); console.log(self.subUnits);
             });
         };
         
@@ -87,8 +86,8 @@ angular.module('eventsApp')
             			arr = [], arr2=[];
             	for (var i=0; i<persons.length; i++) {
             		var p=persons[i];
-            		if ('name' in p) {
-            			if (_.isArray(p.name)) {p.name = p.name[0];}
+            		if ('label' in p) {
+            			if (_.isArray(p.label)) {p.label = p.label[0];}
             			if ('rank' in p && p.name.indexOf(' ')<0) {p.name = p.rank +' '+ p.name;}
             			arr.push(p);
 	            		if ('role' in p) { 
@@ -113,12 +112,9 @@ angular.module('eventsApp')
         
         Unit.prototype.fetchCasualties = function() {
             var self = this;
-            // console.log("fetchCasualties");
             return casualtyService.getCasualtyLocationsByTimeAndUnit("1939-09-09","1940-03-30",self.id)
                 .then(function(participants) {
-                	console.log("participants :"+participants.length);
-                	// console.log(participants);
-                    self.relatedCasualties = participants;
+                	self.relatedCasualties = participants;
             });
         };
         
@@ -159,10 +155,10 @@ angular.module('eventsApp')
 	  '  		  VALUES ?unit  { {0} } ' +
 	  '  		  { ' +
 	  '  		    ?id a crm:E66_Formation ; ' +
-	  '  		    	crm:P95_has_formed ?unit . ' +
+	  '  		    	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
 	  '  		  } UNION { ' +
 	  '  		    ?id a etypes:UnitNaming ; ' +
-	  '  		      	crm:P95_has_formed ?unit . ' +
+	  '  		      	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
 	  '  		  } UNION { ' +
 	  '  		   	?id a etypes:TroopMovement ; ' +
 	  '  		    	crm:P95_has_formed ?unit . ' +
@@ -171,23 +167,23 @@ angular.module('eventsApp')
 	  '  		    	crm:P11_had_participant ?unit . ' +
 	  '  		  } ' +
 	  '  		  ?id a ?idclass . ' +
-	  '  			OPTIONAL { ?id skos:prefLabel ?name . } ' +
-	  '  		    OPTIONAL { ?id skos:altLabel ?abbrev . } ' +
-	  '  		  OPTIONAL { ' +
+	  '			OPTIONAL { ?id skos:prefLabel ?name . } ' +
+	  '			 ' +
+	  '			OPTIONAL { ' +
 	  '  		    ?id crm:P4_has_time-span ?time .  ' +
 	  '  		    ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
 	  '  		          crm:P82b_end_of_the_end ?end_time .  ' +
-	  '  		  } ' +
-	  '  		  OPTIONAL {  ' +
+	  '			} ' +
+	  '			OPTIONAL {  ' +
 	  '  		    ?id crm:P7_took_place_at ?place_id . ' +
 	  '  		    OPTIONAL { ' +
 	  '  		      ?place_id skos:prefLabel ?place_label . ' +
 	  '  		    } ' +
 	  '  		  } ' +
-	  '  		} ORDER BY ?start_time ?end_time ';
+	  '		} ORDER BY ?start_time ?end_time ';
 
         var relatedUnitQry = prefixes +
-         '   SELECT ?id ?name ?abbrev WHERE {  ' +
+         '   SELECT ?id ?name (?name AS ?label) ?abbrev WHERE {  ' +
 		 '   		  { SELECT ?id ?name  WHERE { ' +
 		 '   		                  ?ejoin a etypes:UnitJoining ; ' +
 		 '   		                    crm:P143_joined ?unit ; ' +
@@ -249,7 +245,7 @@ angular.module('eventsApp')
 			'} GROUP BY ?id ';
 
         var relatedPersonQry = prefixes +
-	   ' 	SELECT DISTINCT ?id ?name ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE { ' +
+	   ' 	SELECT DISTINCT ?id ?name (?name AS ?label) ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE { ' +
 	   ' 	  VALUES ?unit { {0} } . ' +
 	   ' 	    { ?evt a etypes:PersonJoining ; ' +
 	   ' 	    crm:P143_joined ?id . ' +

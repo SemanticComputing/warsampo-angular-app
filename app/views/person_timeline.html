@@ -37,7 +37,7 @@
 		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 		     <ul class="list-group">
 	          <li class="list-group-item" ng-repeat="event in ctrl.person.units">
-	          <a ng-href="units/page?uri={{ event.id }}">{{ event.description | words:10 }}</a>
+	          <a ng-href="units/page?uri={{ event.id }}">{{ event.label | words:10 }}</a>
 	          </li>
 	       </ul>
 	     </div> 
@@ -57,7 +57,7 @@
 		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
 		     <ul class="list-group">
 	          <li class="list-group-item" ng-repeat="art in ctrl.person.articles">
-	          <a ng-href="{{ art.link }}" target="kata">{{ art.description | words:10 }}</a>
+	          <a ng-href="http://sotasampo.fi/page?uri={{ art.id }}">{{ art.description | words:10 }}</a>
 	          </li>
 	       </ul>
 	     </div>

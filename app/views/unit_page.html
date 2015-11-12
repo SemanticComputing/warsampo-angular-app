@@ -20,6 +20,18 @@
     </div>
   </div>
   <!-- Links -->
+    <div class="col-sm-4">
+    	<h2 id="links-header" class="links-header-class">Linkit</h2>
+    	<img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+    	<p ng-if="!ctrl.unit.hasLinks">No links found for this object.</p>
+   	 <div id="linkContent">
+      	<related-links title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></related-links>
+      	<related-links title="'Taistelut'" data-related="ctrl.unit.battles"></related-links>
+      	<related-links title="'Henkilöitä'" data-related="ctrl.unit.relatedPersons"></related-links>
+      	<related-links title="'Paikat'" data-related="ctrl.unit.places"></related-links>
+      	</div>
+     </div>
+<!--
   <div class="col-sm-4">
   <div ng-if="ctrl.unit.relatedUnits">
 	  <h3 id="links-header" class="links-header-class">Muita osastoja</h3>
@@ -30,6 +42,8 @@
 	          </li>
 	       </ul>
      </div>
+     </div>
+     
     <div ng-if="ctrl.unit.battles">
 	    <h3 id="links-header" class="links-header-class">Taistelut</h3>
 	    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
@@ -57,5 +71,5 @@
           </li>
        </ul>
      </div> 
-  </div>
+  </div> -->
 </div>

@@ -40,20 +40,13 @@ angular.module('eventsApp')
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
-        ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
         ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
-        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
         ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
         ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
-        ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' + 
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' + 
-        ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
@@ -68,16 +61,16 @@ angular.module('eventsApp')
   		 
         var rankPersonQry = prefixes +
 		   ' 	SELECT DISTINCT ?id ?sname ?fname WHERE { ' +
-		   '        VALUES ?rank { {0} } .' +
+		   '      VALUES ?rank { {0} } .' +
 		   ' 	    ?id a atypes:MilitaryPerson .' +
-		   '         { ?id :hasRank ?rank . } ' +
+		   '      { ?id :hasRank ?rank . } ' +
 		   '         UNION {' +
-		   '          ?evt a etypes:Promotion .' +
-		   '          ?evt :hasRank ?rank .' +
-		   '           ?evt crm:P11_had_participant ?id .' +
-		   '         } ' +
-		   '         ?id foaf:familyName ?sname . ' +
-		   ' 		OPTIONAL { ?id foaf:firstName ?fname . } ' +
+		   '       ?evt a etypes:Promotion .' +
+		   '       ?evt :hasRank ?rank .' +
+		   '       ?evt crm:P11_had_participant ?id .' +
+		   '       } ' +
+		   '     ?id foaf:familyName ?sname . ' +
+		   ' 		?id foaf:firstName ?fname .  ' +
 		   ' 	}  LIMIT 20 ';
         
         
