@@ -76,8 +76,19 @@ self.testUnitPath=false;
             });
     };
     
+    
     var averagePath = function (casualties) {
 		var obj={};
+		casualties.sort(function(a, b){return a.death_date>b.death_date ? 1 : -1;});
+		if (self.testUnitPath && false) {
+			var res= '';
+			for (var i=0; i<casualties.length; i++) {
+				var c=casualties[i];
+				var dt = new Date(c.death_date);
+				res+= c.lat+"\t"+c.lon+"\t"+(dt.getTime())+"\t"+c.death_date+"\n";
+			}		
+			console.log(res);
+		}
 		for (var i=0; i<casualties.length; i++) {
 			var c=casualties[i], dd=c.death_date;
 			if (!(dd in obj)) { obj[dd]={lat:0, lon:0, N:0}; }

@@ -30,7 +30,7 @@ angular.module('eventsApp')
             	function() { return self.fetchRelatedUnits(); }).then(
                function() { return self.fetchRelatedEvents(); }).then(
                function() { return self.fetchNationalBib(); }).then(
-               function() {  if (self.battles || self.events || self.units || self.nationals ) {
+               function() {  if (self.battles || self.events || self.units || self.nationals || self.ranks ) {
                     self.hasLinks = true;
                 }
             });
