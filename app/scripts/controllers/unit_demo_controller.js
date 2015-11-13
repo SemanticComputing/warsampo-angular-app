@@ -56,21 +56,23 @@ angular.module('eventsApp')
         });
     };
 
+self.testUnitPath=false;
+
     var getCasualtyLocations = function() {
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
-        // start = new Date(winterWarHighlights[0].startDate);
+      	if (self.testUnitPath) start = new Date(winterWarHighlights[0].startDate);
         var end = band.getMaxVisibleDate();
         var unit='<'+self.current.id+'>';
         
          return casualtyService.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
-            	 var res = [];
-                casualties.forEach(function(casualty) {
+            	var res = [];
+               casualties.forEach(function(casualty) {
                     res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
-                });
-                // averagePath(casualties);
-                return res;
+               });
+       			if (self.testUnitPath) { averagePath(casualties); } 
+               return res;
             });
     };
     

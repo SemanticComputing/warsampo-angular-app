@@ -23,13 +23,19 @@ angular.module('eventsApp')
             });
         };
         
+        Rank.prototype.fetchRelatedRanks = function () {
+        		var self = this;
+            return rankService.getRelatedRanks(self.id).then(function(ranks) {
+            	if (ranks.length) { self.relatedRanks = ranks; }
+            });
+        	};
+        	
         //	for info page:
         Rank.prototype.fetchRelated = function() {
             var self = this;
-            return self.fetchRelatedPersons().then(
-               function() {  if (self.persons ) {
-                    self.hasLinks = true;
-                }
+            return self.fetchRelatedRanks().then(
+               function() { return self.fetchRelatedPersons()}).then(function() {
+               if (self.persons || self.relatedRanks ) {  self.hasLinks = true; }
             });
         };
 			
@@ -51,13 +57,13 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
 		var rankQry = prefixes +
-		   ' 	SELECT DISTINCT ?id ?label ?abbrev ?comment WHERE {  ' +
+		   ' 	SELECT DISTINCT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) ?abbrev ?comment WHERE {  ' +
 		   '         VALUES ?id { {0} } .   ' +
 		   ' 	    ?id a <http://ldf.fi/warsa/actors/ranks/Rank> . ' +
-		   ' 	    ?id skos:prefLabel ?label . ' +
+		   ' 	    ?id skos:prefLabel ?name . ' +
 		   ' 	    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment . } ' +
 		   ' 	    OPTIONAL { ?id skos:altLabel ?abbrev . } ' +
-		   ' 	}    ';
+		   ' 	} GROUP BY ?id ?label ?abbrev ?comment ';
   		 
         var rankPersonQry = prefixes +
 		   ' 	SELECT DISTINCT ?id ?sname ?fname WHERE { ' +
@@ -73,6 +79,13 @@ angular.module('eventsApp')
 		   ' 		?id foaf:firstName ?fname .  ' +
 		   ' 	}  LIMIT 20 ';
         
+        var relatedRankQry = prefixes +
+        			   '  SELECT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) WHERE {' +
+		   '    VALUES ?rank { {0} } .   ' +
+		   '    ?id a       <http://ldf.fi/warsa/actors/ranks/Rank> ;' +
+		   '      skos:prefLabel ?name .' +
+		   '    { ?id ?p ?rank . } UNION { ?rank ?p ?id . }' +
+		   '  }  GROUP BY ?id ?label '
         
 		this.getById = function(id) {
             var qry = rankQry.format("<{0}>".format(id));
@@ -86,13 +99,17 @@ angular.module('eventsApp')
         
 		this.getRelatedPersons = function(id) {
 				var qry = rankPersonQry.format("<{0}>".format(id));
-				// console.log(qry);
 				return endpoint.getObjects(qry).then(function(data) {
 					return rankMapperService.makeObjectListNoGrouping(data);
             });
-        };
+      };
         
-		
+		this.getRelatedRanks = function(id) {
+				var qry = relatedRankQry.format("<{0}>".format(id));
+				return endpoint.getObjects(qry).then(function(data) {
+					return rankMapperService.makeObjectListNoGrouping(data);
+            });
+      };
     		
         
 });

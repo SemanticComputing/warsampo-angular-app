@@ -64,7 +64,7 @@ Unit.prototype.processUnitEvents = function(events) {
 			eplace=', '+e.place_label;
 		}
 		if (edate!=='') {edate=edate+': ';}
-
+		
 		if (etype.indexOf('Battle')>-1) {
 			e.description = e.name;
 			battles.push(e);
@@ -80,7 +80,8 @@ Unit.prototype.processUnitEvents = function(events) {
 		}
 	}
 	
-	if (battles.length) {this.battles=battles;}
+	if (events.length) { this.hasLinks = true; }
+	if (battles.length) { this.battles=battles;}
 	if (formations.length) {description=formations.concat(description);}
 	if (description.length) {this.description=description;}
 	

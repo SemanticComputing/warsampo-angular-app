@@ -33,7 +33,6 @@ angular.module('eventsApp')
 		 Unit.prototype.fetchRelated2 = function() {
             var self = this;
             return self.fetchRelatedEvents().then(
-            	// function() { return self.fetchSubUnits(); }).then(
             	function() { return self.fetchUnitEvents(); }).then(
             	function() { return self.fetchRelatedPersons(); }).then(
             	function() {
@@ -151,36 +150,36 @@ angular.module('eventsApp')
           '  } ';
         
         var unitEventQry = prefixes +
-      '  SELECT * WHERE { ' +
-	  '  		  VALUES ?unit  { {0} } ' +
-	  '  		  { ' +
-	  '  		    ?id a crm:E66_Formation ; ' +
-	  '  		    	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
-	  '  		  } UNION { ' +
-	  '  		    ?id a etypes:UnitNaming ; ' +
-	  '  		      	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
-	  '  		  } UNION { ' +
-	  '  		   	?id a etypes:TroopMovement ; ' +
-	  '  		    	crm:P95_has_formed ?unit . ' +
-	  '  		  } UNION { ' +
-	  '  		    ?id a etypes:Battle ; ' +
-	  '  		    	crm:P11_had_participant ?unit . ' +
-	  '  		  } ' +
-	  '  		  ?id a ?idclass . ' +
-	  '			OPTIONAL { ?id skos:prefLabel ?name . } ' +
-	  '			 ' +
-	  '			OPTIONAL { ' +
-	  '  		    ?id crm:P4_has_time-span ?time .  ' +
-	  '  		    ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
-	  '  		          crm:P82b_end_of_the_end ?end_time .  ' +
-	  '			} ' +
-	  '			OPTIONAL {  ' +
-	  '  		    ?id crm:P7_took_place_at ?place_id . ' +
-	  '  		    OPTIONAL { ' +
-	  '  		      ?place_id skos:prefLabel ?place_label . ' +
-	  '  		    } ' +
-	  '  		  } ' +
-	  '		} ORDER BY ?start_time ?end_time ';
+	     '  SELECT * WHERE { ' +
+		  '  		  VALUES ?unit  { {0} } ' +
+		  '  		  { ' +
+		  '  		    ?id a crm:E66_Formation ; ' +
+		  '  		    	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
+		  '  		  } UNION { ' +
+		  '  		    ?id a etypes:UnitNaming ; ' +
+		  '  		      	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
+		  '  		  } UNION { ' +
+		  '  		   	?id a etypes:TroopMovement ; ' +
+		  '  		    	crm:P95_has_formed ?unit . ' +
+		  '  		  } UNION { ' +
+		  '  		    ?id a etypes:Battle ; ' +
+		  '  		    	crm:P11_had_participant ?unit . ' +
+		  '  		  } ' +
+		  '  		  ?id a ?idclass . ' +
+		  '			OPTIONAL { ?id skos:prefLabel ?name . } ' +
+		  '			 ' +
+		  '			OPTIONAL { ' +
+		  '  		    ?id crm:P4_has_time-span ?time .  ' +
+		  '  		    ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
+		  '  		          crm:P82b_end_of_the_end ?end_time .  ' +
+		  '			} ' +
+		  '			OPTIONAL {  ' +
+		  '  		    ?id crm:P7_took_place_at ?place_id . ' +
+		  '  		    OPTIONAL { ' +
+		  '  		      ?place_id skos:prefLabel ?place_label . ' +
+		  '  		    } ' +
+		  '  		  } ' +
+		  '		} ORDER BY ?start_time ?end_time ';
 
         var relatedUnitQry = prefixes +
          '   SELECT ?id ?name (?name AS ?label) ?abbrev WHERE {  ' +
