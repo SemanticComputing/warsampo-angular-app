@@ -19,6 +19,7 @@ Person.prototype.getLabel = function() {
 };
 
 Person.prototype.getDescription = function() {
+	
 	var arr=[];
 	//arr[0]="<a href='link'>test</a>";
 	var em=new EventMapper();
@@ -27,24 +28,72 @@ Person.prototype.getDescription = function() {
 		this.birth = em.formatDateRange(edate,edate);
 		delete this.birth_time;
 	}
+	
 	if (this.death_time) {
 		var edate=em.getExtremeDate(this.death_time, true);
 		this.death = em.formatDateRange(edate,edate);
 		delete this.death_time;
 	}
+	
 	if (this.birth || this.death) {
-		arr.push(this.birth + ' – ' + this.death);
+		var res=this.birth + ' ' + this.birth_place + ' – ' + this.death+ ' ' + this.death_place;
+		// if ('bury_place' in this) { res += (', haudattu paikkaan '+this.bury_place);}
+		arr.push(res);
 	}
+	
+	if (this.bury_place || ('way_to_die' in this)) { 
+		var res=[];
+		if ('way_to_die' in this) { 
+			res.push(this.capitalizeFirstLetter(this.way_to_die)); }
+		if (this.bury_place) { res.push('Haudattu paikkaan '+this.bury_place+'.'); }
+		arr.push(res.join('. '));
+	}
+	
+	if (this.living_place) { arr.push('Asuinkunta: '+this.living_place); }	
+	if ('profession' in this) { arr.push('Ammatti: '+this.profession); }	
+	if (('mstatus' in this) || ('num_children' in this)) { 
+		var res=[ ];
+		if ('mstatus' in this) { res.push('Aviosääty: '+this.mstatus); } 
+		if ('num_children' in this) { res.push('lapsia '+this.num_children); } 
+		arr.push(res.join(', '));
+	}	
+		
+	
 	if (this.rank) { 
 		arr.push(this.rank);
 	}
+	
 	arr=arr.concat(this.promotions);
 	if (this.note) { 
 		arr.push(this.note);
 	}
 	
+	if ('source' in this) { 
+		arr.push('Lähde: '+this.source); 
+		} else if ('sid' in this) { arr.push('Lähde: '+this.sid); }
+	// console.log(this.places);
+	// if ('places' in this && this.places.length===0) { delete this.places; }
 	return arr;
 };
+
+Person.prototype.checkPlace = function (property) {
+	if (property in this) {
+		var label= this[property];
+		var property_uri = property + '_uri';
+		//console.log('Added place ',label, this[property_uri]);
+		if (property_uri in this) {
+			if (!('places' in this)) { this.places = []; }
+			for (var i=0; i<this.places.length; i++) { if (this.places[i].label==label) return; }
+		
+			var newplace = { label:label, id: this[property_uri]};
+			this.places.push(newplace);
+		}
+	} else { this[property]=''; }
+}
+
+Person.prototype.capitalizeFirstLetter = function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 Person.prototype.processLifeEvents = function(events) {
 	this.promotions=[];
@@ -74,6 +123,11 @@ Person.prototype.processLifeEvents = function(events) {
 	if (!this.birth) {this.birth='';}
 	if (!this.death) {this.death='';}
 	
+	this.checkPlace('birth_place');
+	this.checkPlace('death_place');
+	this.checkPlace('bury_place');
+	this.checkPlace('living_place');
+		
 };
 
 Person.prototype.processRelatedEvents = function(events) {

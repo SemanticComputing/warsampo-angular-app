@@ -109,18 +109,34 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
         
 		var personQry = prefixes +
-		   ' 	SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time ?casualty WHERE { ' +
+		   ' 	SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time '+
+		   ' 				?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
+		   '				?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?sid ?source WHERE { ' +
 		   ' 		  VALUES ?id { {0} }' +
 		   ' 		  ?id foaf:familyName ?sname .' +
 		   ' 		  OPTIONAL { ?id foaf:firstName ?fname . }' +
 		   ' 		  OPTIONAL { ?id crm:P3_has_note ?note . }' +
+		   ' 		  OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . OPTIONAL { ?sid skos:prefLabel ?source . } }' +
 		   ' 		  OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }' +
 		   ' 		  OPTIONAL { ' +
-		   ' 	      	?id owl:sameAs ?casualty .' +
-		   ' 	      	?casualty a foaf:Person .' +
-		   ' 	    		OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
-		   ' 	   		OPTIONAL { ?casualty casualties:kuolinaika ?death_time . }' +
-		   ' 	  		}' +
+					   ' 	?id owl:sameAs ?casualty .' +
+					   ' 	?casualty a foaf:Person .'  +
+					   ' 	OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
+					   '	OPTIONAL { ?casualty casualties:synnyinkunta ?birth_place_uri . '+
+					   '								?birth_place_uri skos:prefLabel ?birth_place . }' +
+					   ' 	OPTIONAL { ?casualty casualties:kuolinaika ?death_time . }	' +
+					   '	OPTIONAL { ?casualty casualties:kuolinkunta ?death_place_uri . '+
+					   '								?death_place_uri skos:prefLabel ?death_place . }' +
+					   '	OPTIONAL { ?casualty casualties:hautauskunta ?bury_place_uri . '+
+					   '								?bury_place_uri skos:prefLabel ?bury_place . }' +
+					   '	OPTIONAL { ?casualty casualties:asuinkunta ?living_place_uri . '+
+					   '								?living_place_uri skos:prefLabel ?living_place . }' +
+					   ' 	OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
+					   ' 	OPTIONAL { ?casualty casualties:siviilisaeaety ?mstatus_uri . ?mstatus_uri skos:prefLabel ?mstatus . }' +
+					   ' 	OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
+					   '	OPTIONAL { ?casualty casualties:lasten_lukumaeaerae ?num_children . } '+
+					   '	OPTIONAL { ?casualty casualties:menehtymisluokka ?way_id . ?way_id skos:prefLabel ?way_to_die . } '+
+				   	'}' +
 		   ' 	} ';
   		 
         var personLifeEventsQry = prefixes +
