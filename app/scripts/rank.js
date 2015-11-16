@@ -66,18 +66,24 @@ angular.module('eventsApp')
 		   ' 	} GROUP BY ?id ?label ?abbrev ?comment ';
   		 
         var rankPersonQry = prefixes +
-		   ' 	SELECT DISTINCT ?id ?sname ?fname WHERE { ' +
-		   '      VALUES ?rank { {0} } .' +
-		   ' 	    ?id a atypes:MilitaryPerson .' +
-		   '      { ?id :hasRank ?rank . } ' +
-		   '         UNION {' +
-		   '       ?evt a etypes:Promotion .' +
-		   '       ?evt :hasRank ?rank .' +
-		   '       ?evt crm:P11_had_participant ?id .' +
-		   '       } ' +
-		   '     ?id foaf:familyName ?sname . ' +
-		   ' 		?id foaf:firstName ?fname .  ' +
-		   ' 	}  LIMIT 20 ';
+			'SELECT DISTINCT ?id ?sname ?fname WHERE {	' +
+			'  {	' +
+			'  SELECT DISTINCT ?id WHERE {	' +
+			'  VALUES ?rank { {0} } .	' +
+			'    ?id a atypes:MilitaryPerson .	' +
+			'    ?id :hasRank ?rank .	' +
+			'  }  LIMIT 20 	' +
+			'} UNION {	' +
+			'SELECT DISTINCT ?id WHERE {	' +
+			'  VALUES ?rank { {0} } .	' +
+			'    ?evt a etypes:Promotion .	' +
+			'    ?evt :hasRank ?rank .    	' +
+			'    ?evt crm:P11_had_participant ?id .   	' +
+			'  	?id a atypes:MilitaryPerson .	' +
+			'    }  LIMIT 20 }	' +
+			'  ?id foaf:familyName ?sname .	' +
+			'  ?id foaf:firstName ?fname .	' +
+			'} LIMIT 20	';
         
         var relatedRankQry = prefixes +
         			   '  SELECT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) WHERE {' +

@@ -1,7 +1,8 @@
 <div ng-include="'views/setting_accordion.html'"></div>
 <div class="row">
   <div class="col-sm-2">
-    <input type="text" value="" class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
+    <input type="text" value="" class="form-control" placeholder="Hae henkilön nimellä"
+    		ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
     <select ng-model="ctrl.selectedItem" ng-change="ctrl.updateActor()" size="32" class="form-control" id="personselect"
             ng-options="item as item.name for item in ctrl.items"></select>
 	</div>

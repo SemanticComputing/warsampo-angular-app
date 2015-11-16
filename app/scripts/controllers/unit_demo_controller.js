@@ -56,14 +56,15 @@ angular.module('eventsApp')
         });
     };
 
+// Petri's testings: 
 self.testUnitPath=false;
 
     var getCasualtyLocations = function() {
-        var band = tm.timeline.getBand(1);
-        var start = band.getMinVisibleDate();
+			var band = tm.timeline.getBand(1);
+			var start = band.getMinVisibleDate();
       	if (self.testUnitPath) start = new Date(winterWarHighlights[0].startDate);
-        var end = band.getMaxVisibleDate();
-        var unit='<'+self.current.id+'>';
+        	var end = band.getMaxVisibleDate();
+			var unit='<'+self.current.id+'>';
         
          return casualtyService.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
@@ -306,8 +307,7 @@ self.testUnitPath=false;
 
     self.items= []; 
     self.queryregex="";
-
-
+	 
     this.getItems= function () {
         unitService.getItems(this.queryregex,this).then(function(data) {
             self.items = data;
@@ -315,7 +315,7 @@ self.testUnitPath=false;
     };
 
     this.getItems();
-
+	
     this.updateUnit = function () {
         if (this.current && this.current.id) {
             var uri=this.current.id;

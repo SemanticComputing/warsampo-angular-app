@@ -243,7 +243,7 @@ angular.module('eventsApp')
     		'	?id a atypes:MilitaryUnit .	'+
 			'} GROUP BY ?id ';
 
-        var relatedPersonQry = prefixes +
+      var relatedPersonQry = prefixes +
 	   ' 	SELECT DISTINCT ?id ?name (?name AS ?label) ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE { ' +
 	   ' 	  VALUES ?unit { {0} } . ' +
 	   ' 	    { ?evt a etypes:PersonJoining ; ' +

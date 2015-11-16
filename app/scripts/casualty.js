@@ -99,8 +99,75 @@ angular.module('eventsApp')
         '    ?siviilisaeaety_id skos:prefLabel ?siviilisaeaety . ' +
         '    ?menehtymisluokka_id skos:prefLabel ?menehtymisluokka . ' +
         ' } ';
-
-			  
+		
+			var casualtyLocationsByTimeUnitBattleQry = '' +
+			'PREFIX : <http://ldf.fi/warsa/actors/> 	' +
+				'PREFIX events: <http://ldf.fi/warsa/events/>	' +
+				'PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> 	' +
+				'PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> 	' +
+				'PREFIX ranks: <http://ldf.fi/warsa/actors/ranks/>	' +
+				'PREFIX dcterms: <http://purl.org/dc/terms/> 	' +
+				'PREFIX foaf: <http://xmlns.com/foaf/0.1/> 	' +
+				'PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/>	' +
+				'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
+				'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>	' +
+				'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> 	' +
+				'PREFIX xml: <http://www.w3.org/XML/1998/namespace> 	' +
+				'PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 	' +
+				'PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> 	' +
+				'PREFIX owl: <http://www.w3.org/2002/07/owl#> 	' +
+				'PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>	' +
+				'	' +
+				'	SELECT ?lat ?lon (SUM(?w) AS ?weigth) ?date WHERE { 	' +
+			'	  { 	' +
+			'	  SELECT ?place (COUNT(?id) AS ?w) ?date 	' +
+			'	  WHERE { 	' +
+			'	    { SELECT ?subunit 	' +
+			'	      WHERE { 	' +
+			'		VALUES ?unit { {2} } .	' +
+			'		?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
+			'		?subunit a atypes:MilitaryUnit .	' +
+			'	      }	' +
+			'	      } UNION {  VALUES ?subunit { {2} } . } 		' +
+			'		' +
+			'	    ?id a foaf:Person . 	' +
+			'	    ?id casualties:osasto ?subunit .	' +
+			'	      	' +
+			'	    ?id casualties:kuolinaika ?date .    	' +
+			'	    FILTER(?date >= "{0}"^^xsd:date && ?date <= "{1}"^^xsd:date) 		' +
+			'	' +
+			'	    ?id casualties:kuolinkunta ?place . 		' +
+			'	    FILTER(EXISTS { ?place geo:lat ?lat })	' +
+			'	    		' +
+			'	  }	GROUP BY ?place ?w ?date 	' +
+			'	  } UNION {	' +
+			'	      SELECT ?place (COUNT(?evt)*100 AS ?w) ?date 	' +
+			'	  WHERE {	   	' +
+			'	    { SELECT ?subunit	' +
+			'	      WHERE {	' +
+			'		VALUES ?unit { {2} } .	' +
+			'		?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
+			'		?subunit a atypes:MilitaryUnit .	' +
+			'	      }	' +
+			'	    } UNION { VALUES ?subunit { {2} } .  } 	' +
+			'	' +
+			'	    ?subunit skos:altLabel ?abbrev .	' +
+			'	    ?evt a etypes:Battle . 	' +
+			'	    ?evt ?hadUnit  ?abbrev . 	' +
+			'	' +
+			'	    ?evt crm:P7_took_place_at ?place . 	' +
+			'	    FILTER(EXISTS { ?place geo:lat ?lat })	' +
+			'	' +
+			'	    ?evt crm:P4_has_time-span ?timeid . 	' +
+			'	    { ?timeid crm:P82a_begin_of_the_begin ?date . } UNION { ?timeid crm:P82b_end_of_the_end ?date . } 	' +
+			'	' +
+			'	    FILTER(?date >= "{0}"^^xsd:date && ?date <= "{1}"^^xsd:date) 		' +
+			'	' +
+			'	  } GROUP BY ?place ?w ?date 	' +
+			'	  } 	' +
+			'	  ?place geo:lat ?lat . ?place geo:long ?lon .	' +
+			'	} GROUP BY ?lat ?lon ?weigth ?date	';
+	
 			var casualtyLocationsByTimeAndUnitQry = '' +
 				'PREFIX : <http://ldf.fi/warsa/actors/> 	' +
 				'PREFIX events: <http://ldf.fi/warsa/events/>	' +
@@ -182,7 +249,11 @@ angular.module('eventsApp')
         };
 			
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
+				//	casualtyLocationsByTimeUnitBattleQry
+        		// or casualtyLocationsByTimeAndUnitQry
+        		
             var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
+            // console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
             	return objectMapperService.makeObjectList(data);
             });
