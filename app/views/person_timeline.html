@@ -1,6 +1,9 @@
 <div ng-include="'views/setting_accordion.html'"></div>
 <div class="row">
   <div class="col-sm-2">
+  <h2>Henkilöt-sovellusnäkymä</h2>
+	<p>Hae tunnettuja viime sotien henkilöitä kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse henkilö kentän alla olevasta listasta.
+Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy vasemmalle.</p>
     <input type="text" value="" class="form-control" placeholder="Hae henkilön nimellä"
     		ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
     <select ng-model="ctrl.selectedItem" ng-change="ctrl.updateActor()" size="32" class="form-control" id="personselect"
@@ -21,6 +24,50 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <!--<p ng-if="!ctrl.person.hasLinks">No links found for this object.</p>-->
     <div id="linkContent">
+      
+      <div ng-if="ctrl.person && ctrl.person.images.length">
+     		 <h3 id="links-header" class="links-header-class">Valokuvat</h3>
+            <p ng-show="ctrl.person"> <!--&& !ctrl.person.showPhotos">-->
+            {{ ctrl.person.images.length }} kuvaa
+            </p>
+            <!--
+            <div id="photo-thumbs">
+              <div id="photo-container">
+                <a ng-cloak ng-repeat="img in timemapCtrl.images"
+                  ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
+                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
+                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
+              </div>
+            </div>
+            -->
+            <div id="photo-thumbs">
+              <div id="photo-container">
+                <a ng-cloak ng-repeat="img in ctrl.person.images" 
+                	ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
+                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
+                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
+              </div>
+            </div>
+          </div>
+			<related-links title="'Tapahtumat'" data-related="ctrl.person.events"></related-links>
+	      <related-links title="'Joukko-osastot'" data-related="ctrl.person.units"></related-links>
+	      <related-links title="'Taistelut'" data-related="ctrl.person.battles"></related-links>
+	      <related-links title="'Kansallisbibliografia'" data-related="ctrl.person.nationals"></related-links>
+	      <!-- <related-links title="'Kansa Taisteli -artikkelit'" data-related="ctrl.person.articles"></related-links> -->
+	      
+	      <div ng-if="ctrl.person.articles">
+			    <h3 id="links-header" class="links-header-class">Kansa Taisteli -artikkelit</h3>
+			    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+		     <ul class="list-group">
+	          <li class="list-group-item" ng-repeat="art in ctrl.person.articles">
+	          <a ng-href="http://sotasampo.fi/page?uri={{ art.id }}">{{ art.description | words:10 }}</a>
+	          </li>
+	       </ul>
+	     </div>
+	     
+      <!--
+      <related-links title="'Sotilasarvot'" data-related="ctrl.person.ranks"></related-links>
+      <related-links title="'Paikat'" data-related="ctrl.person.places"></related-links>
       
 	    <div ng-if="ctrl.person.events">
 		    <h3 id="links-header" class="links-header-class">Tapahtumat</h3>
@@ -52,17 +99,6 @@
 	          </li>
 	       </ul>
 	     </div> 
-	     
-	      <div ng-if="ctrl.person.articles">
-		    <h3 id="links-header" class="links-header-class">Kansa Taisteli -artikkelit</h3>
-		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-		     <ul class="list-group">
-	          <li class="list-group-item" ng-repeat="art in ctrl.person.articles">
-	          <a ng-href="http://sotasampo.fi/page?uri={{ art.id }}">{{ art.description | words:10 }}</a>
-	          </li>
-	       </ul>
-	     </div>
-	          
 	     <div ng-if="ctrl.person.nationals">
 		    <h3 id="links-header" class="links-header-class">Kansallisbibliografia</h3>
 		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
@@ -72,34 +108,8 @@
 	          </li>
 	       </ul>
 	     </div>
-	     
-     		<div ng-if="ctrl.person && ctrl.person.images.length">
-     		 <h3 id="links-header" class="links-header-class">Valokuvat</h3>
-            <p ng-show="ctrl.person"> <!--&& !ctrl.person.showPhotos">-->
-            {{ ctrl.person.images.length }} kuvaa
-            </p>
-            <!--
-            <div id="photo-thumbs">
-              <div id="photo-container">
-                <a ng-cloak ng-repeat="img in timemapCtrl.images"
-                  ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
-                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
-              </div>
-            </div>
-            -->
-            <div id="photo-thumbs">
-              <div id="photo-container">
-                <a ng-cloak ng-repeat="img in ctrl.person.images" 
-                	ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
-                  data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-                  <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
-              </div>
-            </div>
-            
-          </div>
-          
-     		</div>
+	     -->
+	      </div>
      </div>
 </div>
 

@@ -57,7 +57,7 @@ angular.module('eventsApp')
     };
 
 // Petri's testings: 
-self.testUnitPath=false;
+self.testUnitPath=false; 
 
     var getCasualtyLocations = function() {
 			var band = tm.timeline.getBand(1);
@@ -118,8 +118,8 @@ self.testUnitPath=false;
 						    path: coords,
 						    geodesic: true,
 						    strokeColor: '#0000FF',
-						    strokeOpacity: 1.0,
-						    strokeWeight: 2
+						    strokeOpacity: 0.35,
+						    strokeWeight: 5
 						  });
 				self.unitPath.setMap(map);
 				// console.log('path added');

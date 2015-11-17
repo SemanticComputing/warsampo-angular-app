@@ -31,16 +31,19 @@ angular.module('eventsApp')
 	 }
 	 
     
-    
     this.items= [];
     this.queryregex="";
     
-    
    this.getItems= function () {
-   	this.personService.getItems(this.queryregex,this);
+   	var rx='', n=this.queryregex.length;
+   	if (n<1) 		{ rx= '^AA.*$'; }
+   	else if (n<2) 	{ rx= '^'+this.queryregex+'A.*$'; }
+   	else 				{ rx= '(^|^.* )'+this.queryregex+'.*$'; }
+   	// console.log(rx);
+   	this.personService.getItems(rx,this);
    }
    this.getItems();
-
+	
 	this.updateActor = function () {
 		if (this.selectedItem && this.selectedItem.id) {
 			var uri=this.selectedItem.id;

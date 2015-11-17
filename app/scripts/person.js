@@ -237,7 +237,19 @@ angular.module('eventsApp')
 			   ' 	  FILTER (regex(?label, "{0}", "i")) ' +
 			   ' 	} ';
 		
-		var selectorQuery  = prefixes +
+		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
+		var selectorQuery = prefixes +
+				'SELECT DISTINCT ?name ?id WHERE {	' +
+		'  SELECT DISTINCT ?name ?id WHERE {	' +
+		'    GRAPH <http://ldf.fi/warsa/actors> {	' +
+		'      ?id a atypes:MilitaryPerson .   	    	' +
+		'      ?id skos:prefLabel ?name .   	    	' +
+		'      FILTER (regex(?name, "^{0}$", "i"))	' +
+		'    } 	' +
+		'  } LIMIT 300 	' +
+		'} ORDER BY ?name 	'
+		
+		var selectorQueryOld  = prefixes +
 		  '  SELECT DISTINCT ?name ?id WHERE { ' +
 		  '  	GRAPH <http://ldf.fi/warsa/actors> { ' +
 		  '  	    ?id a atypes:MilitaryPerson . ' +
@@ -318,12 +330,11 @@ angular.module('eventsApp')
     		
         this.getItems = function (regx, controller) {
         		var qry = selectorQuery.format("{0}".format(regx));
-				return endpoint.getObjects(qry).then(function(data) {
+        		return endpoint.getObjects(qry).then(function(data) {
 					var arr= personMapperService.makeObjectListNoGrouping(data);
             	controller.items=arr;
             	return arr;
             });
-        	// return this.items;
         }
 });
 
