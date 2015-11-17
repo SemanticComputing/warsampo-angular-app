@@ -6,10 +6,8 @@
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.unit && !ctrl.isLoadingEvent">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.unit">
-      <!-- <h2>
-        {{ ctrl.unit.name }} ({{ ctrl.unit.abbrev }})
-      </h2> -->
-      <h2>
+    <h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
+       <h2>
         {{ ctrl.unit.getLabel() }}
       </h2>
       <p ng-repeat="desc in ctrl.unit.getDescription() track by $index">

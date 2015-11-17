@@ -8,18 +8,22 @@ function Unit() { }
 
 Unit.prototype.getLabel = function() {
 	if (!_.isArray(this.name)) { this.name= [this.name]; }
-	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }
-		
+	if (this.name.length>1) {
+		var arr=[].concat(this.name), tmp=arr.shift();
+      this.altNames=arr;
+	}
+	// this.altNames=['a','b','c'];
+	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }	
 	this.abbrev=this.removeNameAbbrevs(this.name,this.abbrev);
 	
 	var label = '';
 	if (!_.isArray(this.abbrev)) {
 		label = label + this.abbrev;
 	} else {
-		label = label + this.abbrev.join(', ');
+		label = label + this.abbrev[0];
 	}
 	if (label !== '') { label=" ("+label+")"; }
-	return this.name.join(', ')+ label;
+	return this.name[0]+ label;
 };
 
 
@@ -35,7 +39,13 @@ Unit.prototype.removeNameAbbrevs=function(names,abbrevs) {
 
 Unit.prototype.getDescription = function() {
 	var arr=[];
-	// arr=arr.concat(this.);
+	
+ 	if ('altNames' in this) {
+ 		for (var i=0; i<this.altNames.length; i++) { 
+ 			arr.push('Osasto on tunnettu myös nimillä '+this.altNames.join(', ')) ; 
+ 		}
+ 	}
+ 	
 	if (this.commanders) {arr = arr.concat(this.commanders); }
 	if (this.description) {arr = arr.concat(this.description);}
 	if (this.note) {arr = arr.concat(this.note);}

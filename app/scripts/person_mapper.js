@@ -54,7 +54,7 @@ Person.prototype.getDescription = function() {
 	if (('mstatus' in this) || ('num_children' in this)) { 
 		var res=[ ];
 		if ('mstatus' in this) { res.push('Aviosääty: '+this.mstatus); } 
-		if ('num_children' in this) { res.push('lapsia '+this.num_children); } 
+		if ('num_children' in this) { res.push(this.num_children>0 ? 'lapsia '+this.num_children : 'ei lapsia.'); } 
 		arr.push(res.join(', '));
 	}	
 		

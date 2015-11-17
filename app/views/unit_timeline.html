@@ -1,7 +1,10 @@
 <div ng-include="'views/setting_accordion.html'"></div>
 <div class="row">
   <div class="col-sm-3">
-    <input type="text" placeholder="Hae joukko-osaston nimellä" class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
+  	<h2>Joukko-osastojen sovellusnäkymä</h2>
+	<p>Hae viime sotien joukko-osastoja kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse joukko-osasto kentän alla olevasta listasta.
+Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli kun niistä on tietoa) ja osastoon liittyvät muut tiedot ja suosittelulinkit näkyvät oikealle.</p>
+    <input type="text" placeholder="Hae joukko-osaston nimellä, esim. 1. Divisioona" class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
     <select ng-model="ctrl.current" ng-change="ctrl.updateUnit()" size="32" class="form-control" id="unitselect"
             ng-options="item as item.name for item in ctrl.items"></select>
 	</div>
@@ -43,7 +46,7 @@
           </div>
           <div ng-show="!ctrl.isLoadingImages && ctrl.images.length">
             <p>
-            {{ ctrl.images.length }} kuvaa
+            {{ ctrl.images.length }} kuvaa paikasta samaan aikaan.
             </p>
             <photo-scroller images="ctrl.images"></photo-scroller>
           </div>
