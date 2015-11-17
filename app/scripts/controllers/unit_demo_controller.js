@@ -70,7 +70,7 @@ self.testUnitPath=false;
             .then(function(casualties) {
             	var res = [];
                casualties.forEach(function(casualty) {
-                    res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
+                    if ('lat' in casualty) res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
                });
        			if (self.testUnitPath) { averagePath(casualties); } 
                return res;
@@ -80,35 +80,27 @@ self.testUnitPath=false;
     
     var averagePath = function (casualties) {
 		var obj={};
-		casualties.sort(function(a, b){return a.death_date>b.death_date ? 1 : -1;});
-		if (self.testUnitPath && false) {
-			var res= '';
-			for (var i=0; i<casualties.length; i++) {
-				var c=casualties[i];
-				var dt = new Date(c.death_date);
-				res+= c.lat+"\t"+c.lon+"\t"+(dt.getTime())+"\t"+c.death_date+"\n";
-			}		
-			console.log(res);
-		}
+		// casualties.sort(function(a, b){return a.death_date>b.death_date ? 1 : -1;});
+		
+		var coords = [], T=[], X=[], Y=[];
 		for (var i=0; i<casualties.length; i++) {
-			var c=casualties[i], dd=c.death_date;
-			if (!(dd in obj)) { obj[dd]={lat:0, lon:0, N:0}; }
-			obj[dd].lat += parseFloat(c.lat);
-			obj[dd].lon += parseFloat(c.lon);
-			obj[dd].N += 1;
+			var c=casualties[i];
+			if ('lat' in c && 'date' in c) {
+				
+				
+				var x=parseFloat(c.lat),
+					y=parseFloat(c.lon),
+					point= new google.maps.LatLng(x, y);
+				coords.push(point);
+				X.push(x); Y.push(y);
+				T.push(new Date(c.date).getTime());
+			}
 		}
+		console.log(X,T);
+		drawUnitPath(coords);
 		
-		var res = [];
-		for (var pr in obj) {
-			var o=obj[pr], f=1.0/o.N;
-			res.push({ date:pr, coord: new google.maps.LatLng(parseFloat(o.lat * f), parseFloat(o.lon * f))});
-		}
-		
-		res.sort(function(a, b){return a.date>b.date ? 1 : -1;});
-		
-		for (var i=0; i<res.length; i++) { res[i]=res[i].coord; }
-		drawUnitPath(res);
     }
+    
     
     self.unitPath = false;
 	 var drawUnitPath = function (coords) {
@@ -122,7 +114,6 @@ self.testUnitPath=false;
 						    strokeWeight: 5
 						  });
 				self.unitPath.setMap(map);
-				// console.log('path added');
 			}
 		}
 		

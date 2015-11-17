@@ -54,14 +54,11 @@ angular.module('eventsApp')
 		  Person.prototype.fetchRelatedUnits = function() {
 		  		var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
-            	if (units.length) {
+            	if (units.length && units[0].id) {
             		for (var i=0; i<units.length; i++) { 
             			var unit=units[i];
-            			/* if ('label' in unit && _.isArray(unit.label) ) {
-            				unit.label = unit.label[0];
-            			} */
             			if ('label' in unit) { unit.label = unit.label.split(';')[0]; }
-            		} 
+            		}
             		self.units = units; }
             });
         };

@@ -165,8 +165,9 @@ angular.module('eventsApp')
 			'	' +
 			'	  } GROUP BY ?place ?w ?date 	' +
 			'	  } 	' +
+			'	  FILTER (?w > 0) ' +
 			'	  ?place geo:lat ?lat . ?place geo:long ?lon .	' +
-			'	} GROUP BY ?lat ?lon ?weigth ?date	';
+			'	} GROUP BY ?lat ?lon ?weigth ?date ORDER BY ?date ';
 	
 			var casualtyLocationsByTimeAndUnitQry = '' +
 				'PREFIX : <http://ldf.fi/warsa/actors/> 	' +
@@ -252,10 +253,9 @@ angular.module('eventsApp')
 				//	casualtyLocationsByTimeUnitBattleQry
         		// or casualtyLocationsByTimeAndUnitQry
         		
-            var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
-            // console.log(qry);
+            var qry = casualtyLocationsByTimeUnitBattleQry.format(start, end, unit);
             return endpoint.getObjects(qry).then(function(data) {
-            	return objectMapperService.makeObjectList(data);
+            	return objectMapperService.makeObjectListNoGrouping(data);
             });
         };
 

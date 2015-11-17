@@ -77,6 +77,7 @@ angular.module('eventsApp')
             		if ('label' in p) {
             			if (_.isArray(p.label)) {p.label = p.label[0];}
             			if ('rank' in p && p.name.indexOf(' ')<0) {p.name = p.rank +' '+ p.name;}
+            			p.label=p.name;
             			arr.push(p);
 	            		if ('role' in p) { 
 	            			var pname =p.role+' '+p.name; 
@@ -93,8 +94,8 @@ angular.module('eventsApp')
 	            	}
             	}
             	
-            	if (arr.length) {self.relatedPersons = arr;}
-            	if (arr2.length) {self.commanders = arr2;}
+            	if (arr.length)  {	self.relatedPersons = arr; }
+            	if (arr2.length) {	self.commanders = arr2; }
             });
         };
         
@@ -171,38 +172,38 @@ angular.module('eventsApp')
 		  '		} ORDER BY ?start_time ?end_time ';
 
 			var relatedUnitQry = prefixes + 
-				 '		SELECT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE {  ' +
-	 '   		  { SELECT ?id ?name  WHERE { ' +
-	 '   		                  ?ejoin a etypes:UnitJoining ; ' +
-	 '   		                    crm:P143_joined ?unit ; ' +
-	 '   		                    crm:P144_joined_with ?id . ' +
-	 '   		                ?ename a etypes:UnitNaming ; ' +
-	 '   		                     skos:prefLabel ?name ; ' +
-	 '   		                     crm:P95_has_formed ?id . ' +
-	 '   		      			OPTIONAL { ?ename skos:altLabel ?abbrev . } ' +
-	 '   		                VALUES ?unit  { {0} } ' +
-	 '   		  	} GROUP BY ?id ?name  LIMIT 2  ' +
-	 '   		 } UNION { ' +
-	 '   			SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE { ' +
-	 '   							{?ejoin a etypes:UnitJoining ; ' +
-	 '   					                    crm:P143_joined ?id ; ' +
-	 '   					                    crm:P144_joined_with ?unit . ' +
-	 '   					      } UNION { ?ejoin a etypes:UnitJoining ; ' +
-	 '   					                    crm:P143_joined ?unit ; ' +
-	 '   					                    crm:P144_joined_with ?superunit . ' +
-	 '   					                 ?ejoin2 a etypes:UnitJoining ; ' +
-	 '   					                    crm:P143_joined ?id ; ' +
-	 '   					                    crm:P144_joined_with ?superunit .    ' +
-	 '   					        FILTER ( ?unit != ?id ) ' +
-	 '   					      } ' +
-	 '   		                ?s ?p ?id . ' +
-	 '   		                ?ename a etypes:UnitNaming ; ' +
-	 '   		                     skos:prefLabel ?name ; ' +
-	 '   		                     crm:P95_has_formed ?id . ' +
-	 '   		                OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-	 '   		                VALUES ?unit  { {0} } ' +
-	 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
-	 '   		} GROUP BY ?id ?label ';
+		 '		SELECT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE {  ' +
+		 '   		  { SELECT ?id ?name  WHERE { ' +
+		 '   		                  ?ejoin a etypes:UnitJoining ; ' +
+		 '   		                    crm:P143_joined ?unit ; ' +
+		 '   		                    crm:P144_joined_with ?id . ' +
+		 '   		                ?ename a etypes:UnitNaming ; ' +
+		 '   		                     skos:prefLabel ?name ; ' +
+		 '   		                     crm:P95_has_formed ?id . ' +
+		 '   		      			OPTIONAL { ?ename skos:altLabel ?abbrev . } ' +
+		 '   		                VALUES ?unit  { {0} } ' +
+		 '   		  	} GROUP BY ?id ?name  LIMIT 2  ' +
+		 '   		 } UNION { ' +
+		 '   			SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE { ' +
+		 '   							{?ejoin a etypes:UnitJoining ; ' +
+		 '   					                    crm:P143_joined ?id ; ' +
+		 '   					                    crm:P144_joined_with ?unit . ' +
+		 '   					      } UNION { ?ejoin a etypes:UnitJoining ; ' +
+		 '   					                    crm:P143_joined ?unit ; ' +
+		 '   					                    crm:P144_joined_with ?superunit . ' +
+		 '   					                 ?ejoin2 a etypes:UnitJoining ; ' +
+		 '   					                    crm:P143_joined ?id ; ' +
+		 '   					                    crm:P144_joined_with ?superunit .    ' +
+		 '   					        FILTER ( ?unit != ?id ) ' +
+		 '   					      } ' +
+		 '   		                ?s ?p ?id . ' +
+		 '   		                ?ename a etypes:UnitNaming ; ' +
+		 '   		                     skos:prefLabel ?name ; ' +
+		 '   		                     crm:P95_has_formed ?id . ' +
+		 '   		                OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
+		 '   		                VALUES ?unit  { {0} } ' +
+		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
+		 '   		} GROUP BY ?id ?label ';
 	 
         var relatedUnitQryOLDD = prefixes +
 		 '   SELECT ?id ?name (?name AS ?label) ?abbrev WHERE {  ' +
