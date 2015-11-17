@@ -17,7 +17,7 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
       <div class="col-md-12">
         <div ng-show="ctrl.current">
         	<h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
-        	<p ng-if="ctrl.current && ctrl.current.altNames">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join(', ') }}</p>
+        	<p ng-if="ctrl.current && ctrl.current.altNames">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join('; ') }}</p>
         	<p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
           <h3 ng-if="ctrl.current.opts.descTitle"> 
             <span ng-repeat="place in ctrl.current.opts.event.places">

@@ -57,9 +57,10 @@ angular.module('eventsApp')
             	if (units.length) {
             		for (var i=0; i<units.length; i++) { 
             			var unit=units[i];
-            			if ('label' in unit && _.isArray(unit.label) ) {
+            			/* if ('label' in unit && _.isArray(unit.label) ) {
             				unit.label = unit.label[0];
-            			}
+            			} */
+            			if ('label' in unit) { unit.label = unit.label.split(';')[0]; }
             		} 
             		self.units = units; }
             });
@@ -197,22 +198,21 @@ angular.module('eventsApp')
 	   ' 	    } ' +
 	   ' 	} ORDER BY ?start_time ?end_time ';
        
-       var relatedUnitQry_OLD = prefixes +
-		   '    SELECT DISTINCT ?id ?description ?role WHERE { ' +
-		   ' 	VALUES ?person { {0} } . ' +
+       var relatedUnitQry = prefixes +
+		   '   SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE { 	' +
+		   '   VALUES ?person { {0} } . ' +
 		   '     { ?evt a etypes:PersonJoining ; ' +
 		   '           crm:P143_joined ?person . ' +
-           '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
 		   '           ?evt  crm:P144_joined_with ?id .  ' +
 		   '      } UNION {  ' +
 		   '           ?person owl:sameAs ?mennytmies . ' +
 		   '           ?mennytmies a foaf:Person . ' +
 		   '           ?mennytmies casualties:osasto ?id .  ' +
 		   '     } ' +
-		   '    ?id skos:prefLabel ?description . ' +
-		   ' }  ';
+		   '    ?id skos:prefLabel ?name . ' +
+		   '   } GROUP BY ?id ?label ';
 		   
-		var relatedUnitQry = prefixes +
+		var relatedUnitQry_OLD = prefixes +
 		   '    SELECT DISTINCT ?id ?label ?role WHERE { ' +
 		   ' 	VALUES ?person { {0} } . ' +
 		   '     { ?evt a etypes:PersonJoining ; ' +
