@@ -130,11 +130,12 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
         var unitQry = prefixes +
-          '  SELECT DISTINCT ?id ?name ?abbrev ?note WHERE {  ' +
+          '  SELECT DISTINCT ?id ?name ?abbrev ?note ?sid ?source WHERE {  ' +
           '      ?ename a etypes:UnitNaming . ' +
           '      ?ename skos:prefLabel ?name . ' +
           '      OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-          '      ?ename crm:P95_has_formed ?id . ' +
+          ' 	 OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . OPTIONAL { ?sid skos:prefLabel ?source . } }' +
+		    '      ?ename crm:P95_has_formed ?id . ' +
           '      OPTIONAL {?id crm:P3_has_note ?note . } ' +
           '      VALUES ?id  { {0} } ' +
           '  } ';
@@ -205,59 +206,7 @@ angular.module('eventsApp')
 		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
 		 '   		} GROUP BY ?id ?label ';
 	 
-        var relatedUnitQryOLDD = prefixes +
-		 '   SELECT ?id ?name (?name AS ?label) ?abbrev WHERE {  ' +
-		 '   		  { SELECT ?id ?name  WHERE { ' +
-		 '   		                  ?ejoin a etypes:UnitJoining ; ' +
-		 '   		                    crm:P143_joined ?unit ; ' +
-		 '   		                    crm:P144_joined_with ?id . ' +
-		 '   		                ?ename a etypes:UnitNaming ; ' +
-		 '   		                     skos:prefLabel ?name ; ' +
-		 '   		                     crm:P95_has_formed ?id . ' +
-		 '   		      			OPTIONAL { ?ename skos:altLabel ?abbrev . } ' +
-		 '   		                VALUES ?unit  { {0} } ' +
-		 '   		  	} GROUP BY ?id ?name  LIMIT 2  ' +
-		 '   		 } UNION { ' +
-		 '   			SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE { ' +
-		 '   							{?ejoin a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?id ; ' +
-		 '   					                    crm:P144_joined_with ?unit . ' +
-		 '   					      } UNION { ?ejoin a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?unit ; ' +
-		 '   					                    crm:P144_joined_with ?superunit . ' +
-		 '   					                 ?ejoin2 a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?id ; ' +
-		 '   					                    crm:P144_joined_with ?superunit .    ' +
-		 '   					        FILTER ( ?unit != ?id ) ' +
-		 '   					      } ' +
-		 '   		                ?s ?p ?id . ' +
-		 '   		                ?ename a etypes:UnitNaming ; ' +
-		 '   		                     skos:prefLabel ?name ; ' +
-		 '   		                     crm:P95_has_formed ?id . ' +
-		 '   		                OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-		 '   		                VALUES ?unit  { {0} } ' +
-		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
-		 '   		} ';
         
-        var subUnitQryOLD = prefixes +
-			'SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?names)' +
-			'    WHERE { ' +
-			'    VALUES ?unit { {0} } ' +
-			'' +
-			' { 	?evt a etypes:UnitJoining .' +
-			'	?evt crm:P143_joined ?id .' +
-			'   	?evt crm:P144_joined_with ?unit .' +
-			'  } UNION {' +
-			'    ?evt a etypes:UnitJoining .' +
-			'	?evt crm:P143_joined ?id2 .' +
-			'   	?evt crm:P144_joined_with ?unit .' +
-			'    ?evt2 a etypes:UnitJoining .' +
-			'	?evt2 crm:P143_joined ?id .' +
-			'   	?evt2 crm:P144_joined_with ?id2 .' +
-			'  }' +
-			'	?id a atypes:MilitaryUnit .' +
-			'	?id skos:prefLabel ?name .' +
-			'} GROUP BY ?id ';
 
 		var subUnitQry = prefixes +
 			'SELECT DISTINCT ?id	'+
@@ -299,20 +248,7 @@ angular.module('eventsApp')
 			'}  ORDER BY lcase(?name)  	 '+
 			'LIMIT 1000  ';
 			
-		var selectorQueryOLD  = prefixes +
-			'SELECT DISTINCT ?name ?id WHERE {        '+
-			'  ?ename a etypes:UnitNaming .      ?ename skos:prefLabel ?name .       '+
-			'  ?ename crm:P95_has_formed ?id .       '+
-			'  { ?evt a crm:E66_Formation . ?evt crm:P95_has_formed ?id . }       '+
-			'  UNION       '+
-			'  { ?evt a etypes:Battle . ?evt crm:P11_had_participant ?id . }       '+
-			'  UNION        '+
-			'  { ?evt a etypes:TroopMovement . ?evt crm:P95_has_formed ?id . }       '+
-			'  ?evt crm:P7_took_place_at ?place_id .       '+
-			'  ?place_id geo:lat ?lat .       '+
-			'  FILTER (regex(?name, "^.*{0}.*$", "i"))    '+
-			'}  ORDER BY lcase(?name)  	 '+
-			'LIMIT 1000  ';
+		
 		 
 		var actorInfoQry = prefixes +
         ' SELECT ?id ?type ?label ?familyName ?firstName ' +

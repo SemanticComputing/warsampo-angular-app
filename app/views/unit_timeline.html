@@ -18,7 +18,10 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
         <div ng-show="ctrl.current">
         	<h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
         	<p ng-if="ctrl.current && ctrl.current.altNames">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join('; ') }}</p>
-        	<p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
+        	<div ng-show="ctrl.current.relatedEvents.length ===0">
+          	Ei osastoon liittyviä tapahtumia.
+          </div>
+          <p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
           <h3 ng-if="ctrl.current.opts.descTitle"> 
             <span ng-repeat="place in ctrl.current.opts.event.places">
               <a page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
@@ -27,18 +30,10 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
           </h3>
           <p>{{ ctrl.current.opts.description }}</p>
           <related-links title="'Henkilöitä'" data-related="ctrl.current.relatedPersons"></related-links>
-          <!--
-          <a ng-repeat="person in ctrl.current.relatedPersons" ng-href="persons/page?uri={{ person.id }}" >
-            <p style="text-transform: capitalize">{{ person.name }}</p> 
-          </a>
-         -->
-         <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
+          <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
             {{ unit.label.join(' / ') }}
           </p>
           
-          <div ng-show="ctrl.current.relatedEvents.length ===0">
-          	Ei osastoon liittyviä tapahtumia.
-          </div>
           <div ng-show="ctrl.images.length === 0">
             <p ng-if="!ctrl.isLoadingImages">
             Ei tapahtumaan liittyviä kuvia.

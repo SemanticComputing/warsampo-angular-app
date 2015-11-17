@@ -12,7 +12,7 @@ Unit.prototype.getLabel = function() {
 		var arr=[].concat(this.name), tmp=arr.shift();
       this.altNames=arr;
 	}
-	// this.altNames=['a','b','c'];
+	
 	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }	
 	this.abbrev=this.removeNameAbbrevs(this.name,this.abbrev);
 	
@@ -50,6 +50,10 @@ Unit.prototype.getDescription = function() {
 	if (this.description) {arr = arr.concat(this.description);}
 	if (this.note) {arr = arr.concat(this.note);}
 	
+	if ('source' in this) { 
+		arr.push('Lähde: '+this.source); 
+		} else if ('sid' in this) { arr.push('Lähde: '+this.sid); }
+	
 	var arr2=[];
 	for (var i=0; i<arr.length; i++) {
 		if (arr2.indexOf(arr[i])<0) { arr2.push(arr[i]);}
@@ -58,7 +62,7 @@ Unit.prototype.getDescription = function() {
 };
 
 Unit.prototype.processUnitEvents = function(events) {
-	var battles=[], formations=[], description=[], places={};
+	var battles= {}, formations=[], description=[], places={};
 	var em=new EventMapper();
 	for (var i=0; i<events.length; i++) {
 		var 	e=events[i], 
@@ -76,8 +80,7 @@ Unit.prototype.processUnitEvents = function(events) {
 		if (edate!=='') {edate=edate+': ';}
 		
 		if (etype.indexOf('Battle')>-1) {
-			e.description = e.name;
-			battles.push(e);
+			battles[e.label] = { label:e.name, id:e.id };
 		} else if (etype.indexOf('Formation')>-1) {
 			formations.push(edate+'Perustaminen: '+e.name+eplace);
 		} else if (etype.indexOf('TroopMovement')>-1) {
@@ -91,7 +94,11 @@ Unit.prototype.processUnitEvents = function(events) {
 	}
 	
 	if (events.length) { this.hasLinks = true; }
-	if (battles.length) { this.battles=battles;}
+	
+	var arr=[];
+	for (var pr in battles) arr.push(battles[pr]);
+	if (arr.length) { this.battles=arr; }
+	
 	if (formations.length) {description=formations.concat(description);}
 	if (description.length) {this.description=description;}
 	

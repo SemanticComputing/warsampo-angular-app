@@ -141,7 +141,7 @@ angular.module('eventsApp')
 			'	    		' +
 			'	  }	GROUP BY ?place ?w ?date 	' +
 			'	  } UNION {	' +
-			'	      SELECT ?place (COUNT(?evt)*100 AS ?w) ?date 	' +
+			'	      SELECT ?place (COUNT(?evt)*2 AS ?w) ?date 	' +
 			'	  WHERE {	   	' +
 			'	    { SELECT ?subunit	' +
 			'	      WHERE {	' +
@@ -151,9 +151,9 @@ angular.module('eventsApp')
 			'	      }	' +
 			'	    } UNION { VALUES ?subunit { {2} } .  } 	' +
 			'	' +
-			'	    ?subunit skos:altLabel ?abbrev .	' +
+		//	'	    ?subunit skos:altLabel ?abbrev .	' +
 			'	    ?evt a etypes:Battle . 	' +
-			'	    ?evt ?hadUnit  ?abbrev . 	' +
+			'	    ?evt crm:P11_had_participant ?subunit . 	' +
 			'	' +
 			'	    ?evt crm:P7_took_place_at ?place . 	' +
 			'	    FILTER(EXISTS { ?place geo:lat ?lat })	' +
@@ -253,7 +253,7 @@ angular.module('eventsApp')
 				//	casualtyLocationsByTimeUnitBattleQry
         		// or casualtyLocationsByTimeAndUnitQry
         		
-            var qry = casualtyLocationsByTimeUnitBattleQry.format(start, end, unit);
+            var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
             return endpoint.getObjects(qry).then(function(data) {
             	return objectMapperService.makeObjectListNoGrouping(data);
             });
