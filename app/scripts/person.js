@@ -111,38 +111,55 @@ angular.module('eventsApp')
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
-		var personQry = prefixes +
-		   ' 	SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time '+
-		   ' 				?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
-		   '				?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
-		   ' 				?sid ?source WHERE { ' +
-		   ' 		  VALUES ?id { {0} }' +
-		   ' 		  ?id foaf:familyName ?sname .' +
-		   ' 		  OPTIONAL { ?id foaf:firstName ?fname . }' +
-		   ' 		  OPTIONAL { ?id crm:P3_has_note ?note . }' +
-		   ' 		  OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . OPTIONAL { ?sid skos:prefLabel ?source . } }' +
-		   ' 		  OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }' +
-		   ' 		  OPTIONAL { ' +
-					   ' 	?id owl:sameAs ?casualty .' +
-					   ' 	?casualty a foaf:Person .'  +
-					   ' 	OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
-					   '	OPTIONAL { ?casualty casualties:synnyinkunta ?birth_place_uri . '+
-					   '								?birth_place_uri skos:prefLabel ?birth_place . }' +
-					   ' 	OPTIONAL { ?casualty casualties:kuolinaika ?death_time . }	' +
-					   '	OPTIONAL { ?casualty casualties:kuolinkunta ?death_place_uri . '+
-					   '								?death_place_uri skos:prefLabel ?death_place . }' +
-					   '	OPTIONAL { ?casualty casualties:hautauskunta ?bury_place_uri . '+
-					   '								?bury_place_uri skos:prefLabel ?bury_place . }' +
-					   '	OPTIONAL { ?casualty casualties:asuinkunta ?living_place_uri . '+
-					   '								?living_place_uri skos:prefLabel ?living_place . }' +
-					   ' 	OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
-					   ' 	OPTIONAL { ?casualty casualties:siviilisaeaety ?mstatus_uri . ?mstatus_uri skos:prefLabel ?mstatus . }' +
-					   ' 	OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
-					   ' 	OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
-					   '	OPTIONAL { ?casualty casualties:lasten_lukumaeaerae ?num_children . } '+
-					   '	OPTIONAL { ?casualty casualties:menehtymisluokka ?way_id . ?way_id skos:prefLabel ?way_to_die . } '+
-				   	'}' +
-		   ' 	} ';
+        var personQry = prefixes +
+        ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time '+
+        '       ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
+        '       ?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
+        '       ?sid ?source ' +
+        ' WHERE { ' +
+        '   VALUES ?id { {0} }' +
+        '   ?id foaf:familyName ?sname .' +
+        '   ?id skos:prefLabel ?label .' +
+        '   OPTIONAL { ?id foaf:firstName ?fname . }' +
+        '   OPTIONAL { ?id crm:P3_has_note ?note . }' +
+        '   OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
+        '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+        '   }' +
+        '   OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }' +
+        '   OPTIONAL { ' +
+        '     ?id owl:sameAs ?casualty .' +
+        '     ?casualty a foaf:Person .'  +
+        '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
+        '     OPTIONAL { ' +
+        '       ?casualty casualties:synnyinkunta ?birth_place_uri . ' +
+        '       ?birth_place_uri skos:prefLabel ?birth_place . ' +
+        '     } ' +
+        '     OPTIONAL { ?casualty casualties:kuolinaika ?death_time . } ' +
+        '     OPTIONAL { ' +
+        '         ?casualty casualties:kuolinkunta ?death_place_uri . '+
+        '         ?death_place_uri skos:prefLabel ?death_place . ' +
+        '     }' +
+        '     OPTIONAL { ' +
+        '         ?casualty casualties:hautauskunta ?bury_place_uri . ' +
+        '         ?bury_place_uri skos:prefLabel ?bury_place . ' +
+        '     } ' +
+        '     OPTIONAL { ' +
+        '         ?casualty casualties:asuinkunta ?living_place_uri . '+
+        '         ?living_place_uri skos:prefLabel ?living_place . }' +
+        '     OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
+        '     OPTIONAL {  ' +
+        '         ?casualty casualties:siviilisaeaety ?mstatus_uri . ' +
+        '         ?mstatus_uri skos:prefLabel ?mstatus . ' +
+        '     }' +
+        '     OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
+        '     OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
+        '     OPTIONAL { ?casualty casualties:lasten_lukumaeaerae ?num_children . } '+
+        '     OPTIONAL { ' +
+        '         ?casualty casualties:menehtymisluokka ?way_id . ' +
+        '         ?way_id skos:prefLabel ?way_to_die . ' +
+        '     } '+
+        '   }' +
+        ' } ';
 
         var personLifeEventsQry = prefixes +
         ' SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank ?rankid WHERE { ' +
@@ -216,21 +233,6 @@ angular.module('eventsApp')
 		   '    ?id skos:prefLabel ?name . ' +
 		   '   } GROUP BY ?id ?label ';
 
-		var relatedUnitQry_OLD = prefixes +
-		   '    SELECT DISTINCT ?id ?label ?role WHERE { ' +
-		   ' 	VALUES ?person { {0} } . ' +
-		   '     { ?evt a etypes:PersonJoining ; ' +
-		   '           crm:P143_joined ?person . ' +
-           '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
-		   '           ?evt  crm:P144_joined_with ?id .  ' +
-		   '      } UNION {  ' +
-		   '           ?person owl:sameAs ?mennytmies . ' +
-		   '           ?mennytmies a foaf:Person . ' +
-		   '           ?mennytmies casualties:osasto ?id .  ' +
-		   '     } ' +
-		   '    ?id skos:prefLabel ?label . ' +
-		   ' }  ';
-
 		var nationalBibliographyQry =
 			   ' 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
 			   ' 	PREFIX kb: <http://ldf.fi/history/kb> ' +
@@ -253,36 +255,69 @@ angular.module('eventsApp')
 		'  } LIMIT 300 	' +
 		'} ORDER BY ?name 	';
 
-		var selectorQueryOld  = prefixes +
-		  '  SELECT DISTINCT ?name ?id WHERE { ' +
-		  '  	GRAPH <http://ldf.fi/warsa/actors> { ' +
-		  '  	    ?id a atypes:MilitaryPerson . ' +
-		  '  	    ?id skos:prefLabel ?name . ' +
-		  '  	    ?id foaf:familyName ?fname . ' +
-		  '  	    FILTER (regex(?name, "^.*{0}.*$", "i")) ' +
-		  '  	} ' +
-		  '  } ' +
-		  '  LIMIT 200 ';
-
 		var photoQuery = prefixes +
-   ' 	SELECT * WHERE {  ' +
-   ' 		VALUES ?person { {0} } . ' +
-   ' 		?id a <http://purl.org/dc/dcmitype/Image> . ' +
-   ' 		?id dcterms:subject ?person .  ' +
-   ' 		?id dcterms:created ?created . ' +
-   ' 		?id dcterms:description ?description . ' +
-   ' 		?id <http://schema.org/contentUrl> ?url . } LIMIT 150 ';
+        ' SELECT * WHERE {  ' +
+        ' 	VALUES ?person { {0} } . ' +
+        ' 	?id a <http://purl.org/dc/dcmitype/Image> . ' +
+        ' 	?id dcterms:subject ?person .  ' +
+        ' 	?id dcterms:created ?created . ' +
+        ' 	?id dcterms:description ?description . ' +
+        ' 	?id <http://schema.org/contentUrl> ?url . } LIMIT 150 ';
+
+        var byUnitQry = prefixes +
+        'SELECT ?id ?name (?name AS ?label) ?rank (COUNT(?s) AS ?no) WHERE { ' +
+        ' 	{ SELECT ?id WHERE ' +
+        ' 	    { ?evt a etypes:PersonJoining ; ' +
+        ' 	    crm:P143_joined ?id . ' +
+        ' 	    ?evt  crm:P144_joined_with {0} .  ' +
+        '    	} LIMIT 200' +
+        '	} UNION ' +
+        '    { SELECT ?id WHERE {' +
+        ' 	    ?id owl:sameAs ?mennytmies . ' +
+        ' 	    ?mennytmies a foaf:Person . ' +
+        ' 	    ?mennytmies casualties:osasto {0} . ' +
+        '    	} LIMIT 200 ' +
+        ' 	} ' +
+        '    OPTIONAL { ?s ?p ?id . } ' +
+        '    ?id skos:prefLabel ?name . ' +
+        '    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
+        '} GROUP BY ?id ?name ?label ?no ?rank   ' +
+        ' 		ORDER BY DESC(?no) LIMIT 100 ';
+
+        this.getByUnit = function(id) {
+            var qry = byUnitQry.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                if (data.length) {
+                    return personMapperService.makeObjectList(data);
+                }
+                return $q.when();
+            });
+        };
 
         this.getById = function(id) {
+            // Get a single person by id.
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-                var n=data.length;
-                if (n) {
+                if (data.length) {
                     // because of temporary multiple labels in casualties data set:
-                    data=[data[n-1]];
-                    return personMapperService.makeObjectListNoGrouping(data)[0];
+                    return personMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
+            });
+        };
+
+        this.getByIdList = function(ids) {
+            var qry;
+            if (_.isArray(ids)) {
+                ids = "<{0}>".format(ids.join("> <"));
+            } else if (ids) {
+                ids = "<{0}>".format(ids);
+            } else {
+                return $q.when();
+            }
+            qry = personQry.format(ids);
+            return endpoint.getObjects(qry).then(function(data) {
+                return personMapperService.makeObjectList(data);
             });
         };
 

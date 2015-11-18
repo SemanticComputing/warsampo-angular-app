@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('unitService', function($q, SparqlService, unitMapperService,
-                Unit, eventService, casualtyService) {
+                Unit, eventService, casualtyService, personService) {
         
         var unitService = this;
 			
@@ -30,33 +30,20 @@ angular.module('eventsApp')
             });
         };
 			
-		 Unit.prototype.fetchRelatedOLD = function() {
+        Unit.prototype.fetchRelatedUnits = function() {
             var self = this;
-            return self.fetchRelatedEvents().then(
-            	function() { return self.fetchUnitEvents(); }).then(
-            	function() { return self.fetchRelatedUnits(); }).then(
-            	function() { return self.fetchRelatedPersons(); }).then(
-            	function() {
-                if (self.relatedEvents || self.relatedUnits || self.relatedPersons ) {
-                    self.hasLinks = true;
-                }
-            });
-        };
-        
-		  Unit.prototype.fetchRelatedUnits = function() {
-		  		var self = this;
             return unitService.getRelatedUnit(self.id).then(function(units) {
-            	self.relatedUnits=[];
-            	for (var i=0; i<units.length; i++) {
-            		var unit=units[i];
-						if ('id' in unit) { 
-							/* if ('label' in unit && _.isArray(unit.label)) {
-								unit.label=unit.label[0];
-							} */
-							unit.label = unit.label.split(';')[0];
-							self.relatedUnits.push(unit);
-							}
-            	}
+                self.relatedUnits=[];
+                for (var i=0; i<units.length; i++) {
+                    var unit=units[i];
+                    if ('id' in unit) { 
+                        /* if ('label' in unit && _.isArray(unit.label)) {
+                           unit.label=unit.label[0];
+                           } */
+                        unit.label = unit.label.split(';')[0];
+                        self.relatedUnits.push(unit);
+                    }
+                }
             });
         };
         
@@ -70,15 +57,13 @@ angular.module('eventsApp')
         
         Unit.prototype.fetchRelatedPersons = function() {
 		  		var self = this;
-            return unitService.getPersons(self.id).then(function(persons) {
+            return personService.getByUnit(self.id).then(function(persons) {
             	var 	em=new EventMapper(),
             			arr = [], arr2=[];
             	for (var i=0; i<persons.length; i++) {
             		var p=persons[i];
             		if ('label' in p) {
-            			if (_.isArray(p.label)) {p.label = p.label[0];}
             			if ('rank' in p && p.name.indexOf(' ')<0) {p.name = p.rank +' '+ p.name;}
-            			p.label=p.name;
             			arr.push(p);
 	            		if ('role' in p) { 
 	            			var pname =p.role+' '+p.name; 
@@ -217,26 +202,6 @@ angular.module('eventsApp')
     		'	?id a atypes:MilitaryUnit .	'+
 			'} GROUP BY ?id ';
 
-      var relatedPersonQry = prefixes +
-	   	   'SELECT ?id ?name (?name AS ?label) ?rank (COUNT(?s) AS ?no) WHERE { ' +
-	   ' 	{ SELECT ?id WHERE ' +
-	   ' 	    { ?evt a etypes:PersonJoining ; ' +
-	   ' 	    crm:P143_joined ?id . ' +
-	   ' 	    ?evt  crm:P144_joined_with {0} .  ' +
-	   '    	} LIMIT 200' +
-	   '	} UNION ' +
-	   '    { SELECT ?id WHERE {' +
-	   ' 	    ?id owl:sameAs ?mennytmies . ' +
-	   ' 	    ?mennytmies a foaf:Person . ' +
-	   ' 	    ?mennytmies casualties:osasto {0} . ' +
-	   '    	} LIMIT 200 ' +
-	   ' 	} ' +
-	   '    OPTIONAL { ?s ?p ?id . } ' +
-	   '    ?id skos:prefLabel ?name . ' +
-	   '    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
-	   '} GROUP BY ?id ?name ?label ?no ?rank   ' +
-	   ' 		ORDER BY DESC(?no) LIMIT 100 ';
-		
 		var selectorQuery = prefixes + 
 			'SELECT DISTINCT ?name ?id WHERE {   '+
 			'  { SELECT DISTINCT ?name ?id WHERE { '+
@@ -315,13 +280,6 @@ angular.module('eventsApp')
             var qry = subUnitQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
             	 return unitMapperService.makeObjectList(data);
-            });
-        };
-        
-		this.getPersons = function(unit) {
-            var qry = relatedPersonQry.format("<{0}>".format(unit));
-            return endpoint.getObjects(qry).then(function(data) {
-                return unitMapperService.makeObjectList(data);
             });
         };
         
