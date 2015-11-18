@@ -218,28 +218,25 @@ angular.module('eventsApp')
 			'} GROUP BY ?id ';
 
       var relatedPersonQry = prefixes +
-	   ' 	SELECT DISTINCT ?id ?name (?name AS ?label) ?role ?start_time ?end_time ?rank (COUNT(?s) AS ?no) WHERE { ' +
-	   ' 	  VALUES ?unit { {0} } . ' +
+	   	   'SELECT ?id ?name (?name AS ?label) ?rank (COUNT(?s) AS ?no) WHERE { ' +
+	   ' 	{ SELECT ?id WHERE ' +
 	   ' 	    { ?evt a etypes:PersonJoining ; ' +
 	   ' 	    crm:P143_joined ?id . ' +
-	   ' 	    OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
-	   ' 	    ?evt  crm:P144_joined_with ?unit .  ' +
-	   ' 	    OPTIONAL { ' +
-	   ' 	    	?evt crm:P4_has_time-span ?time .  ' +
-	   ' 	    	?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
-	   ' 	          crm:P82b_end_of_the_end ?end_time .  ' +
-	   ' 	  	} ' +
-	   ' 	  } UNION {  ' +
+	   ' 	    ?evt  crm:P144_joined_with {0} .  ' +
+	   '    	} LIMIT 200' +
+	   '	} UNION ' +
+	   '    { SELECT ?id WHERE {' +
 	   ' 	    ?id owl:sameAs ?mennytmies . ' +
 	   ' 	    ?mennytmies a foaf:Person . ' +
-	   ' 	    ?mennytmies casualties:osasto ?unit . ' +
-	   ' 	  } ' +
-	   ' 	  OPTIONAL { ?s ?p ?id . } ' +
-	   ' 	    ?id skos:prefLabel ?name . ' +
-	   ' 	    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
-	   ' 	  } GROUP BY ?id ?name ?role ?no ?rank ?start_time ?end_time  ' +
-	   ' 		ORDER BY DESC(?no) LIMIT 8 ';
-			
+	   ' 	    ?mennytmies casualties:osasto {0} . ' +
+	   '    	} LIMIT 200 ' +
+	   ' 	} ' +
+	   '    OPTIONAL { ?s ?p ?id . } ' +
+	   '    ?id skos:prefLabel ?name . ' +
+	   '    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
+	   '} GROUP BY ?id ?name ?label ?no ?rank   ' +
+	   ' 		ORDER BY DESC(?no) LIMIT 100 ';
+		
 		var selectorQuery = prefixes + 
 			'SELECT DISTINCT ?name ?id WHERE {   '+
 			'  { SELECT DISTINCT ?name ?id WHERE { '+
@@ -248,7 +245,7 @@ angular.module('eventsApp')
 			'    ?ename crm:P95_has_formed ?id . '+
 			'    OPTIONAL { ?ename skos:altLabel ?abbrev .  }'+
 			''+
-			'  FILTER (regex(?name, "^.*{0}.*$", "i") || regex(?abbrev, "^.*{0}.*$", "i"))    '+
+			'  FILTER (regex(?name, "{0}", "i") || regex(?abbrev, "{0}", "i"))    '+
 			'     } LIMIT 500 '+
 			'  } '+
 			'  '+
@@ -274,8 +271,6 @@ angular.module('eventsApp')
 			'}  GROUP BY ?name ?id ?e ORDER BY lcase(?name) ';
 			
 			
-		
-		
 		var actorInfoQry = prefixes +
         ' SELECT ?id ?type ?label ?familyName ?firstName ' +
         ' FROM <http://ldf.fi/warsa/actors> ' +

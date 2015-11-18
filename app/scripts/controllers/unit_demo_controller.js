@@ -313,21 +313,20 @@ self.testUnitPath=false;
 	 
     this.getItems= function () {
     		var rx = this.queryregex;
-    		if (rx.length<1) { rx='1'; }
-        unitService.getItems(this.queryregex,this).then(function(data) {
+    		if (rx.length<1) { rx='^1.*$'; } 
+    		else if (rx.length<2) { rx='^'+rx+'.*$'; } 
+    		else { rx = '(^|^.* )'+rx+'.*$'; };
+    		
+    		unitService.getItems(rx,this).then(function(data) {
 				for (var i=0; i<data.length; i++) {
 					var item=data[i];
-					if (true) { // (item.e=="0") {
-						item.style="color:#333;";
-					} else {
-						item.style="color:#00F;"; 
-					}				
+					// if (item.e=="0") {
+						 item.style="color:#333;";
+					// } else {
+					//	 item.style="color:#00F;"; 
+					// }				
 				}
             self.items = data;
-            
-            //var item=self.items[0];
-            //item.style="color: #F00;";
-            //console.log(item);
         });
     };
 
