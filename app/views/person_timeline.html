@@ -54,17 +54,28 @@ Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy vasemmalle.</p>
 	      <related-links title="'Taistelut'" data-related="ctrl.person.battles"></related-links>
 	      <related-links title="'Sotilasarvot'" data-related="ctrl.person.ranks"></related-links>
 	      <related-links title="'Paikat'" data-related="ctrl.person.places"></related-links>
-	      
+	      <related-links title="'Kansa Taisteli -artikkelit'" data-related="ctrl.person.articles"></related-links>
+	     
 	     <div ng-if="ctrl.person.nationals">
 		    <h3 id="links-header" class="links-header-class">Kansallisbibliografia</h3>
-		    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-		     <ul class="list-group">
-	          <li class="list-group-item" ng-repeat="link in ctrl.person.nationals">
-	          <a ng-href="{{ link.id }}" target="natbib">{{ link.label | words:10 }}</a>
-	          </li>
-	       </ul>
-	     </div>
-	     <related-links title="'Kansa Taisteli -artikkelit'" data-related="ctrl.person.articles"></related-links>
+	     <ul class="list-group">
+      <li class="list-group-item" >
+       <div>
+		     	<h1>{{ ctrl.person.nationals.label }}</h1>
+		     	<p>Syntymäpaikka {{ ctrl.person.nationals.placeOfBirth }}. Kuolinpaikka {{ ctrl.person.nationals.placeOfDeath }}.</p>
+		     	<p><img src="{{ ctrl.person.nationals.image }}" class="img-rounded"/></p>
+		     	<p>{{ ctrl.person.nationals.type }}</p>
+		     <p>{{ ctrl.person.nationals.comment }}</p>
+		     </div>
+		     <b>Lähde</b>: 
+		     <a href="http://www.ldf.fi/dataset/history">Semanttinen Kansallisbiografia</a> \ SKS:n <a href="http://www.kansallisbiografia.fi"> Kansallisbiografia</a>
+	     
+      </li>
+    </ul>
+    </div>
+	     
+		    
+		   
 	      
 	      <!--
 	      <related-links title="'Kansallisbibliografia'" data-related="ctrl.person.nationals"></related-links>

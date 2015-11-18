@@ -83,7 +83,11 @@ angular.module('eventsApp')
         Person.prototype.fetchNationalBib = function() {
             var self = this;
             return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
-                if (nb.length) { self.nationals = nb; }
+                if (nb.length) { 
+                	self.nationals = nb[0]; 
+                	// console.log(self.nationals);
+                	if (!('id' in self.nationals)) { delete self.nationals; }
+                }
             });
         };
 
@@ -231,7 +235,7 @@ angular.module('eventsApp')
 		   '    ?id skos:prefLabel ?label . ' +
 		   ' }  ';
 
-		var nationalBibliographyQry =
+		var nationalBibliographyQry_OLD =
 			   ' 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
 			   ' 	PREFIX kb: <http://ldf.fi/history/kb> ' +
 			   ' 	PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
@@ -241,6 +245,38 @@ angular.module('eventsApp')
 			   ' 	  FILTER (regex(?label, "{0}", "i")) ' +
 			   ' 	} ';
 
+		var nationalBibliographyQry = 
+			   '	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  	' +
+	   '	PREFIX kb: <http://ldf.fi/history/kb>  	' +
+	   '	PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>  	' +
+	   '	PREFIX owl: <http://www.w3.org/2002/07/owl#>' +
+	   '	PREFIX dc: <http://purl.org/dc/elements/1.1/>' +
+	   '	PREFIX dct: <http://purl.org/dc/terms/>' +
+	   '	PREFIX schema: <http://schema.org/>' +
+	   ' ' +
+	   '	SELECT  ?id ?comment ?type ?image ?bdate ?ddate ?id2 ?label '+
+	   '	(SAMPLE(?placeOfBirth1) AS ?placeOfBirth) '+
+	   '	(SAMPLE(?placeOfDeath1) AS ?placeOfDeath) '+
+	   ' 	WHERE {' +
+	   '	  ?id2 a crm:E21_Person .' +
+	   '	  ?id2 rdfs:label ?label .' +
+	   ' 	  FILTER (regex(?label, "{0}", "i")) ' +
+	   '	  ?id a crm:E21_Person .' +
+	   '	  ?id owl:sameAs ?id2 .' +
+	   '	  ?id rdfs:comment ?comment .' +
+	   '' +
+	   '	  ?id dct:type ?type .' +
+	   '	  OPTIONAL { ?id schema:birthDate ?bdate . } ' +
+	   '	  OPTIONAL { ?id schema:deathDate ?ddate . } ' +
+	   '	  OPTIONAL {?birth crm:P98_brought_into_life ?id . ' +
+	   '                ?birth crm:P7_took_place_at ?place .' +
+	   '                ?place rdfs:label ?placeOfBirth1 . } ' +
+	   '	  OPTIONAL { ?death crm:P100_was_death_of ?id . ' +
+	   '                ?death crm:P7_took_place_at ?placeD .' +
+	   '                ?placeD rdfs:label ?placeOfDeath1 . } ' +
+	   '	  OPTIONAL { ?id schema:image ?image . } ' +
+	   '	} GROUP BY ?id ?comment ?type ?image ?bdate ?ddate ?id2 ?label ?placeOfBirth ?placeOfDeath ';
+	   
 		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
 		var selectorQuery = prefixes +
 				'SELECT DISTINCT ?name ?id WHERE {	' +
@@ -324,8 +360,10 @@ angular.module('eventsApp')
                var qry = nationalBibliographyQry.format("{0}".format());
            }
            var qry = nationalBibliographyQry.format("{0}".format(rgx));
+           // console.log(qry);
            var end2 = new SparqlService("http://ldf.fi/history/sparql");
            return end2.getObjects(qry).then(function(data) {
+           		// console.log(data);
                return personMapperService.makeObjectList(data);
            });
        };
