@@ -1,6 +1,6 @@
-<ul class="nav navbar-nav">
-  <li><a ng-href="events/winterwar">Talvisota</a></li>
-  <li><a ng-href="events/continuationwar">Jatkosota</a></li>
+<ul class="nav navbar-nav" ng-controller="SubNavCtrl as ctrl">
+  <li ng-if="ctrl.showEventLinks"><a ng-href="events/winterwar">Talvisota</a></li>
+  <li ng-if="ctrl.showEventLinks"><a ng-href="events/continuationwar">Jatkosota</a></li>
   <li ng-show="showSettings"><a id="show-settings" ng-click="showSettings()">Asetukset</a></li>
   <li ng-show="showHelp"><a id="show-help" ng-click="showHelp()">Ohjeet</a></li>
 </ul>

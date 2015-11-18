@@ -5,84 +5,89 @@
  */
 angular.module('eventsApp')
     .service('personService', function($q, SparqlService, personMapperService,
-                Person, eventService) {
-        
+                Person) {
+
         var personService = this;
 
         Person.prototype.fetchLifeEvents = function() {
             var self = this;
             return personService.getLifeEvents(self.id).then(function(events) {
-            	self.processLifeEvents(events);
+                self.processLifeEvents(events);
             });
         };
-        
+
         Person.prototype.fetchRelatedEvents = function() {
             var self = this;
             return personService.getRelatedEvents(self.id).then(function(events) {
-            	self.processRelatedEvents(events);
+                self.processRelatedEvents(events);
             });
         };
-        
-        //	for info page:
+
+        // for info page:
         Person.prototype.fetchRelated = function() {
             var self = this;
-            return self.fetchLifeEvents().then(
-            	function() { return self.fetchRelatedUnits(); }).then(
-               function() { return self.fetchRelatedEvents(); }).then(
-               function() { return self.fetchNationalBib(); }).then(
-               function() {  if (self.battles || self.events || self.units || self.nationals || self.ranks ) {
-                    self.hasLinks = true;
-                }
-            });
+            return self.fetchLifeEvents()
+                .then(function() { return self.fetchRelatedUnits(); })
+                .then(function() { return self.fetchRelatedEvents(); })
+                .then(function() { return self.fetchNationalBib(); })
+                .then(function() {
+                    if (self.battles || self.events || self.units || self.nationals || self.ranks ) {
+                        self.hasLinks = true;
+                    }
+                });
         };
-			
-			//	for demo page:
-			Person.prototype.fetchRelated2 = function() {
+
+        // for demo page:
+        Person.prototype.fetchRelated2 = function() {
             var self = this;
-            
-            return self.fetchLifeEvents().then(
-            	function() { return self.fetchRelatedUnits(); }).then(
-               function() { return self.fetchRelatedEvents(); }).then(
-               function() { return self.fetchNationalBib(); }).then(
-               function() { return self.fetchRelatedPhotos(); }).then(
-               function() {  if (self.battles || self.events || self.units || self.nationals || self.images || self.articles ) {
-                    self.hasLinks = true;
-                }
-            });
+
+            return self.fetchLifeEvents()
+                .then(function() { return self.fetchRelatedUnits(); })
+                .then(function() { return self.fetchRelatedEvents(); })
+                .then(function() { return self.fetchNationalBib(); })
+                .then(function() { return self.fetchRelatedPhotos(); })
+                .then(function() {
+                    if (self.battles || self.events || self.units || self.nationals || self.images || self.articles ) {
+                        self.hasLinks = true;
+                    }
+                });
         };
-        
-		  Person.prototype.fetchRelatedUnits = function() {
-		  		var self = this;
+
+        Person.prototype.fetchRelatedUnits = function() {
+            var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
-            	if (units.length && units[0].id) {
-            		for (var i=0; i<units.length; i++) { 
-            			var unit=units[i];
-            			if ('label' in unit) { unit.label = unit.label.split(';')[0]; }
-            		}
-            		self.units = units; }
-            });
-        };
-        
-      Person.prototype.fetchRelatedPhotos = function() {
-		  		var self = this;
-            return personService.getRelatedPhotos(self.id).then(function(imgs) {
-            	if (imgs.length) {
-            		imgs.forEach(function(img) {
-                    img.thumbnail = img.url.replace("_r500", "_r100");
-                   });
-                self.images = imgs;
+                if (units.length && units[0].id) {
+                    for (var i=0; i<units.length; i++) {
+                        var unit=units[i];
+                        if ('label' in unit) {
+                            unit.label = unit.label.split(';')[0];
+                        }
+                    }
+                    self.units = units;
                 }
             });
         };
-        
-      	Person.prototype.fetchNationalBib = function() {
-      		var self = this;
-            return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
-            	if (nb.length) { self.nationals = nb; }
+
+        Person.prototype.fetchRelatedPhotos = function() {
+            var self = this;
+            return personService.getRelatedPhotos(self.id).then(function(imgs) {
+                if (imgs.length) {
+                    imgs.forEach(function(img) {
+                        img.thumbnail = img.url.replace("_r500", "_r100");
+                    });
+                    self.images = imgs;
+                }
             });
-      	};
-      	
-      	
+        };
+
+        Person.prototype.fetchNationalBib = function() {
+            var self = this;
+            return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
+                if (nb.length) { self.nationals = nb; }
+            });
+        };
+
+
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
@@ -100,12 +105,12 @@ angular.module('eventsApp')
         ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
         ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' + 
-        ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' + 
+        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
+        ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
-        
+
 		var personQry = prefixes +
 		   ' 	SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time '+
 		   ' 				?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
@@ -138,7 +143,7 @@ angular.module('eventsApp')
 					   '	OPTIONAL { ?casualty casualties:menehtymisluokka ?way_id . ?way_id skos:prefLabel ?way_to_die . } '+
 				   	'}' +
 		   ' 	} ';
-  		 
+
         var personLifeEventsQry = prefixes +
         ' SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank ?rankid WHERE { ' +
   	   '  VALUES ?person { {0} } ' +
@@ -154,7 +159,7 @@ angular.module('eventsApp')
        '     ?time crm:P82a_begin_of_the_begin ?start_time . ' +
        '     ?time crm:P82b_end_of_the_end ?end_time . ' +
 	   ' } ORDER BY ?start_time  ';
-        
+
         var relatedEventQry = prefixes +
        ' SELECT DISTINCT ?id ?idclass ?description (?description AS ?label) ?unit ?role ?link ?start_time WHERE { ' +
        ' 	  VALUES ?person { {0} } . ' +
@@ -196,7 +201,7 @@ angular.module('eventsApp')
 	   ' 	      } ' +
 	   ' 	    } ' +
 	   ' 	} ORDER BY ?start_time ?end_time ';
-       
+
        var relatedUnitQry = prefixes +
 		   '   SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE { 	' +
 		   '   VALUES ?person { {0} } . ' +
@@ -210,7 +215,7 @@ angular.module('eventsApp')
 		   '     } ' +
 		   '    ?id skos:prefLabel ?name . ' +
 		   '   } GROUP BY ?id ?label ';
-		   
+
 		var relatedUnitQry_OLD = prefixes +
 		   '    SELECT DISTINCT ?id ?label ?role WHERE { ' +
 		   ' 	VALUES ?person { {0} } . ' +
@@ -225,7 +230,7 @@ angular.module('eventsApp')
 		   '     } ' +
 		   '    ?id skos:prefLabel ?label . ' +
 		   ' }  ';
-		   
+
 		var nationalBibliographyQry =
 			   ' 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
 			   ' 	PREFIX kb: <http://ldf.fi/history/kb> ' +
@@ -235,7 +240,7 @@ angular.module('eventsApp')
 			   ' 	  ?id rdfs:label ?label . ' +
 			   ' 	  FILTER (regex(?label, "{0}", "i")) ' +
 			   ' 	} ';
-		
+
 		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
 		var selectorQuery = prefixes +
 				'SELECT DISTINCT ?name ?id WHERE {	' +
@@ -246,8 +251,8 @@ angular.module('eventsApp')
 		'      FILTER (regex(?name, "^{0}$", "i"))	' +
 		'    } 	' +
 		'  } LIMIT 300 	' +
-		'} ORDER BY ?name 	'
-		
+		'} ORDER BY ?name 	';
+
 		var selectorQueryOld  = prefixes +
 		  '  SELECT DISTINCT ?name ?id WHERE { ' +
 		  '  	GRAPH <http://ldf.fi/warsa/actors> { ' +
@@ -258,7 +263,7 @@ angular.module('eventsApp')
 		  '  	} ' +
 		  '  } ' +
 		  '  LIMIT 200 ';
-		
+
 		var photoQuery = prefixes +
    ' 	SELECT * WHERE {  ' +
    ' 		VALUES ?person { {0} } . ' +
@@ -267,73 +272,71 @@ angular.module('eventsApp')
    ' 		?id dcterms:created ?created . ' +
    ' 		?id dcterms:description ?description . ' +
    ' 		?id <http://schema.org/contentUrl> ?url . } LIMIT 150 ';
-    	
-		this.getById = function(id) {
+
+        this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-            	var n=data.length;
+                var n=data.length;
                 if (n) {
-                	// because of temporary multiple labels in casualties data set:
-                		data=[data[n-1]];
-                	return personMapperService.makeObjectListNoGrouping(data)[0];
+                    // because of temporary multiple labels in casualties data set:
+                    data=[data[n-1]];
+                    return personMapperService.makeObjectListNoGrouping(data)[0];
                 }
                 return $q.reject("Does not exist");
             });
         };
-        
-		this.getRelatedUnits = function(id) {
-				var qry = relatedUnitQry.format("<{0}>".format(id));
-				return endpoint.getObjects(qry).then(function(data) {
-					return personMapperService.makeObjectListNoGrouping(data);
+
+        this.getRelatedUnits = function(id) {
+            var qry = relatedUnitQry.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return personMapperService.makeObjectListNoGrouping(data);
             });
         };
-        
-		this.getRelatedEvents = function(id) {
-				var qry = relatedEventQry.format("<{0}>".format(id));
-				return endpoint.getObjects(qry).then(function(data) {
-            	return personMapperService.makeObjectList(data);
+
+        this.getRelatedEvents = function(id) {
+            var qry = relatedEventQry.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return personMapperService.makeObjectList(data);
             });
         };
-        
-		this.getLifeEvents = function(id) {
-				var qry = personLifeEventsQry.format("<{0}>".format(id));
-				return endpoint.getObjects(qry).then(function(data) {
-            	return personMapperService.makeObjectListNoGrouping(data);
+
+        this.getLifeEvents = function(id) {
+            var qry = personLifeEventsQry.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return personMapperService.makeObjectListNoGrouping(data);
             });
         };
-        
-       this.getRelatedPhotos = function(id) {
-				var qry = photoQuery.format("<{0}>".format(id));
-				return endpoint.getObjects(qry).then(function(data) {
-					return personMapperService.makeObjectList(data);
+
+        this.getRelatedPhotos = function(id) {
+            var qry = photoQuery.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return personMapperService.makeObjectList(data);
             });
         };
-        
-      this.getNationalBibliography = function(sukunimi,etunimi) {
-      		var rgx ="XZYZ-FHWEJ";
-      		if (etunimi) {
-      			if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
-      			var etu1 = (etunimi === 'Carl Gustaf Emil') ? etunimi :etunimi.split(' ')[0];
-	      		// ^.*Talvela,.*Paavo.*[(].*[)]$
-	      		var rgx = "^.*"+sukunimi+",.*"+etu1+".*[(].*[)]$"; 
-					var qry = nationalBibliographyQry.format("{0}".format());
-				}
-				var qry = nationalBibliographyQry.format("{0}".format(rgx));
-				var end2 = new SparqlService("http://ldf.fi/history/sparql");
-            return end2.getObjects(qry).then(function(data) {
-            	return personMapperService.makeObjectList(data);
-            });
-        };
-        
-        
-    		
+
+       this.getNationalBibliography = function(sukunimi,etunimi) {
+           var rgx ="XZYZ-FHWEJ";
+           if (etunimi) {
+               if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
+               var etu1 = (etunimi === 'Carl Gustaf Emil') ? etunimi :etunimi.split(' ')[0];
+               // ^.*Talvela,.*Paavo.*[(].*[)]$
+               var rgx = "^.*"+sukunimi+",.*"+etu1+".*[(].*[)]$";
+               var qry = nationalBibliographyQry.format("{0}".format());
+           }
+           var qry = nationalBibliographyQry.format("{0}".format(rgx));
+           var end2 = new SparqlService("http://ldf.fi/history/sparql");
+           return end2.getObjects(qry).then(function(data) {
+               return personMapperService.makeObjectList(data);
+           });
+       };
+
         this.getItems = function (regx, controller) {
-        		var qry = selectorQuery.format("{0}".format(regx));
-        		return endpoint.getObjects(qry).then(function(data) {
-					var arr= personMapperService.makeObjectListNoGrouping(data);
-            	controller.items=arr;
-            	return arr;
+            var qry = selectorQuery.format("{0}".format(regx));
+            return endpoint.getObjects(qry).then(function(data) {
+                var arr= personMapperService.makeObjectListNoGrouping(data);
+                controller.items=arr;
+                return arr;
             });
-        }
+        };
 });
 
