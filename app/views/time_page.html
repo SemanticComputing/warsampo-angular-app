@@ -33,14 +33,6 @@
     <div id="linkContent">
       <related-links data-title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></related-links>
       <related-links data-title="'Tähän aikaan menehtyneitä'" related="ctrl.time.casualties"></related-links>
-      <div class="related-people" ng-if="ctrl.time.actors || ctrl.time.relatedCasualties">
-        <h3>Tähän aikaan kaatuneita</h3>
-        <ul class="list-group" id="time-actors" style="text-transform: capitalize">
-          <li class="list-group-item" ng-repeat="person in ctrl.time.casualties"><a ng-href="{{ person.id }}">
-            {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
-          </a></li>
-        </ul>
-      </div>
     </div>
   </div>
 </div>

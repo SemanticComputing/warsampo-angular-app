@@ -12,14 +12,34 @@ angular.module('eventsApp')
               $timeout, $window, $scope, $rootScope, $route, Settings,
               eventService, photoService, casualtyService, personService, timemapService) {
 
+    var WINTER_WAR = 1;
+    var CONTINUATION_WAR = 2;
+
     var self = this;
 
     // The currently selected event
     self.current = undefined;
     // Images related to currently selected event
     self.images = undefined;
-    // Current image page
+    // timemap, google map, heatmap
     var tm, map, heatmap;
+
+    self.war = undefined;
+
+    self.getTitle = function() {
+        switch(self.war) {
+            case WINTER_WAR: {
+                return "Talvisodan tapahtumat";
+            }
+            case CONTINUATION_WAR: {
+                return "Jatkosodan tapahtumat";
+            }
+            default: {
+                return "Tapahtumat";
+            }
+        }
+    };
+
 
     $rootScope.showHelp = function() {
         self.current = undefined;
@@ -198,9 +218,11 @@ angular.module('eventsApp')
     };
 
     self.showWinterWar = function() {
+        self.war = WINTER_WAR;
         return self.createTimeMap(winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
     };
     self.showContinuationWar = function() {
+        self.war = CONTINUATION_WAR;
         return self.createTimeMap(continuationWarTimeSpan.start,
                 continuationWarTimeSpan.end, continuationWarHighlights);
     };

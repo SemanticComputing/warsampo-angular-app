@@ -37,6 +37,7 @@
         </div>
         <div ng-show="!timemapCtrl.isLoadingTimemap">
           <div ng-if="!timemapCtrl.current">
+            <h1>{{ timemapCtrl.getTitle() }}</h1>
             <h3>Valitse tapahtuma aikajanalta tai kartalta.</h3>
             <p>
             Aikajanaa voi liikuttaa vetämällä hiirellä.
@@ -44,8 +45,8 @@
             Tekstiltään sinisiin tapahtumiin liittyy valokuvia (asetusten mukaisesti).
             </p>
             <p>
-            Kartalla näkyvät kullakin hetkellä (ylemmällä) aikajanalla näkyvissä olevat tapahtumat, jos niiden paikka on tiedossa.
-            Lisäksi kartalla näkyy lämpökartta (ylemmällä) aikajanalla näkyvällä ajanjaksolla sodassa menehtyneistä suomalaisista.
+            Kartalla näkyvät kullakin hetkellä (alemmalla) aikajanalla näkyvissä olevat tapahtumat, jos niiden paikka on tiedossa.
+            Lisäksi kartalla näkyy lämpökartta (alemmalla) aikajanalla näkyvällä ajanjaksolla sodassa menehtyneistä suomalaisista.
             </p>
             <h4>Tapahtumien värikoodit</h4>
             <p><img src="vendor/timemap/images/red-circle.png"> Sotatoimi</p>

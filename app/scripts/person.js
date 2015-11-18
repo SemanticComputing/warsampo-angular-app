@@ -357,7 +357,9 @@ angular.module('eventsApp')
         this.getCasualtiesByTimeSpan = function(start, end) {
             return endpoint.getObjects(casualtiesByTimeSpanQry.format(start, end))
                 .then(function(data) {
-                    return personMapperService.makeObjectList(data);
+                    if (data.length) {
+                        return personMapperService.makeObjectList(data);
+                    }
                 });
         };
 
