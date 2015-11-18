@@ -236,7 +236,7 @@ angular.module('eventsApp')
 		   '   } GROUP BY ?id ?label ';
 
 		var nationalBibliographyQry = 
-			   '	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  	' +
+        '	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  	' +
 	   '	PREFIX kb: <http://ldf.fi/history/kb>  	' +
 	   '	PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>  	' +
 	   '	PREFIX owl: <http://www.w3.org/2002/07/owl#>' +
@@ -308,6 +308,16 @@ angular.module('eventsApp')
         '} GROUP BY ?id ?name ?label ?no ?rank   ' +
         ' 		ORDER BY DESC(?no) LIMIT 100 ';
 
+        var casualtiesByTimeSpanQry = prefixes +
+        ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
+        ' WHERE { ' +
+        '   ?id skos:prefLabel ?label . ' +
+        '   ?id owl:sameAs ?casualty . ' +
+        '   ?casualty a foaf:Person . ' +
+        '   ?casualty casualties:kuolinaika ?death_time . ' +
+        '   FILTER(?death_time >= "{0}"^^xsd:date && ?death_time <= "{1}"^^xsd:date) ' +
+        ' } ';
+
         this.getByUnit = function(id) {
             var qry = byUnitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -317,6 +327,7 @@ angular.module('eventsApp')
                 return $q.when();
             });
         };
+
         this.getById = function(id) {
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -341,6 +352,13 @@ angular.module('eventsApp')
             return endpoint.getObjects(qry).then(function(data) {
                 return personMapperService.makeObjectList(data);
             });
+        };
+
+        this.getCasualtiesByTimeSpan = function(start, end) {
+            return endpoint.getObjects(casualtiesByTimeSpanQry.format(start, end))
+                .then(function(data) {
+                    return personMapperService.makeObjectList(data);
+                });
         };
 
         this.getRelatedUnits = function(id) {

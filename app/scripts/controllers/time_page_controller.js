@@ -8,8 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('TimePageCtrl', function($routeParams, $q, $rootScope, timeService,
-              photoService) {
+  .controller('TimePageCtrl', function($routeParams, $q, $rootScope, timeService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;

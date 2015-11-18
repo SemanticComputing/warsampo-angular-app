@@ -4,11 +4,24 @@
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingObj" src="images/loading.gif" />
-    <p ng-if="!ctrl.time && !ctrl.isLoadingObj">No metadata available for this object.</p>
+    <p ng-if="!ctrl.time && !ctrl.isLoadingObj">Metadaa ei löytynyt</p>
     <div id="dataContent" ng-if="ctrl.time">
       <h2>
         {{ ctrl.time.timeString }}
       </h2>
+      <div ng-show="!ctrl.time.photos.length">
+        <p ng-if="!ctrl.isLoadingLinks">
+        Ei tähän aikaan otettuja kuvia.
+        </p>
+        <p ng-if="ctrl.isLoadingLinks">
+        Haetaan kuvia <img src="images/loading.gif" />
+        </p>
+      </div>
+      <div ng-show="!ctrl.isLoadingLinks && ctrl.time.photos.length">
+        <p>
+        {{ ctrl.time.photos.length }} kuvaa
+        </p>
+      </div>
       <photo-scroller images="ctrl.time.photos"></photo-scroller>
     </div>
   </div>
@@ -16,9 +29,10 @@
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class">Linkit</h2>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.time || !ctrl.time.hasLinks">No links found for this object.</p>
+    <p ng-if="(!ctrl.time || !ctrl.time.hasLinks) && !ctrl.isLoadingLinks">Linkkejä ei löytynyt</p>
     <div id="linkContent">
-      <related-links title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></related-links>
+      <related-links data-title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></related-links>
+      <related-links data-title="'Tähän aikaan menehtyneitä'" related="ctrl.time.casualties"></related-links>
       <div class="related-people" ng-if="ctrl.time.actors || ctrl.time.relatedCasualties">
         <h3>Tähän aikaan kaatuneita</h3>
         <ul class="list-group" id="time-actors" style="text-transform: capitalize">

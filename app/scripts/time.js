@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('timeService', function($q, SparqlService, timeMapperService, Time,
-                casualtyService, eventService, photoService) {
+                casualtyService, eventService, photoService, personService) {
 
         Time.prototype.fetchEvents = function() {
             var self = this;
@@ -23,12 +23,21 @@ angular.module('eventsApp')
             });
         };
 
+        Time.prototype.fetchCasualties = function() {
+            var self = this;
+            return personService.getCasualtiesByTimeSpan(self.bob, self.eoe)
+                .then(function(data) {
+                    self.casualties = data;
+            });
+        };
+
         Time.prototype.fetchRelated = function() {
             var self = this;
             return self.fetchEvents()
                 .then(function() { return self.fetchPhotos(); })
+                .then(function() { return self.fetchCasualties(); })
                 .then(function() {
-                    if (self.events || self.photos) {
+                    if (self.events || self.photos || self.casualties) {
                         self.hasLinks = true;
                     }
                 });
