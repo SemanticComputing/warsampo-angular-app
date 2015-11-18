@@ -168,6 +168,16 @@ Person.prototype.processRelatedEvents = function(events) {
 
 function PersonMapper() { }
 
+PersonMapper.prototype.postProcess = function(people) {
+    people.forEach(function(person) {
+        if (_.isArray(person.label)) {
+            person.label = person.label.join(', ');
+        }
+    });
+
+    return people;
+};
+
 PersonMapper.prototype.makeObject = function(obj) {
     // Take the event as received and turn it into an object that
     // is easier to handle.

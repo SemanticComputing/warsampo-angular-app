@@ -4,7 +4,7 @@
  * Service that provides an interface for fetching actor data.
  */
 angular.module('eventsApp')
-    .service('actorService', function($q, SparqlService, objectMapperService) {
+    .service('actorService', function($q, SparqlService, personMapperService) {
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +
@@ -52,7 +52,7 @@ angular.module('eventsApp')
             }
             qry = actorInfoQry.format(ids);
             return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
+                return personMapperService.makeObjectList(data);
             });
         };
 
