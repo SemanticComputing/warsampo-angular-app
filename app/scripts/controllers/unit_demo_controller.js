@@ -65,7 +65,7 @@ self.testUnitPath=false;
       	if (self.testUnitPath) start = new Date(winterWarHighlights[0].startDate);
         	var end = band.getMaxVisibleDate();
 			var unit='<'+self.current.id+'>';
-        
+        	
          return casualtyService.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
             	var res = [];
@@ -79,7 +79,7 @@ self.testUnitPath=false;
     
     
     var averagePath = function (casualties) {
-		return;		
+		
 		var obj={};
 		// casualties.sort(function(a, b){return a.death_date>b.death_date ? 1 : -1;});
 		
@@ -97,10 +97,11 @@ self.testUnitPath=false;
 			}
 		}
 		
+		// console.log(casualties,T,X,Y);
 		if (T.length) {
-			var pf= new Polyfitter(T,3,false),
+			var pf= new Polyfitter(T,2,false),
 				px=pf.solve(X), py=pf.solve(Y);
-			console.log(X);
+			
 			var tt=pf.linspace(T[0],T[T.length-1],10),
 				nx=pf.polyval(px,tt),
 				ny=pf.polyval(py,tt);
@@ -225,7 +226,7 @@ self.testUnitPath=false;
             getCasualtyLocations().then(function(locations) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: locations,
-                        radius: 20
+                        radius: 30
                 });
                 self.updateHeatmap();
             });
@@ -289,7 +290,7 @@ self.testUnitPath=false;
     };
 
     this.updateByUri = function(uri) {
-        self.isLoadingEvent = true;
+    		self.isLoadingEvent = true;
         self.isLoadingLinks = false;
         unitService.getById(uri).then(function(unit) {
             if (_.isArray(unit.name)) {
@@ -299,7 +300,7 @@ self.testUnitPath=false;
             }
             self.current = unit; 
             self.isLoadingEvent = false;
-            self.current.fetchRelated2();
+            self.current.fetchRelated();
             return self.createTimeMapForActor(uri);
         }).catch(function() {
             self.isLoadingEvent = false;
@@ -311,15 +312,41 @@ self.testUnitPath=false;
     self.queryregex="";
 	 
     this.getItems= function () {
+    		var rx = this.queryregex;
+    		if (rx.length<1) { rx='1'; }
         unitService.getItems(this.queryregex,this).then(function(data) {
+				for (var i=0; i<data.length; i++) {
+					var item=data[i];
+					if (true) { // (item.e=="0") {
+						item.style="color:#333;";
+					} else {
+						item.style="color:#00F;"; 
+					}				
+				}
             self.items = data;
+            
+            //var item=self.items[0];
+            //item.style="color: #F00;";
+            //console.log(item);
         });
     };
 
     this.getItems();
-	
+    
+	 this.updateUnitSelection = function () {
+    	 if (this.current) {
+            var uri=this.current;
+            // this.label = this.current.name;
+            if ($location.search().uri != uri) {
+                self.noReload = true;
+                $location.search('uri', uri);
+            }
+            this.updateByUri(uri);
+        }
+    };
+    
     this.updateUnit = function () {
-        if (this.current && this.current.id) {
+    	if (this.current && this.current.id) {
             var uri=this.current.id;
             this.label = this.current.name;
             if ($location.search().uri != uri) {
@@ -572,7 +599,6 @@ function Matrix(data) {
 					}
 				}
 			}
-			// console.log( 'row '+crow);
 			check[crow] = true;
 			var f=1.0/this.A[crow][col];
 			order.push(crow);
@@ -589,9 +615,9 @@ function Matrix(data) {
 				this.A[crow][x] *= f;
 			}
 			
-			// console.log(this.toString());
+			
 		}
-		// console.log(order);
+		
 		for (var i=order.length-1; i>-1; i--) {
 			var crow=order[i];
 			for (var j=i-1; j>-1; j--) {

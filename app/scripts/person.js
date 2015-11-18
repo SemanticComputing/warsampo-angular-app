@@ -109,7 +109,8 @@ angular.module('eventsApp')
 		var personQry = prefixes +
 		   ' 	SELECT DISTINCT ?id ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time '+
 		   ' 				?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
-		   '				?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?sid ?source WHERE { ' +
+		   '				?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
+		   ' 				?sid ?source WHERE { ' +
 		   ' 		  VALUES ?id { {0} }' +
 		   ' 		  ?id foaf:familyName ?sname .' +
 		   ' 		  OPTIONAL { ?id foaf:firstName ?fname . }' +
@@ -132,6 +133,7 @@ angular.module('eventsApp')
 					   ' 	OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
 					   ' 	OPTIONAL { ?casualty casualties:siviilisaeaety ?mstatus_uri . ?mstatus_uri skos:prefLabel ?mstatus . }' +
 					   ' 	OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
+					   ' 	OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
 					   '	OPTIONAL { ?casualty casualties:lasten_lukumaeaerae ?num_children . } '+
 					   '	OPTIONAL { ?casualty casualties:menehtymisluokka ?way_id . ?way_id skos:prefLabel ?way_to_die . } '+
 				   	'}' +

@@ -58,6 +58,7 @@ Person.prototype.getDescription = function() {
 		arr.push(res.join(', '));
 	}	
 		
+	if ('cas_unit' in this) { arr.push('Palvellut joukko-osastossa '+this.cas_unit); }
 	
 	if (this.rank) { 
 		arr.push(this.rank);

@@ -30,13 +30,14 @@ angular.module('eventsApp')
             });
         };
 			
-		 Unit.prototype.fetchRelated2 = function() {
+		 Unit.prototype.fetchRelatedOLD = function() {
             var self = this;
             return self.fetchRelatedEvents().then(
             	function() { return self.fetchUnitEvents(); }).then(
+            	function() { return self.fetchRelatedUnits(); }).then(
             	function() { return self.fetchRelatedPersons(); }).then(
             	function() {
-                if (self.relatedEvents || self.relatedPersons ) {
+                if (self.relatedEvents || self.relatedUnits || self.relatedPersons ) {
                     self.hasLinks = true;
                 }
             });
@@ -239,17 +240,42 @@ angular.module('eventsApp')
 	   ' 	  } GROUP BY ?id ?name ?role ?no ?rank ?start_time ?end_time  ' +
 	   ' 		ORDER BY DESC(?no) LIMIT 8 ';
 			
+		var selectorQuery = prefixes + 
+			'SELECT DISTINCT ?name ?id WHERE {   '+
+			'  { SELECT DISTINCT ?name ?id WHERE { '+
+			'    ?ename a etypes:UnitNaming .      '+
+			'    ?ename skos:prefLabel ?name . '+
+			'    ?ename crm:P95_has_formed ?id . '+
+			'    OPTIONAL { ?ename skos:altLabel ?abbrev .  }'+
+			''+
+			'  FILTER (regex(?name, "^.*{0}.*$", "i") || regex(?abbrev, "^.*{0}.*$", "i"))    '+
+			'     } LIMIT 500 '+
+			'  } '+
+			'  '+
+			'} ORDER BY lcase(?name) ';
 			
-		var selectorQuery  = prefixes +
-			'SELECT DISTINCT ?name ?id WHERE {        '+
-			'  ?ename a etypes:UnitNaming .      ?ename skos:prefLabel ?name .       '+
-			'  ?ename crm:P95_has_formed ?id .       '+
-			'  FILTER (regex(?name, "^.*{0}.*$", "i"))    '+
-			'}  ORDER BY lcase(?name)  	 '+
-			'LIMIT 1000  ';
+		var selectorQueryTest = prefixes + 
+			'SELECT DISTINCT ?name ?id (COUNT(?evt) AS ?e) WHERE {   '+
+			'  { SELECT DISTINCT ?name ?id WHERE { '+
+			'    ?ename a etypes:UnitNaming .      '+
+			'    ?ename skos:prefLabel ?name . '+
+			'    ?ename crm:P95_has_formed ?id . '+
+			'    OPTIONAL { ?ename skos:altLabel ?abbrev .  }'+
+			''+
+			'  FILTER (regex(?name, "^.*{0}.*$", "i") || regex(?abbrev, "^.*{0}.*$", "i"))    '+
+			'     } LIMIT 500 '+
+			'  } '+
+			'  OPTIONAL { '+
+			'    { ?evt crm:P95_has_formed ?id }'+
+			'          UNION'+
+			'    { ?evt crm:P11_had_participant ?id . }'+
+			'    ?evt crm:P7_took_place_at ?place_id .'+
+			'  }	'+
+			'}  GROUP BY ?name ?id ?e ORDER BY lcase(?name) ';
+			
 			
 		
-		 
+		
 		var actorInfoQry = prefixes +
         ' SELECT ?id ?type ?label ?familyName ?firstName ' +
         ' FROM <http://ldf.fi/warsa/actors> ' +
