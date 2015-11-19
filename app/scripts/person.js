@@ -436,9 +436,9 @@ angular.module('eventsApp')
 					
                //	 marski http://ldf.fi/history/kb/p379
               var etu1 = (etunimi === 'Carl Gustaf Emil') ? 'Gustaf' :etunimi.split(' ')[0];
-              var rgx = "^"+sukunimi+", .*"+etu1+".*$";
+              var rgx = "^"+sukunimi+", .*("+etu1+").*$";
                
-	           var qry = nationalBibliographyQry.format(rgx, birthyearcondition, deathyearcondition); // format("{0}".format(rgx));
+	           var qry = nationalBibliographyQry.format(rgx, birthyearcondition, deathyearcondition); 
 	           
 	           var end2 = new SparqlService("http://ldf.fi/history/sparql");
 	           return end2.getObjects(qry).then(function(data) {

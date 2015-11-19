@@ -119,7 +119,7 @@ Person.prototype.processLifeEvents = function(events) {
 			this.birth = edate;
 		} else if (etype.indexOf('Promotion')>-1) {
 			this.promotions.push(e.rank+' '+edate);
-			this.ranks.push({id:e.rankid, label:e.rank});
+			this.ranks.unshift({id:e.rankid, label:e.rank});
 		}
 	}
 	if (!this.birth) {this.birth='';}
