@@ -18,7 +18,12 @@ TimeMapper.prototype.makeObject = function(obj) {
         o[key] = value.value;
     });
 
-    o.timeString = new Date(o.label).toLocaleDateString();
+    if (o.bob !== o.eoe) {
+        o.timeString = new Date(o.bob).toLocaleDateString() + ' - ' +
+            new Date(o.eoe).toLocaleDateString();
+    } else {
+        o.timeString = new Date(o.bob).toLocaleDateString();
+    }
 
     return o;
 };
