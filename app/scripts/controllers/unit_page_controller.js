@@ -14,11 +14,11 @@ angular.module('eventsApp')
     var self = this;
     if ($routeParams.uri) {
         self.isLoadingEvent = true;
-        self.isLoadingLinks = false;
+        self.isLoadingLinks = true;
         unitService.getById($routeParams.uri)
         .then(function(unit) {
             self.unit = unit; 
-            self.isLoadingEvent = false;
+            self.isLoadingEvent = self.isLoadingLinks = false;
 				return unit.fetchRelated();
         }).catch(function() {
             self.isLoadingEvent = false;

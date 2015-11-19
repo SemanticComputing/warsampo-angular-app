@@ -291,7 +291,7 @@ self.testUnitPath=false;
 
     this.updateByUri = function(uri) {
     		self.isLoadingEvent = true;
-        self.isLoadingLinks = false;
+         self.isLoadingLinks = false;
         unitService.getById(uri).then(function(unit) {
             if (_.isArray(unit.name)) {
                 var arr=unit.name;

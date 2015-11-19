@@ -9,8 +9,7 @@ angular.module('eventsApp')
         
         var unitService = this;
 			
-			
-        Unit.prototype.fetchRelatedEvents = function() {
+			Unit.prototype.fetchRelatedEvents = function() {
             var self = this;
             return eventService.getEventsByActor(self.id).then(function(events) {
                 self.relatedEvents = events;
@@ -256,7 +255,7 @@ angular.module('eventsApp')
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
             	 if (data.length) {
-                    return unitMapperService.makeObjectList(data)[0];
+            	 	 return unitMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
             });

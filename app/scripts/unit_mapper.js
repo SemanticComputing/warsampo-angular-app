@@ -13,16 +13,19 @@ Unit.prototype.getLabel = function() {
       this.altNames=arr;
 	}
 	
-	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }	
+	if (!('abbrev' in this)) { this.abbrev=[''];}
+	if (!_.isArray(this.abbrev)) { this.abbrev= [this.abbrev]; }
 	this.abbrev=this.removeNameAbbrevs(this.name,this.abbrev);
 	
 	var label = '';
-	if (!_.isArray(this.abbrev)) {
-		label = label + this.abbrev;
-	} else {
-		label = label + this.abbrev[0];
+	if ('abbrev' in this) {
+		if (!_.isArray(this.abbrev)) {
+			label = label + this.abbrev;
+		} else {
+			label = label + this.abbrev[0];
+		}
+		if (label !== '') { label=" ("+label+")"; }
 	}
-	if (label !== '') { label=" ("+label+")"; }
 	return this.name[0]+ label;
 };
 
