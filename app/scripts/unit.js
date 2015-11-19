@@ -4,94 +4,7 @@
  * Service that provides an interface for fetching actor data.
  */
 angular.module('eventsApp')
-    .service('unitService', function($q, SparqlService, unitMapperService,
-                Unit, eventService, casualtyService, personService) {
-        
-        var unitService = this;
-			
-			
-        Unit.prototype.fetchRelatedEvents = function() {
-            var self = this;
-            return eventService.getEventsByActor(self.id).then(function(events) {
-                self.relatedEvents = events;
-            });
-        };
-        
-        Unit.prototype.fetchRelated = function() {
-            var self = this;
-            return self.fetchRelatedEvents().then(
-            	function() { return self.fetchUnitEvents(); }).then(
-            	function() { return self.fetchRelatedUnits(); }).then(
-            	function() { return self.fetchRelatedPersons(); }).then(
-            	function() {
-                if (self.relatedEvents || self.relatedUnits || self.relatedPersons ) {
-                    self.hasLinks = true;
-                }
-            });
-        };
-			
-        Unit.prototype.fetchRelatedUnits = function() {
-            var self = this;
-            return unitService.getRelatedUnit(self.id).then(function(units) {
-                self.relatedUnits=[];
-                for (var i=0; i<units.length; i++) {
-                    var unit=units[i];
-                    if ('id' in unit) { 
-                        /* if ('label' in unit && _.isArray(unit.label)) {
-                           unit.label=unit.label[0];
-                           } */
-                        unit.label = unit.label.split(';')[0];
-                        self.relatedUnits.push(unit);
-                    }
-                }
-            });
-        };
-        
-        
-        Unit.prototype.fetchUnitEvents = function() {
-		  		var self = this;
-            return unitService.getUnitEvents(self.id).then(function(events) {
-            	self.processUnitEvents(events);
-            });
-        };
-        
-        Unit.prototype.fetchRelatedPersons = function() {
-		  		var self = this;
-            return personService.getByUnit(self.id).then(function(persons) {
-            	var 	em=new EventMapper(),
-            			arr = [], arr2=[];
-            	for (var i=0; i<persons.length; i++) {
-            		var p=persons[i];
-            		if ('label' in p) {
-            			if ('rank' in p && p.name.indexOf(' ')<0) {p.name = p.rank +' '+ p.name;}
-            			arr.push(p);
-	            		if ('role' in p) { 
-	            			var pname =p.role+' '+p.name; 
-	            			if ('start_time' in p) {
-	            				var edate=p.start_time;
-	            				var edate2= ('end_time' in p) ? p.end_time : edate;
-									edate=em.getExtremeDate(edate, true);
-									edate2=em.getExtremeDate(edate2, false);
-									edate=em.formatDateRange(edate,edate2);
-	            				arr2.push(pname + ', '+edate);
-	            			} else { arr2.push(pname); }
-	            		}
-	            		
-	            	}
-            	}
-            	
-            	if (arr.length)  {	self.relatedPersons = arr; }
-            	if (arr2.length) {	self.commanders = arr2; }
-            });
-        };
-        
-        Unit.prototype.fetchCasualties = function() {
-            var self = this;
-            return casualtyService.getCasualtyLocationsByTimeAndUnit("1939-09-09","1940-03-30",self.id)
-                .then(function(participants) {
-                	self.relatedCasualties = participants;
-            });
-        };
+    .service('unitService', function($q, SparqlService, unitMapperService) {
         
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
@@ -116,12 +29,15 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
         var unitQry = prefixes +
-          '  SELECT DISTINCT ?id ?name ?abbrev ?note ?sid ?source WHERE {  ' +
+          '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?sid ?source WHERE {  ' +
           '      ?ename a etypes:UnitNaming . ' +
           '      ?ename skos:prefLabel ?name . ' +
+          '      BIND(?name AS ?label) ' +
           '      OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-          ' 	 OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . OPTIONAL { ?sid skos:prefLabel ?source . } }' +
-		    '      ?ename crm:P95_has_formed ?id . ' +
+          ' 	 OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
+          '        OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+          '      } ' +
+          '      ?ename crm:P95_has_formed ?id . ' +
           '      OPTIONAL {?id crm:P3_has_note ?note . } ' +
           '      VALUES ?id  { {0} } ' +
           '  } ';
@@ -191,8 +107,7 @@ angular.module('eventsApp')
 		 '   		                VALUES ?unit  { {0} } ' +
 		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
 		 '   		} GROUP BY ?id ?label ';
-	 
-        
+ 
 
 		var subUnitQry = prefixes +
 			'SELECT DISTINCT ?id	'+
@@ -259,6 +174,21 @@ angular.module('eventsApp')
                     return unitMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
+            });
+        };
+
+        this.getByIdList = function(ids) {
+            var qry;
+            if (_.isArray(ids)) {
+                ids = "<{0}>".format(ids.join("> <"));
+            } else if (ids) {
+                ids = "<{0}>".format(ids);
+            } else {
+                return $q.when();
+            }
+            qry = unitQry.format(ids);
+            return endpoint.getObjects(qry).then(function(data) {
+                return unitMapperService.makeObjectList(data);
             });
         };
 

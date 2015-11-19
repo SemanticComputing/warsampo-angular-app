@@ -4,13 +4,15 @@
  * Service for transforming SPARQL result triples into more manageable objects.
  */
 
-function ObjectMapper() { }
+function ObjectMapper(class_) {
+    this.objectClass = class_;
+}
 
 ObjectMapper.prototype.makeObject = function(obj) {
     // Flatten the obj. Discard everything except values.
     // Assume that each property of the obj has a value property with
     // the actual value.
-    var o = {};
+    var o = new this.objectClass();
 
     _.forIn(obj, function(value, key) {
         o[key] = value.value;
@@ -92,4 +94,6 @@ ObjectMapper.prototype.makeObjectListNoGrouping = function(objects) {
 };
 
 angular.module('eventsApp')
-    .service('objectMapperService', ObjectMapper);
+    .factory('objectMapperService', function() {
+        return new ObjectMapper(Object);
+    });

@@ -56,15 +56,7 @@ angular.module('eventsApp')
         Person.prototype.fetchRelatedUnits = function() {
             var self = this;
             return personService.getRelatedUnits(self.id).then(function(units) {
-                if (units.length && units[0].id) {
-                    for (var i=0; i<units.length; i++) {
-                        var unit=units[i];
-                        if ('label' in unit) {
-                            unit.label = unit.label.split(';')[0];
-                        }
-                    }
-                    self.units = units;
-                }
+                self.units = units;
             });
         };
 
@@ -321,10 +313,7 @@ angular.module('eventsApp')
         this.getByUnit = function(id) {
             var qry = byUnitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-                if (data.length) {
-                    return personMapperService.makeObjectList(data);
-                }
-                return $q.when();
+                return personMapperService.makeObjectList(data);
             });
         };
 

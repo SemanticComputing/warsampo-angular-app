@@ -316,7 +316,7 @@ angular.module('eventsApp')
         function createEventObject(e) {
             var entry = {
                 start: new Date(e.start_time),
-                title: e.description.length < 55 ? e.description : e.description.substr(0, 55) + '...',
+                title: e.description.length < 50 ? e.description : e.description.substr(0, 50) + '...',
                 options: {
                     theme: eventTypeThemes[e.type] || 'orange',
                     descTitle: e.timeSpanString,

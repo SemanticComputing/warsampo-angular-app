@@ -6,7 +6,9 @@
 
 function Event() { }
 
-function EventMapper() {
+function EventMapper(class_) {
+    this.objectClass = class_;
+
     this.getExtremeDate = function(dates, min) {
         if (_.isArray(dates)) {
             var fun;
@@ -67,7 +69,7 @@ EventMapper.prototype.makeObject = function(event) {
     // Take the event as received and turn it into an object that
     // is easier to handle.
     // Make the location a list as to support multiple locations per event.
-    var e = new Event();
+    var e = new this.objectClass();
 
     e.hasLinks = true;
 
@@ -118,13 +120,13 @@ EventMapper.prototype.makeObject = function(event) {
 
 
 angular.module('eventsApp')
-    .factory('eventMapperService', function(objectMapperService) {
-        var proto = Object.getPrototypeOf(objectMapperService);
-        EventMapper.prototype = angular.extend({}, proto, EventMapper.prototype);
+.factory('eventMapperService', function(objectMapperService, Event) {
+    var proto = Object.getPrototypeOf(objectMapperService);
+    EventMapper.prototype = angular.extend({}, proto, EventMapper.prototype);
 
-        return new EventMapper();
+    return new EventMapper(Event);
 })
-    .factory('Event', function() {
-        return Event;
+.factory('Event', function() {
+    return Event;
 });
 

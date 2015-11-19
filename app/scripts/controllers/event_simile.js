@@ -224,8 +224,10 @@ angular.module('eventsApp')
                 return _.isEqual(item.opts.event.id, e.id);
             });
             tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
-            tm.setSelected(item);
-            item.openInfoWindow();
+            if (item) {
+                tm.setSelected(item);
+                item.openInfoWindow();
+            }
         });
     };
 

@@ -4,26 +4,7 @@
  * Service that provides an interface for fetching events from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .service('eventService', function($q, SparqlService, eventMapperService, Event,
-                casualtyService, personService) {
-
-        Event.prototype.fetchPeople = function() {
-            var self = this;
-            return personService.getByIdList(self.participant_id)
-                .then(function(data) {
-                    self.people = data;
-                });
-        };
-
-        Event.prototype.fetchRelated = function() {
-            var self = this;
-            return self.fetchPeople()
-                .then(function() {
-                    if (self.people) {
-                        self.hasLinks = true;
-                    }
-                });
-        };
+    .service('eventService', function($q, SparqlService, eventMapperService) {
 
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
