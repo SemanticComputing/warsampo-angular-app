@@ -314,24 +314,34 @@ self.testUnitPath=false;
     this.getItems= function () {
     		var rx = this.queryregex;
     		if (rx.length<1) { rx='^1.*$'; } 
-    		else if (rx.length<2) { rx='^'+rx+'.*$'; } 
-    		else { rx = '(^|^.* )'+rx+'.*$'; };
+    		else if (rx.length<3) { rx='^'+rx+'.*$'; } 
+    		else if (rx.length<6) { rx = '(^|^.* )'+rx+'.*$'; }
+    		else { rx = '^.*'+rx+'.*$'; }
+    		
+    		self.items = [ {id:'#', name:"Etsitään ..."} ];
     		
     		unitService.getItems(rx,this).then(function(data) {
+    			/* // try to show units with events with a different color, not implemented though:
 				for (var i=0; i<data.length; i++) {
 					var item=data[i];
-					// if (item.e=="0") {
+					if (item.e=="0") {
 						 item.style="color:#333;";
-					// } else {
-					//	 item.style="color:#00F;"; 
-					// }				
+					} else {
+					item.style="color:#00F;"; 
+					}
 				}
-            self.items = data;
+				*/
+				if (data.length) {
+	            self.items = data; }
+   			else {
+   				self.items = [ {id:'#', name:"Ei hakutuloksia."} ];
+   			}        
         });
     };
 
     this.getItems();
     
+    /*
 	 this.updateUnitSelection = function () {
     	 if (this.current) {
             var uri=this.current;
@@ -343,6 +353,7 @@ self.testUnitPath=false;
             this.updateByUri(uri);
         }
     };
+    */
     
     this.updateUnit = function () {
     	if (this.current && this.current.id) {

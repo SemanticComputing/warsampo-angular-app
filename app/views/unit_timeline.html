@@ -5,15 +5,13 @@
 	<p>Hae viime sotien joukko-osastoja kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse joukko-osasto kentän alla olevasta listasta.
 Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli kun niistä on tietoa) ja osastoon liittyvät muut tiedot ja suosittelulinkit näkyvät oikealle.</p>
     <input type="text" placeholder="Hae joukko-osaston nimellä, esim. 1. Divisioona" class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
-    <!--<select ng-model="ctrl.current" ng-change="ctrl.updateUnit()" size="32" class="form-control" id="unitselect"
-            ng-options="item as item.name for item in ctrl.items"></select>-->
-            
+    <select ng-model="ctrl.current" ng-change="ctrl.updateUnit()" size="32" class="form-control" id="unitselect"
+            ng-options="item as item.name for item in ctrl.items"></select>
+        <!--
        <select  ng-model="ctrl.current" ng-change="ctrl.updateUnitSelection();" size="32" class="form-control" id="unitselect">
            <option ng-repeat="item in ctrl.items" style="{{ item.style }}" value="{{ item.id }}">{{ item.name }}</option>
        </select>
-       
-       <!-- <option value="object:153" style="color:#00F;" label="1. Divisioona, Esikunta, Kaasusuojelutoimisto">1. Divisioona, Esikunta, Kaasusuojelutoimisto</option>
-           -->
+       -->
 	</div>
 	
   <div class="col-sm-9">

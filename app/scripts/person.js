@@ -395,6 +395,7 @@ angular.module('eventsApp')
            var rgx ="XZYZ-FHWEJ";
            if (etunimi) {
                if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
+               //	 marski http://ldf.fi/history/kb/p379
                var etu1 = (etunimi === 'Carl Gustaf Emil') ? etunimi :etunimi.split(' ')[0];
                // ^.*Talvela,.*Paavo.*[(].*[)]$
                var rgx = "^.*"+sukunimi+",.*"+etu1+".*[(].*[)]$";
