@@ -42,3 +42,9 @@ div.custominfostyle {
     width: 20em;
 }
 
+div.timeline-ether-highlight {
+  border-color: black;
+  border-style: solid;
+  border-width: 2px;
+  opacity: 1 !important;
+}

@@ -60,15 +60,25 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
         </div>
         <div ng-if="!ctrl.current">
           <h3>Valitse osasto valikosta.</h3>
-          <p>
-            Aikajanaa voi liikuttaa vetämällä hiirellä.
-            Asetuksia, kuten valokuvien haun aikahaarkukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset".
-            Tekstiltään sinisiin tapahtumiin liittyy valokuvia (asetusten mukaisesti).
-          </p>
-          <p>
-            Kartalla näkyvät kullakin hetkellä (alemmalla) aikajanalla näkyvissä olevat tapahtumat, jos niiden paikka on tiedossa.
-            Lisäksi kartalla näkyy lämpökartta (alemmalla) aikajanalla näkyvällä ajanjaksolla sodassa menehtyneistä suomalaisista.
-          </p>
+            <p>
+            Kartan alla on kaksi yhdessä liikkuvaa aikajanaa.
+            Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi).
+            Tämän janan keskellä on mustana laatikkona viikon mittainen aikaikkuna,
+            jonka sisään osuvat tapahtumat näkyvät alemmalla janalla.
+            Alemmassa aikajanassa pystyviivojen väli on yksi päivä.
+            Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa.
+            </p>
+            <p>
+            Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä.
+            Tekstiltään <span style="color: blue">sinisiin</span> tapahtumiin liittyy valokuvia.
+            </p>
+            <p>
+            Kartalla näkyvät viikon aikaikkunan tapahtumat, jos niiden paikka on tiedossa.
+            Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä sodassa menehtyneistä suomalaisista.
+            </p>
+            <p>
+            Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset". Tämän ohjeen saat näkyviin valitsemalla yläpalkista "Näkymän ohjeet".
+            </p>
           <h4>Tapahtumien värikoodit</h4>
           <p><img src="vendor/timemap/images/red-circle.png"> Sotatoimi</p>
           <p><img src="vendor/timemap/images/purple-circle.png"> Poliittinen tapahtuma</p>
@@ -77,7 +87,10 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
         </div>
         <hr/>
         <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
-          <p>Osastosta menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate.toLocaleDateString() }} - {{ ctrl.maxVisibleDate.toLocaleDateString() }}: {{ ctrl.casualtyCount }}</p>
+          <p>Osastosta menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate.toLocaleDateString() }} - {{ ctrl.maxVisibleDate.toLocaleDateString() }}: {{ ctrl.casualtyCount }}
+            | <a ng-show="!timemapCtrl.showCasualtyStats">Näytä lisätietoja</a>
+            <a ng-show="timemapCtrl.showCasualtyStats">Piilota lisätiedot</a>
+          </p>
         </div>
         <div class="row animate-text" ng-if="ctrl.showCasualtyStats" ng-repeat="casualtyClass in ctrl.casualtyStats">
           <div ng-if="casualtyClass.id">

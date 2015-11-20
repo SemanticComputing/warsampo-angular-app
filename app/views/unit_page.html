@@ -6,28 +6,28 @@
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.unit && !ctrl.isLoadingEvent">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.unit">
-    <h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
-       <h2>
+      <h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
+      <h2>
         {{ ctrl.unit.getLabel() }}
       </h2>
       <p ng-repeat="desc in ctrl.unit.getDescription() track by $index">
       {{ desc }}
       </p>
-      <p><a ng-href="units/?uri={{ ctrl.unit.id }}">View on timeline</a></p>
+      <p><a ng-href="units/?uri={{ ctrl.unit.id }}">Näytä aikajanalla</a></p>
     </div>
   </div>
   <!-- Links -->
-    <div class="col-sm-4">
-    	<h2 id="links-header" class="links-header-class">Linkit</h2>
-    	<img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    	<p ng-if="!ctrl.unit.hasLinks">No links found for this object.</p>
-   	 <div id="linkContent">
-      	<related-links title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></related-links>
-      	<related-links title="'Taistelut'" data-related="ctrl.unit.battles"></related-links>
-      	<related-links title="'Henkilöitä'" data-related="ctrl.unit.relatedPersons"></related-links>
-      	<related-links title="'Paikat'" data-related="ctrl.unit.places"></related-links>
-      	</div>
-     </div>
+  <div class="col-sm-4">
+    <h2 id="links-header" class="links-header-class">Linkit</h2>
+    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+    <p ng-if="!ctrl.unit.hasLinks">No links found for this object.</p>
+    <div id="linkContent">
+      <related-links title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></related-links>
+      <related-links title="'Taistelut'" data-related="ctrl.unit.battles"></related-links>
+      <related-links title="'Henkilöitä'" data-related="ctrl.unit.relatedPersons"></related-links>
+      <related-links title="'Paikat'" data-related="ctrl.unit.places"></related-links>
+    </div>
+  </div>
 <!--
   <div class="col-sm-4">
   <div ng-if="ctrl.unit.relatedUnits">
