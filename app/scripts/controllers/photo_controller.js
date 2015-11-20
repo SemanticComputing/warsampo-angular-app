@@ -12,7 +12,7 @@ angular.module('eventsApp')
     var self = this;
 
     self.showPhotoGallery = function() {
-        blueimp.Gallery($('#photo-container a'), $('#blueimp-gallery').data());
+        blueimp.Gallery($('#photo-thumbs a'), $('#blueimp-gallery').data());
     };
 
     $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
