@@ -64,57 +64,8 @@ Unit.prototype.getDescription = function() {
 	return arr2;
 };
 
-Unit.prototype.processUnitEvents = function(events) {
-	var battles= {}, formations=[], description=[], places={};
-	var em=new EventMapper();
-	for (var i=0; i<events.length; i++) {
-		var 	e=events[i], 
-				etype=e.idclass, 
-				edate='', edate2='', eplace=''; 
-		if ('start_time' in e && 'end_time' in e) {
-			edate=e.start_time; edate2=e.end_time;
-			edate=em.getExtremeDate(edate, true);
-			edate2=em.getExtremeDate(edate2, false);
-			edate=em.formatDateRange(edate,edate2);
-		}
-		if ('place_label' in e) {
-			eplace=', '+e.place_label;
-		}
-		if (edate!=='') {edate=edate+': ';}
-		
-		if (etype.indexOf('Battle')>-1) {
-			battles[e.label] = { label:e.name, id:e.id };
-		} else if (etype.indexOf('Formation')>-1) {
-			formations.push(edate+'Perustaminen: '+e.name+eplace);
-		} else if (etype.indexOf('TroopMovement')>-1) {
-			description.push(edate+e.name+eplace);
-		} 
-		
-		if ('place_id' in e && 'place_label' in e) {
-			places[e.place_label]=e.place_id;
-			// places.push({id:e.place_id, label:e.place_label});
-		}
-	}
-	
-	if (events.length) { this.hasLinks = true; }
-	
-	var arr=[];
-	for (var pr in battles) arr.push(battles[pr]);
-	if (arr.length) { this.battles=arr; }
-	
-	if (formations.length) {description=formations.concat(description);}
-	if (description.length) {this.description=description;}
-	
-	for (var pr in places) {
-		if (!this.places) {this.places=[];}
-		this.places.push({label:pr, id:places[pr]});
-	}
-};
-
-
-
 function UnitMapper() {
-    this.objectClass = class_;
+    this.objectClass = Unit;
 }
 
 UnitMapper.prototype.postProcess = function(objects) {

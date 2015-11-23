@@ -14,7 +14,7 @@ PhotoMapper.prototype.makeObject = function(photo) {
     // Take the photo as received and turn it into an object that
     // is easier to handle.
     // Make the location a list as to support multiple locations per photo.
-    var e = this.objectClass();
+    var e = new this.objectClass();
 
     e.id = photo.id.value;
     e.url = photo.url.value;

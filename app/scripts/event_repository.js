@@ -385,7 +385,7 @@ angular.module('eventsApp')
             });
         };
 
-        this.getEventsLooselyWithinTimeSpan = function(start, end) {
+        this.getLooselyWithinTimeSpan = function(start, end) {
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
             return endpoint.getObjects(

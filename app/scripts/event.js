@@ -10,8 +10,8 @@ angular.module('eventsApp')
 
         self.fetchPeople = function(event) {
             return personRepository.getByIdList(event.participant_id).then(function(people) {
-                event.people = people;
-                if (people.length) {
+                if (people) {
+                    event.people = people;
                     event.hasLinks = true;
                 }
                 return event;
@@ -20,8 +20,8 @@ angular.module('eventsApp')
 
         self.fetchUnits = function(event) {
             return unitRepository.getByIdList(event.participant_id).then(function(units) {
-                event.units = units;
-                if (units.length) {
+                if (units) {
+                    event.units = units;
                     event.hasLinks = true;
                 }
                 return event;

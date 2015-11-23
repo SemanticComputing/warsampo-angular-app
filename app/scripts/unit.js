@@ -5,9 +5,56 @@
  */
 angular.module('eventsApp')
     .service('unitService', function($q, unitRepository, eventRepository,
-                unitRepository) {
+                personRepository) {
 
         var self = this;
+
+        self.processUnitEvents = function(unit, events) {
+            var battles= {}, formations=[], description=[], places={};
+            var em=new EventMapper();
+            for (var i=0; i<events.length; i++) {
+                var 	e=events[i], 
+                        etype=e.idclass, 
+                        edate='', edate2='', eplace=''; 
+                if ('start_time' in e && 'end_time' in e) {
+                    edate=e.start_time; edate2=e.end_time;
+                    edate=em.getExtremeDate(edate, true);
+                    edate2=em.getExtremeDate(edate2, false);
+                    edate=em.formatDateRange(edate,edate2);
+                }
+                if ('place_label' in e) {
+                    eplace=', '+e.place_label;
+                }
+                if (edate!=='') {edate=edate+': ';}
+                
+                if (etype.indexOf('Battle')>-1) {
+                    battles[e.label] = { label:e.name, id:e.id };
+                } else if (etype.indexOf('Formation')>-1) {
+                    formations.push(edate+'Perustaminen: '+e.name+eplace);
+                } else if (etype.indexOf('TroopMovement')>-1) {
+                    description.push(edate+e.name+eplace);
+                } 
+                
+                if ('place_id' in e && 'place_label' in e) {
+                    places[e.place_label]=e.place_id;
+                    // places.push({id:e.place_id, label:e.place_label});
+                }
+            }
+            
+            if (events.length) { unit.hasLinks = true; }
+            
+            var arr=[];
+            for (var pr in battles) arr.push(battles[pr]);
+            if (arr.length) { unit.battles=arr; }
+            
+            if (formations.length) {description=formations.concat(description);}
+            if (description.length) {unit.description=description;}
+            
+            for (var pr in places) {
+                if (!unit.places) {unit.places=[];}
+                unit.places.push({label:pr, id:places[pr]});
+            }
+        };
 
         self.fetchRelatedEvents = function(unit) {
             return eventRepository.getByActorId(unit.id).then(function(events) {
@@ -16,16 +63,14 @@ angular.module('eventsApp')
             });
         };
         
-        Unit.prototype.fetchRelated = function() {
-            var self = this;
-            return self.fetchRelatedEvents().then(
-            	function() { return self.fetchUnitEvents(); }).then(
-            	function() { return self.fetchRelatedUnits(); }).then(
-            	function() { return self.fetchRelatedPersons(); }).then(
-            	function() {
-                if (self.relatedEvents || self.relatedUnits || self.relatedPersons ) {
-                    self.hasLinks = true;
-                }
+        self.fetchRelated = function(unit) {
+            var related = [
+                self.fetchUnitEvents(unit),
+                self.fetchRelatedUnits(unit),
+                self.fetchRelatedPersons(unit)
+            ];
+            return $q.all(related).then(function() {
+                return unit;
             });
         };
 			
@@ -43,11 +88,11 @@ angular.module('eventsApp')
             });
         };
         
-        Unit.prototype.fetchRelatedPersons = function() {
-		  		var self = this;
-            return personService.getByUnit(self.id).then(function(persons) {
-            	var 	em=new EventMapper(),
-            			arr = [], arr2=[];
+        self.fetchRelatedPersons = function(unit) {
+            return personRepository.getByUnitId(unit.id).then(function(persons) {
+            	var em=new EventMapper(),
+                    arr = [],
+                    arr2=[];
             	for (var i=0; i<persons.length; i++) {
             		var p=persons[i];
             		if ('label' in p) {
@@ -68,8 +113,10 @@ angular.module('eventsApp')
 	            	}
             	}
             	
-            	if (arr.length)  {	self.relatedPersons = arr; }
-            	if (arr2.length) {	self.commanders = arr2; }
+            	if (arr.length)  {	unit.relatedPersons = arr; }
+            	if (arr2.length) {	unit.commanders = arr2; }
+
+                return unit;
             });
         };
         
