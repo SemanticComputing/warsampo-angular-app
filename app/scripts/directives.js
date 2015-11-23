@@ -21,6 +21,24 @@ angular.module('eventsApp')
         }
     };
 })
+.directive('fallbackImgForGallery', function() {
+    return {
+        restrict:'A',
+        link: function(scope, element) {
+            element.error(function() {
+                var src = '/images/no-image-sm.png';
+                if (!_.contains(element.attr('src'), src)) {
+                    element.attr('src', src);
+                    var a = element.parent();
+                    a.attr('href', '/images/no-image.png');
+                    a.attr('target', '_self');
+                } else {
+                    element.attr('src', '');
+                }
+            });
+        }
+    };
+})
 .directive('relatedLinks', function() {
     return {
         restrict:'E',

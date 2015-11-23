@@ -123,10 +123,10 @@ angular.module('eventsApp')
 			'    ?ename a etypes:UnitNaming .      '+
 			'    ?ename skos:prefLabel ?name . '+
 			'    ?ename crm:P95_has_formed ?id . '+
-			'    OPTIONAL { ?ename skos:altLabel ?abbrev .  }'+
+			// '    OPTIONAL { ?ename skos:altLabel ?abbrev .  }'+
 			''+
-			'  FILTER (regex(?name, "{0}", "i") || regex(?abbrev, "{0}", "i"))    '+
-			'     } LIMIT 500 '+
+			'  FILTER ( regex(?name, "{0}", "i") )    '+
+			'     } LIMIT 300 '+
 			'  } '+
 			'  '+
 			'} ORDER BY lcase(?name) ';

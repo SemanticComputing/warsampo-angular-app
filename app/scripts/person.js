@@ -74,8 +74,8 @@ angular.module('eventsApp')
 
         Person.prototype.fetchNationalBib = function() {
             var self = this;
-            return personService.getNationalBibliography(self.sname,self.fname).then(function(nb) {
-                if (nb.length && ('id' in nb[0])) { 
+            return personService.getNationalBibliography(self).then(function(nb) {
+            	if (nb.length && ('sub' in nb[0])) { 
                 	self.nationals = nb[0]; 
                 }
             });
@@ -226,8 +226,36 @@ angular.module('eventsApp')
 		   '     } ' +
 		   '    ?id skos:prefLabel ?name . ' +
 		   '   } GROUP BY ?id ?label ';
-
-		var nationalBibliographyQry = 
+		   
+		var nationalBibliographyQry = 		
+		'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' +
+		'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ' +
+		'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
+		'PREFIX schema: <http://schema.org/>' +
+		'PREFIX dcterms: <http://purl.org/dc/terms/>' +
+		'PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/>' +
+		' ' +
+		'SELECT ?sub ?name ?images ?shortDescription ?description' +
+		'		(SAMPLE(?placeOfBirth1) AS ?placeOfBirth) ?dateOfBirth' +
+		'		(SAMPLE(?placeOfDeath1) AS ?placeOfDeath) ?dateOfDeath' +
+		'		' +
+		'	WHERE {' +
+		'	  ?sub rdfs:label ?name .' +
+		'      		FILTER REGEX(?name, "{0}", "i")' +
+		'	  ?sub schema:birthDate ?dateOfBirth . FILTER (?dateOfBirth{1}) .' +
+		'  	  ?sub schema:deathDate ?dateOfDeath . FILTER (?dateOfDeath{2}) .' +
+		'	  OPTIONAL {?birth cidoc:P98_brought_into_life ?sub . ' +
+		'                ?birth cidoc:P7_took_place_at ?place . ' +
+		'                ?place rdfs:label ?placeOfBirth1 .} ' +
+		'	  OPTIONAL {?death cidoc:P100_was_death_of ?sub . ' +
+		'                ?death cidoc:P7_took_place_at ?placeD . ' +
+		'                ?placeD rdfs:label ?placeOfDeath1 . } ' +
+		'	  OPTIONAL {?sub schema:image ?images } ' +
+		'	  OPTIONAL {?sub dcterms:type ?shortDescription } ' +
+		'	  OPTIONAL {?sub rdfs:comment ?description } ' +
+		'} GROUP BY ?sub ?name ?dateOfBirth ?placeOfBirth ?dateOfDeath ?placeOfDeath ?images ?shortDescription ?description ';
+		
+		var nationalBibliographyQryOLD = 
         '	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>  	' +
 	   '	PREFIX kb: <http://ldf.fi/history/kb>  	' +
 	   '	PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>  	' +
@@ -379,27 +407,43 @@ angular.module('eventsApp')
                 return personMapperService.makeObjectList(data);
             });
         };
-
-       this.getNationalBibliography = function(sukunimi,etunimi) {
-           var rgx ="XZYZ-FHWEJ";
-           if (etunimi) {
-               if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
-               var etu1 = (etunimi === 'Carl Gustaf Emil') ? etunimi :etunimi.split(' ')[0];
-               // ^.*Talvela,.*Paavo.*[(].*[)]$
-               var rgx = "^.*"+sukunimi+",.*"+etu1+".*[(].*[)]$";
-               var qry = nationalBibliographyQry.format("{0}".format());
+		
+       this.getNationalBibliography = function(self) {
+           if (self.fname && self.fname.length>2) { 
+           	  var sukunimi=self.sname, etunimi=self.fname;
+              if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
+              
+              var birthyearcondition='<"1925"'
+              if ('birth_year' in self) {
+              		birthyearcondition='="'+self.birth_year+'"';
+              }
+              
+              var deathyearcondition='>"1938"';
+              if ('death_year' in self) {
+              		deathyearcondition='="'+self.death_year+'"';
+              	}                      
+					
+               //	 marski http://ldf.fi/history/kb/p379
+              var etu1 = (etunimi === 'Carl Gustaf Emil') ? 'Gustaf' :etunimi.split(' ')[0];
+              var rgx = "^"+sukunimi+", .*("+etu1+").*$";
+               
+	           var qry = nationalBibliographyQry.format(rgx, birthyearcondition, deathyearcondition); 
+	           
+	           var end2 = new SparqlService("http://ldf.fi/history/sparql");
+	           return end2.getObjects(qry).then(function(data) {
+	           	  return personMapperService.makeObjectList(data);
+	           });
            }
-           var qry = nationalBibliographyQry.format("{0}".format(rgx));
-           var end2 = new SparqlService("http://ldf.fi/history/sparql");
-           return end2.getObjects(qry).then(function(data) {
-               return personMapperService.makeObjectList(data);
-           });
        };
-
-        this.getItems = function (regx, controller) {
+       
+		this.getItems = function (regx, controller) {
             var qry = selectorQuery.format("{0}".format(regx));
+            controller.items = [ {id:'#', name:"Etsitään ..."} ];
             return endpoint.getObjects(qry).then(function(data) {
                 var arr= personMapperService.makeObjectListNoGrouping(data);
+                if (!arr.length) {
+                	arr = [ {id:'#', name:"Ei hakutuloksia."} ];
+                }
                 controller.items=arr;
                 return arr;
             });

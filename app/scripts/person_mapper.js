@@ -26,18 +26,19 @@ Person.prototype.getDescription = function() {
 	if (this.birth_time) {
 		var edate=em.getExtremeDate(this.birth_time, true);
 		this.birth = em.formatDateRange(edate,edate);
+		this.birth_year = edate.getFullYear();
 		delete this.birth_time;
 	}
 	
 	if (this.death_time) {
 		var edate=em.getExtremeDate(this.death_time, true);
 		this.death = em.formatDateRange(edate,edate);
+		this.death_year = edate.getFullYear();
 		delete this.death_time;
 	}
 	
 	if (this.birth || this.death) {
 		var res=this.birth + ' ' + this.birth_place + ' – ' + this.death+ ' ' + this.death_place;
-		// if ('bury_place' in this) { res += (', haudattu paikkaan '+this.bury_place);}
 		arr.push(res);
 	}
 	
@@ -118,7 +119,7 @@ Person.prototype.processLifeEvents = function(events) {
 			this.birth = edate;
 		} else if (etype.indexOf('Promotion')>-1) {
 			this.promotions.push(e.rank+' '+edate);
-			this.ranks.push({id:e.rankid, label:e.rank});
+			this.ranks.unshift({id:e.rankid, label:e.rank});
 		}
 	}
 	if (!this.birth) {this.birth='';}
