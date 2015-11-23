@@ -78,102 +78,17 @@ Person.prototype.getDescription = function() {
 	return arr;
 };
 
-Person.prototype.checkPlace = function (property) {
-	if (property in this) {
-		var label= this[property];
-		var property_uri = property + '_uri';
-		//console.log('Added place ',label, this[property_uri]);
-		if (property_uri in this) {
-			if (!('places' in this)) { this.places = []; }
-			for (var i=0; i<this.places.length; i++) { if (this.places[i].label==label) return; }
-		
-			var newplace = { label:label, id: this[property_uri]};
-			this.places.push(newplace);
-		}
-	} else { this[property]=''; }
+function PersonMapper() {
+    this.objectClass = Person;
 }
-
-Person.prototype.capitalizeFirstLetter = function(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-Person.prototype.processLifeEvents = function(events) {
-	this.promotions=[];
-	this.ranks=[];
-	if ('rank' in this && 'rankid' in this) {
-		this.ranks.push({id:this.rankid, label:this.rank});
-	}
-	
-	var em=new EventMapper();
-	for (var i=0; i<events.length; i++) {
-		var 	e=events[i], 
-				etype=e.idclass, 
-				edate=e.start_time, edate2=e.end_time;
-		edate=em.getExtremeDate(edate, true);
-		edate2=em.getExtremeDate(edate2, false);
-		edate=em.formatDateRange(edate,edate2);
-		
-		if (etype.indexOf('Death')>-1) {
-			this.death = edate;
-		} else if (etype.indexOf('Birth')>-1) {
-			this.birth = edate;
-		} else if (etype.indexOf('Promotion')>-1) {
-			this.promotions.push(e.rank+' '+edate);
-			this.ranks.unshift({id:e.rankid, label:e.rank});
-		}
-	}
-	if (!this.birth) {this.birth='';}
-	if (!this.death) {this.death='';}
-	
-	this.checkPlace('birth_place');
-	this.checkPlace('death_place');
-	this.checkPlace('bury_place');
-	this.checkPlace('living_place');
-		
-};
-
-Person.prototype.processRelatedEvents = function(events) {
-	var eventlist=[];
-	var battles=[];
-	var units=[];
-	var articles=[];
-	
-	var em=new EventMapper();
-	for (var i=0; i<events.length; i++) {
-		var 	e=events[i], 
-				etype=e.idclass; 
-		
-		// if (! ('label' in e)) { e.label=e.description; }
-		if (etype.indexOf('Battle')>-1) {
-			battles.push(e);
-		} else if (etype.indexOf('PersonJoining')>-1) {
-			// Linking to unit, not to an event of joining
-			if ('unit' in e) e.id = e.unit;
-			if ('label' in e && _.isArray(e.label) ) {
-         	e.label = e.label[0];
-         }
-         units.push(e);
-		} else if (etype.indexOf('Article')>-1 ) {
-			articles.push(e);
-		} else {
-			eventlist.push(e);
-		}
-	}
-	
-	if (eventlist.length) {this.events=eventlist;}
-	if (battles.length) {this.battles=battles;}
-	if (articles.length) {this.articles=articles;}
-	if (units.length) {this.units=units;}
-};
-
-
-function PersonMapper() { }
 
 PersonMapper.prototype.postProcess = function(people) {
     people.forEach(function(person) {
         if (_.isArray(person.label)) {
             person.label = person.label.join(', ');
         }
+        person.birth = person.birth || '';
+        person.death = person.death || '';
     });
 
     return people;
@@ -188,6 +103,23 @@ PersonMapper.prototype.makeObject = function(obj) {
     _.forIn(obj, function(value, key) {
         o[key] = value.value;
     });
+
+    var places = [];
+
+    if (o.birth_place) {
+        places.push({ id: o.birth_place_uri, label: o.birth_place });
+    }
+    if (o.death_place) {
+        places.push({ id: o.death_place_uri, label: o.death_place });
+    }
+    if (o.bury_place) {
+        places.push({ id: o.bury_place_uri, label: o.bury_place });
+    }
+    if (o.living_place) {
+        places.push({ id: o.living_place_uri, label: o.living_place });
+    }
+
+    o.places = _.uniq(places, 'id');
     
     return o;
 };

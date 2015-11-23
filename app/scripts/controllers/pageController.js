@@ -40,7 +40,7 @@ angular.module('eventsApp')
             self.event = event; 
             self.isLoadingEvent = false;
 
-            return $q.all(event.fetchRelated(), fetchImages(event));
+            return $q.all(eventService.fetchRelated(event), fetchImages(event));
         })
         .then(function() { 
             var placeEventPromise = eventService.getEventsByPlaceId(_.pluck(self.event.places, 'id'));

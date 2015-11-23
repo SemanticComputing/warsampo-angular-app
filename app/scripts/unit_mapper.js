@@ -113,7 +113,7 @@ Unit.prototype.processUnitEvents = function(events) {
 
 
 
-function UnitMapper(class_) {
+function UnitMapper() {
     this.objectClass = class_;
 }
 
@@ -128,77 +128,13 @@ UnitMapper.prototype.postProcess = function(objects) {
 };
 
 angular.module('eventsApp')
-.factory('unitMapperService', function(objectMapperService, Unit) {
+.factory('unitMapperService', function(objectMapperService) {
     var proto = Object.getPrototypeOf(objectMapperService);
     UnitMapper.prototype = angular.extend({}, proto, UnitMapper.prototype);
 
-    return new UnitMapper(Unit);
+    return new UnitMapper();
 })
-.factory('Unit', function(eventService, personService, unitService) {
-        Unit.prototype.fetchRelatedEvents = function() {
-            var self = this;
-            return eventService.getEventsByActor(self.id).then(function(events) {
-                self.relatedEvents = events;
-            });
-        };
-        
-        Unit.prototype.fetchRelated = function() {
-            var self = this;
-            return self.fetchRelatedEvents().then(
-            	function() { return self.fetchUnitEvents(); }).then(
-            	function() { return self.fetchRelatedUnits(); }).then(
-            	function() { return self.fetchRelatedPersons(); }).then(
-            	function() {
-                if (self.relatedEvents || self.relatedUnits || self.relatedPersons ) {
-                    self.hasLinks = true;
-                }
-            });
-        };
-			
-        Unit.prototype.fetchRelatedUnits = function() {
-            var self = this;
-            return unitService.getRelatedUnit(self.id).then(function(units) {
-                self.relatedUnits = units;
-            });
-        };
-        
-        
-        Unit.prototype.fetchUnitEvents = function() {
-		  		var self = this;
-            return unitService.getUnitEvents(self.id).then(function(events) {
-            	self.processUnitEvents(events);
-            });
-        };
-        
-        Unit.prototype.fetchRelatedPersons = function() {
-		  		var self = this;
-            return personService.getByUnit(self.id).then(function(persons) {
-            	var 	em=new EventMapper(),
-            			arr = [], arr2=[];
-            	for (var i=0; i<persons.length; i++) {
-            		var p=persons[i];
-            		if ('label' in p) {
-            			if ('rank' in p && p.name.indexOf(' ')<0) {p.name = p.rank +' '+ p.name;}
-            			arr.push(p);
-	            		if ('role' in p) { 
-	            			var pname =p.role+' '+p.name; 
-	            			if ('start_time' in p) {
-	            				var edate=p.start_time;
-	            				var edate2= ('end_time' in p) ? p.end_time : edate;
-									edate=em.getExtremeDate(edate, true);
-									edate2=em.getExtremeDate(edate2, false);
-									edate=em.formatDateRange(edate,edate2);
-	            				arr2.push(pname + ', '+edate);
-	            			} else { arr2.push(pname); }
-	            		}
-	            		
-	            	}
-            	}
-            	
-            	if (arr.length)  {	self.relatedPersons = arr; }
-            	if (arr2.length) {	self.commanders = arr2; }
-            });
-        };
+.factory('Unit', function() {
     return Unit;
 });
 
