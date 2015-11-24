@@ -149,14 +149,14 @@ angular.module('eventsApp')
         ' } ';
 
         var wardiaryQry = prefixes +
-		'SELECT ?label ?id ?time	' +
+		'SELECT ?uri ?label ?id ?time	' +
 		'WHERE {	' +
 		'  GRAPH <http://ldf.fi/warsa/diaries> {	' +
 		'    VALUES ?unit { {0} } .	' +
-		'    ?dia crm:P70_documents ?unit .	' +
-		'    ?dia skos:prefLabel ?label .	' +
-		'    ?dia <http://purl.org/dc/terms/hasFormat> ?id .	' +
-		'    ?dia crm:P4_has_time-span ?time .	' +
+		'    ?uri crm:P70_documents ?unit .	' +
+		'    ?uri skos:prefLabel ?label .	' +
+		'    ?uri <http://purl.org/dc/terms/hasFormat> ?id .	' +
+		'    ?uri crm:P4_has_time-span ?time .	' +
 		'    }	' +
 		'} ORDER BY ?time	';
         
