@@ -42,26 +42,17 @@ angular.module('eventsApp')
         this.processRelatedEvents = function(person, events) {
             var eventlist=[];
             var battles=[];
-            var units=[];
             var articles=[];
 
             for (var i=0; i<events.length; i++) {
                 var e = events[i], 
                     etype = e.type_id; 
                 
-                // if (! ('label' in e)) { e.label=e.description; }
                 if (etype.indexOf('Battle')>-1) {
                     battles.push(e);
-                } else if (etype.indexOf('PersonJoining')>-1) {
-                    // Linking to unit, not to an event of joining
-                    if ('unit' in e) e.id = e.unit;
-                    if ('label' in e && _.isArray(e.label) ) {
-                    e.label = e.label[0];
-                }
-                units.push(e);
                 } else if (etype.indexOf('Article')>-1 ) {
                     articles.push(e);
-                } else {
+                } else if (etype.indexOf('PersonJoining') === -1) {
                     eventlist.push(e);
                 }
             }
@@ -78,11 +69,6 @@ angular.module('eventsApp')
                 person.hasLinks = true;
                 person.articles=articles;
             }
-            if (units.length) {
-                person.hasLinks = true;
-                person.units=units;
-            }
-
             return person;
         };
 
@@ -129,8 +115,8 @@ angular.module('eventsApp')
 
         self.fetchRelatedUnits = function(person) {
             return unitRepository.getByPersonId(person.id).then(function(units) {
-                person.units = units;
                 if (units && units.length) {
+                    person.units = units;
                     person.hasLinks = true;
                 }
             });
