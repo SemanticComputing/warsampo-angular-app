@@ -89,8 +89,7 @@ angular.module('eventsApp')
 		  		var self = this;
             return unitService.getUnitDiaries(self.id).then(function(diaries) {
             	if (diaries.length) { self.diaries=diaries; }
-           		console.log(diaries);
-            });
+           	});
         };
         
         Unit.prototype.fetchCasualties = function() {
