@@ -217,6 +217,7 @@ angular.module('eventsApp')
 	           	  return personMapperService.makeObjectList(data);
 	           });
            }
+           return $q.when();
        };
        
 		this.getItems = function (regx, controller) {

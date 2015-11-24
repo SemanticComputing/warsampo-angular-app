@@ -129,7 +129,7 @@ angular.module('eventsApp')
 
         self.fetchRelatedUnits = function(person) {
             return unitRepository.getByPersonId(person.id).then(function(units) {
-                self.units = units;
+                person.units = units;
                 if (units && units.length) {
                     person.hasLinks = true;
                 }
@@ -147,7 +147,7 @@ angular.module('eventsApp')
 
         self.fetchNationalBib = function(person) {
             return personRepository.getNationalBibliography(person).then(function(nb) {
-            	if (nb.length && nb[0].sub) { 
+            	if (nb && nb.length && nb[0].sub) { 
                 	person.nationals = nb[0]; 
                     person.hasLinks = true;
                 }
