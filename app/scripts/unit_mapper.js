@@ -92,7 +92,6 @@ Unit.prototype.processUnitEvents = function(events) {
 		
 		if ('place_id' in e && 'place_label' in e) {
 			places[e.place_label]=e.place_id;
-			// places.push({id:e.place_id, label:e.place_label});
 		}
 	}
 	

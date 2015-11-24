@@ -20,9 +20,9 @@ angular.module('eventsApp')
             var self = this;
             return self.fetchRelatedEvents().then(
             	function() { return self.fetchUnitEvents(); }).then(
-            	function() { return self.fetchRelatedUnits(); }).then(
             	function() { return self.fetchRelatedPersons(); }).then(
             	function() { return self.fetchUnitDiaries(); }).then(
+            	function() { return self.fetchRelatedUnits(); }).then(
             	function() {
                 if (self.relatedEvents || self.relatedUnits || self.relatedPersons || self.diaries ) {
                     self.hasLinks = true;
@@ -33,17 +33,20 @@ angular.module('eventsApp')
         Unit.prototype.fetchRelatedUnits = function() {
             var self = this;
             return unitService.getRelatedUnit(self.id).then(function(units) {
-                self.relatedUnits=[];
+                var arr=[[],[],[]];
                 for (var i=0; i<units.length; i++) {
                     var unit=units[i];
                     if ('id' in unit) { 
-                        /* if ('label' in unit && _.isArray(unit.label)) {
-                           unit.label=unit.label[0];
-                           } */
                         unit.label = unit.label.split(';')[0];
-                        self.relatedUnits.push(unit);
+                        unit.level = 'level' in unit ? unit.level : 0;
+                        if (unit.level<0) { arr[2].push(unit); }
+                        else if (unit.level>0) { arr[0].push(unit); }
+                        else arr[1].push(unit);
                     }
                 }
+                if (arr[0].length) self.superUnits = arr[0];
+                if (arr[1].length) self.relatedUnits = arr[1];
+                if (arr[2].length) self.subUnits = arr[2];
             });
         };
         
@@ -166,41 +169,39 @@ angular.module('eventsApp')
 		  '		} ORDER BY ?start_time ?end_time ';
 
 			var relatedUnitQry = prefixes + 
-		 '		SELECT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE {  ' +
-		 '   		  { SELECT ?id ?name  WHERE { ' +
-		 '   		                  ?ejoin a etypes:UnitJoining ; ' +
-		 '   		                    crm:P143_joined ?unit ; ' +
-		 '   		                    crm:P144_joined_with ?id . ' +
-		 '   		                ?ename a etypes:UnitNaming ; ' +
-		 '   		                     skos:prefLabel ?name ; ' +
-		 '   		                     crm:P95_has_formed ?id . ' +
-		 '   		      			OPTIONAL { ?ename skos:altLabel ?abbrev . } ' +
-		 '   		                VALUES ?unit  { {0} } ' +
-		 '   		  	} GROUP BY ?id ?name  LIMIT 2  ' +
-		 '   		 } UNION { ' +
-		 '   			SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE { ' +
-		 '   							{?ejoin a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?id ; ' +
-		 '   					                    crm:P144_joined_with ?unit . ' +
-		 '   					      } UNION { ?ejoin a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?unit ; ' +
-		 '   					                    crm:P144_joined_with ?superunit . ' +
-		 '   					                 ?ejoin2 a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?id ; ' +
-		 '   					                    crm:P144_joined_with ?superunit .    ' +
-		 '   					        FILTER ( ?unit != ?id ) ' +
-		 '   					      } ' +
-		 '   		                ?s ?p ?id . ' +
-		 '   		                ?ename a etypes:UnitNaming ; ' +
-		 '   		                     skos:prefLabel ?name ; ' +
-		 '   		                     crm:P95_has_formed ?id . ' +
-		 '   		                OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-		 '   		                VALUES ?unit  { {0} } ' +
-		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
-		 '   		} GROUP BY ?id ?label ';
+		'SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) ?level WHERE {  ' +
+		 '{ SELECT DISTINCT ?id ?level WHERE { ' +
+		 '                  ?ejoin a etypes:UnitJoining ; ' +
+		 '                    crm:P143_joined ?unit ; ' +
+		 '                    crm:P144_joined_with ?id . ' +
+		 '                BIND (1 AS ?level) ' +
+		 '      			VALUES ?unit  { {0} } ' +
+		 '  	} GROUP BY ?id ?level LIMIT 5 ' +
+		 '} UNION { ' +
+		 '	SELECT ?id (COUNT(?s) AS ?no) ?level WHERE { ' +
+		 '					{?ejoin a etypes:UnitJoining ; ' +
+		 '			                crm:P143_joined ?id ; ' +
+		 '			                crm:P144_joined_with ?unit . ' +
+		 '                    BIND (-1 AS ?level) ' +
+		 '			      } UNION { ?ejoin a etypes:UnitJoining ; ' +
+		 '			                crm:P143_joined ?unit ; ' +
+		 '			                crm:P144_joined_with ?superunit . ' +
+		 '			           ?ejoin2 a etypes:UnitJoining ; ' +
+		 '			                crm:P143_joined ?id ; ' +
+		 '			                crm:P144_joined_with ?superunit . ' +
+		 '                BIND (0 AS ?level) ' +
+		 '	                    FILTER ( ?unit != ?id ) ' +
+		 '			      } ' +
+		 '                ?s ?p ?id . ' +
+		 '                VALUES ?unit  { {0} } ' +
+		 '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 40 } ' +
+		 '	?ename a etypes:UnitNaming ; ' +
+		 '	skos:prefLabel ?name ; ' +
+		 '	crm:P95_has_formed ?id . ' +
+		 '} GROUP BY ?id ?label ?level ';
 	 
         var wardiaryQry = prefixes +
-		'SELECT ?uri ?label ?id ?time	' +
+		'SELECT ?label ?id ?time	' +
 		'WHERE {	' +
 		'  GRAPH <http://ldf.fi/warsa/diaries> {	' +
 		'    VALUES ?unit { {0} } .	' +

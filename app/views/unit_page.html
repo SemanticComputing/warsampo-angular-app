@@ -22,8 +22,10 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.unit.hasLinks">No links found for this object.</p>
     <div id="linkContent">
-      <related-links title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></related-links>
-      <related-links title="'Taistelut'" data-related="ctrl.unit.battles"></related-links>
+			<related-links title="'Yläosasto'" data-related="ctrl.unit.superUnits"></related-links>
+			<related-links title="'Alaosastoja'" data-related="ctrl.unit.subUnits"></related-links>
+			<related-links title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></related-links>
+		<related-links title="'Taistelut'" data-related="ctrl.unit.battles"></related-links>
       <related-links title="'Henkilöitä'" data-related="ctrl.unit.relatedPersons"></related-links>
       <related-links title="'Paikat'" data-related="ctrl.unit.places"></related-links>
       <related-links title="'Sotapäiväkirjat'" data-related="ctrl.unit.diaries"></related-links>
