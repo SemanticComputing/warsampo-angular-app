@@ -22,8 +22,9 @@ angular.module('eventsApp')
             	function() { return self.fetchUnitEvents(); }).then(
             	function() { return self.fetchRelatedUnits(); }).then(
             	function() { return self.fetchRelatedPersons(); }).then(
+            	function() { return self.fetchUnitDiaries(); }).then(
             	function() {
-                if (self.relatedEvents || self.relatedUnits || self.relatedPersons ) {
+                if (self.relatedEvents || self.relatedUnits || self.relatedPersons || self.diaries ) {
                     self.hasLinks = true;
                 }
             });
@@ -46,7 +47,7 @@ angular.module('eventsApp')
             });
         };
         
-        
+       	
         Unit.prototype.fetchUnitEvents = function() {
 		  		var self = this;
             return unitService.getUnitEvents(self.id).then(function(events) {
@@ -81,6 +82,14 @@ angular.module('eventsApp')
             	
             	if (arr.length)  {	self.relatedPersons = arr; }
             	if (arr2.length) {	self.commanders = arr2; }
+            });
+        };
+        
+        Unit.prototype.fetchUnitDiaries = function() {
+		  		var self = this;
+            return unitService.getUnitDiaries(self.id).then(function(diaries) {
+            	if (diaries.length) { self.diaries=diaries; }
+           		console.log(diaries);
             });
         };
         
@@ -191,8 +200,18 @@ angular.module('eventsApp')
 		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
 		 '   		} GROUP BY ?id ?label ';
 	 
-        
-
+        var wardiaryQry = prefixes +
+		'SELECT ?label ?id ?time	' +
+		'WHERE {	' +
+		'  GRAPH <http://ldf.fi/warsa/diaries> {	' +
+		'    VALUES ?unit { {0} } .	' +
+		'    ?dia crm:P70_documents ?unit .	' +
+		'    ?dia skos:prefLabel ?label .	' +
+		'    ?dia <http://purl.org/dc/terms/hasFormat> ?id .	' +
+		'    ?dia crm:P4_has_time-span ?time .	' +
+		'    }	' +
+		'} ORDER BY ?time	';
+	
 		var subUnitQry = prefixes +
 			'SELECT DISTINCT ?id	'+
     		'WHERE { 	'+
@@ -268,6 +287,13 @@ angular.module('eventsApp')
             });
         };
         
+      this.getUnitDiaries = function (unit) {
+      		var qry = wardiaryQry.format("<{0}>".format(unit));
+            return endpoint.getObjects(qry).then(function(data) {
+                return unitMapperService.makeObjectListNoGrouping(data);
+            });
+        };
+         
 		this.getRelatedUnit = function(unit) {
             var qry = relatedUnitQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
