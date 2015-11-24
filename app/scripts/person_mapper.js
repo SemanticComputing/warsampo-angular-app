@@ -45,7 +45,7 @@ Person.prototype.getDescription = function() {
 	if (this.bury_place || ('way_to_die' in this)) { 
 		var res=[];
 		if ('way_to_die' in this) { 
-			res.push(this.capitalizeFirstLetter(this.way_to_die)); }
+			res.push(_.capitalize(this.way_to_die)); }
 		if (this.bury_place) { res.push('Haudattu paikkaan '+this.bury_place+'.'); }
 		arr.push(res.join('. '));
 	}
@@ -73,8 +73,6 @@ Person.prototype.getDescription = function() {
 	if ('source' in this) { 
 		arr.push('Lähde: '+this.source); 
 		} else if ('sid' in this) { arr.push('Lähde: '+this.sid); }
-	// console.log(this.places);
-	// if ('places' in this && this.places.length===0) { delete this.places; }
 	return arr;
 };
 
@@ -87,8 +85,8 @@ PersonMapper.prototype.postProcess = function(people) {
         if (_.isArray(person.label)) {
             person.label = person.label.join(', ');
         }
-        person.birth = person.birth || '';
-        person.death = person.death || '';
+        person.birth_place = person.birth_place || '';
+        person.death_place= person.death_place || '';
     });
 
     return people;

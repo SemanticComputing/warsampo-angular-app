@@ -20,7 +20,7 @@ angular.module('eventsApp')
             self.person = person; 
             self.isLoadingEvent = false;
 
-            return person.fetchRelated();
+            return personService.fetchRelated(person);
         }).catch(function() {
             self.isLoadingEvent = false;
             self.isLoadingLinks = false;

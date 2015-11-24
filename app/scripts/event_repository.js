@@ -19,8 +19,9 @@ angular.module('eventsApp')
             ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
             ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
             ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-            ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> '+
-            ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ';
+            ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ' +
+            ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
+            ' PREFIX actors: <http://ldf.fi/warsa/actors/> ';
 
         var singleEventQry = prefixes +
             ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ?place_id ' +
@@ -257,20 +258,15 @@ angular.module('eventsApp')
        '                ?unit ?role ?link ?start_time ?end_time ?time_id ' +
        ' WHERE { ' +
        ' 	  VALUES ?person { {0} } . ' +
-	   ' 	    { ?id a etypes:Battle ; ' +
-	   ' 	      	crm:P11_had_participant ?person ; ' +
-	   ' 	      	events:hadUnit ?unit ; ' +
-	   ' 	      	skos:prefLabel ?description . }' +
-	   ' 	    UNION ' +
-	   ' 	    { ?id crm:P11_had_participant ?person ;  ' +
-	   ' 	    	skos:prefLabel ?description . } ' +
+	   ' 	    { ?id crm:P11_had_participant ?person ; ' +
+	   ' 	      	skos:prefLabel ?description . ' +
+	   ' 	      	OPTIONAL { ?id events:hadUnit ?unit . } ' +
+       '        }' +
 	   ' 	    UNION  ' +
 	   ' 	    { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
-	   ' 	      { ' +
 	   ' 	      ?id crm:P107_1_kind_of_member ?role .  ' +
 	   ' 	      ?id crm:P144_joined_with ?unit . ' +
 	   ' 	      ?unit skos:prefLabel ?description . '+
-	   ' 	      } '+
 	   ' 	    }  '+
 	   ' 	    UNION '+
 	   ' 	    { '+
@@ -282,10 +278,13 @@ angular.module('eventsApp')
        '        { ?author skos:relatedMatch ?person . ?id <http://ldf.fi/warsa/articles/article/author> ?author . } '+
        '      } ' +
 	   ' 	   ?id a ?type_id . ' +
-	   ' 	   OPTIONAL { ?type_id skos:prefLabel ?type . } ' +
+       '       OPTIONAL { ' +
+       '         ?type_id skos:prefLabel ?type . ' +
+       '         FILTER(langMatches(lang(?type), "FI")) ' +
+	   ' 	    } ' +
 	   ' 	    OPTIONAL { ' +
 	   ' 	      ?id crm:P4_has_time-span ?time_id .  ' +
-	   ' 	      ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
+	   ' 	      ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
 	   ' 	      		crm:P82b_end_of_the_end ?end_time .  ' +
 	   ' 	    } ' +
 	   ' 	    OPTIONAL { ' +
@@ -298,20 +297,26 @@ angular.module('eventsApp')
 	   ' } ORDER BY ?start_time ?end_time ';
 
         var personLifeEventsQry = prefixes +
-        ' SELECT DISTINCT ?id  ?type_id ?time_id ?start_time ?end_time ?rank ?rankid WHERE { ' +
+       ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description ?start_time ?end_time ?rank ?rank_id ' +
+       ' WHERE { ' +
   	   '  VALUES ?person { {0} } ' +
-	   ' 	{ ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
-	   '   	 UNION  ' +
-       '     { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . } ' +
-       '   UNION  ' +
-       '     { ?id a etypes:Promotion ; crm:P11_had_participant ?person .  ' +
-       '     OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . } ' +
-       '     } ' +
-       '     ?id a ?type_id . ' +
-       '     OPTIONAL { ?id skos:prefLabel ?type . } ' +
-       '     ?id crm:P4_has_time-span ?time_id .  ' +
-       '     ?time crm:P82a_begin_of_the_begin ?start_time . ' +
-       '     ?time crm:P82b_end_of_the_end ?end_time . ' +
+	   '  { ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
+	   '  UNION  ' +
+       '  { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . } ' +
+       '  UNION  ' +
+       '  { ?id a etypes:Promotion ; ' +
+       '    crm:P11_had_participant ?person .  ' +
+       '    OPTIONAL { ?id actors:hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . } ' +
+       '  } ' +
+	   '  ?id a ?type_id . ' +
+	   '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
+       '  OPTIONAL { ' +
+       '    ?type_id skos:prefLabel ?type . ' +
+       '    FILTER(langMatches(lang(?type), "FI")) ' +
+	   '  } ' +
+       '  ?id crm:P4_has_time-span ?time_id .  ' +
+       '  ?time_id crm:P82a_begin_of_the_begin ?start_time . ' +
+       '  ?time_id crm:P82b_end_of_the_end ?end_time . ' +
 	   ' } ORDER BY ?start_time  ';
 
         var unitEventQry = prefixes +
@@ -332,7 +337,10 @@ angular.module('eventsApp')
 		  '        	crm:P11_had_participant ?unit . ' +
 		  '      } ' +
 		  '      ?id a ?type_id . ' +
-          '     OPTIONAL { ?id skos:prefLabel ?type . } ' +
+          '       OPTIONAL { ' +
+          '         ?type_id skos:prefLabel ?type . ' +
+          '         FILTER(langMatches(lang(?type), "FI")) ' +
+          ' 	    } ' +
 		  '	   OPTIONAL { ?id skos:prefLabel ?label . } ' +
 		  '	    ' +
 		  '	   OPTIONAL { ' +

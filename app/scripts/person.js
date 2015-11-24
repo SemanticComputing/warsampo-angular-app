@@ -11,14 +11,14 @@ angular.module('eventsApp')
         this.processLifeEvents = function(person, events) {
             person.promotions=[];
             person.ranks=[];
-            if ('rank' in person && 'rankid' in person) {
-                person.ranks.push({id:person.rankid, label:person.rank});
+            if (person.rank_id) {
+                person.ranks.push({id:person.rank_id, label:person.rank});
             }
             
             var em=new EventMapper();
             for (var i=0; i<events.length; i++) {
                 var e=events[i], 
-                    etype=e.idclass, 
+                    etype=e.type_id, 
                     edate=e.start_time,
                     edate2=e.end_time;
                 edate=em.getExtremeDate(edate, true);
@@ -30,8 +30,8 @@ angular.module('eventsApp')
                 } else if (etype.indexOf('Birth')>-1) {
                     person.birth = edate;
                 } else if (etype.indexOf('Promotion')>-1) {
-                    person.promotions.push(e.rank+' '+edate);
-                    person.ranks.unshift({id:e.rankid, label:e.rank});
+                    person.promotions.push(e.rank + ' ' + edate);
+                    person.ranks.unshift({id:e.rank_id, label:e.rank});
                 }
             }
 
@@ -47,7 +47,7 @@ angular.module('eventsApp')
 
             for (var i=0; i<events.length; i++) {
                 var e = events[i], 
-                    etype = e.idclass; 
+                    etype = e.type_id; 
                 
                 // if (! ('label' in e)) { e.label=e.description; }
                 if (etype.indexOf('Battle')>-1) {
@@ -86,17 +86,24 @@ angular.module('eventsApp')
             return person;
         };
 
+        self.fetchLifeEvents = function(person) {
+            return self.getLifeEvents(person.id).then(function(events) {
+                self.processLifeEvents(person, events);
+            });
+        };
+
         self.fetchRelatedEvents = function(person) {
             return eventRepository.getByPersonId(person.id).then(function(events) {
-                return self.processRelatedEvents(events);
+                return self.processRelatedEvents(person, events);
             });
         };
 
         // for info page:
         self.fetchRelated = function(person) {
             var related = [
+                self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
-                self.fetchRelatedEvents(person),
+                self.fetchRelatedUnits(person),
                 self.fetchNationalBib(person)
             ];
 
@@ -108,8 +115,9 @@ angular.module('eventsApp')
         // for demo page:
         self.fetchRelated2 = function(person) {
             var related = [
+                self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
-                self.fetchRelatedEvents(person),
+                self.fetchRelatedUnits(person),
                 self.fetchNationalBib(person),
                 self.fetchRelatedPhotos(person)
             ];
@@ -120,16 +128,16 @@ angular.module('eventsApp')
         };
 
         self.fetchRelatedUnits = function(person) {
-            return unitRepository.getRelatedUnits(self.id).then(function(units) {
+            return unitRepository.getByPersonId(person.id).then(function(units) {
                 self.units = units;
-                if (units.length) {
+                if (units && units.length) {
                     person.hasLinks = true;
                 }
             });
         };
 
         self.fetchRelatedPhotos = function(person) {
-            return photoRepository.getByPersonId(self.id).then(function(imgs) {
+            return photoRepository.getByPersonId(person.id).then(function(imgs) {
                 if (imgs && imgs.length) {
                     person.images = imgs;
                     person.hasLinks = true;
@@ -139,9 +147,9 @@ angular.module('eventsApp')
 
         self.fetchNationalBib = function(person) {
             return personRepository.getNationalBibliography(person).then(function(nb) {
-            	if (nb.length && ('sub' in nb[0])) { 
-                	self.nationals = nb[0]; 
-                    self.hasLinks = true;
+            	if (nb.length && nb[0].sub) { 
+                	person.nationals = nb[0]; 
+                    person.hasLinks = true;
                 }
             });
         };
@@ -163,9 +171,7 @@ angular.module('eventsApp')
         };
 
         this.getLifeEvents = function(id) {
-            return eventRepository.getPersonLifeEvents(id).then(function(data) {
-                return self.processLifeEvents(data);
-            });
+            return eventRepository.getPersonLifeEvents(id);
         };
 
        this.getNationalBibliography = function(person) {

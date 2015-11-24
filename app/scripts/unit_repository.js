@@ -77,18 +77,18 @@ angular.module('eventsApp')
 		 '   		} GROUP BY ?id ?label ';
 
        var byPersonIdQry = prefixes +
-		   '   SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE { 	' +
-		   '   VALUES ?person { {0} } . ' +
-		   '     { ?evt a etypes:PersonJoining ; ' +
-		   '           crm:P143_joined ?person . ' +
-		   '           ?evt  crm:P144_joined_with ?id .  ' +
-		   '      } UNION {  ' +
-		   '           ?person owl:sameAs ?mennytmies . ' +
-		   '           ?mennytmies a foaf:Person . ' +
-		   '           ?mennytmies casualties:osasto ?id .  ' +
-		   '     } ' +
-		   '    ?id skos:prefLabel ?name . ' +
-		   '   } GROUP BY ?id ?label ';
+		   ' SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE { 	' +
+		   ' VALUES ?person { {0} } . ' +
+		   '   { ?evt a etypes:PersonJoining ; ' +
+		   '         crm:P143_joined ?person . ' +
+		   '         ?evt  crm:P144_joined_with ?id .  ' +
+		   '    } UNION {  ' +
+		   '         ?person owl:sameAs ?mennytmies . ' +
+		   '         ?mennytmies a foaf:Person . ' +
+		   '         ?mennytmies casualties:osasto ?id .  ' +
+		   '   } ' +
+		   '  ?id skos:prefLabel ?name . ' +
+		   ' } GROUP BY ?id ?label ';
 
 		var subUnitQry = prefixes +
 			'SELECT DISTINCT ?id	'+
