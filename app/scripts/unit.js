@@ -33,20 +33,19 @@ angular.module('eventsApp')
         Unit.prototype.fetchRelatedUnits = function() {
             var self = this;
             return unitService.getRelatedUnit(self.id).then(function(units) {
+            	 // console.log(units); 
                 var arr=[[],[],[]];
                 for (var i=0; i<units.length; i++) {
                     var unit=units[i];
                     if ('id' in unit) { 
                         unit.label = unit.label.split(';')[0];
-                        unit.level = 'level' in unit ? unit.level : 0;
-                        if (unit.level<0) { arr[2].push(unit); }
-                        else if (unit.level>0) { arr[0].push(unit); }
-                        else arr[1].push(unit);
+                        var level = 'level' in unit ? parseInt(unit.level) : 1;
+                        arr[level].push(unit);
                     }
                 }
-                if (arr[0].length) self.superUnits = arr[0];
+                if (arr[0].length) self.subUnits = arr[0];
                 if (arr[1].length) self.relatedUnits = arr[1];
-                if (arr[2].length) self.subUnits = arr[2];
+                if (arr[2].length) self.superUnits = arr[2];
             });
         };
         
@@ -169,12 +168,12 @@ angular.module('eventsApp')
 		  '		} ORDER BY ?start_time ?end_time ';
 
 			var relatedUnitQry = prefixes + 
-		'SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) ?level WHERE {  ' +
+		'SELECT DISTINCT ?id (SAMPLE(?name) AS ?label) ?level WHERE {  ' +
 		 '{ SELECT DISTINCT ?id ?level WHERE { ' +
 		 '                  ?ejoin a etypes:UnitJoining ; ' +
 		 '                    crm:P143_joined ?unit ; ' +
 		 '                    crm:P144_joined_with ?id . ' +
-		 '                BIND (1 AS ?level) ' +
+		 '                BIND (2 AS ?level) ' +
 		 '      			VALUES ?unit  { {0} } ' +
 		 '  	} GROUP BY ?id ?level LIMIT 5 ' +
 		 '} UNION { ' +
@@ -182,23 +181,23 @@ angular.module('eventsApp')
 		 '					{?ejoin a etypes:UnitJoining ; ' +
 		 '			                crm:P143_joined ?id ; ' +
 		 '			                crm:P144_joined_with ?unit . ' +
-		 '                    BIND (-1 AS ?level) ' +
+		 '                    BIND (0 AS ?level) ' +
 		 '			      } UNION { ?ejoin a etypes:UnitJoining ; ' +
 		 '			                crm:P143_joined ?unit ; ' +
 		 '			                crm:P144_joined_with ?superunit . ' +
 		 '			           ?ejoin2 a etypes:UnitJoining ; ' +
 		 '			                crm:P143_joined ?id ; ' +
 		 '			                crm:P144_joined_with ?superunit . ' +
-		 '                BIND (0 AS ?level) ' +
+		 '                BIND (1 AS ?level) ' +
 		 '	                    FILTER ( ?unit != ?id ) ' +
 		 '			      } ' +
 		 '                ?s ?p ?id . ' +
 		 '                VALUES ?unit  { {0} } ' +
 		 '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 40 } ' +
 		 '	?ename a etypes:UnitNaming ; ' +
-		 '	skos:prefLabel ?name ; ' +
-		 '	crm:P95_has_formed ?id . ' +
-		 '} GROUP BY ?id ?label ?level ';
+		 '		skos:prefLabel ?name ; ' +
+		 '		crm:P95_has_formed ?id . ' +
+		 '} GROUP BY ?id ?label ?level ORDER BY ?name ';
 	 
         var wardiaryQry = prefixes +
 		'SELECT ?label ?id ?time	' +
@@ -286,8 +285,8 @@ angular.module('eventsApp')
             	return unitMapperService.makeObjectListNoGrouping(data);
             });
         };
-        
-      this.getUnitDiaries = function (unit) {
+     
+     this.getUnitDiaries = function (unit) {
       		var qry = wardiaryQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectListNoGrouping(data);
@@ -296,6 +295,7 @@ angular.module('eventsApp')
          
 		this.getRelatedUnit = function(unit) {
             var qry = relatedUnitQry.format("<{0}>".format(unit));
+            // console.log(qry); 
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectList(data);
             });
