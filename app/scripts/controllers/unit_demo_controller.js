@@ -190,7 +190,7 @@ self.testUnitPath=false;
     
     var infoWindowCallback = function(item) {
         self.current = item;
-        fetchRelatedPeople(item.opts.event);
+        eventService.fetchRelated(item.opts.event);
         fetchImages(item);
     };
 
@@ -290,8 +290,8 @@ self.testUnitPath=false;
     };
 
     this.updateByUri = function(uri) {
-    		self.isLoadingEvent = true;
-         self.isLoadingLinks = false;
+        self.isLoadingEvent = true;
+        self.isLoadingLinks = false;
         unitService.getById(uri).then(function(unit) {
             if (_.isArray(unit.name)) {
                 var arr=unit.name;
@@ -300,7 +300,7 @@ self.testUnitPath=false;
             }
             self.current = unit; 
             self.isLoadingEvent = false;
-            self.current.fetchRelated();
+            unitService.fetchRelated(unit);
             return self.createTimeMapForActor(uri);
         }).catch(function() {
             self.isLoadingEvent = false;

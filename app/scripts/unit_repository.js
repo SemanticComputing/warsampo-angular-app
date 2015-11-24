@@ -186,7 +186,7 @@ angular.module('eventsApp')
             });
         };
         
-		this.getRelatedUnit = function(unit) {
+		this.getRelatedUnits = function(unit) {
             var qry = relatedUnitQry.format("<{0}>".format(unit));
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectList(data);

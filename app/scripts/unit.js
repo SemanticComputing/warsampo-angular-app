@@ -10,49 +10,47 @@ angular.module('eventsApp')
         var self = this;
 
         self.processUnitEvents = function(unit, events) {
-            var battles= {}, formations=[], description=[], places={};
+            var battles= [], formations=[], description=[], places=[];
             var em=new EventMapper();
             for (var i=0; i<events.length; i++) {
-                var 	e=events[i], 
-                        etype=e.idclass, 
-                        edate='', edate2='', eplace=''; 
-                if ('start_time' in e && 'end_time' in e) {
+                var e=events[i], 
+                    etype=e.type_id, 
+                    edate='', edate2='', eplace=''; 
+                if (e.start_time && e.end_time) {
                     edate=e.start_time; edate2=e.end_time;
                     edate=em.getExtremeDate(edate, true);
                     edate2=em.getExtremeDate(edate2, false);
                     edate=em.formatDateRange(edate,edate2);
                 }
-                if ('place_label' in e) {
-                    eplace=', '+e.place_label;
+                if (e.places) {
+                    eplace=', ' + _.pluck(e.places, 'label').join(', ');
                 }
                 if (edate!=='') {edate=edate+': ';}
                 
-                if (etype.indexOf('Battle')>-1) {
-                    battles[e.label] = { label:e.name, id:e.id };
-                } else if (etype.indexOf('Formation')>-1) {
-                    formations.push(edate+'Perustaminen: '+e.name+eplace);
-                } else if (etype.indexOf('TroopMovement')>-1) {
-                    description.push(edate+e.name+eplace);
+                if (etype.indexOf('Battle') > -1) {
+                    battles.push({ label: e.label, id: e.id });
+                } else if (etype.indexOf('Formation') > -1) {
+                    formations.push(edate + 'Perustaminen: ' + e.label + eplace);
+                } else if (etype.indexOf('TroopMovement') > -1) {
+                    description.push(edate + e.label + eplace);
                 } 
-                
-                if ('place_id' in e && 'place_label' in e) {
-                    places[e.place_label]=e.place_id;
-                    // places.push({id:e.place_id, label:e.place_label});
+
+                if (e.places) {
+                    places.concat(e.places);
                 }
             }
-            
+
             if (events.length) { unit.hasLinks = true; }
             
-            var arr=[];
-            for (var pr in battles) arr.push(battles[pr]);
-            if (arr.length) { unit.battles=arr; }
-            
-            if (formations.length) {description=formations.concat(description);}
-            if (description.length) {unit.description=description;}
-            
-            for (var pr in places) {
-                if (!unit.places) {unit.places=[];}
-                unit.places.push({label:pr, id:places[pr]});
+            if (battles) {
+                unit.battles = battles;
+            }
+
+            if (formations.length) {
+                description = formations.concat(description);
+            }
+            if (description.length) {
+                unit.description = description;
             }
         };
 
@@ -75,16 +73,22 @@ angular.module('eventsApp')
         };
 			
         self.fetchRelatedUnits = function(unit) {
-            return eventRepository.getByUnitId(unit.id).then(function(units) {
-                unit.relatedUnits = units;
+            return self.getRelatedUnits(unit.id).then(function(units) {
+                if (units && units.length) {
+                    unit.hasLinks = true;
+                    unit.relatedUnits = units;
+                }
                 return unit;
             });
         };
-        
-        
-        self.fetchUnitEvents = function() {
-            return unitService.getUnitEvents(self.id).then(function(events) {
-            	self.processUnitEvents(events);
+
+        self.fetchUnitEvents = function(unit) {
+            return eventRepository.getByUnitId(unit.id).then(function(events) {
+                if (events && events.length) {
+                    self.processUnitEvents(unit, events);
+                    unit.hasLinks = true;
+                }
+                return unit;
             });
         };
         
@@ -128,8 +132,8 @@ angular.module('eventsApp')
             return unitRepository.getByIdList(ids);
         };
 
-		this.getRelatedUnit = function(unit) {
-            return unitRepository.getRelatedUnit(unit);
+		this.getRelatedUnits = function(id) {
+            return unitRepository.getRelatedUnits(id);
         };
         
         this.getSubUnits = function(unit) {

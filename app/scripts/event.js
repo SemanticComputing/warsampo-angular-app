@@ -10,7 +10,7 @@ angular.module('eventsApp')
 
         self.fetchPeople = function(event) {
             return personRepository.getByIdList(event.participant_id).then(function(people) {
-                if (people) {
+                if (people && people.length) {
                     event.people = people;
                     event.hasLinks = true;
                 }
@@ -20,7 +20,7 @@ angular.module('eventsApp')
 
         self.fetchUnits = function(event) {
             return unitRepository.getByIdList(event.participant_id).then(function(units) {
-                if (units) {
+                if (units && units.length) {
                     event.units = units;
                     event.hasLinks = true;
                 }
@@ -64,6 +64,5 @@ angular.module('eventsApp')
         self.getEventsByActor = function(id) {
             return eventRepository.getByActorId(id);
         };
-        
 });
 

@@ -23,7 +23,7 @@ angular.module('eventsApp')
 
         var singleEventQry = prefixes +
             ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ?place_id ' +
-            '           ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
+            '           ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant  ' +
             ' WHERE { ' +
             '   VALUES ?id { {0} } ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
@@ -60,7 +60,7 @@ angular.module('eventsApp')
 
         var eventQry = prefixes +
             ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
-            '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
+            '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant  ' +
             ' WHERE { ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
             '       a ?type_id . ' +
@@ -100,7 +100,7 @@ angular.module('eventsApp')
 
         var eventsByPlaceQry = prefixes +
             ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
-            '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant  ' +
+            '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant  ' +
             ' WHERE { ' +
             '   VALUES ?place_id { {0} } ' +
             '   ?id crm:P4_has_time-span ?time_id ; ' +
@@ -137,7 +137,8 @@ angular.module('eventsApp')
             ' ORDER BY ?start_time ?end_time ';
 
         var eventsByActorQry = prefixes + 
-            '  SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ?commander ?place_id ?municipality ?lat ?lon ?polygon ?type ?participant   ' +
+            '  SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
+            '       ?commander ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant ' +
             '   WHERE {  ' +
             '      ' +
             '       VALUES ?participant { {0} }  ' +
@@ -186,7 +187,9 @@ angular.module('eventsApp')
             '   ORDER BY ?start_time ?end_time ';
             
         var eventsByUnitQry = prefixes +
-            'SELECT ?id ?start_time ?end_time ?time_id ?description ?note ?place_label ?commander ?place_id ?municipality ?lat ?lon ?type ?participant      	' +
+            'SELECT ?id ?start_time ?end_time ?time_id ?description ?note ' +
+            '   ?place_label ?commander ?place_id ?municipality ?lat ?lon ?type ' +
+            '   ?type_id ?participant ' +
             'WHERE {   	' +
             '  {  VALUES ?participant { {0} }	' +
             '  	{ ?id a crm:E66_Formation ;          	' +
@@ -249,7 +252,9 @@ angular.module('eventsApp')
             '} ORDER BY ?start_time ?end_time	';
 
         var byPersonQry = prefixes +
-       ' SELECT DISTINCT ?id ?idclass ?description (?description AS ?label) ?unit ?role ?link ?start_time WHERE { ' +
+       ' SELECT DISTINCT ?id ?type_id ?type ?description (?description AS ?label) ' +
+       '                ?unit ?role ?link ?start_time ' +
+       ' WHERE { ' +
        ' 	  VALUES ?person { {0} } . ' +
 	   ' 	    { ?id a etypes:Battle ; ' +
 	   ' 	      	crm:P11_had_participant ?person ; ' +
@@ -275,7 +280,8 @@ angular.module('eventsApp')
        '        UNION  '+
        '        { ?author skos:relatedMatch ?person . ?id <http://ldf.fi/warsa/articles/article/author> ?author . } '+
        '      } ' +
-	   ' 	   ?id a ?idclass . ' +
+	   ' 	   ?id a ?type_id . ' +
+	   ' 	   OPTIONAL { ?type_id skos:prefLabel ?type . } ' +
 	   ' 	    OPTIONAL { ' +
 	   ' 	      ?id crm:P4_has_time-span ?time .  ' +
 	   ' 	      ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
@@ -291,7 +297,7 @@ angular.module('eventsApp')
 	   ' 	} ORDER BY ?start_time ?end_time ';
 
         var personLifeEventsQry = prefixes +
-        ' SELECT DISTINCT ?id  ?idclass ?start_time ?end_time ?rank ?rankid WHERE { ' +
+        ' SELECT DISTINCT ?id  ?type_id ?start_time ?end_time ?rank ?rankid WHERE { ' +
   	   '  VALUES ?person { {0} } ' +
 	   ' 	{ ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
 	   '   	 UNION  ' +
@@ -300,43 +306,46 @@ angular.module('eventsApp')
        '     { ?id a etypes:Promotion ; crm:P11_had_participant ?person .  ' +
        '     OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . } ' +
        '     } ' +
-       '     ?id a ?idclass . ' +
+       '     ?id a ?type_id . ' +
+       '     OPTIONAL { ?id skos:prefLabel ?type . } ' +
        '     ?id crm:P4_has_time-span ?time .  ' +
        '     ?time crm:P82a_begin_of_the_begin ?start_time . ' +
        '     ?time crm:P82b_end_of_the_end ?end_time . ' +
 	   ' } ORDER BY ?start_time  ';
 
         var unitEventQry = prefixes +
-	     '  SELECT * WHERE { ' +
-		  '  		  VALUES ?unit  { {0} } ' +
-		  '  		  { ' +
-		  '  		    ?id a crm:E66_Formation ; ' +
-		  '  		    	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
-		  '  		  } UNION { ' +
-		  '  		    ?id a etypes:UnitNaming ; ' +
-		  '  		      	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
-		  '  		  } UNION { ' +
-		  '  		   	?id a etypes:TroopMovement ; ' +
-		  '  		    	crm:P95_has_formed ?unit . ' +
-		  '  		  } UNION { ' +
-		  '  		    ?id a etypes:Battle ; ' +
-		  '  		    	crm:P11_had_participant ?unit . ' +
-		  '  		  } ' +
-		  '  		  ?id a ?idclass . ' +
-		  '			OPTIONAL { ?id skos:prefLabel ?name . } ' +
-		  '			 ' +
-		  '			OPTIONAL { ' +
-		  '  		    ?id crm:P4_has_time-span ?time .  ' +
-		  '  		    ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
-		  '  		          crm:P82b_end_of_the_end ?end_time .  ' +
-		  '			} ' +
-		  '			OPTIONAL {  ' +
-		  '  		    ?id crm:P7_took_place_at ?place_id . ' +
-		  '  		    OPTIONAL { ' +
-		  '  		      ?place_id skos:prefLabel ?place_label . ' +
-		  '  		    } ' +
-		  '  		  } ' +
-		  '		} ORDER BY ?start_time ?end_time ';
+	     '  SELECT ?id ?type_id ?type ?label ?start_time ?end_time ?place_id ?place_label ' +
+         '  WHERE { ' +
+		  '      VALUES ?unit  { {0} } ' +
+		  '      { ' +
+		  '        ?id a crm:E66_Formation ; ' +
+		  '        	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
+		  '      } UNION { ' +
+		  '        ?id a etypes:UnitNaming ; ' +
+		  '          	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
+		  '      } UNION { ' +
+		  '       	?id a etypes:TroopMovement ; ' +
+		  '        	crm:P95_has_formed ?unit . ' +
+		  '      } UNION { ' +
+		  '        ?id a etypes:Battle ; ' +
+		  '        	crm:P11_had_participant ?unit . ' +
+		  '      } ' +
+		  '      ?id a ?type_id . ' +
+          '     OPTIONAL { ?id skos:prefLabel ?type . } ' +
+		  '	   OPTIONAL { ?id skos:prefLabel ?label . } ' +
+		  '	    ' +
+		  '	   OPTIONAL { ' +
+		  '        ?id crm:P4_has_time-span ?time .  ' +
+		  '        ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
+		  '              crm:P82b_end_of_the_end ?end_time .  ' +
+		  '	   } ' +
+		  '	   OPTIONAL {  ' +
+		  '        ?id crm:P7_took_place_at ?place_id . ' +
+		  '        OPTIONAL { ' +
+		  '          ?place_id skos:prefLabel ?place_label . ' +
+		  '        } ' +
+		  '      } ' +
+		  '	} ORDER BY ?start_time ?end_time ';
 
         var eventTypeFilter = 
             '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -439,7 +448,7 @@ angular.module('eventsApp')
             } else {
                 return $q.when();
             }
-            var qry = unitEventQry.format(id);
+            var qry = eventsByUnitQry.format(id);
             return endpoint.getObjects(qry).then(function(data) {
                 return eventMapperService.makeObjectList(data);
             });
@@ -459,5 +468,20 @@ angular.module('eventsApp')
                 return eventMapperService.makeObjectList(data);
             });
         };
+
+        this.getMinimalDataWithPlaceByUnitId = function(id) {
+            if (_.isArray(id)) {
+                id = "<{0}>".format(id.join("> <"));
+            } else if (id) {
+                id = "<{0}>".format(id);
+            } else {
+                return $q.when();
+            }
+            var qry = unitEventQry.format(id);
+            return endpoint.getObjects(qry).then(function(data) {
+                return eventMapperService.makeObjectList(data);
+            });
+        };
+
 });
 

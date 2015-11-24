@@ -74,6 +74,7 @@ EventMapper.prototype.makeObject = function(event) {
     e.hasLinks = true;
 
     e.id = event.id.value;
+    e.type_id = event.type_id ? event.type_id.value : '';
     e.type = event.type ? event.type.value : '';
     e.description = event.description.value;
     e.label = e.description;
@@ -92,7 +93,6 @@ EventMapper.prototype.makeObject = function(event) {
             id: event.place_id.value,
             label: event.place_label ? event.place_label.value : ''
         };
-        place.hipla_url = 'http://hipla.fi?uri=' + place.id;
         if (event.polygon) {
             // The event's location is represented as a polygon.
             // Transform the polygon string into a list consisting

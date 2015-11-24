@@ -27,18 +27,6 @@ angular.module('eventsApp')
         self.current = undefined;
     };
 
-    var fetchRelatedPeople = function(item) {
-        if (item.participant_id) {
-            fetchActors(item);
-        }
-    };
-
-    var fetchActors = function(item) {
-        return personService.getByIdList(item.participant_id).then(function(participants) {
-            self.current.commanders = participants;
-        });
-    };
-
     var fetchImages = function(item) {
         self.isLoadingImages = true;
         var photoConfig = Settings.getPhotoConfig();
@@ -124,7 +112,7 @@ angular.module('eventsApp')
         }
 
         self.current = item;
-        fetchRelatedPeople(item.opts.event);
+        eventService.fetchRelated(item.opts.event);
         fetchImages(item);
     };
 

@@ -10,7 +10,7 @@
             {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}
           </h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
-          <p ng-repeat="person in timemapCtrl.current.commanders" style="text-transform: capitalize">
+          <p ng-repeat="person in timemapCtrl.current.people" style="text-transform: capitalize">
           <a page-link="person.id">{{ person.label }}</a>
           </p>
           <p ng-repeat="unit in timemapCtrl.current.units" style="text-transform: capitalize">
