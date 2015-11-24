@@ -12,6 +12,7 @@ angular.module('eventsApp')
             ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
             ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
             ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
+            ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
             ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
             ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
             ' PREFIX sch: <http://schema.org/>' +
@@ -253,7 +254,7 @@ angular.module('eventsApp')
 
         var byPersonQry = prefixes +
        ' SELECT DISTINCT ?id ?type_id ?type ?description (?description AS ?label) ' +
-       '                ?unit ?role ?link ?start_time ' +
+       '                ?unit ?role ?link ?start_time ?end_time ?time_id ' +
        ' WHERE { ' +
        ' 	  VALUES ?person { {0} } . ' +
 	   ' 	    { ?id a etypes:Battle ; ' +
@@ -283,7 +284,7 @@ angular.module('eventsApp')
 	   ' 	   ?id a ?type_id . ' +
 	   ' 	   OPTIONAL { ?type_id skos:prefLabel ?type . } ' +
 	   ' 	    OPTIONAL { ' +
-	   ' 	      ?id crm:P4_has_time-span ?time .  ' +
+	   ' 	      ?id crm:P4_has_time-span ?time_id .  ' +
 	   ' 	      ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
 	   ' 	      		crm:P82b_end_of_the_end ?end_time .  ' +
 	   ' 	    } ' +
@@ -294,10 +295,10 @@ angular.module('eventsApp')
 	   ' 	        ?place_id geo:lat ?lat ;  geo:long ?lon .  ' +
 	   ' 	      } ' +
 	   ' 	    } ' +
-	   ' 	} ORDER BY ?start_time ?end_time ';
+	   ' } ORDER BY ?start_time ?end_time ';
 
         var personLifeEventsQry = prefixes +
-        ' SELECT DISTINCT ?id  ?type_id ?start_time ?end_time ?rank ?rankid WHERE { ' +
+        ' SELECT DISTINCT ?id  ?type_id ?time_id ?start_time ?end_time ?rank ?rankid WHERE { ' +
   	   '  VALUES ?person { {0} } ' +
 	   ' 	{ ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
 	   '   	 UNION  ' +
@@ -308,13 +309,13 @@ angular.module('eventsApp')
        '     } ' +
        '     ?id a ?type_id . ' +
        '     OPTIONAL { ?id skos:prefLabel ?type . } ' +
-       '     ?id crm:P4_has_time-span ?time .  ' +
+       '     ?id crm:P4_has_time-span ?time_id .  ' +
        '     ?time crm:P82a_begin_of_the_begin ?start_time . ' +
        '     ?time crm:P82b_end_of_the_end ?end_time . ' +
 	   ' } ORDER BY ?start_time  ';
 
         var unitEventQry = prefixes +
-	     '  SELECT ?id ?type_id ?type ?label ?start_time ?end_time ?place_id ?place_label ' +
+	     '  SELECT ?id ?type_id ?type ?label ?time_id ?start_time ?end_time ?place_id ?place_label ' +
          '  WHERE { ' +
 		  '      VALUES ?unit  { {0} } ' +
 		  '      { ' +
@@ -335,7 +336,7 @@ angular.module('eventsApp')
 		  '	   OPTIONAL { ?id skos:prefLabel ?label . } ' +
 		  '	    ' +
 		  '	   OPTIONAL { ' +
-		  '        ?id crm:P4_has_time-span ?time .  ' +
+		  '        ?id crm:P4_has_time-span ?time_id .  ' +
 		  '        ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
 		  '              crm:P82b_end_of_the_end ?end_time .  ' +
 		  '	   } ' +

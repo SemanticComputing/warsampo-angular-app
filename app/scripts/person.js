@@ -129,9 +129,9 @@ angular.module('eventsApp')
         };
 
         self.fetchRelatedPhotos = function(person) {
-            return photoRepository.getPhotosByPersonId(self.id).then(function(imgs) {
-                if (imgs.length) {
-                    self.images = imgs;
+            return photoRepository.getByPersonId(self.id).then(function(imgs) {
+                if (imgs && imgs.length) {
+                    person.images = imgs;
                     person.hasLinks = true;
                 }
             });
