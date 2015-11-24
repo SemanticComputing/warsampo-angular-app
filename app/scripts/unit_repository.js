@@ -43,38 +43,36 @@ angular.module('eventsApp')
           '  } ';
         
 			var relatedUnitQry = prefixes + 
-		 '		SELECT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE {  ' +
-		 '   		  { SELECT ?id ?name  WHERE { ' +
-		 '   		                  ?ejoin a etypes:UnitJoining ; ' +
-		 '   		                    crm:P143_joined ?unit ; ' +
-		 '   		                    crm:P144_joined_with ?id . ' +
-		 '   		                ?ename a etypes:UnitNaming ; ' +
-		 '   		                     skos:prefLabel ?name ; ' +
-		 '   		                     crm:P95_has_formed ?id . ' +
-		 '   		      			OPTIONAL { ?ename skos:altLabel ?abbrev . } ' +
-		 '   		                VALUES ?unit  { {0} } ' +
-		 '   		  	} GROUP BY ?id ?name  LIMIT 2  ' +
-		 '   		 } UNION { ' +
-		 '   			SELECT ?id ?name  (COUNT(?s) AS ?no) WHERE { ' +
-		 '   							{?ejoin a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?id ; ' +
-		 '   					                    crm:P144_joined_with ?unit . ' +
-		 '   					      } UNION { ?ejoin a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?unit ; ' +
-		 '   					                    crm:P144_joined_with ?superunit . ' +
-		 '   					                 ?ejoin2 a etypes:UnitJoining ; ' +
-		 '   					                    crm:P143_joined ?id ; ' +
-		 '   					                    crm:P144_joined_with ?superunit .    ' +
-		 '   					        FILTER ( ?unit != ?id ) ' +
-		 '   					      } ' +
-		 '   		                ?s ?p ?id . ' +
-		 '   		                ?ename a etypes:UnitNaming ; ' +
-		 '   		                     skos:prefLabel ?name ; ' +
-		 '   		                     crm:P95_has_formed ?id . ' +
-		 '   		                OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-		 '   		                VALUES ?unit  { {0} } ' +
-		 '   		    } GROUP BY ?id ?name ?no ORDER BY DESC(?no) LIMIT 5 } ' +
-		 '   		} GROUP BY ?id ?label ';
+		'SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) ?level WHERE {  ' +
+		 '{ SELECT DISTINCT ?id ?level WHERE { ' +
+		 '                  ?ejoin a etypes:UnitJoining ; ' +
+		 '                    crm:P143_joined ?unit ; ' +
+		 '                    crm:P144_joined_with ?id . ' +
+		 '                BIND (1 AS ?level) ' +
+		 '      			VALUES ?unit  { {0} } ' +
+		 '  	} GROUP BY ?id ?level LIMIT 5 ' +
+		 '} UNION { ' +
+		 '	SELECT ?id (COUNT(?s) AS ?no) ?level WHERE { ' +
+		 '					{?ejoin a etypes:UnitJoining ; ' +
+		 '			                crm:P143_joined ?id ; ' +
+		 '			                crm:P144_joined_with ?unit . ' +
+		 '                    BIND (-1 AS ?level) ' +
+		 '			      } UNION { ?ejoin a etypes:UnitJoining ; ' +
+		 '			                crm:P143_joined ?unit ; ' +
+		 '			                crm:P144_joined_with ?superunit . ' +
+		 '			           ?ejoin2 a etypes:UnitJoining ; ' +
+		 '			                crm:P143_joined ?id ; ' +
+		 '			                crm:P144_joined_with ?superunit . ' +
+		 '                BIND (0 AS ?level) ' +
+		 '	                    FILTER ( ?unit != ?id ) ' +
+		 '			      } ' +
+		 '                ?s ?p ?id . ' +
+		 '                VALUES ?unit  { {0} } ' +
+		 '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 40 } ' +
+		 '	?ename a etypes:UnitNaming ; ' +
+		 '	skos:prefLabel ?name ; ' +
+		 '	crm:P95_has_formed ?id . ' +
+		 '} GROUP BY ?id ?label ?level ';
 
        var byPersonIdQry = prefixes +
 		   ' SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE { 	' +
@@ -149,7 +147,7 @@ angular.module('eventsApp')
         ' } ';
 
         var wardiaryQry = prefixes +
-		'SELECT ?uri ?label ?id ?time	' +
+		'SELECT ?label ?id ?time	' +
 		'WHERE {	' +
 		'  GRAPH <http://ldf.fi/warsa/diaries> {	' +
 		'    VALUES ?unit { {0} } .	' +

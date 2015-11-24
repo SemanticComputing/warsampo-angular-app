@@ -45,7 +45,6 @@ angular.module('eventsApp')
             if (battles) {
                 unit.battles = battles;
             }
-
             if (formations.length) {
                 description = formations.concat(description);
             }
@@ -77,7 +76,29 @@ angular.module('eventsApp')
             return self.getRelatedUnits(unit.id).then(function(units) {
                 if (units && units.length) {
                     unit.hasLinks = true;
-                    unit.relatedUnits = units;
+                    var superUnits = [], relatedUnits = [], subUnits = [];
+                    units.forEach(function(relatedUnit) {
+                        relatedUnit.label = relatedUnit.label.split(';')[0];
+                        relatedUnit.level = relatedUnit.level ? relatedUnit.level : 0;
+                        if (relatedUnit.level<0) {
+                            subUnits.push(relatedUnit);
+                        }
+                        else if (relatedUnit.level>0) {
+                            superUnits.push(relatedUnit);
+                        }
+                        else {
+                            relatedUnits.push(relatedUnit);
+                        }
+                    });
+                    if (superUnits.length) {
+                        unit.superUnits = superUnits;
+                    }
+                    if (relatedUnits.length) {
+                        unit.relatedUnits = relatedUnits;
+                    }
+                    if (subUnits.length) {
+                        unit.subUnits = subUnits;
+                    }
                 }
                 return unit;
             });
@@ -132,7 +153,7 @@ angular.module('eventsApp')
                 }
             });
         };
-        
+
 		this.getById = function(id) {
             return unitRepository.getById(id);
         };
