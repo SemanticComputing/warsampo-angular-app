@@ -76,29 +76,23 @@ angular.module('eventsApp')
             return self.getRelatedUnits(unit.id).then(function(units) {
                 if (units && units.length) {
                     unit.hasLinks = true;
-                    var superUnits = [], relatedUnits = [], subUnits = [];
+                    unit.superUnits = unit.relatedUnits = unit.subUnits = [];
                     units.forEach(function(relatedUnit) {
                         relatedUnit.label = relatedUnit.label.split(';')[0];
-                        relatedUnit.level = relatedUnit.level ? relatedUnit.level : 0;
-                        if (relatedUnit.level<0) {
-                            subUnits.push(relatedUnit);
-                        }
-                        else if (relatedUnit.level>0) {
-                            superUnits.push(relatedUnit);
-                        }
-                        else {
-                            relatedUnits.push(relatedUnit);
+                        var level = relatedUnit.level ? parseInt(relatedUnit.level) : 1;
+                        switch (level) {
+                            case 0: {
+                                unit.subUnits.push(relatedUnit);
+                                break;
+                            } case 1: {
+                                unit.superUnits.push(relatedUnit);
+                                break;
+                            } case 2: {
+                                unit.relatedUnits.push(relatedUnit);
+                                break;
+                            }
                         }
                     });
-                    if (superUnits.length) {
-                        unit.superUnits = superUnits;
-                    }
-                    if (relatedUnits.length) {
-                        unit.relatedUnits = relatedUnits;
-                    }
-                    if (subUnits.length) {
-                        unit.subUnits = subUnits;
-                    }
                 }
                 return unit;
             });
@@ -165,7 +159,7 @@ angular.module('eventsApp')
 		this.getRelatedUnits = function(id) {
             return unitRepository.getRelatedUnits(id);
         };
-        
+     
         this.getSubUnits = function(unit) {
             return unitRepository.getSubUnits(unit);
         };

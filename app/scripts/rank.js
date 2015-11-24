@@ -26,7 +26,15 @@ angular.module('eventsApp')
         Rank.prototype.fetchRelatedRanks = function () {
         		var self = this;
             return rankService.getRelatedRanks(self.id).then(function(ranks) {
-            	if (ranks.length) { self.relatedRanks = ranks; }
+            	var arr=[[],[],[]];
+            	for (var i=0; i<ranks.length; i++) {
+            		var rank= ranks[i], 
+            			level = 'level' in rank ? parseInt(rank.level) : 1;
+            		arr[level].push(rank);
+            	}
+            	if (arr[0].length) { self.lowerRanks= arr[0]; }
+            	if (arr[1].length) { self.relatedRanks= arr[1]; }
+            	if (arr[2].length) { self.upperRanks= arr[2]; }
             });
         	};
         	
@@ -86,12 +94,22 @@ angular.module('eventsApp')
 			'} LIMIT 20	';
         
         var relatedRankQry = prefixes +
-        			   '  SELECT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) WHERE {' +
-		   '    VALUES ?rank { {0} } .   ' +
+        	'PREFIX org: <http://rdf.muninn-project.org/ontologies/organization#> ' +
+		   'SELECT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) ?level WHERE {' +
+		   '    VALUES ?rank { {0}  } .   ' +
 		   '    ?id a       <http://ldf.fi/warsa/actors/ranks/Rank> ;' +
-		   '      skos:prefLabel ?name .' +
-		   '    { ?id ?p ?rank . } UNION { ?rank ?p ?id . }' +
-		   '  }  GROUP BY ?id ?label '
+		   '    skos:prefLabel ?name .' +
+		   '    ' +
+		   '     { ?id org:rankSeniorTo ?rank . ' +
+		   '    BIND (2 AS ?level) .' +
+		   '  } UNION { ' +
+		   '    ?rank org:rankSeniorTo ?id . ' +
+		   '    BIND (0 AS ?level)' +
+		   '  } UNION {' +
+		   '    { ?id org:equalTo ?rank } UNION { ?rank dcterms:isPartOf ?id } UNION { ?id dcterms:isPartOf ?rank }' +
+		   '    BIND (1 AS ?level)' +
+		   '  }' +
+		   '}  GROUP BY ?id ?label ?level ORDER BY ?label' ;
         
 		this.getById = function(id) {
             var qry = rankQry.format("<{0}>".format(id));
