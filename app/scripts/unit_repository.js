@@ -147,6 +147,18 @@ angular.module('eventsApp')
         '       foaf:firstName ?firstName . ' +
         '   } ' +
         ' } ';
+
+        var wardiaryQry = prefixes +
+		'SELECT ?label ?id ?time	' +
+		'WHERE {	' +
+		'  GRAPH <http://ldf.fi/warsa/diaries> {	' +
+		'    VALUES ?unit { {0} } .	' +
+		'    ?dia crm:P70_documents ?unit .	' +
+		'    ?dia skos:prefLabel ?label .	' +
+		'    ?dia <http://purl.org/dc/terms/hasFormat> ?id .	' +
+		'    ?dia crm:P4_has_time-span ?time .	' +
+		'    }	' +
+		'} ORDER BY ?time	';
         
 		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
@@ -219,6 +231,13 @@ angular.module('eventsApp')
             qry = actorInfoQry.format(ids);
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectList(data);
+            });
+        };
+
+        this.getUnitDiaries = function(unit) {
+      		var qry = wardiaryQry.format("<{0}>".format(unit));
+            return endpoint.getObjects(qry).then(function(data) {
+                return unitMapperService.makeObjectListNoGrouping(data);
             });
         };
 });
