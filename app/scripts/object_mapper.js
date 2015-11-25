@@ -65,6 +65,9 @@ ObjectMapper.prototype.makeObjectList = function(objects) {
     // subject are merged into one object.
     var self = this;
     var obj_list = _.transform(objects, function(result, obj) {
+        if (!obj.id) {
+            return null;
+        }
         obj = self.makeObject(obj);
         // Check if this object has been constructed earlier
         var old = _.find(result, function(e) {

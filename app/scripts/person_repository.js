@@ -120,11 +120,17 @@ angular.module('eventsApp')
 		'} ORDER BY ?name 	';
 
         var byUnitQry = prefixes +
-        'SELECT ?id ?name (?name AS ?label) ?rank (COUNT(?s) AS ?no) WHERE { ' +
-        ' 	{ SELECT ?id WHERE ' +
+        'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end (COUNT(?s) AS ?no) WHERE { ' +
+        ' 	{ SELECT ?id ?role ?join_start ?join_end WHERE ' +
         ' 	    { ?evt a etypes:PersonJoining ; ' +
         ' 	    crm:P143_joined ?id . ' +
         ' 	    ?evt  crm:P144_joined_with {0} .  ' +
+	    '       OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
+	    '       OPTIONAL { ' +
+        '           ?evt crm:P4_has_time-span ?join_time_id . ' +
+        '           ?join_time_id crm:P82a_begin_of_the_begin ?join_start ; ' +
+        '               crm:P82b_end_of_the_end ?join_end . ' +
+        '       } ' +
         '    	} LIMIT 200' +
         '	} UNION ' +
         '    { SELECT ?id WHERE {' +
@@ -134,9 +140,11 @@ angular.module('eventsApp')
         '    	} LIMIT 200 ' +
         ' 	} ' +
         '    OPTIONAL { ?s ?p ?id . } ' +
-        '    ?id skos:prefLabel ?name . ' +
+        '    ?id skos:prefLabel ?label . ' +
+        '    ?id foaf:familyName ?sname .	' +
+        '    OPTIONAL { ?id foaf:firstName ?fname .	} ' +
         '    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
-        '} GROUP BY ?id ?name ?label ?no ?rank   ' +
+        '} GROUP BY ?id ?sname ?fname ?label ?no ?rank ?role ?join_start ?join_end ' +
         ' 		ORDER BY DESC(?no) LIMIT 100 ';
 
         var byRankQry = prefixes +

@@ -88,6 +88,9 @@ EventMapper.prototype.makeObject = function(event) {
     }
     e.municipality_id = event.municipality_id ? event.municipality_id.value : '';
     e.participant_id = event.participant ? event.participant.value : '';
+    if (event.participant_role) {
+        e.participant_role = event.participant_role.value;
+    }
     if (event.title) {
         e.title = event.title.value;
     }

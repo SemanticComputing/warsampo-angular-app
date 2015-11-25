@@ -254,7 +254,7 @@ angular.module('eventsApp')
 
         var byPersonQry = prefixes +
        ' SELECT DISTINCT ?id ?type_id ?type ?description (?description AS ?label) ' +
-       '                ?unit ?role ?link ?start_time ?end_time ?time_id ' +
+       '                ?unit ?participant_role ?link ?start_time ?end_time ?time_id ' +
        ' WHERE { ' +
        ' 	  VALUES ?person { {0} } . ' +
 	   ' 	    { ?id crm:P11_had_participant ?person ; ' +
@@ -263,7 +263,7 @@ angular.module('eventsApp')
        '        }' +
 	   ' 	    UNION  ' +
 	   ' 	    { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
-	   ' 	      ?id crm:P107_1_kind_of_member ?role .  ' +
+	   ' 	      ?id crm:P107_1_kind_of_member ?participant_role .  ' +
 	   ' 	      ?id crm:P144_joined_with ?unit . ' +
 	   ' 	      ?unit skos:prefLabel ?description . '+
 	   ' 	    }  '+

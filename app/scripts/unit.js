@@ -80,17 +80,16 @@ angular.module('eventsApp')
                 if (units && units.length) {
                     unit.hasLinks = true;
                     units.forEach(function(relatedUnit) {
-                        relatedUnit.label = relatedUnit.label.split(';')[0];
                         var level = relatedUnit.level ? parseInt(relatedUnit.level) : 1;
                         switch (level) {
                             case 0: {
                                 unit.subUnits.push(relatedUnit);
                                 break;
                             } case 1: {
-                                unit.superUnits.push(relatedUnit);
+                                unit.relatedUnits.push(relatedUnit);
                                 break;
                             } case 2: {
-                                unit.relatedUnits.push(relatedUnit);
+                                unit.superUnits.push(relatedUnit);
                                 break;
                             }
                         }
@@ -112,31 +111,23 @@ angular.module('eventsApp')
         
         self.fetchRelatedPersons = function(unit) {
             return personRepository.getByUnitId(unit.id).then(function(persons) {
-            	var em=new EventMapper(),
-                    arr = [],
-                    arr2=[];
-            	for (var i=0; i<persons.length; i++) {
-            		var p=persons[i];
-            		if ('label' in p) {
-            			if ('rank' in p && p.name.indexOf(' ')<0) {p.name = p.rank +' '+ p.name;}
-            			arr.push(p);
-	            		if ('role' in p) { 
-	            			var pname =p.role+' '+p.name; 
-	            			if ('start_time' in p) {
-	            				var edate=p.start_time;
-	            				var edate2= ('end_time' in p) ? p.end_time : edate;
-									edate=em.getExtremeDate(edate, true);
-									edate2=em.getExtremeDate(edate2, false);
-									edate=em.formatDateRange(edate,edate2);
-	            				arr2.push(pname + ', '+edate);
-	            			} else { arr2.push(pname); }
-	            		}
-	            		
-	            	}
-            	}
-            	
-            	if (arr.length)  {	unit.relatedPersons = arr; }
-            	if (arr2.length) {	unit.commanders = arr2; }
+            	var em=new EventMapper();
+                unit.relatedPersons = [];
+                unit.commanders = [];
+                persons.forEach(function(p) {
+                    unit.relatedPersons.push(p);
+                    if (p.role) { 
+                        var pname = p.role + ' ' + p.label; 
+                        if (p.join_start) {
+                            var edate=em.getExtremeDate(p.join_start, true);
+                            var edate2=em.getExtremeDate(p.join_end, false);
+                            edate=em.formatDateRange(edate,edate2);
+                            unit.commanders.push(pname + ', ' + edate);
+                        } else {
+                            unit.commanders.push(pname);
+                        }
+                    }
+            	});
 
                 return unit;
             });

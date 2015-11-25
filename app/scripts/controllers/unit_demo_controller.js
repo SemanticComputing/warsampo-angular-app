@@ -269,16 +269,6 @@ self.testUnitPath=false;
         return self.showWinterWar(id);
     };
 
-    self.showUnit_OLD_REMOVABLE = function() {
-        var uri = getSelectionUri('unitSelector');
-        if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
-        self.noReload = true;
-        $location.search('uri', uri);
-        if (uri) {
-            return self.showWinterWar(uri);
-        }
-    };
-
     self.showPerson = function() {
         var uri = getSelectionUri('unitSelector');
         if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
@@ -313,7 +303,10 @@ self.testUnitPath=false;
 	 
     this.getItems= function () {
     		var rx = this.queryregex;
+    		var testAlphabet = /[^.0-9 ]/g;
+    		
     		if (rx.length<1) { rx='^1.*$'; } 
+    		else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
     		else if (rx.length<3) { rx='^'+rx+'.*$'; } 
     		else if (rx.length<6) { rx = '(^|^.* )'+rx+'.*$'; }
     		else { rx = '^.*'+rx+'.*$'; }
@@ -321,17 +314,7 @@ self.testUnitPath=false;
     		self.items = [ {id:'#', name:"Etsitään ..."} ];
     		
     		unitService.getItems(rx,this).then(function(data) {
-    			/* // try to show units with events with a different color, not implemented though:
-				for (var i=0; i<data.length; i++) {
-					var item=data[i];
-					if (item.e=="0") {
-						 item.style="color:#333;";
-					} else {
-					item.style="color:#00F;"; 
-					}
-				}
-				*/
-				if (data.length) {
+    			if (data.length) {
 	            self.items = data; }
    			else {
    				self.items = [ {id:'#', name:"Ei hakutuloksia."} ];
@@ -384,277 +367,10 @@ self.testUnitPath=false;
         self.updateUnit();
     }
 
-function Polyfitter(T,degree,Weight) {
-	
-	this.A;
-	this.AT;
-	this.ATA;
-	this.Weight=Weight;
-	
-	this.init = function(T,degree) {
-		var N=T.length,
-			W= new Array(T);
-		
-		for (var i=0; i<N; i++) {
-			W[i]=this.wandermonde(T[i],degree);
-		}
-		
-		this.A=new Matrix(W);
-		if (this.Weight) {
-			for (var i=0; i<Weight.length; i++) {
-				this.A.multiplyRow(i,Weight[i]);
-				// X[i] *= Weight[i];
-			}
-		}
-		
-		this.AT=this.A.transpose();
-		this.ATA=this.AT.multiply(this.A);
-	}
-	
-	this.solve = function(X) {
-		
-		if (this.Weight) {
-			for (var i=0; i<Weight.length; i++) {
-				X[i] *= Weight[i];
-			}
-		}
-		
-		var b=new Matrix([X]),
-			ATb=this.AT.multiply(b.transpose());
-		
-		var M=this.ATA.rightConcat(ATb);
-		
-		M.gaussify();
-	
-		var resX=[],
-			N=M.A.length;
-		for (var i=0; i<N; i++) {
-			resX.push(M.A[i][N]);
-		}
-		return resX;
-	}
-	
-	this.wandermonde = function (x,n) {
-		var y=1,arr=[y];
-		for (var i=1; i<=n; i++) {
-			arr.push(y*=x);
-		}
-		return arr;
-	}
-	
-	this.polyval = function(p,X) {
-		if (typeof X=='number') {
-			var i=p.length-1, res=p[i];
-			while (i>0) {
-				res = res*X +p[--i];
-			}
-			return res;
-		} else {
-			var arr=new Array(X.length);
-			for (var i=0;i<X.length; i++) {
-				arr[i]=(this.polyval(p,X[i]));
-			}
-			return arr;
-		}
-	}
-	
-	this.linspace = function(min,max, N) {
-		var x=min,
-			h=(max-x)/(N-1),
-			arr=new Array(N);
-		for (var i=0; i<N; i++) {
-			arr[i]=x;
-			x += h;
-		}
-		return arr;
-	}
-	
-	this.init(T,degree);
-	
-}
 
-function Polyfit(T,X,Y,degree,Weight) {
-	
-	var N=T.length,
-		W= new Array(T);
-	
-	var wandermonde = function (x,n) {
-		var y=1,arr=[y];
-		for (var i=1; i<=n; i++) {
-			arr.push(y*=x);
-		}
-		return arr;
-	}
-	
-	for (var i=0; i<N; i++) {
-		W[i]=wandermonde(T[i],degree);
-	}
-	
-	A=new Matrix(W);
-	if (Weight) {
-		for (var i=0; i<Weight.length; i++) {
-			A.multiplyRow(i,Weight[i]);
-			// X[i] *= Weight[i];
-		}
-	}
-	
-	var AT=A.transpose(),
-		ATA=AT.multiply(A);
-	
-	var	b=new Matrix([X]),
-		ATAb=ATA.multiply(b.transpose());
-	
-	var Ab=A.rightConcat(b);
-	
-	Ab.gaussify();
-	
-	var resX=[];
-	N=AX.A.length;
-	for (var i=0; i<N; i++) {
-		resX.push(AX.A[i][N]);
-	}
-	return {px:resX};
-	
-}
 
-function Matrix(data) {
-	
-	this.A=data;
-	
-	this.matrixInverse3 = function() {
-		var A=this.A;
-		//  subdeterminants:
-		var d0 = A[1][1]*A[2][2]-A[1][2]*A[2][1],
-		d1 = A[1][0]*A[2][2]-A[1][2]*A[2][0],
-		d2 = A[1][0]*A[2][1]-A[1][1]*A[2][0],
-		
-		d3 = A[0][1]*A[2][2]-A[0][2]*A[2][1],
-		d4 = A[0][0]*A[2][2]-A[0][2]*A[2][0],
-		d5 = A[0][0]*A[2][1]-A[0][1]*A[2][0],
-		
-		d6 = A[0][1]*A[1][2]-A[0][2]*A[1][1],
-		d7 = A[0][0]*A[1][2]-A[0][2]*A[1][0],
-		d8 = A[0][0]*A[1][1]-A[0][1]*A[1][0];
-		
-		// det(A) and 1/det(A):
-		var det = A[0][0]*d0 - A[0][1]*d1 + A[0][2]*d2,
-		id = 1.0/det;
-		
-		//  inverse matrix:
-		return [[d0*id, -d3*id, d6*id],
-				[-d1*id, d4*id, -d7*id],
-				[d2*id, -d5*id, d8*id]];
-	}
-	
-	this.multiply = function(M2) {
-		var A=this.A, B=M2.A,
-			w=B[0].length,
-			h=A.length,
-			C=[];
-		for (var y=0;y<h;y++) {
-			var row=A[y], arr=[];
-			for (var x=0; x<w; x++) {
-				var res=0;
-				for (var k=0; k<row.length; k++) {
-					res += row[k]*B[k][x];
-				}
-				arr.push(res);
-			}
-			C.push(arr);
-		}
-		return new Matrix(C);
-	}
-	
-	this.transpose = function () {
-		var B=[];
-		for (var x=0; x<this.A[0].length; x++) {
-			var row=[];
-			for (var y=0; y<this.A.length; y++) {
-				row.push(this.A[y][x]);
-			}
-			B.push(row);
-		}
-		return new Matrix(B);
-	}
-	
-	this.toString = function () {
-		var res="";
-		for (var y=0; y<this.A.length; y++) { res += this.A[y].join('\t') +"\n"; }
-		//res=this.A.join('\n');
-		return res;
-	};
-	
-	this.multiplyRow = function(y, k) {
-		var row=this.A[y];
-		for (var x=0; x<row.length; x++) {
-			row[x] *= k;
-		}
-	};
-	
-	this.gaussify = function () {
-		var h=this.A.length,
-			w=this.A[0].length,
-			check=[], order=[];
-		for (var i=0; i<h; i++) { check.push(false); }
-		for (var col=0; col<w-1; col++) {
-			// first largest row by absolute value
-			var crow=0, cval = -0.01;
-			for (row=0; row<h; row++) {
-				if (!check[row]) {
-					var val2=this.A[row][col];
-					if (val2<-cval) {
-						crow=row; cval=-val2;
-					} else if(val2>cval) {
-						crow=row; cval=val2;
-					}
-				}
-			}
-			check[crow] = true;
-			var f=1.0/this.A[crow][col];
-			order.push(crow);
-			
-			for (var y=0; y<h; y++) {
-				if (!check[y]) {
-					var f2=this.A[y][col]*f;
-					for (var x=0; x<w; x++) {
-						this.A[y][x] -= f2*this.A[crow][x];
-					}
-				}
-			}
-			for (var x=0; x<w; x++) {
-				this.A[crow][x] *= f;
-			}
-			
-			
-		}
-		
-		for (var i=order.length-1; i>-1; i--) {
-			var crow=order[i];
-			for (var j=i-1; j>-1; j--) {
-				var row=order[j];
-				var f=this.A[row][i];
-				for (var x=i; x<w; x++) {
-					this.A[row][x] -= f*this.A[crow][x];
-				}
-			}
-			// console.log(this.toString());
-		}
-		
-		var B=new Array(h);
-		for (var i=0; i<order.length; i++) {
-			B[i]=this.A[order[i]];
-		}
-		this.A=B;
-		// console.log(this.toString());
-	}
-	
-	this.rightConcat = function(M2) {
-		var B=[];
-		for (var y=0; y<this.A.length; y++) {
-			B.push(this.A[y].concat(M2.A[y]));
-		}
-		return new Matrix(B);
-	}
-}
+
+
+
 
 });
