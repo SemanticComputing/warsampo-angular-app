@@ -20,7 +20,9 @@ angular.module('eventsApp')
         
         self.fetchRelatedRanks = function(rank) {
             return self.getRelatedRanks(rank.id).then(function(relatedRanks) {
-                rank.lowerRanks = rank.relatedRanks = rank.upperRanks = [];
+                rank.lowerRanks = [];
+                rank.relatedRanks = [];
+                rank.upperRanks = [];
                 if (relatedRanks && relatedRanks.length) {
                     rank.hasLinks = true;
                     relatedRanks.forEach(function(relatedRank) {

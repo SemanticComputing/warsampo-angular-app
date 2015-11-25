@@ -74,7 +74,9 @@ angular.module('eventsApp')
 			
         self.fetchRelatedUnits = function(unit) {
             return self.getRelatedUnits(unit.id).then(function(units) {
-                unit.superUnits = unit.relatedUnits = unit.subUnits = [];
+                unit.superUnits = [];
+                unit.relatedUnits = [];
+                unit.subUnits = [];
                 if (units && units.length) {
                     unit.hasLinks = true;
                     units.forEach(function(relatedUnit) {
