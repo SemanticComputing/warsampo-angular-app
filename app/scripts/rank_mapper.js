@@ -11,31 +11,15 @@ Rank.prototype.getLabel = function() {
 	return this.label;
 };
 
-
-
 Rank.prototype.getDescription = function() {
 	var arr=[];
 	if (this.comment) { arr = arr.concat(this.comment); }
 	return arr;
 };
 
-
-
-
-function RankMapper() { }
-
-RankMapper.prototype.makeObject = function(obj) {
-    // Take the event as received and turn it into an object that
-    // is easier to handle.
-    // Make the location a list as to support multiple locations per event.
-    var o = new Rank();
-
-    _.forIn(obj, function(value, key) {
-        o[key] = value.value;
-    });
-	 // if (_.isArray(o.note)) { o.note=o.note[0]; }
-    return o;
-};
+function RankMapper() {
+    this.objectClass = Rank;
+}
 
 angular.module('eventsApp')
 .factory('rankMapperService', function(objectMapperService) {
