@@ -44,7 +44,12 @@ angular.module('eventsApp')
         restrict:'E',
         scope: {
             title: "=",
-            related: "="
+            related: "=",
+        },
+        link: function(scope, element, attrs) {
+            if ('external' in attrs) {
+                scope.external = true;
+            }
         },
         templateUrl: "views/partials/link_collapse_partial.html"
     };

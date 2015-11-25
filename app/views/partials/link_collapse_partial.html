@@ -8,7 +8,12 @@
   <div collapse="!show">
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="thing in related">
-      <a page-link="thing.id">{{ thing.label | words:10 }}</a>
+      <span ng-if="!external">
+        <a page-link="thing.id" data-external="external">{{ thing.label | words:10 }}</a>
+      </span>
+      <span ng-if="external">
+        <a ng-href="{{ thing.id }}">{{ thing.label | words:10 }}</a>
+      </span>
       </li>
     </ul>
   </div>
