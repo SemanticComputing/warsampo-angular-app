@@ -139,6 +139,26 @@ angular.module('eventsApp')
         '} GROUP BY ?id ?name ?label ?no ?rank   ' +
         ' 		ORDER BY DESC(?no) LIMIT 100 ';
 
+        var byRankQry = prefixes +
+			'SELECT DISTINCT ?id ?sname ?fname WHERE {	' +
+			'  {	' +
+			'  SELECT DISTINCT ?id WHERE {	' +
+			'  VALUES ?rank { {0} } .	' +
+			'    ?id a atypes:MilitaryPerson .	' +
+			'    ?id :hasRank ?rank .	' +
+			'  }  LIMIT 20 	' +
+			'} UNION {	' +
+			'SELECT DISTINCT ?id WHERE {	' +
+			'  VALUES ?rank { {0} } .	' +
+			'    ?evt a etypes:Promotion .	' +
+			'    ?evt :hasRank ?rank .    	' +
+			'    ?evt crm:P11_had_participant ?id .   	' +
+			'  	?id a atypes:MilitaryPerson .	' +
+			'    }  LIMIT 20 }	' +
+			'  ?id foaf:familyName ?sname .	' +
+			'  ?id foaf:firstName ?fname .	' +
+			'} LIMIT 20	';
+
         var casualtiesByTimeSpanQry = prefixes +
         ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
         ' WHERE { ' +
@@ -151,6 +171,13 @@ angular.module('eventsApp')
 
         this.getByUnitId = function(id) {
             var qry = byUnitQry.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return personMapperService.makeObjectList(data);
+            });
+        };
+
+        this.getByRankId = function(id) {
+            var qry = byRankQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
                 return personMapperService.makeObjectList(data);
             });

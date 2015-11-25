@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:UnitPageCtrl
+ * @name eventsApp.controller:RankPageCtrl
  * @description
- * # UnitPageCtrl
+ * # RankPageCtrl
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
@@ -19,8 +19,10 @@ angular.module('eventsApp')
         .then(function(rank) {
             self.rank = rank; 
             self.isLoadingRank = false;
-				self.isLoadingPersons = true;
-            return rank.fetchRelated();
+            self.isLoadingPersons = true;
+            return rankService.fetchRelated(rank).then(function() {
+                self.isLoadingPersons = false;
+            });
         }).catch(function() {
             self.isLoadingRank = false;
             self.isLoadingPersons = false;

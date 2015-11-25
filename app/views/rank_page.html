@@ -3,8 +3,8 @@
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
-    <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
-    <p ng-if="!ctrl.rank && !ctrl.isLoadingEvent">No metadata available for this object.</p>
+    <img ng-show="ctrl.isLoadingRank" src="images/loading.gif" />
+    <p ng-if="!ctrl.rank && !ctrl.isLoadingRank">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.rank">
       <h2>
         {{ ctrl.rank.getLabel() }}
@@ -17,7 +17,7 @@
   <!-- Links -->
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class">Linkit</h2>
-    <img ng-show="ctrl.rank.isLoadingPersons" src="images/loading.gif" />
+    <img ng-show="ctrl.isLoadingPersons" src="images/loading.gif" />
     <div id="linkContent">
     <related-links title="'Henkilöitä'" data-related="ctrl.rank.persons"></related-links>
     <related-links title="'Ylempiä sotilasarvoja'" data-related="ctrl.rank.upperRanks"></related-links>
