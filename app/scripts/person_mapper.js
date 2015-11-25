@@ -7,17 +7,6 @@
 function Person() { }
 
 
-Person.prototype.getLabel = function() {
-	var label=this.sname;
-	if (!('note' in this)) { this.note='' };
-	if (!('rank' in this)) { this.rank='' };
-	
-	if ('fname' in this && this.fname != '') { 
-		label += ', '+this.fname; 
-		} 
-	return label;
-};
-
 Person.prototype.getDescription = function() {
 	
 	var arr=[];
@@ -80,18 +69,6 @@ function PersonMapper() {
     this.objectClass = Person;
 }
 
-PersonMapper.prototype.postProcess = function(people) {
-    people.forEach(function(person) {
-        if (_.isArray(person.label)) {
-            person.label = person.label.join(', ');
-        }
-        person.birth_place = person.birth_place || '';
-        person.death_place= person.death_place || '';
-    });
-
-    return people;
-};
-
 PersonMapper.prototype.makeObject = function(obj) {
     // Take the event as received and turn it into an object that
     // is easier to handle.
@@ -101,6 +78,11 @@ PersonMapper.prototype.makeObject = function(obj) {
     _.forIn(obj, function(value, key) {
         o[key] = value.value;
     });
+
+    o.birth_place = o.birth_place || '';
+    o.death_place= o.death_place || '';
+    
+    o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
 
     var places = [];
 

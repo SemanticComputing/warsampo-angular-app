@@ -59,10 +59,10 @@ angular.module('eventsApp')
             });
         };
         
-		this.getRelatedRanks = function(id) {
-				var qry = relatedRankQry.format("<{0}>".format(id));
-				return endpoint.getObjects(qry).then(function(data) {
-					return rankMapperService.makeObjectListNoGrouping(data);
+        this.getRelatedRanks = function(id) {
+            var qry = relatedRankQry.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return rankMapperService.makeObjectList(data);
             });
         };
 });

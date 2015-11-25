@@ -109,7 +109,7 @@ angular.module('eventsApp')
 		
 		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
 		var selectorQuery = prefixes +
-				'SELECT DISTINCT ?name ?id WHERE {	' +
+        'SELECT DISTINCT ?name ?id WHERE {	' +
 		'  SELECT DISTINCT ?name ?id WHERE {	' +
 		'    GRAPH <http://ldf.fi/warsa/actors> {	' +
 		'      ?id a atypes:MilitaryPerson .   	    	' +

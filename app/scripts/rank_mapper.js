@@ -6,11 +6,6 @@
 
 function Rank() { }
 
-Rank.prototype.getLabel = function() {
-	if (_.isArray(this.label)) { this.label= this.label[0]; }
-	return this.label;
-};
-
 Rank.prototype.getDescription = function() {
 	var arr=[];
 	if (this.comment) { arr = arr.concat(this.comment); }
@@ -20,6 +15,15 @@ Rank.prototype.getDescription = function() {
 function RankMapper() {
     this.objectClass = Rank;
 }
+
+RankMapper.prototype.postProcess = function(ranks) {
+    ranks.forEach(function(rank) {
+        if (_.isArray(rank.label)) {
+            rank.label = rank.label[0];
+        }
+    });
+    return ranks;
+};
 
 angular.module('eventsApp')
 .factory('rankMapperService', function(objectMapperService) {

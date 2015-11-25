@@ -7,7 +7,7 @@
     <p ng-if="!ctrl.rank && !ctrl.isLoadingRank">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.rank">
       <h2>
-        {{ ctrl.rank.getLabel() }}
+        {{ ctrl.rank.label }}
       </h2>
       <p ng-repeat="desc in ctrl.rank.getDescription()">
       {{ desc }}
