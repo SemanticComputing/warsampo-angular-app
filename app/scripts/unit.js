@@ -24,6 +24,7 @@ angular.module('eventsApp')
             	function() { return self.fetchUnitDiaries(); }).then(
             	function() { return self.fetchRelatedUnits(); }).then(
             	function() {
+            	 self.isLoadingLinks = false;
                 if (self.relatedEvents || self.relatedUnits || self.relatedPersons || self.diaries ) {
                     self.hasLinks = true;
                 }
@@ -193,7 +194,8 @@ angular.module('eventsApp')
 		 '			      } ' +
 		 '                ?s ?p ?id . ' +
 		 '                VALUES ?unit  { {0} } ' +
-		 '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 40 } ' +
+		 '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 50 } ' +
+		 ' FILTER ( BOUND(?level) ) ' +
 		 '	?ename a etypes:UnitNaming ; ' +
 		 '		skos:prefLabel ?name ; ' +
 		 '		crm:P95_has_formed ?id . ' +
@@ -295,7 +297,7 @@ angular.module('eventsApp')
          
 		this.getRelatedUnit = function(unit) {
             var qry = relatedUnitQry.format("<{0}>".format(unit));
-            // console.log(qry); 
+            // console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectList(data);
             });
