@@ -304,6 +304,7 @@ self.testUnitPath=false;
     this.getItems= function () {
     		var rx = this.queryregex;
     		var testAlphabet = /[^.0-9 ]/g;
+    		
     		if (rx.length<1) { rx='^1.*$'; } 
     		else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
     		else if (rx.length<3) { rx='^'+rx+'.*$'; } 
