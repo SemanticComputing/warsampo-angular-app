@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:PageCtrl
+ * @name eventsApp.controller:EventPageCtrl
  * @description
- * # PageCtrl
+ * # EventPageCtrl
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
@@ -46,16 +46,22 @@ angular.module('eventsApp')
             var placeEventPromise = eventService.getEventsByPlaceId(_.pluck(self.event.places, 'id'));
             var timeEventPromise = eventService.getEventsLooselyWithinTimeSpan(self.event.start_time, self.event.end_time);
             return $q.all([placeEventPromise, timeEventPromise]);
-
         })
         .then(function(events) { 
-            self.relatedEventsByPlace = _.filter(events[0], function(e) { return e.id !== self.event.id; });
+            self.relatedEventsByPlace = _.filter(events[0], function(e) {
+                return e.id !== self.event.id;
+            });
             if (_.isEmpty(self.relatedEventsByPlace)) {
                 self.relatedEventsByPlace = null;
             }
-            self.relatedEventsByTime = _.filter(events[1], function(e) { return e.id !== self.event.id; });
+            self.relatedEventsByTime = _.filter(events[1], function(e) {
+                return e.id !== self.event.id;
+            });
             if (_.isEmpty(self.relatedEventsByTime)) {
                 self.relatedEventsByTime = null;
+            }
+            if (self.relatedEventsByPlace || self.relatedEventsByTime) {
+                self.event.hasLinks = true;
             }
             self.isLoadingLinks = false;
         }).catch(function() {

@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:MainCtrl
+ * @name eventsApp.controller:EventDemoCtrl
  * @description
- * # SimileMapCtrl
+ * # EventDemoCtrl
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SimileMapCtrl', function ($routeParams, $location, $anchorScroll,
+  .controller('EventDemoCtrl', function ($routeParams, $location, $anchorScroll,
               $timeout, $window, $scope, $rootScope, $route, Settings,
               eventService, photoService, casualtyRepository, personService, timemapService) {
 

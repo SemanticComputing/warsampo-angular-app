@@ -29,8 +29,11 @@ angular.module('eventsApp')
         };
 
         self.fetchRelated = function(event) {
-            var relatedFuns = [self.fetchPeople(event), self.fetchUnits(event)];
-            return $q.all(relatedFuns).then(function() {
+            var related = [
+                self.fetchPeople(event),
+                self.fetchUnits(event)
+            ];
+            return $q.all(related).then(function() {
                 return event;
             });
         };
