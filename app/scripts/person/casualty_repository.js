@@ -4,7 +4,7 @@
  * Service that provides an interface for fetching casualty data.
  */
 angular.module('eventsApp')
-    .service('casualtyService', function($q, SparqlService, objectMapperService) {
+    .service('casualtyRepository', function($q, SparqlService, objectMapperService) {
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes = '' +

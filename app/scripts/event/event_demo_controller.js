@@ -10,7 +10,7 @@
 angular.module('eventsApp')
   .controller('SimileMapCtrl', function ($routeParams, $location, $anchorScroll,
               $timeout, $window, $scope, $rootScope, $route, Settings,
-              eventService, photoService, casualtyService, personService, timemapService) {
+              eventService, photoService, casualtyRepository, personService, timemapService) {
 
     var self = this;
 
@@ -45,7 +45,7 @@ angular.module('eventsApp')
         var band = tm.timeline.getBand(1);
         var start = band.getMinVisibleDate();
         var end = band.getMaxVisibleDate();
-        return casualtyService.getCasualtyLocationsByTime(start.toISODateString(), end.toISODateString())
+        return casualtyRepository.getCasualtyLocationsByTime(start.toISODateString(), end.toISODateString())
             .then(function(casualties) {
                 var res = [];
                 casualties.forEach(function(casualty) {
@@ -61,7 +61,7 @@ angular.module('eventsApp')
         var end = band.getMaxVisibleDate();
         self.minVisibleDate = start;
         self.maxVisibleDate = end;
-        casualtyService.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
+        casualtyRepository.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
         .then(function(counts) {
             self.casualtyStats = counts;
             var count = 0;

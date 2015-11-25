@@ -10,7 +10,7 @@
 angular.module('eventsApp')
   .controller('UnitDemoCtrl', function ($routeParams, $location, 
               $anchorScroll, $timeout, $window, $scope, $rootScope, $route,
-              eventService, photoService, casualtyService, unitService,
+              eventService, photoService, casualtyRepository, unitService,
               Settings, timemapService) {
 
     var self = this;
@@ -26,7 +26,7 @@ angular.module('eventsApp')
 
     var fetchRelatedPeople = function(item) {
         if (item.participant_id) {
-            casualtyService.getCasualtyInfo(item.participant_id).then(function(participants) {
+            casualtyRepository.getCasualtyInfo(item.participant_id).then(function(participants) {
                 self.current.related_people = participants;
             });
             fetchActors(item);
@@ -66,7 +66,7 @@ self.testUnitPath=false;
         	var end = band.getMaxVisibleDate();
 			var unit='<'+self.current.id+'>';
         	
-         return casualtyService.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
+         return casualtyRepository.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
             	var res = [];
                casualties.forEach(function(casualty) {
@@ -138,7 +138,7 @@ self.testUnitPath=false;
         
         self.minVisibleDate = start;
         self.maxVisibleDate = end;
-        casualtyService.getCasualtyCountsByTimeGroupAndUnitByType(start.toISODateString(), end.toISODateString(), unit)
+        casualtyRepository.getCasualtyCountsByTimeGroupAndUnitByType(start.toISODateString(), end.toISODateString(), unit)
         .then(function(counts) {
         	   self.casualtyStats = counts;
             var count = 0;

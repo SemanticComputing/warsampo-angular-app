@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('timeService', function($q, SparqlService, timeMapperService, Time,
-                casualtyService, eventService, photoService, personService) {
+                casualtyRepository, eventService, photoService, personService) {
 
         Time.prototype.fetchEvents = function() {
             var self = this;

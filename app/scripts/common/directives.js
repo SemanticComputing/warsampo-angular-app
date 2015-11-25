@@ -46,7 +46,7 @@ angular.module('eventsApp')
             title: "=",
             related: "="
         },
-        templateUrl: "views/link_collapse_partial.html"
+        templateUrl: "views/partials/link_collapse_partial.html"
     };
 })
 .directive('photoScroller', function() {
@@ -55,7 +55,7 @@ angular.module('eventsApp')
         scope: {
             images: "="
         },
-        templateUrl: "views/photo_scroller_partial.html"
+        templateUrl: "views/partials/photo_scroller_partial.html"
     };
 })
 .directive('pageLink', function() {

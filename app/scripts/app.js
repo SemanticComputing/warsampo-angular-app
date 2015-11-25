@@ -25,13 +25,13 @@ angular
       var lang = '/:lang?';
     $routeProvider
       .when(lang + '/events/page', {
-        templateUrl: 'views/page.html',
-        controller: 'PageCtrl',
+        templateUrl: 'views/event_page.html',
+        controller: 'EventPageCtrl',
         controllerAs: 'ctrl'
       })
       .when(lang + '/events/:era?', {
-        templateUrl: 'views/simile_map.html',
-        controller: 'SimileMapCtrl',
+        templateUrl: 'views/event_timeline.html',
+        controller: 'EventDemoCtrl',
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
       })
