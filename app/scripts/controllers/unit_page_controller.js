@@ -18,8 +18,10 @@ angular.module('eventsApp')
         unitService.getById($routeParams.uri)
         .then(function(unit) {
             self.unit = unit; 
-            self.isLoadingEvent = self.isLoadingLinks = false;
-				return unitService.fetchRelated(unit);
+            self.isLoadingEvent = false;
+			return unitService.fetchRelated(unit).then(function() {
+                self.isLoadingLinks = false;
+            });
         }).catch(function() {
             self.isLoadingEvent = false;
             self.isLoadingLinks = false;

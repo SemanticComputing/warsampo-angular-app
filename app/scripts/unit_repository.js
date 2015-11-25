@@ -42,7 +42,7 @@ angular.module('eventsApp')
           '      VALUES ?id  { {0} } ' +
           '  } ';
         
-			var relatedUnitQry = prefixes + 
+        var relatedUnitQry = prefixes + 
 		'SELECT DISTINCT ?id (SAMPLE(?name) AS ?label) ?level WHERE {  ' +
 		 '{ SELECT DISTINCT ?id ?level WHERE { ' +
 		 '                  ?ejoin a etypes:UnitJoining ; ' +
@@ -68,7 +68,8 @@ angular.module('eventsApp')
 		 '			      } ' +
 		 '                ?s ?p ?id . ' +
 		 '                VALUES ?unit  { {0} } ' +
-		 '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 40 } ' +
+		 '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 50 } ' +
+		 ' FILTER ( BOUND(?level) ) ' +
 		 '	?ename a etypes:UnitNaming ; ' +
 		 '		skos:prefLabel ?name ; ' +
 		 '		crm:P95_has_formed ?id . ' +
