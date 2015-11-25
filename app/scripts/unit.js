@@ -34,8 +34,7 @@ angular.module('eventsApp')
         Unit.prototype.fetchRelatedUnits = function() {
             var self = this;
             return unitService.getRelatedUnit(self.id).then(function(units) {
-            	 // console.log(units); 
-                var arr=[[],[],[]];
+            	 var arr=[[],[],[]];
                 for (var i=0; i<units.length; i++) {
                     var unit=units[i];
                     if ('id' in unit) { 
