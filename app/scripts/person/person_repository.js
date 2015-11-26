@@ -30,7 +30,7 @@ angular.module('eventsApp')
         ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
         var personQry = prefixes +
-        ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rankid ?birth_time ?death_time '+
+        ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ?death_time '+
         '       ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
         '       ?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
         '       ?sid ?source ' +
@@ -43,7 +43,7 @@ angular.module('eventsApp')
         '   OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '   }' +
-        '   OPTIONAL { ?id :hasRank ?rankid . ?rankid skos:prefLabel ?rank . }' +
+        '   OPTIONAL { ?id :hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . }' +
         '   OPTIONAL { ' +
         '     ?id owl:sameAs ?casualty .' +
         '     ?casualty a foaf:Person .'  +

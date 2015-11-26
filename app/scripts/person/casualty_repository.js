@@ -132,7 +132,7 @@ angular.module('eventsApp')
 			'		' +
 			'	    ?id a foaf:Person . 	' +
 			'	    ?id casualties:osasto ?subunit .	' +
-			'	      	' +
+			'	' +
 			'	    ?id casualties:kuolinaika ?date .    	' +
 			'	    FILTER(?date >= "{0}"^^xsd:date && ?date <= "{1}"^^xsd:date) 		' +
 			'	' +
@@ -151,7 +151,6 @@ angular.module('eventsApp')
 			'	      }	' +
 			'	    } UNION { VALUES ?subunit { {2} } .  } 	' +
 			'	' +
-		//	'	    ?subunit skos:altLabel ?abbrev .	' +
 			'	    ?evt a etypes:Battle . 	' +
 			'	    ?evt crm:P11_had_participant ?subunit . 	' +
 			'	' +
