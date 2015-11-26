@@ -290,7 +290,7 @@ self.testUnitPath=false;
             }
             self.current = unit; 
             self.isLoadingEvent = false;
-            unitService.fetchRelated(unit);
+            unitService.fetchRelated(unit, true);
             return self.createTimeMapForActor(uri);
         }).catch(function() {
             self.isLoadingEvent = false;

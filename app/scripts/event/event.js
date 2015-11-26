@@ -64,8 +64,8 @@ angular.module('eventsApp')
             return eventRepository.getByPlaceId(ids);
         };
 
-        self.getEventsByActor = function(id) {
-            return eventRepository.getByActorId(id);
+        self.getUnitAndSubUnitEventsByUnitId = function(id) {
+            return eventRepository.getUnitAndSubUnitEventsByUnitId(id);
         };
 });
 

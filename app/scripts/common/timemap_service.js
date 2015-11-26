@@ -483,7 +483,7 @@ angular.module('eventsApp')
             bandInfo[1].intervalPixels = 50;
 
             var self = this;
-            return eventService.getEventsByActor(actorId).then(function(data) {
+            return eventService.getUnitAndSubUnitEventsByUnitId(actorId).then(function(data) {
             	return self.createTimemapWithPhotoHighlight(start, end, data,
                     highlights, infoWindowCallback, photoConfig, bandInfo);
             }, function(data) {

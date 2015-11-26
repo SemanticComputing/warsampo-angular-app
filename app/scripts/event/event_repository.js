@@ -188,7 +188,7 @@ angular.module('eventsApp')
             '   }  ' +
             '   ORDER BY ?start_time ?end_time ';
             
-        var eventsByUnitQry = prefixes +
+        var eventsAndSubUnitEventsByUnitQry = prefixes +
         ' SELECT ?id ?start_time ?end_time ?time_id ?description ?note ' +
         ' ?place_label ?commander ?place_id ?municipality ?lat ?lon ?type ' +
         ' ?type_id ?participant ' +
@@ -428,13 +428,6 @@ angular.module('eventsApp')
             });
         };
 
-        this.getByActorId = function(id) {
-            var qry = eventsByUnitQry.format("<{0}>".format(id));
-            return endpoint.getObjects(qry).then(function(data) {
-            	return eventMapperService.makeObjectList(data);
-            });
-        };
-
         this.getByPersonId = function(id) {
             var qry;
             if (_.isArray(id)) {
@@ -458,7 +451,21 @@ angular.module('eventsApp')
             } else {
                 return $q.when();
             }
-            var qry = eventsByUnitQry.format(id);
+            var qry = eventsByActorQry.format(id);
+            return endpoint.getObjects(qry).then(function(data) {
+                return eventMapperService.makeObjectList(data);
+            });
+        };
+
+        this.getUnitAndSubUnitEventsByUnitId = function(id) {
+            if (_.isArray(id)) {
+                id = "<{0}>".format(id.join("> <"));
+            } else if (id) {
+                id = "<{0}>".format(id);
+            } else {
+                return $q.when();
+            }
+            var qry = eventsAndSubUnitEventsByUnitQry.format(id);
             return endpoint.getObjects(qry).then(function(data) {
                 return eventMapperService.makeObjectList(data);
             });

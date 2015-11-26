@@ -28,13 +28,13 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
             {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
           </h3>
           <p>{{ ctrl.current.opts.description }}</p>
-          <related-links title="'Henkilöitä'" data-related="ctrl.current.relatedPersons"></related-links>
-          <related-links title="'Yläosasto'" data-related="ctrl.current.superUnits"></related-links>
-          <related-links title="'Alaosastoja'" data-related="ctrl.current.subUnits"></related-links>
-          <related-links title="'Muita osastoja'" data-related="ctrl.current.relatedUnits"></related-links>
-          <related-links title="'Taistelut'" data-related="ctrl.current.battles"></related-links>
-          <related-links title="'Paikat'" data-related="ctrl.current.places"></related-links>
-          <related-links title="'Sotapäiväkirjat'" data-related="ctrl.current.diaries"></related-links>
+          <related-links data-title="'Henkilöitä'" data-related="ctrl.current.relatedPersons"></related-links>
+          <related-links data-title="'Yläosasto'" data-related="ctrl.current.superUnits"></related-links>
+          <related-links data-title="'Alaosastoja'" data-related="ctrl.current.subUnits"></related-links>
+          <related-links data-title="'Muita osastoja'" data-related="ctrl.current.relatedUnits"></related-links>
+          <related-links data-title="'Taistelut'" data-related="ctrl.current.battles"></related-links>
+          <related-links data-title="'Paikat'" data-related="ctrl.current.places"></related-links>
+          <related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.current.diaries"></related-links>
       	
           <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
             {{ unit.label.join(' / ') }}
