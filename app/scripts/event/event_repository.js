@@ -269,12 +269,12 @@ angular.module('eventsApp')
 	   ' 	    }  '+
 	   ' 	    UNION '+
 	   ' 	    { '+
-       '        ?id a <http://ldf.fi/warsa/articles/article/Article> ; '+
+       '        ?id a  <http://ldf.fi/schema/warsa/articles/Article> ; '+
        '        dcterms:hasFormat ?link ; '+
        '        <http://purl.org/dc/elements/1.1/title> ?description ; '+
        '        { ?id dcterms:subject ?person . }  '+
        '        UNION  '+
-       '        { ?author skos:relatedMatch ?person . ?id <http://ldf.fi/warsa/articles/article/author> ?author . } '+
+       '        { ?author skos:relatedMatch ?person . ?id <http://ldf.fi/schema/warsa/articles/author> ?author . } '+
        '      } ' +
 	   ' 	   ?id a ?type_id . ' +
        '       OPTIONAL { ' +
