@@ -64,6 +64,7 @@ angular.module('eventsApp')
             var related = [
                 self.fetchRelatedUnits(unit),
                 self.fetchRelatedPersons(unit),
+                self.fetchRelatedArticles(unit),
                 self.fetchUnitDiaries(unit)
             ];
             if (includeSubUnits) {
@@ -147,6 +148,13 @@ angular.module('eventsApp')
             });
         };
 
+        self.fetchRelatedArticles = function(unit) {
+            return unitRepository.getUnitArticles(unit.id).then(function(articles) {
+            	if (articles && articles.length) {
+                    unit.articles = articles;
+                }
+            });		
+			}
         self.fetchUnitDiaries = function(unit) {
             return unitRepository.getUnitDiaries(unit.id).then(function(diaries) {
             	if (diaries && diaries.length) {

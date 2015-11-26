@@ -26,8 +26,9 @@ angular.module('eventsApp')
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' + 
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
-
+        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ' +
+		  ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
+		  
         var unitQry = prefixes +
           '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?sid ?source WHERE {  ' +
           '      ?ename a etypes:UnitNaming . ' +
@@ -159,6 +160,17 @@ angular.module('eventsApp')
 		'    }	' +
 		'} ORDER BY ?time	';
         
+		var articleQry = prefixes +
+		'SELECT ?id ?label ' +
+		'WHERE { ' +
+		'  GRAPH <http://ldf.fi/warsa/articles> { ' +
+		'  VALUES ?unit { {0} } .  ' +
+		'  ?id a articles:Article ; ' +
+		'      <http://purl.org/dc/elements/1.1/title> ?label ;  ' +
+		'      articles:nerunit ?unit .  ' +
+		'  } ' +
+		'} ORDER BY ?label ';
+        
 		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
@@ -239,5 +251,13 @@ angular.module('eventsApp')
                 return unitMapperService.makeObjectListNoGrouping(data);
             });
         };
+
+        this.getUnitArticles = function(unit) {
+      		var qry = articleQry.format("<{0}>".format(unit));
+            return endpoint.getObjects(qry).then(function(data) {
+                return unitMapperService.makeObjectListNoGrouping(data);
+            });
+        };
+        
 });
 

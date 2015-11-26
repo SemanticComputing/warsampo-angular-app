@@ -7,7 +7,7 @@ angular.module('eventsApp')
     .service('eventRepository', function($q, SparqlService, eventMapperService) {
 
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
-
+			
         var prefixes = '' +
             ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
             ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
@@ -21,7 +21,8 @@ angular.module('eventsApp')
             ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
             ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ' +
             ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-            ' PREFIX actors: <http://ldf.fi/warsa/actors/> ';
+            ' PREFIX actors: <http://ldf.fi/warsa/actors/> ' +
+            ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
 
         var singleEventQry = prefixes +
             ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ?place_id ' +
@@ -269,12 +270,14 @@ angular.module('eventsApp')
 	   ' 	    }  '+
 	   ' 	    UNION '+
 	   ' 	    { '+
-       '        ?id a  <http://ldf.fi/schema/warsa/articles/Article> ; '+
+       '        ?id a articles:Article ; '+
        '        dcterms:hasFormat ?link ; '+
        '        <http://purl.org/dc/elements/1.1/title> ?description ; '+
        '        { ?id dcterms:subject ?person . }  '+
        '        UNION  '+
-       '        { ?author skos:relatedMatch ?person . ?id <http://ldf.fi/schema/warsa/articles/author> ?author . } '+
+       '        { ?id articles:nerperson ?person . }  '+
+       '        UNION  '+
+       '        { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
        '      } ' +
 	   ' 	   ?id a ?type_id . ' +
        '       OPTIONAL { ' +
