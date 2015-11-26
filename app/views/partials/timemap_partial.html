@@ -10,11 +10,11 @@
             {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}
           </h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
-          <p ng-repeat="person in timemapCtrl.current.people" style="text-transform: capitalize">
+          <p ng-repeat="person in timemapCtrl.current.opts.event.people" style="text-transform: capitalize">
           <a page-link="person.id">{{ person.label }}</a>
           </p>
-          <p ng-repeat="unit in timemapCtrl.current.units" style="text-transform: capitalize">
-          {{ unit.label.join(' / ') }}
+          <p ng-repeat="unit in timemapCtrl.current.opts.event.units" style="text-transform: capitalize">
+          <a page-link="unit.id">{{ unit.label }}</a>
           </p>
           <p><a page-link="timemapCtrl.current.opts.event.id">Näytä tapahtuman tietosivu</a></p>
           <div ng-show="timemapCtrl.images.length === 0">
