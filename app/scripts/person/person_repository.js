@@ -87,25 +87,25 @@ angular.module('eventsApp')
 		'PREFIX dcterms: <http://purl.org/dc/terms/>' +
 		'PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/>' +
 		' ' +
-		'SELECT ?sub ?name ?images ?shortDescription ?description' +
+		'SELECT ?id ?name ?images ?shortDescription ?description' +
 		'		(SAMPLE(?placeOfBirth1) AS ?placeOfBirth) ?dateOfBirth' +
 		'		(SAMPLE(?placeOfDeath1) AS ?placeOfDeath) ?dateOfDeath' +
 		'		' +
 		'	WHERE {' +
-		'	  ?sub rdfs:label ?name .' +
+		'	  ?id rdfs:label ?name .' +
 		'      		FILTER REGEX(?name, "{0}", "i")' +
-		'	  ?sub schema:birthDate ?dateOfBirth . FILTER (?dateOfBirth{1}) .' +
-		'  	  ?sub schema:deathDate ?dateOfDeath . FILTER (?dateOfDeath{2}) .' +
-		'	  OPTIONAL {?birth cidoc:P98_brought_into_life ?sub . ' +
+		'	  ?id schema:birthDate ?dateOfBirth . FILTER (?dateOfBirth{1}) .' +
+		'  	  ?id schema:deathDate ?dateOfDeath . FILTER (?dateOfDeath{2}) .' +
+		'	  OPTIONAL {?birth cidoc:P98_brought_into_life ?id . ' +
 		'                ?birth cidoc:P7_took_place_at ?place . ' +
 		'                ?place rdfs:label ?placeOfBirth1 .} ' +
-		'	  OPTIONAL {?death cidoc:P100_was_death_of ?sub . ' +
+		'	  OPTIONAL {?death cidoc:P100_was_death_of ?id . ' +
 		'                ?death cidoc:P7_took_place_at ?placeD . ' +
 		'                ?placeD rdfs:label ?placeOfDeath1 . } ' +
-		'	  OPTIONAL {?sub schema:image ?images } ' +
-		'	  OPTIONAL {?sub dcterms:type ?shortDescription } ' +
-		'	  OPTIONAL {?sub rdfs:comment ?description } ' +
-		'} GROUP BY ?sub ?name ?dateOfBirth ?placeOfBirth ?dateOfDeath ?placeOfDeath ?images ?shortDescription ?description ';
+		'	  OPTIONAL {?id schema:image ?images } ' +
+		'	  OPTIONAL {?id dcterms:type ?shortDescription } ' +
+		'	  OPTIONAL {?id rdfs:comment ?description } ' +
+		'} GROUP BY ?id ?name ?dateOfBirth ?placeOfBirth ?dateOfDeath ?placeOfDeath ?images ?shortDescription ?description ';
 		
 		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
 		var selectorQuery = prefixes +

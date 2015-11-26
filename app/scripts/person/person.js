@@ -133,7 +133,7 @@ angular.module('eventsApp')
 
         self.fetchNationalBib = function(person) {
             return personRepository.getNationalBibliography(person).then(function(nb) {
-            	if (nb && nb.length && nb[0].sub) { 
+            	if (nb && nb.length && nb[0].id) { 
                 	person.nationals = nb[0]; 
                     person.hasLinks = true;
                 }
