@@ -82,7 +82,9 @@ PersonMapper.prototype.makeObject = function(obj) {
     o.birth_place = o.birth_place || '';
     o.death_place= o.death_place || '';
     
-    o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
+    if (o.sname) {
+        o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
+    }
 
     var places = [];
 
