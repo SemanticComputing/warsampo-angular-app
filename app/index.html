@@ -1,9 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <!-- build:base /dev/ -->
     <base href="/">
-    <!-- endbuild -->
     <meta charset="utf-8">
     <title>Sotasampo</title>
     <meta name="description" content="">
@@ -36,7 +34,7 @@
   <body ng-app="eventsApp">
   <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+  <![endif]-->
 
   <!-- Add your site or application content here -->
   <div class="header" ng-controller="NavCtrl">
@@ -49,9 +47,7 @@
     <div ng-view=""></div>
   </div>
 
-
-  <div class="footer" id="footer">
-  </div>
+  <div class="footer" id="footer"></div>
 
   <script src="http://maps.google.com/maps/api/js?v=3&libraries=visualization"></script>
   <!-- build:js({.,app}) scripts/vendor.js -->
@@ -124,7 +120,5 @@
   <script src="scripts/nav/nav_controller.js"></script>
   <!-- endbuild -->
 
-  <script>
-  </script>
   </body>
-  </html>
+</html>
