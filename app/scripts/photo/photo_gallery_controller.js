@@ -9,12 +9,7 @@
  */
 angular.module('eventsApp')
   .controller('PhotoGalleryCtrl', function() {
-    var self = this;
 
-    self.showPhotoGallery = function() {
-        blueimp.Gallery($('#photo-thumbs a'), $('#blueimp-gallery').data());
-    };
-
-    $("#photo-thumbs").mThumbnailScroller({ type: "hover-precise", 
+    $("#photo-thumbs").mThumbnailScroller({ type: "hover-30", 
         markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
 });
