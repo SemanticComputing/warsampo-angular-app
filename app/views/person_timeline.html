@@ -30,14 +30,7 @@
         <p ng-show="ctrl.person"> <!--&& !ctrl.person.showPhotos">-->
         {{ ctrl.person.images.length }} kuvaa
         </p>
-        <div id="photo-thumbs">
-          <div id="photo-container">
-            <a ng-cloak ng-repeat="img in ctrl.person.images" 
-              ng-controller="PhotoCtrl as photoCtrl" ng-click="photoCtrl.showPhotoGallery()"
-              data-gallery title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-              <img fallback-img data-thumbnail="true" ng-src="{{ img.thumbnail }}" /></a>
-          </div>
-        </div>
+        <photo-scroller images="ctrl.person.images"></photo-scroller>
       </div>
 
       <div ng-if="ctrl.person.nationals" ng-include="'views/partials/national_bibliography_partial.html'"></div>
