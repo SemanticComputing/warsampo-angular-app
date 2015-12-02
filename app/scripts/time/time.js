@@ -4,95 +4,63 @@
  * Service that provides an interface for fetching times from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .service('timeService', function($q, SparqlService, timeMapperService, Time,
-                casualtyRepository, eventService, photoService, personService) {
+    .service('timeService', function($q, SparqlService, timeRepository,
+            eventRepository, photoRepository, personRepository) {
 
-        Time.prototype.fetchEvents = function() {
-            var self = this;
-            return eventService.getEventsLooselyWithinTimeSpan(self.bob, self.eoe)
+        var self = this;
+
+        self.fetchEvents = function(time) {
+            return eventRepository.getLooselyWithinTimeSpan(time.bob, time.eoe)
                 .then(function(events) {
-                    self.events = events;
-            });
-        };
-
-        Time.prototype.fetchPhotos = function() {
-            var self = this;
-            return photoService.getByTimeSpan(self.bob, self.eoe)
-                .then(function(photos) {
-                    self.photos = photos;
-            });
-        };
-
-        Time.prototype.fetchCasualties = function() {
-            var self = this;
-            return personService.getCasualtiesByTimeSpan(self.bob, self.eoe)
-                .then(function(data) {
-                    self.casualties = data;
-            });
-        };
-
-        Time.prototype.fetchRelated = function() {
-            var self = this;
-            return self.fetchEvents()
-                .then(function() { return self.fetchPhotos(); })
-                .then(function() { return self.fetchCasualties(); })
-                .then(function() {
-                    if (self.events || self.photos || self.casualties) {
-                        self.hasLinks = true;
+                    time.events = events;
+                    if (events && events.length) {
+                        time.hasLinks = true;
                     }
-                });
+                    return time;
+            });
         };
 
-        var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
-
-        var prefixes = '' +
-            ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
-            ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
-            ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
-            ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
-            ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
-            ' PREFIX sch: <http://schema.org/>' +
-            ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-            ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
-
-        var allQry = prefixes +
-            ' SELECT ?id ?bob ?eoe ?label ' +
-            ' WHERE { ' +
-            '   GRAPH <http://ldf.fi/warsa/events/times> { ' +
-            '     ?id crm:P82a_begin_of_the_begin ?bob ; ' +
-            '       crm:P82b_end_of_the_end ?eoe . ' +
-            '       skos:prefLabel ?label ; ' +
-            '   } ' +
-            ' } ' +
-            ' ORDER BY ?bob ?eoe ';
-
-        var byIdQry = prefixes +
-            ' SELECT ?id ?bob ?eoe ?label ' +
-            ' WHERE { ' +
-            '   GRAPH <http://ldf.fi/warsa/events/times> { ' +
-            '     VALUES ?id { {0} } ' +
-            '     ?id crm:P82a_begin_of_the_begin ?bob ; ' +
-            '       crm:P82b_end_of_the_end ?eoe ; ' +
-            '       skos:prefLabel ?label ; ' +
-            '   } ' +
-            ' } ' +
-            ' ORDER BY ?bob ?eoe ';
-
-        this.getAll = function() {
-            // Get all events.
-            // Returns a promise.
-            return endpoint.getObjects(allQry).then(function(data) {
-                return timeMapperService.makeObjectList(data);
+        self.fetchPhotos = function(time) {
+            return photoRepository.getByTimeSpan(time.bob, time.eoe)
+                .then(function(photos) {
+                    time.photos = photos;
+                    if (photos && photos.length) {
+                        time.hasLinks = true;
+                    }
+                    return time;
             });
+        };
+
+        self.fetchCasualties = function(time) {
+            return personRepository.getCasualtiesByTimeSpan(time.bob, time.eoe)
+                .then(function(data) {
+                    time.casualties = data;
+                    if (data && data.length) {
+                        time.hasLinks = true;
+                    }
+                    return time;
+            });
+        };
+
+        self.fetchRelated = function(time) {
+            var related = [
+                self.fetchEvents(time),
+                self.fetchPhotos(time),
+                self.fetchCasualties(time)
+            ];
+            return $q.all(related).then(function() {
+                return time;
+            });
+        };
+
+        self.getAll = function() {
+            // Get all times.
+            // Returns a promise.
+            return timeRepository.getAll();
         };
 
         this.getById = function(id) {
-            return endpoint.getObjects(byIdQry.format('<' + id + '>')).then(function(data) {
-                if (data.length) {
-                    return timeMapperService.makeObjectList(data)[0];
-                }
-                return $q.reject("Failed to get TimeSpan");
-            });
+            return timeRepository.getById(id);
         };
 });
 

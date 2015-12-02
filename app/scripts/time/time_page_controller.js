@@ -20,7 +20,7 @@ angular.module('eventsApp')
             self.time = time; 
             self.isLoadingObj = false;
 
-            return self.time.fetchRelated();
+            return timeService.fetchRelated(time);
         }).then(function() {
             self.isLoadingLinks = false;
         }).catch(function() {

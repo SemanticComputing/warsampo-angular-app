@@ -251,7 +251,8 @@ angular.module('eventsApp')
         };
 
         this.getCasualtiesByTimeSpan = function(start, end) {
-            return endpoint.getObjects(casualtiesByTimeSpanQry.format(start, end))
+            var qry = casualtiesByTimeSpanQry.format(start, end);
+            return endpoint.getObjects(qry)
                 .then(function(data) {
                     if (data.length) {
                         return personMapperService.makeObjectList(data);
@@ -267,33 +268,7 @@ angular.module('eventsApp')
 	           return end2.getObjects(qry).then(function(data) {
 	           		return personMapperService.makeObjectList(data);
 	           });
-       		} /* else if (person.fname && person.fname.length>2) { 
-           		// Search db by person name: TODO: to be removed later:
-           	  var sukunimi=person.sname, etunimi=person.fname;
-              if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
-              
-              var birthyearcondition='<"1925"';
-              if ('birth_year' in person) {
-              		birthyearcondition='="'+person.birth_year+'"';
-              }
-              
-              var deathyearcondition='>"1938"';
-              if ('death_year' in person) {
-              		deathyearcondition='="'+person.death_year+'"';
-              	}                      
-					
-               //	 marski http://ldf.fi/history/kb/p379
-              var etu1 = (etunimi === 'Carl Gustaf Emil') ? 'Gustaf' :etunimi.split(' ')[0];
-              var rgx = "^"+sukunimi+", .*("+etu1+").*$";
-               
-	           var qry = nationalBibliographyByNameQry.format(rgx, birthyearcondition, deathyearcondition); 
-	           
-	           var end2 = new SparqlService("http://ldf.fi/history/sparql");
-	           return end2.getObjects(qry).then(function(data) {
-	           		// console.log(data);
-	           	  return personMapperService.makeObjectList(data);
-	           });
-           } */
+       		}
            return $q.when();
        };
        
