@@ -31,7 +31,7 @@ angular.module('eventsApp')
 
         var personQry = prefixes +
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ?death_time '+
-        '       ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
+        '       ?natiobib ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
         '       ?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
         '       ?sid ?source ' +
         ' WHERE { ' +
@@ -44,7 +44,10 @@ angular.module('eventsApp')
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '   }' +
         '   OPTIONAL { ?id :hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . }' +
-        '   OPTIONAL { ' +
+        ' 	OPTIONAL { ' +
+        '     ?id owl:sameAs ?natiobib .' +
+        '	} ' + 
+        '   OPTIONAL { ' + 
         '     ?id owl:sameAs ?casualty .' +
         '     ?casualty a foaf:Person .'  +
         '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
@@ -79,7 +82,35 @@ angular.module('eventsApp')
         '   }' +
         ' } ';
 
-		var nationalBibliographyQry = 		
+		var nationalBibliographyQry = 
+		'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' +
+		'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ' +
+		'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
+		'PREFIX schema: <http://schema.org/>' +
+		'PREFIX dcterms: <http://purl.org/dc/terms/>' +
+		'PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/>' +
+		' ' +
+		'SELECT ?id ?name ?images ?shortDescription ?description' +
+		'		(SAMPLE(?placeOfBirth1) AS ?placeOfBirth) ?dateOfBirth' +
+		'		(SAMPLE(?placeOfDeath1) AS ?placeOfDeath) ?dateOfDeath' +
+		'		' +
+		'	WHERE {' +
+		'		VALUES ?id { <{0}> }' +
+		'	  ?id rdfs:label ?name .' +
+		'	  ?id schema:birthDate ?dateOfBirth .' +
+		'  ?id schema:deathDate ?dateOfDeath .' +
+		'	  OPTIONAL {?birth cidoc:P98_brought_into_life ?id . ' +
+		'                ?birth cidoc:P7_took_place_at ?place . ' +
+		'                ?place rdfs:label ?placeOfBirth1 .} ' +
+		'	  OPTIONAL {?death cidoc:P100_was_death_of ?id . ' +
+		'                ?death cidoc:P7_took_place_at ?placeD . ' +
+		'                ?placeD rdfs:label ?placeOfDeath1 . } ' +
+		'	  OPTIONAL {?id schema:image ?images } ' +
+		'	  OPTIONAL {?id dcterms:type ?shortDescription } ' +
+		'	  OPTIONAL {?id rdfs:comment ?description } ' +
+		'} GROUP BY ?id ?name ?dateOfBirth ?placeOfBirth ?dateOfDeath ?placeOfDeath ?images ?shortDescription ?description ';
+		
+		var nationalBibliographyByNameQry = 
 		'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' +
 		'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ' +
 		'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
@@ -107,12 +138,14 @@ angular.module('eventsApp')
 		'	  OPTIONAL {?id rdfs:comment ?description } ' +
 		'} GROUP BY ?id ?name ?dateOfBirth ?placeOfBirth ?dateOfDeath ?placeOfDeath ?images ?shortDescription ?description ';
 		
+		
 		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
 		var selectorQuery = prefixes +
         'SELECT DISTINCT ?name ?id WHERE {	' +
 		'  SELECT DISTINCT ?name ?id WHERE {	' +
 		'    GRAPH <http://ldf.fi/warsa/actors> {	' +
-		'      ?id a atypes:MilitaryPerson .   	    	' +
+		// '      ?id a atypes:MilitaryPerson .   	    	' +
+		'      { ?id a crm:E21_Person } UNION { ?id a atypes:PoliticalPerson } UNION { ?id a atypes:MilitaryPerson . } ' +
 		'      ?id skos:prefLabel ?name .   	    	' +
 		'      FILTER (regex(?name, "^{0}$", "i"))	' +
 		'    } 	' +
@@ -195,7 +228,7 @@ angular.module('eventsApp')
             var qry = personQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
-                    // because of temporary multiple labels in casualties data set:
+                		// because of temporary multiple labels in casualties data set:
                     return personMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
@@ -225,9 +258,17 @@ angular.module('eventsApp')
                     }
                 });
         };
-
+		
        this.getNationalBibliography = function(person) {
-           if (person.fname && person.fname.length>2) { 
+       		if ('natiobib' in person ) {
+       			// Direct link by owl:sameAs
+       			var qry = nationalBibliographyQry.format(person.natiobib); 
+	           var end2 = new SparqlService("http://ldf.fi/history/sparql");
+	           return end2.getObjects(qry).then(function(data) {
+	           		return personMapperService.makeObjectList(data);
+	           });
+       		} /* else if (person.fname && person.fname.length>2) { 
+           		// Search db by person name: TODO: to be removed later:
            	  var sukunimi=person.sname, etunimi=person.fname;
               if (_.isArray(etunimi)) { etunimi=etunimi[0]; }
               
@@ -245,13 +286,14 @@ angular.module('eventsApp')
               var etu1 = (etunimi === 'Carl Gustaf Emil') ? 'Gustaf' :etunimi.split(' ')[0];
               var rgx = "^"+sukunimi+", .*("+etu1+").*$";
                
-	           var qry = nationalBibliographyQry.format(rgx, birthyearcondition, deathyearcondition); 
+	           var qry = nationalBibliographyByNameQry.format(rgx, birthyearcondition, deathyearcondition); 
 	           
 	           var end2 = new SparqlService("http://ldf.fi/history/sparql");
 	           return end2.getObjects(qry).then(function(data) {
+	           		// console.log(data);
 	           	  return personMapperService.makeObjectList(data);
 	           });
-           }
+           } */
            return $q.when();
        };
        

@@ -34,8 +34,7 @@ angular.module('eventsApp')
                     person.ranks.unshift({id:e.rank_id, label:e.rank});
                 }
             }
-
-            return person;
+				return person;
 		
         };
 
@@ -130,9 +129,9 @@ angular.module('eventsApp')
                 }
             });
         };
-
+			
         self.fetchNationalBib = function(person) {
-            return personRepository.getNationalBibliography(person).then(function(nb) {
+        		return personRepository.getNationalBibliography(person).then(function(nb) {
             	if (nb && nb.length && nb[0].id) { 
                 	person.nationals = nb[0]; 
                     person.hasLinks = true;
@@ -161,7 +160,7 @@ angular.module('eventsApp')
         };
 
        this.getNationalBibliography = function(person) {
-           return personRepository.getNationalBibliography(person);
+           return personRepository.getNationalBibliographyByName(person);
        };
        
 		this.getItems = function (regx, controller) {
