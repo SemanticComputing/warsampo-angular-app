@@ -92,13 +92,14 @@ angular.module('eventsApp')
 		' ' +
 		'SELECT ?id ?name ?images ?shortDescription ?description' +
 		'		(SAMPLE(?placeOfBirth1) AS ?placeOfBirth) ?dateOfBirth' +
-		'		(SAMPLE(?placeOfDeath1) AS ?placeOfDeath) ?dateOfDeath' +
+		'		(SAMPLE(?placeOfDeath1) AS ?placeOfDeath)' +
+		'	 	(MAX(?dateOfDeath1) AS ?dateOfDeath)' +
 		'		' +
 		'	WHERE {' +
 		'		VALUES ?id { <{0}> }' +
 		'	  ?id rdfs:label ?name .' +
 		'	  ?id schema:birthDate ?dateOfBirth .' +
-		'  ?id schema:deathDate ?dateOfDeath .' +
+		'    ?id schema:deathDate ?dateOfDeath1 .' +
 		'	  OPTIONAL {?birth cidoc:P98_brought_into_life ?id . ' +
 		'                ?birth cidoc:P7_took_place_at ?place . ' +
 		'                ?place rdfs:label ?placeOfBirth1 .} ' +
@@ -264,7 +265,7 @@ angular.module('eventsApp')
        		if ('natiobib' in person ) {
        			// Direct link by owl:sameAs
        			var qry = nationalBibliographyQry.format(person.natiobib); 
-	        		var end2 = new SparqlService("http://ldf.fi/history/sparql");
+       			var end2 = new SparqlService("http://ldf.fi/history/sparql");
 	 				return end2.getObjects(qry).then(function(data) {
 	      			return personMapperService.makeObjectList(data);
 					});
