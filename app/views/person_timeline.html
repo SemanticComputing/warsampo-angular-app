@@ -1,6 +1,6 @@
 <div ng-include="'views/partials/setting_accordion.html'"></div>
 <div class="row">
-  <div class="col-sm-2">
+  <div class="col-sm-3">
     <h2>Henkilöt</h2>
     <p>Hae tunnettuja viime sotien henkilöitä kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse henkilö kentän alla olevasta listasta.
     Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy vasemmalle.</p>
@@ -9,7 +9,7 @@
     <select ng-model="ctrl.selectedItem" ng-change="ctrl.updateActor()" size="32" class="form-control" id="personselect"
       ng-options="item as item.name for item in ctrl.items"></select>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-9">
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.person && !ctrl.isLoadingEvent">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.person">
@@ -17,19 +17,14 @@
       <div ng-include="'views/partials/person_description_partial.html'"></div>
       <p><a ng-href="persons/page?uri={{ ctrl.person.id }}">Näytä henkilön tietosivu</a></p>
     </div>
-    <!--</div> -->
     <!-- Links -->
-    <!-- <div class="col-sm-4"> -->
     <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <!--<p ng-if="!ctrl.person.hasLinks">No links found for this object.</p>-->
     <div id="linkContent">
 
       <div ng-if="ctrl.person && ctrl.person.images.length">
         <h3 id="links-header" class="links-header-class">Valokuvat</h3>
-        <p ng-show="ctrl.person"> <!--&& !ctrl.person.showPhotos">-->
-        {{ ctrl.person.images.length }} kuvaa
-        </p>
+        <p>{{ ctrl.person.images.length }} kuvaa</p>
         <photo-scroller images="ctrl.person.images"></photo-scroller>
       </div>
 
