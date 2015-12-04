@@ -4,20 +4,8 @@
  * Service that provides an interface for fetching semanticModels from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .service('semanticModelService', function($q, SparqlService,
-                semanticModelMapperService, SemanticModel) {
-
-        var semanticModelService = this;
-
-        SemanticModel.prototype.fetchRelated = function() {
-            var self = this;
-            return semanticModelService.getRelated(self.id).then(function(related) {
-                if (related.length) {
-                    self.related = related;
-                    self.hasLinks = true;
-                }
-            });
-        };
+    .service('semanticModelRepository', function($q, SparqlService,
+                semanticModelMapperService) {
 
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
@@ -39,9 +27,6 @@ angular.module('eventsApp')
             ' } ';
 
         var relatedQry = prefixes +
-            ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
-            ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
-            ' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ' +
             ' SELECT DISTINCT ?id ?obj ?obj_label  ' +
             '       ?obj_type (COALESCE(?filabel, ?deflabel) AS ?label) ' +
             '       ?type (COALESCE(?fi_pred_label, ?def_pred_label) AS ?pred_label) ?pred ' +

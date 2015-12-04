@@ -174,7 +174,7 @@ angular.module('eventsApp')
 		this.getById = function(id) {
             var qry = unitQry.format("<{0}>".format(id));
             return endpoint.getObjects(qry).then(function(data) {
-            	 if (data.length) {
+                if (data.length) {
                     return unitMapperService.makeObjectList(data)[0];
                 }
                 return $q.reject("Does not exist");
@@ -222,14 +222,14 @@ angular.module('eventsApp')
             	 return unitMapperService.makeObjectList(data);
             });
         };
-        
+
         this.getItems = function (regx, controller) {
             var qry = selectorQuery.format("{0}".format(regx));
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectListNoGrouping(data);
             });
         };
-        
+
         this.getActorInfo = function(ids) {
             var qry;
             if (_.isArray(ids)) {
