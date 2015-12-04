@@ -264,10 +264,10 @@ angular.module('eventsApp')
        		if ('natiobib' in person ) {
        			// Direct link by owl:sameAs
        			var qry = nationalBibliographyQry.format(person.natiobib); 
-	           var end2 = new SparqlService("http://ldf.fi/history/sparql");
-	           return end2.getObjects(qry).then(function(data) {
-	           		return personMapperService.makeObjectList(data);
-	           });
+	        		var end2 = new SparqlService("http://ldf.fi/history/sparql");
+	 				return end2.getObjects(qry).then(function(data) {
+	      			return personMapperService.makeObjectList(data);
+					});
        		}
            return $q.when();
        };
