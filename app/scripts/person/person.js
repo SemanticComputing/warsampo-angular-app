@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('personService', function($q, personRepository, eventRepository,
-                unitRepository, photoRepository) {
+                unitRepository, photoRepository, dateUtilService) {
         var self = this;
 
         this.processLifeEvents = function(person, events) {
@@ -15,15 +15,14 @@ angular.module('eventsApp')
                 person.ranks.push({id:person.rank_id, label:person.rank});
             }
             
-            var em=new EventMapper();
             for (var i=0; i<events.length; i++) {
                 var e=events[i], 
                     etype=e.type_id, 
                     edate=e.start_time,
                     edate2=e.end_time;
-                edate=em.getExtremeDate(edate, true);
-                edate2=em.getExtremeDate(edate2, false);
-                edate=em.formatDateRange(edate,edate2);
+                edate=dateUtilService.getExtremeDate(edate, true);
+                edate2=dateUtilService.getExtremeDate(edate2, false);
+                edate=dateUtilService.formatDateRange(edate,edate2);
                 
                 if (etype.indexOf('Death')>-1) {
                     person.death = edate;

@@ -9,9 +9,7 @@
       <h2>
         {{ ctrl.person.label }}
       </h2>
-      <p ng-repeat="desc in ctrl.person.getDescription()">
-      {{ desc }}
-      </p>
+      <div ng-include="'views/partials/person_description_partial.html'"></div>
       <p><a ng-href="persons?uri={{ ctrl.person.id }}">Näytä henkilön tapahtumasivu</a></p>
     </div>
   </div>

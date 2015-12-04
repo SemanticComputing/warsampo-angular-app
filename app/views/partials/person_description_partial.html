@@ -1,0 +1,8 @@
+<p>
+  {{ ctrl.person.birth }} {{ ctrl.person.birth_place }} -
+  {{ ctrl.person.death }} {{ ctrl.person.death_place }}
+</p>
+<p ng-repeat="promotion in ctrl.person.promotions">{{ promotion }}</p>
+<p ng-if="ctrl.person.source || ctrl.person.sid">
+  Lähde: {{ ctrl.person.source || ctrl.person.sid | concatList }}
+</p>

@@ -7,66 +7,9 @@
 function Person() { }
 
 
-Person.prototype.getDescription = function() {
-	
-	var arr=[];
-	//arr[0]="<a href='link'>test</a>";
-	var em=new EventMapper();
-	if (this.birth_time) {
-		var edate=em.getExtremeDate(this.birth_time, true);
-		this.birth = em.formatDateRange(edate,edate);
-		this.birth_year = edate.getFullYear();
-		delete this.birth_time;
-	}
-	
-	if (this.death_time) {
-		var edate=em.getExtremeDate(this.death_time, true);
-		this.death = em.formatDateRange(edate,edate);
-		this.death_year = edate.getFullYear();
-		delete this.death_time;
-	}
-	
-	if (this.birth || this.death) {
-		var res=this.birth + ' ' + this.birth_place + ' – ' + this.death+ ' ' + this.death_place;
-		arr.push(res);
-	}
-	
-	if (this.bury_place || ('way_to_die' in this)) { 
-		var res=[];
-		if ('way_to_die' in this) { 
-			res.push(_.capitalize(this.way_to_die)); }
-		if (this.bury_place) { res.push('Haudattu paikkaan '+this.bury_place+'.'); }
-		arr.push(res.join('. '));
-	}
-	
-	if (this.living_place) { arr.push('Asuinkunta: '+this.living_place); }	
-	if ('profession' in this) { arr.push('Ammatti: '+this.profession); }	
-	if (('mstatus' in this) || ('num_children' in this)) { 
-		var res=[ ];
-		if ('mstatus' in this) { res.push('Aviosääty: '+this.mstatus); } 
-		if ('num_children' in this) { res.push(this.num_children>0 ? 'lapsia '+this.num_children : 'ei lapsia.'); } 
-		arr.push(res.join(', '));
-	}	
-		
-	if ('cas_unit' in this) { arr.push('Palvellut joukko-osastossa '+this.cas_unit); }
-	
-	if (this.rank) { 
-		arr.push(this.rank);
-	}
-	
-	arr=arr.concat(this.promotions);
-	if (this.note) { 
-		arr.push(this.note);
-	}
-	
-	if ('source' in this) { 
-		arr.push('Lähde: '+this.source); 
-		} else if ('sid' in this) { arr.push('Lähde: '+this.sid); }
-	return arr;
-};
-
-function PersonMapper() {
+function PersonMapper(dateUtilService) {
     this.objectClass = Person;
+    this.dateUtilService = dateUtilService;
 }
 
 PersonMapper.prototype.makeObject = function(obj) {
@@ -79,15 +22,24 @@ PersonMapper.prototype.makeObject = function(obj) {
         o[key] = value.value;
     });
 
-    o.birth_place = o.birth_place || '';
-    o.death_place= o.death_place || '';
+	if (o.birth_time) {
+		var date = this.dateUtilService.getExtremeDate(o.birth_time, true);
+		o.birth = date.toLocaleDateString();
+		o.birth_year = date.getFullYear();
+		delete o.birth_time;
+	}
+
+	if (o.death_time) {
+		var date = this.dateUtilService.getExtremeDate(o.death_time, true);
+		o.death = date.toLocaleDateString();
+		o.death_year = date.getFullYear();
+		delete o.death_time;
+	}
 
     o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
 	
-	 if (o.natiobib && (o.natiobib.indexOf("ldf.fi/history") <0 )) { delete o.natiobib; }
+    if (o.natiobib && (o.natiobib.indexOf("ldf.fi/history") <0 )) { delete o.natiobib; }
 	
-	 var places = [];
-
     if (o.sname) {
         o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
     }
@@ -115,11 +67,11 @@ PersonMapper.prototype.makeObject = function(obj) {
 
 
 angular.module('eventsApp')
-.factory('personMapperService', function(objectMapperService) {
+.factory('personMapperService', function(objectMapperService, dateUtilService) {
     var proto = Object.getPrototypeOf(objectMapperService);
     PersonMapper.prototype = angular.extend({}, proto, PersonMapper.prototype);
 
-    return new PersonMapper();
+    return new PersonMapper(dateUtilService);
 })
 .factory('Person', function() {
     return Person;

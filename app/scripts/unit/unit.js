@@ -5,22 +5,21 @@
  */
 angular.module('eventsApp')
     .service('unitService', function($q, unitRepository, eventRepository,
-                personRepository) {
+                personRepository, dateUtilService) {
 
         var self = this;
 
         self.processUnitEvents = function(unit, events) {
             var battles= [], formations=[], description=[], places=[];
-            var em=new EventMapper();
             for (var i=0; i<events.length; i++) {
                 var e=events[i], 
                     etype=e.type_id, 
                     edate='', edate2='', eplace=''; 
                 if (e.start_time && e.end_time) {
                     edate=e.start_time; edate2=e.end_time;
-                    edate=em.getExtremeDate(edate, true);
-                    edate2=em.getExtremeDate(edate2, false);
-                    edate=em.formatDateRange(edate,edate2);
+                    edate=dateUtilService.getExtremeDate(edate, true);
+                    edate2=dateUtilService.getExtremeDate(edate2, false);
+                    edate=dateUtilService.formatDateRange(edate,edate2);
                 }
                 if (e.places) {
                     eplace=', ' + _.pluck(e.places, 'label').join(', ');
@@ -126,7 +125,7 @@ angular.module('eventsApp')
         
         self.fetchRelatedPersons = function(unit) {
             return personRepository.getByUnitId(unit.id).then(function(persons) {
-            	var em=new EventMapper();
+            	var dateUtilService=new EventMapper();
                 unit.relatedPersons = [];
                 unit.commanders = [];
                 persons.forEach(function(p) {
@@ -134,9 +133,9 @@ angular.module('eventsApp')
                     if (p.role) { 
                         var pname = p.role + ' ' + p.label; 
                         if (p.join_start) {
-                            var edate=em.getExtremeDate(p.join_start, true);
-                            var edate2=em.getExtremeDate(p.join_end, false);
-                            edate=em.formatDateRange(edate,edate2);
+                            var edate=dateUtilService.getExtremeDate(p.join_start, true);
+                            var edate2=dateUtilService.getExtremeDate(p.join_end, false);
+                            edate=dateUtilService.formatDateRange(edate,edate2);
                             unit.commanders.push(pname + ', ' + edate);
                         } else {
                             unit.commanders.push(pname);
@@ -154,7 +153,8 @@ angular.module('eventsApp')
                     unit.articles = articles;
                 }
             });		
-			}
+        };
+
         self.fetchUnitDiaries = function(unit) {
             return unitRepository.getUnitDiaries(unit.id).then(function(diaries) {
             	if (diaries && diaries.length) {
