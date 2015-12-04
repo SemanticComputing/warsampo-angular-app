@@ -40,9 +40,17 @@ angular.module('eventsApp')
         } else if (n<2) {
             rx= '^'+this.queryregex+'A.*$';
         } else {
-            rx= '(^|^.* )'+this.queryregex+'.*$';
+        		rx= this.queryregex;
+        		if (rx.indexOf(' ')>0) {
+        			var arr=rx.split(' ');
+        			rx='';
+        			for (var i=0; i<arr.length; i++) {
+        				rx += "(?=.*"+arr[i]+")";
+        			}
+        		}
+        		rx= '(^|^.* )'+rx+'.*$';
+        		// console.log(rx);
         }
-        
         this.personService.getItems(rx,this);
    };
 
