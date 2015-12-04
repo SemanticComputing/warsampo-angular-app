@@ -81,12 +81,19 @@ PersonMapper.prototype.makeObject = function(obj) {
 
     o.birth_place = o.birth_place || '';
     o.death_place= o.death_place || '';
-    
+
+    o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
+	
+	 if (o.natiobib && (o.natiobib.indexOf("ldf.fi/history") <0 )) { delete o.natiobib; }
+	
+	 var places = [];
+
     if (o.sname) {
         o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
     }
 
     var places = [];
+
 
     if (o.birth_place) {
         places.push({ id: o.birth_place_uri, label: o.birth_place });
