@@ -90,25 +90,25 @@ angular.module('eventsApp')
 		'PREFIX dcterms: <http://purl.org/dc/terms/>' +
 		'PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/>' +
 		' ' +
-		'SELECT ?id ?name ?images ?shortDescription ?description' +
-		'		(SAMPLE(?placeOfBirth1) AS ?placeOfBirth) ?dateOfBirth' +
-		'		(SAMPLE(?placeOfDeath1) AS ?placeOfDeath) ?dateOfDeath' +
+		'SELECT DISTINCT ?id ?name ?images ?shortDescription ?description' +
+		'		?placeOfBirth ?dateOfBirth ' +
+		'		?placeOfDeath ?dateOfDeath ' +
 		'		' +
 		'	WHERE {' +
 		'		VALUES ?id { <{0}> }' +
 		'	  ?id rdfs:label ?name .' +
 		'	  ?id schema:birthDate ?dateOfBirth .' +
-		'  ?id schema:deathDate ?dateOfDeath .' +
+		'    ?id schema:deathDate ?dateOfDeath .' +
 		'	  OPTIONAL {?birth cidoc:P98_brought_into_life ?id . ' +
 		'                ?birth cidoc:P7_took_place_at ?place . ' +
-		'                ?place rdfs:label ?placeOfBirth1 .} ' +
+		'                ?place rdfs:label ?placeOfBirth .} ' +
 		'	  OPTIONAL {?death cidoc:P100_was_death_of ?id . ' +
 		'                ?death cidoc:P7_took_place_at ?placeD . ' +
-		'                ?placeD rdfs:label ?placeOfDeath1 . } ' +
+		'                ?placeD rdfs:label ?placeOfDeath . } ' +
 		'	  OPTIONAL {?id schema:image ?images } ' +
 		'	  OPTIONAL {?id dcterms:type ?shortDescription } ' +
 		'	  OPTIONAL {?id rdfs:comment ?description } ' +
-		'} GROUP BY ?id ?name ?dateOfBirth ?placeOfBirth ?dateOfDeath ?placeOfDeath ?images ?shortDescription ?description ';
+		'} ORDER BY DESC(?dateOfDeath) LIMIT 1 ';
 		
 		var nationalBibliographyByNameQry = 
 		'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' +
@@ -264,10 +264,10 @@ angular.module('eventsApp')
        		if ('natiobib' in person ) {
        			// Direct link by owl:sameAs
        			var qry = nationalBibliographyQry.format(person.natiobib); 
-	           var end2 = new SparqlService("http://ldf.fi/history/sparql");
-	           return end2.getObjects(qry).then(function(data) {
-	           		return personMapperService.makeObjectList(data);
-	           });
+       			var end2 = new SparqlService("http://ldf.fi/history/sparql");
+	 				return end2.getObjects(qry).then(function(data) {
+	      			return personMapperService.makeObjectList(data);
+					});
        		}
            return $q.when();
        };
