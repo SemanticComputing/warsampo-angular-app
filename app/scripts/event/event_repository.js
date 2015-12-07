@@ -446,6 +446,21 @@ angular.module('eventsApp')
             });
         };
 
+        this.getByPersonIdPaged = function(id, page, pageSize) {
+            var qry;
+            if (_.isArray(id)) {
+                id = "<{0}>".format(id.join("> <"));
+            } else if (id) {
+                id = "<{0}>".format(id);
+            } else {
+                return $q.when();
+            }
+            qry = byPersonQry.format(id) + ' LIMIT ' + pageSize + ' OFFSET ' + page;
+            return endpoint.getObjects(qry).then(function(data) {
+                return eventMapperService.makeObjectList(data);
+            });
+        };
+
         this.getByUnitId = function(id) {
             if (_.isArray(id)) {
                 id = "<{0}>".format(id.join("> <"));

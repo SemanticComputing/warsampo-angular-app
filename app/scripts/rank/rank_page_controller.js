@@ -11,8 +11,12 @@ angular.module('eventsApp')
   .controller('RankPageCtrl', function($routeParams, $q, $rootScope, eventService, rankService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
+    
     var self = this;
+
     if ($routeParams.uri) {
+        self.personPager = rankService.getRelatedPersonPager($routeParams.uri);
+        console.log(self.personPager);
         self.isLoadingRank = true;
         self.isLoadingPersons = false;
         rankService.getById($routeParams.uri)

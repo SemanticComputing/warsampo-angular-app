@@ -180,14 +180,20 @@ angular.module('eventsApp')
         '} GROUP BY ?id ?sname ?fname ?label ?no ?rank ?role ?join_start ?join_end ' +
         ' 		ORDER BY DESC(?no) LIMIT 100 ';
 
-        var byRankQry = prefixes +
-			'SELECT DISTINCT ?id ?sname ?fname WHERE {	' +
+
+        var select = '' +
+			'SELECT DISTINCT ?id ?sname ?fname WHERE {	';
+
+        var count = '' +
+            'SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE { ';
+
+        var byRankBody = '' +
 			'  {	' +
 			'  SELECT DISTINCT ?id WHERE {	' +
 			'  VALUES ?rank { {0} } .	' +
 			'    ?id a atypes:MilitaryPerson .	' +
 			'    ?id :hasRank ?rank .	' +
-			'  }  LIMIT 20 	' +
+			'  } ' +
 			'} UNION {	' +
 			'SELECT DISTINCT ?id WHERE {	' +
 			'  VALUES ?rank { {0} } .	' +
@@ -195,10 +201,12 @@ angular.module('eventsApp')
 			'    ?evt :hasRank ?rank .    	' +
 			'    ?evt crm:P11_had_participant ?id .   	' +
 			'  	?id a atypes:MilitaryPerson .	' +
-			'    }  LIMIT 20 }	' +
+			'    } }	' +
 			'  ?id foaf:familyName ?sname .	' +
 			'  ?id foaf:firstName ?fname .	' +
-			'} LIMIT 20	';
+			'} ORDER BY ?sname ?fname ';
+
+        var byRankQry = prefixes + select + byRankBody;
 
         var casualtiesByTimeSpanQry = prefixes +
         ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
@@ -219,6 +227,21 @@ angular.module('eventsApp')
 
         this.getByRankId = function(id) {
             var qry = byRankQry.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return personMapperService.makeObjectList(data);
+            });
+        };
+
+        this.countByRankId = function(id) {
+            var qry = prefixes + count + byRankBody.format("<{0}>".format(id));
+            return endpoint.getObjects(qry).then(function(data) {
+                return parseInt(personMapperService.makeObjectListNoGrouping(data)[0].count);
+            });
+        };
+
+        this.getByRankIdPaged = function(id, page, pageSize) {
+            var qry = byRankQry.format("<{0}>".format(id)) +
+                ' LIMIT ' + pageSize + ' OFFSET ' + page;
             return endpoint.getObjects(qry).then(function(data) {
                 return personMapperService.makeObjectList(data);
             });

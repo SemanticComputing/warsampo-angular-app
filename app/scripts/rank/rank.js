@@ -10,8 +10,9 @@ angular.module('eventsApp')
         var self = this;
 
         self.fetchRelatedPersons = function(rank) {
-            return self.getRelatedPersons(rank.id).then(function(persons) {
+            return self.getRelatedPersonsPaged(rank.id, 1).then(function(persons) {
             	if (persons && persons.length) {
+                    rank.hasLinks = true;
             		rank.persons = persons;
             	}
                 return rank;
@@ -63,9 +64,26 @@ angular.module('eventsApp')
 		this.getRelatedPersons = function(id) {
             return personRepository.getByRankId(id);
         };
+
+		this.getRelatedPersonsPaged = function(id, pageNo) {
+            return personRepository.getByRankIdPaged(id, (pageNo - 1) * 10, 10);
+        };
         
 		this.getRelatedRanks = function(id) {
             return rankRepository.getRelatedRanks(id);
+        };
+
+        this.countByRankId = function(id) {
+            return personRepository.countByRankId(id);
+        };
+
+        self.getRelatedPersonPager = function(id) {
+            return {
+                totalItems: self.countByRankId(id),
+                getPage: function(pageNo) {
+                    return self.getRelatedPersonsPaged(id, pageNo);
+                }
+            };
         };
 });
 

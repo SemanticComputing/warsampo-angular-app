@@ -67,5 +67,9 @@ angular.module('eventsApp')
         self.getUnitAndSubUnitEventsByUnitId = function(id) {
             return eventRepository.getUnitAndSubUnitEventsByUnitId(id);
         };
+
+        self.getByPersonIdPaged = function(id, page) {
+            return eventRepository.getByPersonIdPaged(id, page, 10);
+        };
 });
 

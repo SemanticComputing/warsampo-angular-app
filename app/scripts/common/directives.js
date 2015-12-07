@@ -45,11 +45,37 @@ angular.module('eventsApp')
         scope: {
             title: "=",
             related: "=",
+            pager: "=paginator"
         },
         link: function(scope, element, attrs) {
             if ('external' in attrs) {
                 scope.external = true;
             }
+        },
+        controllerAs: 'relatedCtrl',
+        controller: function($scope) {
+            var self = this;
+            
+            self.isLoadingPage = false;
+            self.pageSize = 10;
+
+            if ($scope.pager) {
+                $scope.pager.totalItems.then(function(count) {
+                    self.totalItems = count;
+                });
+            }
+
+            self.updatePage = function() {
+                self.isLoadingPage = true;
+                var latestPage = self.currentPage;
+
+                $scope.pager.getPage(self.currentPage).then(function(page) {
+                    if (latestPage === self.currentPage) {
+                        self.isLoadingPage = false;
+                        $scope.related = page;
+                    }
+                });
+            };
         },
         templateUrl: "views/partials/link_collapse_partial.html"
     };
