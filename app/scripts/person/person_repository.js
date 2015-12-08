@@ -4,9 +4,10 @@
  * Service that provides an interface for fetching actor data.
  */
 angular.module('eventsApp')
-    .service('personRepository', function($q, SparqlService, personMapperService) {
+    .service('personRepository', function($q, AdvancedSparqlService, SparqlService, personMapperService) {
 
-        var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
+        var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
+            personMapperService);
 
         var prefixes = '' +
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
@@ -110,35 +111,6 @@ angular.module('eventsApp')
 		'	  OPTIONAL {?id rdfs:comment ?description } ' +
 		'} ORDER BY DESC(?dateOfDeath) LIMIT 1 ';
 		
-		var nationalBibliographyByNameQry = 
-		'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' +
-		'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ' +
-		'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
-		'PREFIX schema: <http://schema.org/>' +
-		'PREFIX dcterms: <http://purl.org/dc/terms/>' +
-		'PREFIX cidoc: <http://www.cidoc-crm.org/cidoc-crm/>' +
-		' ' +
-		'SELECT ?id ?name ?images ?shortDescription ?description' +
-		'		(SAMPLE(?placeOfBirth1) AS ?placeOfBirth) ?dateOfBirth' +
-		'		(SAMPLE(?placeOfDeath1) AS ?placeOfDeath) ?dateOfDeath' +
-		'		' +
-		'	WHERE {' +
-		'	  ?id rdfs:label ?name .' +
-		'      		FILTER REGEX(?name, "{0}", "i")' +
-		'	  ?id schema:birthDate ?dateOfBirth . FILTER (?dateOfBirth{1}) .' +
-		'  	  ?id schema:deathDate ?dateOfDeath . FILTER (?dateOfDeath{2}) .' +
-		'	  OPTIONAL {?birth cidoc:P98_brought_into_life ?id . ' +
-		'                ?birth cidoc:P7_took_place_at ?place . ' +
-		'                ?place rdfs:label ?placeOfBirth1 .} ' +
-		'	  OPTIONAL {?death cidoc:P100_was_death_of ?id . ' +
-		'                ?death cidoc:P7_took_place_at ?placeD . ' +
-		'                ?placeD rdfs:label ?placeOfDeath1 . } ' +
-		'	  OPTIONAL {?id schema:image ?images } ' +
-		'	  OPTIONAL {?id dcterms:type ?shortDescription } ' +
-		'	  OPTIONAL {?id rdfs:comment ?description } ' +
-		'} GROUP BY ?id ?name ?dateOfBirth ?placeOfBirth ?dateOfDeath ?placeOfDeath ?images ?shortDescription ?description ';
-		
-		
 		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
 		var selectorQuery = prefixes +
         'SELECT DISTINCT ?name ?id WHERE {	' +
@@ -180,33 +152,26 @@ angular.module('eventsApp')
         '} GROUP BY ?id ?sname ?fname ?label ?no ?rank ?role ?join_start ?join_end ' +
         ' 		ORDER BY DESC(?no) LIMIT 100 ';
 
+        var byRankQry = prefixes +
+        'SELECT DISTINCT ?id ?sname ?fname WHERE {	' +
+        '  { ' +
+        '  SELECT DISTINCT ?id WHERE { ' +
+        '  VALUES ?rank { {0} } . ' +
+        '    ?id a atypes:MilitaryPerson .	' +
+        '    ?id :hasRank ?rank . ' +
+        '  } ' +
+        '} UNION { ' +
+        'SELECT DISTINCT ?id WHERE { ' +
+        '  VALUES ?rank { {0} } . ' +
+        '    ?evt a etypes:Promotion .	' +
+        '    ?evt :hasRank ?rank . ' +
+        '    ?evt crm:P11_had_participant ?id . ' +
+        '  	?id a atypes:MilitaryPerson .	' +
+        '    } }	' +
+        '  ?id foaf:familyName ?sname .	' +
+        '  ?id foaf:firstName ?fname . ' +
+        '} ORDER BY ?sname ?fname ';
 
-        var select = '' +
-			'SELECT DISTINCT ?id ?sname ?fname WHERE {	';
-
-        var count = '' +
-            'SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE { ';
-
-        var byRankBody = '' +
-			'  {	' +
-			'  SELECT DISTINCT ?id WHERE {	' +
-			'  VALUES ?rank { {0} } .	' +
-			'    ?id a atypes:MilitaryPerson .	' +
-			'    ?id :hasRank ?rank .	' +
-			'  } ' +
-			'} UNION {	' +
-			'SELECT DISTINCT ?id WHERE {	' +
-			'  VALUES ?rank { {0} } .	' +
-			'    ?evt a etypes:Promotion .	' +
-			'    ?evt :hasRank ?rank .    	' +
-			'    ?evt crm:P11_had_participant ?id .   	' +
-			'  	?id a atypes:MilitaryPerson .	' +
-			'    } }	' +
-			'  ?id foaf:familyName ?sname .	' +
-			'  ?id foaf:firstName ?fname .	' +
-			'} ORDER BY ?sname ?fname ';
-
-        var byRankQry = prefixes + select + byRankBody;
 
         var casualtiesByTimeSpanQry = prefixes +
         ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
@@ -220,31 +185,12 @@ angular.module('eventsApp')
 
         this.getByUnitId = function(id) {
             var qry = byUnitQry.format("<{0}>".format(id));
-            return endpoint.getObjects(qry).then(function(data) {
-                return personMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry);
         };
 
-        this.getByRankId = function(id) {
+        this.getByRankId = function(id, pageSize) {
             var qry = byRankQry.format("<{0}>".format(id));
-            return endpoint.getObjects(qry).then(function(data) {
-                return personMapperService.makeObjectList(data);
-            });
-        };
-
-        this.countByRankId = function(id) {
-            var qry = prefixes + count + byRankBody.format("<{0}>".format(id));
-            return endpoint.getObjects(qry).then(function(data) {
-                return parseInt(personMapperService.makeObjectListNoGrouping(data)[0].count);
-            });
-        };
-
-        this.getByRankIdPaged = function(id, page, pageSize) {
-            var qry = byRankQry.format("<{0}>".format(id)) +
-                ' LIMIT ' + pageSize + ' OFFSET ' + page;
-            return endpoint.getObjects(qry).then(function(data) {
-                return personMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry, pageSize);
         };
 
         this.getById = function(id) {
@@ -252,7 +198,7 @@ angular.module('eventsApp')
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
                 		// because of temporary multiple labels in casualties data set:
-                    return personMapperService.makeObjectList(data)[0];
+                    return data[0];
                 }
                 return $q.reject("Does not exist");
             });
@@ -268,19 +214,16 @@ angular.module('eventsApp')
                 return $q.when();
             }
             qry = personQry.format(ids);
-            return endpoint.getObjects(qry).then(function(data) {
-                return personMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry);
         };
 
         this.getCasualtiesByTimeSpan = function(start, end) {
             var qry = casualtiesByTimeSpanQry.format(start, end);
-            return endpoint.getObjects(qry)
-                .then(function(data) {
-                    if (data.length) {
-                        return personMapperService.makeObjectList(data);
-                    }
-                });
+            return endpoint.getObjects(qry).then(function(data) {
+                if (data.length) {
+                    return data;
+                }
+            });
         };
 		
        this.getNationalBibliography = function(person) {
@@ -289,7 +232,7 @@ angular.module('eventsApp')
        			var qry = nationalBibliographyQry.format(person.natiobib); 
        			var end2 = new SparqlService("http://ldf.fi/history/sparql");
 	 				return end2.getObjects(qry).then(function(data) {
-	      			return personMapperService.makeObjectList(data);
+                        return personMapperService.makeObjectList(data);
 					});
        		}
            return $q.when();
@@ -299,11 +242,11 @@ angular.module('eventsApp')
             var qry = selectorQuery.format("{0}".format(regx));
             controller.items = [ {id:'#', name:"Etsitään ..."} ];
             return endpoint.getObjects(qry).then(function(data) {
-                var arr= personMapperService.makeObjectListNoGrouping(data);
+                var arr = data;
                 if (!arr.length) {
                 	arr = [ {id:'#', name:"Ei hakutuloksia."} ];
                 }
-                controller.items=arr;
+                controller.items = arr;
                 return arr;
             });
         };

@@ -45,6 +45,20 @@ angular.module('eventsApp')
         scope: {
             title: "=",
             related: "=",
+        },
+        link: function(scope, element, attrs) {
+            if ('external' in attrs) {
+                scope.external = true;
+            }
+        },
+        templateUrl: "views/partials/link_collapse_partial.html"
+    };
+})
+.directive('relatedLinksPaged', function() {
+    return {
+        restrict:'E',
+        scope: {
+            title: "=",
             pager: "=paginator"
         },
         link: function(scope, element, attrs) {
@@ -53,15 +67,18 @@ angular.module('eventsApp')
             }
         },
         controllerAs: 'relatedCtrl',
-        controller: function($scope) {
+        controller: function($scope, Settings) {
             var self = this;
             
             self.isLoadingPage = false;
-            self.pageSize = 10;
+            self.pageSize = Settings.softPageSize;
 
             if ($scope.pager) {
-                $scope.pager.totalItems.then(function(count) {
+                $scope.pager.getTotalCount().then(function(count) {
                     self.totalItems = count;
+                });
+                $scope.pager.getPage(1).then(function(page) {
+                    self.related = page;
                 });
             }
 
@@ -72,12 +89,12 @@ angular.module('eventsApp')
                 $scope.pager.getPage(self.currentPage).then(function(page) {
                     if (latestPage === self.currentPage) {
                         self.isLoadingPage = false;
-                        $scope.related = page;
+                        self.related = page;
                     }
                 });
             };
         },
-        templateUrl: "views/partials/link_collapse_partial.html"
+        templateUrl: "views/partials/link_collapse_partial_paged.html"
     };
 })
 .directive('photoScroller', function() {

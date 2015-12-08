@@ -16,7 +16,6 @@ angular.module('eventsApp')
 
     if ($routeParams.uri) {
         self.personPager = rankService.getRelatedPersonPager($routeParams.uri);
-        console.log(self.personPager);
         self.isLoadingRank = true;
         self.isLoadingPersons = false;
         rankService.getById($routeParams.uri)
@@ -24,14 +23,13 @@ angular.module('eventsApp')
             self.rank = rank; 
             self.isLoadingRank = false;
             self.isLoadingPersons = true;
-            return rankService.fetchRelated(rank).then(function() {
-                self.isLoadingPersons = false;
-            });
+            return rankService.fetchRelated(rank);
+        })
+        .then(function() {
+            self.isLoadingPersons = false;
         }).catch(function() {
             self.isLoadingRank = false;
             self.isLoadingPersons = false;
         });
     }
 });
-
-

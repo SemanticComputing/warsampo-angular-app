@@ -1,25 +1,19 @@
-<div class="related" ng-if="relatedCtrl.totalItems"
-  ng-init="show = true">
+<div class="related" ng-if="related && related.length"
+  ng-init="show = related.length <= 10">
   <h3 ng-click="show = !show">
-    <a>{{ title }} ({{ relatedCtrl.totalItems }})
+    <a>{{ title }} ({{ related.length }})
       <span class="glyphicon glyphicon-menu-right" ng-show="!show"></span>
       <span class="glyphicon glyphicon-menu-down" ng-show="show"></span></a>
-      <img src="images/loading.gif" ng-show="relatedCtrl.isLoadingPage" />
   </h3>
   <div uib-collapse="!show">
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="thing in related">
-        <span ng-if="!external">
-          <a page-link="thing.id" data-external="external">{{ thing.label | words:10 }}</a>
-        </span>
-        <span ng-if="external">
-          <a ng-href="{{ thing.id }}">{{ thing.label | words:10 }}</a>
-        </span>
-      </li>
-      <li class="list-group-item" ng-if="relatedCtrl.totalItems > relatedCtrl.pageSize">
-        <uib-pagination total-items="relatedCtrl.totalItems" ng-change="relatedCtrl.updatePage()"
-          ng-model="relatedCtrl.currentPage" max-size="5"
-          class="pagination-sm no-margin" boundary-links="true"></uib-pagination>
+      <span ng-if="!external">
+        <a page-link="thing.id" data-external="external">{{ thing.label | words:10 }}</a>
+      </span>
+      <span ng-if="external">
+        <a ng-href="{{ thing.id }}">{{ thing.label | words:10 }}</a>
+      </span>
       </li>
     </ul>
   </div>

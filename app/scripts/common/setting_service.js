@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eventsApp')
-    .service('Settings', function() {
+.service('Settings', function() {
     var self = this;
 
     self.photoDaysBefore = 1;
@@ -39,4 +39,9 @@ angular.module('eventsApp')
         };
         return photoConfig;
     };
+
+    // Paging settings
+
+    self.softPageSize = 10;
+    self.hardPageSize = 10;
 });

@@ -5,15 +5,15 @@
  */
 angular.module('eventsApp')
     .service('rankService', function($q, SparqlService, rankRepository,
-                personRepository) { 
+                personRepository, Settings) { 
 
         var self = this;
 
         self.fetchRelatedPersons = function(rank) {
-            return self.getRelatedPersonsPaged(rank.id, 1).then(function(persons) {
-            	if (persons && persons.length) {
+            rank.persons = self.getRelatedPersonPager(rank.id);
+            return rank.persons.getTotalCount().then(function(count) {
+            	if (count) {
                     rank.hasLinks = true;
-            		rank.persons = persons;
             	}
                 return rank;
             });
@@ -65,10 +65,6 @@ angular.module('eventsApp')
             return personRepository.getByRankId(id);
         };
 
-		this.getRelatedPersonsPaged = function(id, pageNo) {
-            return personRepository.getByRankIdPaged(id, (pageNo - 1) * 10, 10);
-        };
-        
 		this.getRelatedRanks = function(id) {
             return rankRepository.getRelatedRanks(id);
         };
@@ -78,12 +74,7 @@ angular.module('eventsApp')
         };
 
         self.getRelatedPersonPager = function(id) {
-            return {
-                totalItems: self.countByRankId(id),
-                getPage: function(pageNo) {
-                    return self.getRelatedPersonsPaged(id, pageNo);
-                }
-            };
+            return personRepository.getByRankId(id, Settings.hardPageSize);
         };
 });
 
