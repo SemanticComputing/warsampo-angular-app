@@ -24,6 +24,7 @@ angular.module('eventsApp')
 
         var countQry = countify(sparqlQry);
         var count;
+        var pages = [];
 
         this.getTotalCount = function() {
             // Get the total number of items that the original query returns.
@@ -41,7 +42,22 @@ angular.module('eventsApp')
         };
 
         this.getPage = function(pageNo) {
-            return getResults(pagify(sparqlQry, pageNo, pageSize));
+            // Get a specific "page" of data.
+
+            // Get cached page if available.
+            if (pages[pageNo]) {
+                return $q.when(pages[pageNo]);
+            }
+            return getResults(pagify(sparqlQry, pageNo, pageSize)).then(function(page) {
+                // Cache the page.
+                pages[pageNo] = page;
+                return page;
+            });
+        };
+
+        this.getAll = function() {
+            // Get all of the data.
+            return getResults(sparqlQry);
         };
     };
 })
@@ -71,14 +87,14 @@ angular.module('eventsApp')
 /* Service for querying a SPARQL endpoint with paging support.
  * Takes the endpoint URL and a mapper object as parameters.
  * The mapper is an object that maps the SPARQL results to objects.
- * The mapper should provide a 'makeObjectList' function that takes the SPARQL
- * results as parameter and returns the mapped objects.
+ * The mapper should provide 'makeObjectList' and 'makeObjectListNoGrouping'
+ * functions that take the SPARQL results as parameter and return the mapped objects.
  * */
 .factory('AdvancedSparqlService', function($http, $q, SparqlService, PagerService) {
     return function(endpointUrl, mapper) {
         var endpoint = new SparqlService(endpointUrl);
 
-        var getResults = function(sparqlQry, raw) {
+        var getResultsWithGrouping = function(sparqlQry, raw) {
             var promise = endpoint.getObjects(sparqlQry);
             if (raw) {
                 return promise;
@@ -88,15 +104,37 @@ angular.module('eventsApp')
             });
         };
 
+        var getResultsNoGrouping = function(sparqlQry, raw) {
+            var promise = endpoint.getObjects(sparqlQry);
+            if (raw) {
+                return promise;
+            }
+            return promise.then(function(data) {
+                return mapper.makeObjectListNoGrouping(data);
+            });
+        };
+
         return {
             getObjects: function(sparqlQry, pageSize) {
-                // If pageSize is defined, return a PagerService object, otherwise
+                // Get the results as objects.
+                // If pageSize is defined, return a (promise of a) PagerService object, otherwise
                 // query the endpoint and return the results as a promise.
                 if (pageSize) {
-                    return new PagerService(sparqlQry, pageSize, getResults);
+                    return $q.when(new PagerService(sparqlQry, pageSize, getResultsWithGrouping));
                 }
                 // Query the endpoint.
-                return getResults(sparqlQry);
+                return getResultsWithGrouping(sparqlQry);
+            },
+            getObjectsNoGrouping: function(sparqlQry, pageSize) {
+                // Get the results as objects but call 'makeObjectListNoGrouping' instead
+                // (i.e. treat each result as a separate object and don't group by id).
+                // If pageSize is defined, return a (promise of a) PagerService object, otherwise
+                // query the endpoint and return the results as a promise.
+                if (pageSize) {
+                    return $q.when(new PagerService(sparqlQry, pageSize, getResultsNoGrouping));
+                }
+                // Query the endpoint.
+                return getResultsNoGrouping(sparqlQry);
             }
         };
     };

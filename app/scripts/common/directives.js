@@ -77,7 +77,9 @@ angular.module('eventsApp')
                 $scope.pager.getTotalCount().then(function(count) {
                     self.totalItems = count;
                 });
+                self.isLoadingPage = true;
                 $scope.pager.getPage(1).then(function(page) {
+                    self.isLoadingPage = false;
                     self.related = page;
                 });
             }
