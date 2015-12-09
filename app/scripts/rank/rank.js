@@ -18,7 +18,7 @@ angular.module('eventsApp')
                 return rank;
             });
         };
-        
+
         self.fetchRelatedRanks = function(rank) {
             return self.getRelatedRanks(rank.id).then(function(relatedRanks) {
                 rank.lowerRanks = [];
@@ -56,11 +56,11 @@ angular.module('eventsApp')
                 return rank;
             });
         };
-      
+
 		this.getById = function(id) {
             return rankRepository.getById(id);
         };
-        
+
 		this.getRelatedPersons = function(id) {
             return personRepository.getByRankId(id);
         };
@@ -74,7 +74,7 @@ angular.module('eventsApp')
         };
 
         self.getRelatedPersonPager = function(id) {
-            return personRepository.getByRankId(id, Settings.hardPageSize);
+            return personRepository.getByRankId(id, Settings.pageSize);
         };
 });
 

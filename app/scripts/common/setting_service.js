@@ -42,6 +42,6 @@ angular.module('eventsApp')
 
     // Paging settings
 
-    self.softPageSize = 10;
-    self.hardPageSize = 10;
+    self.pageSize = 10;
+    self.pagesFetchedPerQuery = 10;
 });

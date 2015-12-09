@@ -15,7 +15,6 @@ angular.module('eventsApp')
     var self = this;
 
     if ($routeParams.uri) {
-        self.personPager = rankService.getRelatedPersonPager($routeParams.uri);
         self.isLoadingRank = true;
         self.isLoadingPersons = false;
         rankService.getById($routeParams.uri)

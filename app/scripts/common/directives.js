@@ -71,16 +71,20 @@ angular.module('eventsApp')
             var self = this;
             
             self.isLoadingPage = false;
-            self.pageSize = Settings.softPageSize;
+            self.pageSize = Settings.pageSize;
 
-            if ($scope.pager) {
+            $scope.$watch('pager', function(val) {
+                if (val) {
                 $scope.pager.getTotalCount().then(function(count) {
                     self.totalItems = count;
                 });
+                self.isLoadingPage = true;
                 $scope.pager.getPage(1).then(function(page) {
+                    self.isLoadingPage = false;
                     self.related = page;
                 });
             }
+            });
 
             self.updatePage = function() {
                 self.isLoadingPage = true;
