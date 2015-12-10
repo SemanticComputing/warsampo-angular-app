@@ -13,14 +13,14 @@ angular.module('eventsApp')
             return self.getRelatedPersonPager(rank.id).then(function(pager) {
                 rank.persons = pager;
                 return rank.persons.getTotalCount().then(function(count) {
-                    if (count) {
+            	    if (count) {
                         rank.hasLinks = true;
-                    }
+            	    }
                     return rank;
                 });
             });
         };
-
+        
         self.fetchRelatedRanks = function(rank) {
             return self.getRelatedRanks(rank.id).then(function(relatedRanks) {
                 rank.lowerRanks = [];
@@ -58,11 +58,11 @@ angular.module('eventsApp')
                 return rank;
             });
         };
-
+      
 		this.getById = function(id) {
             return rankRepository.getById(id);
         };
-
+        
 		this.getRelatedPersons = function(id) {
             return personRepository.getByRankId(id);
         };
@@ -76,7 +76,7 @@ angular.module('eventsApp')
         };
 
         self.getRelatedPersonPager = function(id) {
-            return personRepository.getByRankId(id, Settings.pageSize);
+            return personRepository.getByRankId(id, Settings.hardPageSize);
         };
 });
 

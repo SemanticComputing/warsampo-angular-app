@@ -4,8 +4,9 @@
  * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .service('photoRepository', function($q, SparqlService, objectMapperService, photoMapperService) {
-        var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
+    .service('photoRepository', function($q, AdvancedSparqlService, objectMapperService, photoMapperService) {
+        var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
+            photoMapperService);
 
         var prefixes = '' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
@@ -93,14 +94,12 @@ angular.module('eventsApp')
         '   } LIMIT 150 ';
 
 
-        this.getByTimeSpan = function(start, end) {
+        this.getByTimeSpan = function(start, end, pageSize) {
             var qry = photosByTimeQry.format(start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                return photoMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry, pageSize);
         };
 
-        this.getByPlaceAndTimeSpan = function(place_id, start, end) {
+        this.getByPlaceAndTimeSpan = function(place_id, start, end, pageSize) {
             if (_.isArray(place_id)) {
                 place_id = "<{0}>".format(place_id.join("> <"));
             } else if (place_id) {
@@ -109,12 +108,10 @@ angular.module('eventsApp')
                 return $q.when();
             }
             var qry = photosByPlaceAndTimeQry.format(place_id, start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                return photoMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry, pageSize);
         };
 
-        this.getByPersonId = function(id) {
+        this.getByPersonId = function(id, pageSize) {
             if (_.isArray(id)) {
                 id = "<{0}>".format(id.join("> <"));
             } else if (id) {
@@ -123,26 +120,19 @@ angular.module('eventsApp')
                 return $q.when();
             }
             var qry = photosByPersonQry.format(id);
-            return endpoint.getObjects(qry).then(function(data) {
-                return photoMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry, pageSize);
         };
-
 
         this.getMinimalDataWithPlaceByTimeSpan = function(start, end) {
             // start and end as strings
             var qry = minimalPhotosWithPlaceByTimeQry.format(start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectListNoGrouping(data);
-            });
+            return endpoint.getObjectsNoGrouping(qry);
         };
 
         this.getMinimalDataByTimeSpan = function(start, end) {
             // start and end as strings
             var qry = minimalPhotosByTimeQry.format(start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectListNoGrouping(data);
-            });
+            return endpoint.getObjectsNoGrouping(qry);
         };
 });
 
