@@ -6,6 +6,8 @@ angular.module('eventsApp')
  * sparqlQry is the SPARQL query for the whole data that should be paged.
  * pageSize is the size of one page.
  * getResults is the function that is used for querying for results.
+ * Paging is 0-based.
+ * Will fetch multiple pages per query and cache them.
  */
 .factory('PagerService', function($q, Settings) {
     return function(sparqlQry, pageSize, getResults) {
@@ -19,13 +21,17 @@ angular.module('eventsApp')
 
         var pagify = function(sparqlQry, page, pageSize) {
             // Form the query for the given page.
-            return sparqlQry + ' LIMIT ' + pageSize * pagesPerQuery + ' OFFSET ' + ((page - 1) * pageSize);
+            return sparqlQry + ' LIMIT ' + pageSize * pagesPerQuery + ' OFFSET ' + (page * pageSize);
         };
 
         var countQry = countify(sparqlQry);
+        // The total number of items.
         var count;
-        var pages = [];
+        // The number of the last page.
         var maxPage = Infinity;
+        // Cached pages.
+        var pages = [];
+        // How many pages to get with one query.
         var pagesPerQuery = Settings.pagesFetchedPerQuery;
 
         this.getTotalCount = function() {
@@ -39,40 +45,53 @@ angular.module('eventsApp')
             return getResults(countQry, true).then(function(results) {
                 // Cache the count.
                 count = parseInt(results[0].count.value);
-                maxPage = Math.ceil(count / pageSize);
+                maxPage = Math.ceil(count / pageSize) - 1;
                 return count;
             });
         };
 
         var getPageWindowStart = function(pageNo) {
-            if (pageNo === 1) {
-                return 1;
+            // Get the page number of the first page to fetch.
+
+            if (pageNo <= 0) {
+                // First page.
+                return 0;
             }
-            if (pageNo === maxPage) {
-                return Math.max(pageNo - pageSize, pageNo);
+            if (pageNo >= maxPage) {
+                // Last page -> window ends on last page.
+                return Math.max(pageNo - pagesPerQuery + 1, 0);
             }
-            var min = pageNo < pageSize ? 0 : pageNo - pageSize;
-            var minMin = min;
-            var max = pageNo + pageSize > maxPage ? maxPage : pageNo + pageSize;
-            var maxMax = max;
-            for (var i = minMin; i < pageNo; i++) {
-                if (!pages[i]) {
+            var minMin = pageNo < pagesPerQuery ? 0 : pageNo - pagesPerQuery;
+            var maxMax = pageNo + pagesPerQuery > maxPage ? maxPage : pageNo + pagesPerQuery;
+            var min, max;
+            for (min = minMin; min < pageNo; min++) {
+                // Get the lowest non-cached page within the extended window.
+                if (!pages[min]) {
                     break;
                 }
-                min++;
             }
             if (min === pageNo) {
+                // No non-cached pages before the requested page within the extended window.
                 return pageNo;
             }
-            for (var i = maxMax; i > pageNo; i--) {
-                if (!pages[i]) {
+            for (max = maxMax; max > pageNo; max--) {
+                // Get the highest non-cached page within the extended window.
+                if (!pages[max]) {
                     break;
                 }
-                max--;
             }
             if (minMin === min && maxMax === max) {
+                // No cached pages near the requested page
+                // -> requested page in the center of the window
                 return min + Math.ceil(pageSize / 2);
             }
+            if (max < maxMax) {
+                // There are some cached pages toward the end of the extended window
+                // -> window ends at the last non-cached page
+                return Math.max(max - pageSize + 1, 0);
+            }
+            // Otherwise window starts from the lowest non-cached page 
+            // within the extended window.
             return min;
         };
 
@@ -83,19 +102,27 @@ angular.module('eventsApp')
             if (pages[pageNo]) {
                 return pages[pageNo].promise;
             }
-            for (var i = pageNo; i < pageNo + pagesPerQuery && i <= maxPage; i++) {
+            // Get the page window for the query (i.e. query for surrounding
+            // pages as well according to pagesPerQuery).
+            var start = getPageWindowStart(pageNo);
+            // Assign a promise to each page within the window as all of those
+            // will be fetched.
+            for (var i = start; i < start + pagesPerQuery && i <= maxPage; i++) {
                 if (!pages[i]) {
                     pages[i] = $q.defer();
                 }
             }
-            return getResults(pagify(sparqlQry, pageNo, pageSize))
+            // Query for the pages.
+            return getResults(pagify(sparqlQry, start, pageSize))
             .then(function(results) {
                 var chunks = _.chunk(results, pagesPerQuery);
                 chunks.forEach(function(page) {
-                    pages[pageNo].resolve(page);
-                    pageNo++;
+                    // Resolve each page promise.
+                    pages[start].resolve(page);
+                    start++;
                 });
-                return chunks[0];
+                // Return (the promise of) the requested page.
+                return pages[pageNo].promise;
             });
         };
 

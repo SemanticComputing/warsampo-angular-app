@@ -10,12 +10,14 @@ angular.module('eventsApp')
         var self = this;
 
         self.fetchRelatedPersons = function(rank) {
-            rank.persons = self.getRelatedPersonPager(rank.id);
-            return rank.persons.getTotalCount().then(function(count) {
-            	if (count) {
-                    rank.hasLinks = true;
-            	}
-                return rank;
+            return self.getRelatedPersonPager(rank.id).then(function(pager) {
+                rank.persons = pager;
+                return rank.persons.getTotalCount().then(function(count) {
+                    if (count) {
+                        rank.hasLinks = true;
+                    }
+                    return rank;
+                });
             });
         };
 

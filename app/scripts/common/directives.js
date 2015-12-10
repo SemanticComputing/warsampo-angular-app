@@ -79,7 +79,7 @@ angular.module('eventsApp')
                     self.totalItems = count;
                 });
                 self.isLoadingPage = true;
-                $scope.pager.getPage(1).then(function(page) {
+                $scope.pager.getPage(0).then(function(page) {
                     self.isLoadingPage = false;
                     self.related = page;
                 });
@@ -90,7 +90,7 @@ angular.module('eventsApp')
                 self.isLoadingPage = true;
                 var latestPage = self.currentPage;
 
-                $scope.pager.getPage(self.currentPage).then(function(page) {
+                $scope.pager.getPage(self.currentPage - 1).then(function(page) {
                     if (latestPage === self.currentPage) {
                         self.isLoadingPage = false;
                         self.related = page;
