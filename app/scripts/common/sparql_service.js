@@ -25,7 +25,7 @@ angular.module('eventsApp')
 
         var countify = function(sparqlQry) {
             // Form a query that counts the total number of items returned
-            // by the query.
+            // by the query (by replacing the first SELECT with a COUNT).
             return sparqlQry.replace(/\bselect\b.+?(where)?\W+?\{/i,
                 'SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE {');
         };

@@ -8,6 +8,9 @@ angular.module('eventsApp')
         var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
             photoMapperService);
 
+        var minimalDataService = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
+            objectMapperService);
+
         var prefixes = '' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
@@ -126,13 +129,13 @@ angular.module('eventsApp')
         this.getMinimalDataWithPlaceByTimeSpan = function(start, end) {
             // start and end as strings
             var qry = minimalPhotosWithPlaceByTimeQry.format(start, end);
-            return endpoint.getObjectsNoGrouping(qry);
+            return minimalDataService.getObjectsNoGrouping(qry);
         };
 
         this.getMinimalDataByTimeSpan = function(start, end) {
             // start and end as strings
             var qry = minimalPhotosByTimeQry.format(start, end);
-            return endpoint.getObjectsNoGrouping(qry);
+            return minimalDataService.getObjectsNoGrouping(qry);
         };
 });
 
