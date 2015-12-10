@@ -121,14 +121,17 @@ angular.module('eventsApp')
         };
 
         self.fetchRelatedPhotos = function(person) {
-            return photoRepository.getByPersonId(person.id).then(function(imgs) {
-                if (imgs && imgs.length) {
-                    person.images = imgs;
+            return photoRepository.getByPersonId(person.id, 10).then(function(imgs) {
+                person.photos = imgs;
+                return imgs.getTotalCount();
+            }).then(function(count) {
+                if (count) {
                     person.hasLinks = true;
                 }
+                return person;
             });
         };
-			
+
         self.fetchNationalBib = function(person) {
         		return personRepository.getNationalBibliography(person).then(function(nb) {
             	if (nb && nb.length && nb[0].id) { 

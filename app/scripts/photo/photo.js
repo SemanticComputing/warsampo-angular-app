@@ -4,7 +4,7 @@
  * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-    .service('photoService', function($q, photoRepository) {
+    .service('photoService', function($q, photoRepository, dateUtilService) {
 
         this.getPhotosByPlaceAndTimeSpan = function(place_id, start, end) {
             if (place_id) {
@@ -30,19 +30,13 @@ angular.module('eventsApp')
                 }
             }
             return this.getPhotosByPlaceAndTimeSpan(place_ids, 
-                    this.changeDateAndFormat(event.start_time, -photoSettings.beforeOffset), 
-                    this.changeDateAndFormat(event.end_time, photoSettings.afterOffset));
+                    dateUtilService.changeDateAndFormat(event.start_time, -photoSettings.beforeOffset), 
+                    dateUtilService.changeDateAndFormat(event.end_time, photoSettings.afterOffset));
         };
 
         this.getByTimeSpan = function(start, end) {
             // start and end as strings
             return photoRepository.getByTimeSpan(start, end);
-        };
-
-        this.changeDateAndFormat = function(date, days) {
-            var d = new Date(date);
-            d.setDate(d.getDate() + days);
-            return d.toISODateString();
         };
 });
 

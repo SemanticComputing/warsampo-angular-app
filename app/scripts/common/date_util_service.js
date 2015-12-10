@@ -44,4 +44,10 @@ angular.module('eventsApp')
 
         return time;
     };
+
+    this.changeDateAndFormat = function(date, days) {
+        var d = new Date(date);
+        d.setDate(d.getDate() + days);
+        return d.toISODateString();
+    };
 });
