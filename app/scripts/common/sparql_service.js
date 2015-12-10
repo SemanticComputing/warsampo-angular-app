@@ -12,6 +12,17 @@ angular.module('eventsApp')
 .factory('PagerService', function($q, Settings) {
     return function(sparqlQry, pageSize, getResults) {
 
+        var self = this;
+
+        // The total number of items.
+        var count;
+        // The number of the last page.
+        var maxPage = Infinity;
+        // Cached pages.
+        var pages = [];
+        // How many pages to get with one query.
+        self.pagesPerQuery = Settings.pagesFetchedPerQuery;
+
         var countify = function(sparqlQry) {
             // Form a query that counts the total number of items returned
             // by the query.
@@ -21,20 +32,12 @@ angular.module('eventsApp')
 
         var pagify = function(sparqlQry, page, pageSize) {
             // Form the query for the given page.
-            return sparqlQry + ' LIMIT ' + pageSize * pagesPerQuery + ' OFFSET ' + (page * pageSize);
+            return sparqlQry + ' LIMIT ' + pageSize * self.pagesPerQuery + ' OFFSET ' + (page * pageSize);
         };
 
         var countQry = countify(sparqlQry);
-        // The total number of items.
-        var count;
-        // The number of the last page.
-        var maxPage = Infinity;
-        // Cached pages.
-        var pages = [];
-        // How many pages to get with one query.
-        var pagesPerQuery = Settings.pagesFetchedPerQuery;
 
-        this.getTotalCount = function() {
+        self.getTotalCount = function() {
             // Get the total number of items that the original query returns.
             // Returns a promise.
 
@@ -59,10 +62,10 @@ angular.module('eventsApp')
             }
             if (pageNo >= maxPage) {
                 // Last page -> window ends on last page.
-                return Math.max(pageNo - pagesPerQuery + 1, 0);
+                return Math.max(pageNo - self.pagesPerQuery + 1, 0);
             }
-            var minMin = pageNo < pagesPerQuery ? 0 : pageNo - pagesPerQuery;
-            var maxMax = pageNo + pagesPerQuery > maxPage ? maxPage : pageNo + pagesPerQuery;
+            var minMin = pageNo < self.pagesPerQuery ? 0 : pageNo - self.pagesPerQuery;
+            var maxMax = pageNo + self.pagesPerQuery > maxPage ? maxPage : pageNo + self.pagesPerQuery;
             var min, max;
             for (min = minMin; min < pageNo; min++) {
                 // Get the lowest non-cached page within the extended window.
@@ -95,7 +98,7 @@ angular.module('eventsApp')
             return min;
         };
 
-        this.getPage = function(pageNo) {
+        self.getPage = function(pageNo) {
             // Get a specific "page" of data.
 
             // Get cached page if available.
@@ -103,11 +106,11 @@ angular.module('eventsApp')
                 return pages[pageNo].promise;
             }
             // Get the page window for the query (i.e. query for surrounding
-            // pages as well according to pagesPerQuery).
+            // pages as well according to self.pagesPerQuery).
             var start = getPageWindowStart(pageNo);
             // Assign a promise to each page within the window as all of those
             // will be fetched.
-            for (var i = start; i < start + pagesPerQuery && i <= maxPage; i++) {
+            for (var i = start; i < start + self.pagesPerQuery && i <= maxPage; i++) {
                 if (!pages[i]) {
                     pages[i] = $q.defer();
                 }
@@ -115,7 +118,7 @@ angular.module('eventsApp')
             // Query for the pages.
             return getResults(pagify(sparqlQry, start, pageSize))
             .then(function(results) {
-                var chunks = _.chunk(results, pagesPerQuery);
+                var chunks = _.chunk(results, self.pagesPerQuery);
                 chunks.forEach(function(page) {
                     // Resolve each page promise.
                     pages[start].resolve(page);
@@ -126,7 +129,7 @@ angular.module('eventsApp')
             });
         };
 
-        this.getAll = function() {
+        self.getAll = function() {
             // Get all of the data.
             return getResults(sparqlQry);
         };
