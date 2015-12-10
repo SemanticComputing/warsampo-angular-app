@@ -76,7 +76,7 @@ angular.module('eventsApp')
         };
 
         self.getRelatedPersonPager = function(id) {
-            return personRepository.getByRankId(id, Settings.hardPageSize);
+            return personRepository.getByRankId(id, Settings.pageSize);
         };
 });
 
