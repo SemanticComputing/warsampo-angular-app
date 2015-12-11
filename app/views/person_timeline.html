@@ -22,7 +22,7 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <div id="linkContent">
 
-      <div ng-if="ctrl.person && ctrl.person.images.length">
+      <div ng-if="ctrl.person && ctrl.person.images">
         <h3 id="links-header" class="links-header-class">Valokuvat</h3>
         <p>{{ ctrl.person.images.length }} kuvaa</p>
         <photo-scroller images="ctrl.person.images"></photo-scroller>

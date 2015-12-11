@@ -37,33 +37,29 @@ angular.module('eventsApp')
         self.isLoadingLinks = true;
         eventService.getEventById($routeParams.uri)
         .then(function(event) {
-            self.event = event; 
+            self.event = event;
             self.isLoadingEvent = false;
 
-            return $q.all(eventService.fetchRelated(event), fetchImages(event));
+            var placeEventPromise = eventService.getEventsByPlaceIdPager(
+                _.pluck(self.event.places, 'id'), Settings.pageSize, self.event.id);
+            var timeEventPromise = eventService.getEventsLooselyWithinTimeSpanPager(
+                self.event.start_time, self.event.end_time, Settings.pageSize, self.event.id);
+            return $q.all([
+                placeEventPromise,
+                timeEventPromise,
+                eventService.fetchRelated(self.event),
+                fetchImages(self.event)
+            ]);
         })
-        .then(function() { 
-            var placeEventPromise = eventService.getEventsByPlaceId(_.pluck(self.event.places, 'id'));
-            var timeEventPromise = eventService.getEventsLooselyWithinTimeSpan(self.event.start_time, self.event.end_time);
-            return $q.all([placeEventPromise, timeEventPromise]);
-        })
-        .then(function(events) { 
-            self.relatedEventsByPlace = _.filter(events[0], function(e) {
-                return e.id !== self.event.id;
+        .then(function(events) {
+            $q.all([events[0].getTotalCount(), events[1].getTotalCount()]).then(function(counts) {
+                if (counts[0] || counts[1]) {
+                    self.event.hasLinks = true;
+                }
+                self.relatedEventsByPlace = events[0];
+                self.relatedEventsByTime = events[1];
+                self.isLoadingLinks = false;
             });
-            if (_.isEmpty(self.relatedEventsByPlace)) {
-                self.relatedEventsByPlace = null;
-            }
-            self.relatedEventsByTime = _.filter(events[1], function(e) {
-                return e.id !== self.event.id;
-            });
-            if (_.isEmpty(self.relatedEventsByTime)) {
-                self.relatedEventsByTime = null;
-            }
-            if (self.relatedEventsByPlace || self.relatedEventsByTime) {
-                self.event.hasLinks = true;
-            }
-            self.isLoadingLinks = false;
         }).catch(function() {
             self.isLoadingEvent = false;
             self.isLoadingLinks = false;

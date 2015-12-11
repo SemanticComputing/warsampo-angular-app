@@ -1,6 +1,6 @@
 'use strict';
 
-/* 
+/*
  * Service for transforming event SPARQL results into objects.
  */
 
@@ -36,12 +36,15 @@ PersonMapper.prototype.makeObject = function(obj) {
 		delete o.death_time;
 	}
 
-    o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
-	
     if (o.natiobib && (o.natiobib.indexOf("ldf.fi/history") <0 )) { delete o.natiobib; }
-	
+
     if (o.sname) {
         o.label = o.fname ? o.fname + ' ' + o.sname : o.sname;
+    }
+
+    if (o.num_children) {
+        var n = parseInt(o.num_children, 10);
+        o.num_children = isNaN(n) ? o.num_children : n;
     }
 
     var places = [];
@@ -61,7 +64,7 @@ PersonMapper.prototype.makeObject = function(obj) {
     }
 
     o.places = _.uniq(places, 'id');
-    
+
     return o;
 };
 

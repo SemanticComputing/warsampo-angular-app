@@ -14,16 +14,16 @@ angular.module('eventsApp')
             if (person.rank_id) {
                 person.ranks.push({id:person.rank_id, label:person.rank});
             }
-            
+
             for (var i=0; i<events.length; i++) {
-                var e=events[i], 
-                    etype=e.type_id, 
+                var e=events[i],
+                    etype=e.type_id,
                     edate=e.start_time,
                     edate2=e.end_time;
                 edate=dateUtilService.getExtremeDate(edate, true);
                 edate2=dateUtilService.getExtremeDate(edate2, false);
                 edate=dateUtilService.formatDateRange(edate,edate2);
-                
+
                 if (etype.indexOf('Death')>-1) {
                     person.death = edate;
                 } else if (etype.indexOf('Birth')>-1) {
@@ -34,7 +34,7 @@ angular.module('eventsApp')
                 }
             }
 				return person;
-		
+
         };
 
         this.processRelatedEvents = function(person, events) {
@@ -43,9 +43,9 @@ angular.module('eventsApp')
             var articles=[];
 
             for (var i=0; i<events.length; i++) {
-                var e = events[i], 
-                    etype = e.type_id; 
-                
+                var e = events[i],
+                    etype = e.type_id;
+
                 if (etype.indexOf('Battle')>-1) {
                     battles.push(e);
                 } else if (etype.indexOf('Article')>-1 ) {
@@ -54,7 +54,7 @@ angular.module('eventsApp')
                     eventlist.push(e);
                 }
             }
-            
+
             if (eventlist.length) {
                 person.hasLinks = true;
                 person.events=eventlist;
@@ -122,7 +122,7 @@ angular.module('eventsApp')
 
         self.fetchRelatedPhotos = function(person) {
             return photoRepository.getByPersonId(person.id, 10).then(function(imgs) {
-                person.photos = imgs;
+                person.images = imgs;
                 return imgs.getTotalCount();
             }).then(function(count) {
                 if (count) {
@@ -134,8 +134,8 @@ angular.module('eventsApp')
 
         self.fetchNationalBib = function(person) {
         		return personRepository.getNationalBibliography(person).then(function(nb) {
-            	if (nb && nb.length && nb[0].id) { 
-                	person.nationals = nb[0]; 
+            	if (nb && nb.length && nb[0].id) {
+                	person.nationals = nb[0];
                     person.hasLinks = true;
                 }
             });
@@ -164,7 +164,7 @@ angular.module('eventsApp')
        this.getNationalBibliography = function(person) {
            return personRepository.getNationalBibliographyByName(person);
        };
-       
+
 		this.getItems = function (regx, controller) {
             return personRepository.getItems(regx, controller);
         };

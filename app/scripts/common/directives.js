@@ -69,7 +69,7 @@ angular.module('eventsApp')
         controllerAs: 'relatedCtrl',
         controller: function($scope, Settings) {
             var self = this;
-            
+
             self.isLoadingPage = false;
             self.pageSize = Settings.pageSize;
 

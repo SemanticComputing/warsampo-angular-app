@@ -17,7 +17,7 @@ angular.module('eventsApp')
         self.isLoadingLinks = true;
         timeService.getById($routeParams.uri)
         .then(function(time) {
-            self.time = time; 
+            self.time = time;
             self.isLoadingObj = false;
 
             return timeService.fetchRelated(time);

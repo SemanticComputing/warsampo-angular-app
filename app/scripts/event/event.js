@@ -60,16 +60,26 @@ angular.module('eventsApp')
             return eventRepository.getLooselyWithinTimeSpan(start, end);
         };
 
+        self.getEventsLooselyWithinTimeSpanPager = function(start, end, pageSize, idFilter) {
+            // Get events that at least partially occured between the dates start and end.
+            // Returns a promise.
+            if (idFilter) {
+                return eventRepository.getLooselyWithinTimeSpan(start, end, pageSize, idFilter);
+            }
+            return eventRepository.getLooselyWithinTimeSpan(start, end, pageSize);
+        };
+
         self.getEventsByPlaceId = function(ids) {
             return eventRepository.getByPlaceId(ids);
         };
 
-        self.getUnitAndSubUnitEventsByUnitId = function(id) {
-            return eventRepository.getUnitAndSubUnitEventsByUnitId(id);
+        self.getEventsByPlaceIdPager = function(ids, pageSize, idFilter) {
+            return eventRepository.getByPlaceId(ids, pageSize, idFilter);
         };
 
-        self.getByPersonIdPaged = function(id, page) {
-            return eventRepository.getByPersonIdPaged(id, page, 10);
+
+        self.getUnitAndSubUnitEventsByUnitId = function(id) {
+            return eventRepository.getUnitAndSubUnitEventsByUnitId(id);
         };
 });
 

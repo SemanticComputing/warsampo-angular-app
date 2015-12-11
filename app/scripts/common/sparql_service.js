@@ -30,9 +30,10 @@ angular.module('eventsApp')
                 'SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE {');
         };
 
-        var pagify = function(sparqlQry, page, pageSize) {
+        var pagify = function(sparqlQry, page, pageSize, pagesPerQuery) {
             // Form the query for the given page.
-            return sparqlQry + ' LIMIT ' + pageSize * self.pagesPerQuery + ' OFFSET ' + (page * pageSize);
+            var pages = pagesPerQuery || self.pagesPerQuery;
+            return sparqlQry + ' LIMIT ' + pageSize * pages + ' OFFSET ' + (page * pageSize);
         };
 
         var countQry = countify(sparqlQry);
@@ -129,9 +130,23 @@ angular.module('eventsApp')
             });
         };
 
-        self.getAll = function() {
+        self.getAllInChunks = function(chunkSize) {
             // Get all of the data.
-            return getResults(sparqlQry);
+            var all = [];
+            var res = $q.defer();
+            self.getTotalCount().then(function(count) {
+                var max = Math.ceil(count / chunkSize);
+                for (var i = 0; i < max; i++) {
+                    getResults(pagify(sparqlQry, i, chunkSize, 1)).then(function(page) {
+                        all.concat(page);
+                        if (i === max - 1) {
+                            return res.resolve(all);
+                        }
+                        res.notify(all);
+                    });
+                }
+                return res;
+            });
         };
     };
 })

@@ -20,7 +20,7 @@ angular.module('eventsApp')
         self.isLoadingLinks = false;
         personService.getById(uri)
         .then(function(person) {
-            self.person = person; 
+            self.person = person;
             self.isLoadingEvent = false;
 
             return personService.fetchRelated2(person);
@@ -55,7 +55,7 @@ angular.module('eventsApp')
    };
 
    this.getItems();
-	
+
    this.updateActor = function () {
        if (this.selectedItem && this.selectedItem.id) {
            var uri=this.selectedItem.id;
@@ -68,7 +68,7 @@ angular.module('eventsApp')
            this.updateByUri(uri);
        }
    };
-	
+
 	// Set listener to prevent reload when it is not desired.
     $scope.$on('$routeUpdate', function() {
         if (!self.noReload) {
@@ -77,12 +77,12 @@ angular.module('eventsApp')
             self.noReload = false;
         }
     });
-    
-	if ($routeParams.uri) { 
-		this.updateByUri($routeParams.uri); 
-	} else { 
+
+	if ($routeParams.uri) {
+		this.updateByUri($routeParams.uri);
+	} else {
 		this.selectedItem = { name: "Talvela, Paavo Juho", id: "http://ldf.fi/warsa/actors/person_50" };
-		this.updateActor(); 
+		this.updateActor();
 	}
 });
 

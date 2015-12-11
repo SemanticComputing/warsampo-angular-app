@@ -2,6 +2,15 @@
   {{ ctrl.person.birth }} {{ ctrl.person.birth_place }} -
   {{ ctrl.person.death }} {{ ctrl.person.death_place }}
 </p>
+<p ng-if="ctrl.person.way_to_die">
+  {{ ctrl.person.way_to_die | capitalizeFirst }}.
+  <span ng-if="ctrl.person.bury_place">Haudattu paikkaan {{ ctrl.person.bury_place }}</span>
+</p>
+<p ng-if="ctrl.person.profession">Ammatti: {{ ctrl.person.profession }}</p>
+<p ng-if="ctrl.person.mstatus">
+  Aviosääty: {{ ctrl.person.mstatus | lowercase }}, {{ ctrl.person.num_children ? "lapsia " + ctrl.person.num_children : "ei lapsia" }}</p>
+<p ng-if="ctrl.person.cas_unit">Palvellut joukko-osastossa {{ ctrl.person.cas_unit }}</p>
+<p ng-if="ctrl.person.rank">{{ ctrl.person.rank }}</p>
 <p ng-repeat="promotion in ctrl.person.promotions">{{ promotion }}</p>
 <p ng-if="ctrl.person.source || ctrl.person.sid">
   Lähde: {{ ctrl.person.source || ctrl.person.sid | concatList }}

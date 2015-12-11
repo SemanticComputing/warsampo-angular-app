@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('rankService', function($q, SparqlService, rankRepository,
-                personRepository, Settings) { 
+                personRepository, Settings) {
 
         var self = this;
 
@@ -20,7 +20,7 @@ angular.module('eventsApp')
                 });
             });
         };
-        
+
         self.fetchRelatedRanks = function(rank) {
             return self.getRelatedRanks(rank.id).then(function(relatedRanks) {
                 rank.lowerRanks = [];
@@ -58,11 +58,11 @@ angular.module('eventsApp')
                 return rank;
             });
         };
-      
+
 		this.getById = function(id) {
             return rankRepository.getById(id);
         };
-        
+
 		this.getRelatedPersons = function(id) {
             return personRepository.getByRankId(id);
         };

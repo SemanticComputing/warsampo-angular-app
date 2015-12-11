@@ -32,7 +32,7 @@
     <p ng-if="(!ctrl.time || !ctrl.time.hasLinks) && !ctrl.isLoadingLinks">Linkkejä ei löytynyt</p>
     <div id="linkContent">
       <related-links data-title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></related-links>
-      <related-links data-title="'Tähän aikaan menehtyneitä'" related="ctrl.time.casualties"></related-links>
+      <related-links-paged data-title="'Tähän aikaan menehtyneitä'" paginator="ctrl.time.casualties"></related-links-paged>
     </div>
   </div>
 </div>

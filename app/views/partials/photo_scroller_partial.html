@@ -1,7 +1,6 @@
 <div id="photo-thumbs">
-  <div id="photo-container">
-    <a ng-cloak ng-repeat="img in images"
-      ng-controller="PhotoGalleryCtrl as photoCtrl" data-gallery
+  <div id="photo-container" ng-controller="PhotoGalleryCtrl as photoCtrl">
+    <a ng-cloak ng-repeat="img in images" data-gallery
       title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
       <img fallback-img-for-gallery ng-src="{{ img.thumbnail }}" /></a>
   </div>

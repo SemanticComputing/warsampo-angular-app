@@ -47,8 +47,8 @@ angular.module('eventsApp')
         '   OPTIONAL { ?id :hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . }' +
         ' 	OPTIONAL { ' +
         '     ?id owl:sameAs ?natiobib .' +
-        '	} ' + 
-        '   OPTIONAL { ' + 
+        '	} ' +
+        '   OPTIONAL { ' +
         '     ?id owl:sameAs ?casualty .' +
         '     ?casualty a foaf:Person .'  +
         '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
@@ -83,7 +83,7 @@ angular.module('eventsApp')
         '   }' +
         ' } ';
 
-		var nationalBibliographyQry = 
+		var nationalBibliographyQry =
 		'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>' +
 		'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ' +
 		'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
@@ -110,7 +110,7 @@ angular.module('eventsApp')
 		'	  OPTIONAL {?id dcterms:type ?shortDescription } ' +
 		'	  OPTIONAL {?id rdfs:comment ?description } ' +
 		'} ORDER BY DESC(?dateOfDeath) LIMIT 1 ';
-		
+
 		//	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
 		var selectorQuery = prefixes +
         'SELECT DISTINCT ?name ?id WHERE {	' +
@@ -217,19 +217,15 @@ angular.module('eventsApp')
             return endpoint.getObjects(qry);
         };
 
-        this.getCasualtiesByTimeSpan = function(start, end) {
+        this.getCasualtiesByTimeSpan = function(start, end, pageSize) {
             var qry = casualtiesByTimeSpanQry.format(start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                if (data.length) {
-                    return data;
-                }
-            });
+            return endpoint.getObjects(qry, pageSize);
         };
-		
+
        this.getNationalBibliography = function(person) {
        		if ('natiobib' in person ) {
        			// Direct link by owl:sameAs
-       			var qry = nationalBibliographyQry.format(person.natiobib); 
+       			var qry = nationalBibliographyQry.format(person.natiobib);
        			var end2 = new SparqlService("http://ldf.fi/history/sparql");
 	 				return end2.getObjects(qry).then(function(data) {
                         return personMapperService.makeObjectList(data);
@@ -237,7 +233,7 @@ angular.module('eventsApp')
        		}
            return $q.when();
        };
-       
+
 		this.getItems = function (regx, controller) {
             var qry = selectorQuery.format("{0}".format(regx));
             controller.items = [ {id:'#', name:"Etsitään ..."} ];

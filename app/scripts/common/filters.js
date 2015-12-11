@@ -5,4 +5,8 @@ angular.module('eventsApp')
     return function(input) {
         return _.isArray(input) ? input.join(', ') : input;
     };
+}).filter('capitalizeFirst', function() {
+    return function(input) {
+        return _.capitalize(input);
+    };
 });

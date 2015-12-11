@@ -94,7 +94,7 @@ angular.module('eventsApp')
         ' 	?id dcterms:description ?description . ' +
         ' 	?id sch:contentUrl ?url . ' +
         ' 	?id sch:thumbnailUrl ?thumbnail_url . ' +
-        '   } LIMIT 150 ';
+        '   }';
 
 
         this.getByTimeSpan = function(start, end, pageSize) {

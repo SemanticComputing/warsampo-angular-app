@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
     .service('timeService', function($q, SparqlService, timeRepository,
-            eventRepository, photoRepository, personRepository) {
+            eventRepository, photoRepository, personRepository, Settings) {
 
         var self = this;
 
@@ -32,12 +32,14 @@ angular.module('eventsApp')
         };
 
         self.fetchCasualties = function(time) {
-            return personRepository.getCasualtiesByTimeSpan(time.bob, time.eoe)
+            return personRepository.getCasualtiesByTimeSpan(time.bob, time.eoe, Settings.pageSize)
                 .then(function(data) {
                     time.casualties = data;
-                    if (data && data.length) {
-                        time.hasLinks = true;
-                    }
+                    data.getTotalCount().then(function(count) {
+                        if (count) {
+                            time.hasLinks = true;
+                        }
+                    });
                     return time;
             });
         };
