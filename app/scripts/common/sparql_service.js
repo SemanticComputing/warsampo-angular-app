@@ -94,7 +94,7 @@ angular.module('eventsApp')
                 // -> window ends at the last non-cached page
                 return Math.max(max - pageSize + 1, 0);
             }
-            // Otherwise window starts from the lowest non-cached page 
+            // Otherwise window starts from the lowest non-cached page
             // within the extended window.
             return min;
         };
@@ -130,22 +130,27 @@ angular.module('eventsApp')
             });
         };
 
-        self.getAllInChunks = function(chunkSize) {
+        self.getAllSequentially = function(chunkSize) {
             // Get all of the data.
             var all = [];
             var res = $q.defer();
-            self.getTotalCount().then(function(count) {
+            var chain = $q.when();
+            return self.getTotalCount().then(function(count) {
                 var max = Math.ceil(count / chunkSize);
+                var j = 0;
                 for (var i = 0; i < max; i++) {
-                    getResults(pagify(sparqlQry, i, chunkSize, 1)).then(function(page) {
-                        all.concat(page);
-                        if (i === max - 1) {
-                            return res.resolve(all);
-                        }
-                        res.notify(all);
+                    chain = chain.then(function() {
+                        return getResults(pagify(sparqlQry, j++, chunkSize, 1)).then(function(page) {
+                            all = all.concat(page);
+                            res.notify(all);
+                        });
                     });
                 }
-                return res;
+                chain.then(function() {
+                    res.resolve(all);
+                });
+
+                return res.promise;
             });
         };
     };

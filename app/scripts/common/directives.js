@@ -75,15 +75,15 @@ angular.module('eventsApp')
 
             $scope.$watch('pager', function(val) {
                 if (val) {
-                $scope.pager.getTotalCount().then(function(count) {
-                    self.totalItems = count;
-                });
-                self.isLoadingPage = true;
-                $scope.pager.getPage(0).then(function(page) {
-                    self.isLoadingPage = false;
-                    self.related = page;
-                });
-            }
+                    $scope.pager.getTotalCount().then(function(count) {
+                        self.totalItems = count;
+                    });
+                    self.isLoadingPage = true;
+                    $scope.pager.getPage(0).then(function(page) {
+                        self.isLoadingPage = false;
+                        self.related = page;
+                    });
+                }
             });
 
             self.updatePage = function() {
@@ -150,6 +150,15 @@ angular.module('eventsApp')
         });
     };
 
+    return {
+        restrict:'A',
+        link: link
+    };
+})
+.directive('collapsingThing', function() {
+    var link = function(scope, element, attrs) {
+        console.log(element.prop('scrollHeight'));
+    }
     return {
         restrict:'A',
         link: link

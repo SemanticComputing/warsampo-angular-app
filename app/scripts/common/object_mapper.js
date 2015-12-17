@@ -51,7 +51,7 @@ ObjectMapper.prototype.mergeObjects = function(first, second) {
         if (b && !a) {
             return b;
         }
-        
+
         return [a, b];
     });
 };
@@ -73,14 +73,14 @@ ObjectMapper.prototype.makeObjectList = function(objects) {
         var old = _.find(result, function(e) {
             return e.id === obj.id;
         });
-        if (old) { 
+        if (old) {
             // Merge this triple into the object constructed earlier
             self.mergeObjects(old, obj);
         }
         else {
             // This is the first triple related to the id
             result.push(obj);
-        }                
+        }
     });
     return self.postProcess(obj_list);
 };

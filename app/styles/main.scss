@@ -110,3 +110,20 @@ body {
 .center-align {
     margin: auto;
 }
+
+.photo-collapsed {
+    max-height: 100px;
+}
+
+.photo-more {
+    max-height: 500px;
+}
+
+.photo-all {
+    max-height: 10000px;
+}
+
+.photo-collapsed, .photo-more, .photo-all {
+    overflow: hidden;
+    transition: max-height 300ms linear;
+}
