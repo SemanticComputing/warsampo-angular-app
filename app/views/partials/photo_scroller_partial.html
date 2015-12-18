@@ -1,10 +1,10 @@
-<div ng-controller="PhotoGalleryCtrl as photoCtrl" id="photo-thumbs">
-  <div id="photo-container" collapsing-thing
-    ng-class="{'photo-collapsed': photoCtrl.collapseLevel === 0,
-    'photo-more': photoCtrl.collapseLevel === 1, 'photo-all': photoCtrl.collapseLevel === 2}">
-    <a ng-cloak ng-repeat="img in photoCtrl.photos" data-gallery
-      title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-      <img fallback-img-for-gallery ng-src="{{ img.thumbnail }}" /></a>
+<div ng-controller="PhotoGalleryCtrl as photoCtrl">
+  <div class="collapse-with-teaser" uib-collapse="photoCtrl.isCollapsed" id="photo-thumbs">
+    <div id="photo-container">
+      <a ng-cloak ng-repeat="img in photoCtrl.photos" data-gallery
+        title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
+        <img fallback-img-for-gallery ng-src="{{ img.thumbnail }}" /></a>
+    </div>
   </div>
-  <a href="#" ng-click="photoCtrl.showAll()">Näytä lisää kuvia</a>
+  <a ng-click="photoCtrl.toggleCollapse()" href="#" ng-click="photoCtrl.showAll()">Näytä lisää kuvia</a>
 </div>

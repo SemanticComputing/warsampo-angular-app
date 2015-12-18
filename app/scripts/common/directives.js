@@ -154,13 +154,4 @@ angular.module('eventsApp')
         restrict:'A',
         link: link
     };
-})
-.directive('collapsingThing', function() {
-    var link = function(scope, element, attrs) {
-        console.log(element.prop('scrollHeight'));
-    }
-    return {
-        restrict:'A',
-        link: link
-    };
 });

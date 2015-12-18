@@ -10,24 +10,15 @@
 angular.module('eventsApp')
 .controller('PhotoGalleryCtrl', function($scope) {
     var self = this;
-    self.collapseLevel = 0;
 
-    self.showMore = function() {
-        if (self.collapseLevel < 2) {
-            self.collapseLevel++;
-        }
-    }
+    self.isCollapsed = true;
 
-    self.showLess = function() {
-        self.collapseLevel = 0;
-    };
-
-    self.showAll = function() {
-        self.collapseLevel = 2;
+    self.toggleCollapse = function() {
+        self.isCollapsed = !self.isCollapsed;
     };
 
     $scope.$watch('images', function(val) {
-        self.collapseLevel = 0;
+        self.isCollapsed = true;
         self.imagePager = val;
         self.imagePager.getAllSequentially(100).then(function(page) {
             self.photos = page;
