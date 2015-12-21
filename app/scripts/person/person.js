@@ -33,7 +33,7 @@ angular.module('eventsApp')
                     person.ranks.unshift({id:e.rank_id, label:e.rank});
                 }
             }
-				return person;
+            return person;
 
         };
 
@@ -121,7 +121,7 @@ angular.module('eventsApp')
         };
 
         self.fetchRelatedPhotos = function(person) {
-            return photoRepository.getByPersonId(person.id, 10).then(function(imgs) {
+            return photoRepository.getByPersonId(person.id, 50).then(function(imgs) {
                 person.images = imgs;
                 return imgs.getTotalCount();
             }).then(function(count) {

@@ -43,23 +43,23 @@ angular.module('eventsApp')
     return {
         restrict:'E',
         scope: {
-            title: "=",
-            related: "=",
+            title: '=',
+            related: '=',
         },
         link: function(scope, element, attrs) {
             if ('external' in attrs) {
                 scope.external = true;
             }
         },
-        templateUrl: "views/partials/link_collapse_partial.html"
+        templateUrl: 'views/partials/link_collapse_partial.html'
     };
 })
 .directive('relatedLinksPaged', function() {
     return {
         restrict:'E',
         scope: {
-            title: "=",
-            pager: "=paginator"
+            title: '=',
+            pager: '=paginator'
         },
         link: function(scope, element, attrs) {
             if ('external' in attrs) {
@@ -98,16 +98,18 @@ angular.module('eventsApp')
                 });
             };
         },
-        templateUrl: "views/partials/link_collapse_partial_paged.html"
+        templateUrl: 'views/partials/link_collapse_partial_paged.html'
     };
 })
 .directive('photoScroller', function() {
     return {
         restrict:'E',
         scope: {
-            images: "="
+            images: '='
         },
-        templateUrl: "views/partials/photo_scroller_partial.html"
+        controller: 'PhotoGalleryCtrl',
+        controllerAs: 'ctrl',
+        templateUrl: 'views/partials/photo_scroller_partial.html'
     };
 })
 .directive('pageLink', function() {
@@ -134,8 +136,8 @@ angular.module('eventsApp')
                 target = '_self';
                 params = '&oldMap=true';
             } else {
-                path = "page";
-                target = "_self";
+                path = 'page';
+                target = '_self';
             }
 
             var url = path + '?uri=' + objId + (params ? params : '');

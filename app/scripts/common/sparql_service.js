@@ -14,47 +14,37 @@ angular.module('eventsApp')
 
         var self = this;
 
+        self.getTotalCount = getTotalCount;
+        self.getPage = getPage;
+        self.getAllSequentially = getAllSequentially;
+
+        // How many pages to get with one query.
+        self.pagesPerQuery = Settings.pagesFetchedPerQuery;
+
         // The total number of items.
         var count;
         // The number of the last page.
         var maxPage = Infinity;
         // Cached pages.
         var pages = [];
-        // How many pages to get with one query.
-        self.pagesPerQuery = Settings.pagesFetchedPerQuery;
 
-        var countify = function(sparqlQry) {
+        var countQry = countify(sparqlQry);
+
+        function pagify(sparqlQry, page, pageSize, pagesPerQuery) {
+            // Form the query for the given page.
+            var pages = pagesPerQuery || self.pagesPerQuery;
+            return sparqlQry + ' LIMIT ' + pageSize * pages + ' OFFSET ' + (page * pageSize);
+        }
+
+
+        function countify(sparqlQry) {
             // Form a query that counts the total number of items returned
             // by the query (by replacing the first SELECT with a COUNT).
             return sparqlQry.replace(/\bselect\b.+?(where)?\W+?\{/i,
                 'SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE {');
-        };
+        }
 
-        var pagify = function(sparqlQry, page, pageSize, pagesPerQuery) {
-            // Form the query for the given page.
-            var pages = pagesPerQuery || self.pagesPerQuery;
-            return sparqlQry + ' LIMIT ' + pageSize * pages + ' OFFSET ' + (page * pageSize);
-        };
-
-        var countQry = countify(sparqlQry);
-
-        self.getTotalCount = function() {
-            // Get the total number of items that the original query returns.
-            // Returns a promise.
-
-            // Get cached count if available.
-            if (count) {
-                return $q.when(count);
-            }
-            return getResults(countQry, true).then(function(results) {
-                // Cache the count.
-                count = parseInt(results[0].count.value);
-                maxPage = Math.ceil(count / pageSize) - 1;
-                return count;
-            });
-        };
-
-        var getPageWindowStart = function(pageNo) {
+        function getPageWindowStart(pageNo) {
             // Get the page number of the first page to fetch.
 
             if (pageNo <= 0) {
@@ -97,9 +87,25 @@ angular.module('eventsApp')
             // Otherwise window starts from the lowest non-cached page
             // within the extended window.
             return min;
-        };
+        }
 
-        self.getPage = function(pageNo) {
+        function getTotalCount() {
+            // Get the total number of items that the original query returns.
+            // Returns a promise.
+
+            // Get cached count if available.
+            if (count) {
+                return $q.when(count);
+            }
+            return getResults(countQry, true).then(function(results) {
+                // Cache the count.
+                count = parseInt(results[0].count.value);
+                maxPage = Math.ceil(count / pageSize) - 1;
+                return count;
+            });
+        }
+
+        function getPage(pageNo) {
             // Get a specific "page" of data.
 
             // Get cached page if available.
@@ -119,7 +125,7 @@ angular.module('eventsApp')
             // Query for the pages.
             return getResults(pagify(sparqlQry, start, pageSize))
             .then(function(results) {
-                var chunks = _.chunk(results, self.pagesPerQuery);
+                var chunks = _.chunk(results, pageSize);
                 chunks.forEach(function(page) {
                     // Resolve each page promise.
                     pages[start].resolve(page);
@@ -128,14 +134,14 @@ angular.module('eventsApp')
                 // Return (the promise of) the requested page.
                 return pages[pageNo].promise;
             });
-        };
+        }
 
-        self.getAllSequentially = function(chunkSize) {
+        function getAllSequentially(chunkSize) {
             // Get all of the data.
             var all = [];
             var res = $q.defer();
             var chain = $q.when();
-            return self.getTotalCount().then(function(count) {
+            return getTotalCount().then(function(count) {
                 var max = Math.ceil(count / chunkSize);
                 var j = 0;
                 for (var i = 0; i < max; i++) {
@@ -152,7 +158,7 @@ angular.module('eventsApp')
 
                 return res.promise;
             });
-        };
+        }
     };
 })
 /*
