@@ -101,7 +101,7 @@ angular.module('eventsApp')
         templateUrl: 'views/partials/link_collapse_partial_paged.html'
     };
 })
-.directive('photoScroller', function() {
+.directive('photoGallery', function($timeout) {
     return {
         restrict:'E',
         scope: {
@@ -109,7 +109,7 @@ angular.module('eventsApp')
         },
         controller: 'PhotoGalleryCtrl',
         controllerAs: 'ctrl',
-        templateUrl: 'views/partials/photo_scroller_partial.html'
+        templateUrl: 'views/partials/photo_gallery_collapse.html'
     };
 })
 .directive('pageLink', function() {

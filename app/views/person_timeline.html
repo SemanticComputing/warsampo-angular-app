@@ -22,7 +22,7 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <div id="linkContent">
 
-      <photo-scroller images="ctrl.person.images"></photo-scroller>
+      <photo-gallery images="ctrl.person.images"></photo-gallery>
 
       <div ng-if="ctrl.person.nationals" ng-include="'views/partials/national_bibliography_partial.html'"></div>
       <related-links title="'Tapahtumat'" data-related="ctrl.person.events"></related-links>

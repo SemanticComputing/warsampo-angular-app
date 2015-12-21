@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('EventDemoCtrl', function ($routeParams, $location, $anchorScroll,
+.controller('EventDemoCtrl', function ($routeParams, $location, $anchorScroll,
               $timeout, $window, $scope, $rootScope, $route, Settings,
               eventService, photoService, casualtyRepository, personService, timemapService) {
 
@@ -28,12 +28,9 @@ angular.module('eventsApp')
     };
 
     var fetchImages = function(item) {
-        self.isLoadingImages = true;
         var photoConfig = Settings.getPhotoConfig();
-        self.images = [];
         photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
             self.images = imgs;
-            self.isLoadingImages = false;
         });
     };
 

@@ -1,7 +1,7 @@
 <div ng-if="ctrl.imageCount">
   <h3 id="links-header" class="links-header-class">Valokuvat</h3>
   <p>{{ ctrl.imageCount }} kuvaa
-    <button class="btn btn-primary btn-xs" ng-click="ctrl.toggleCollapse()">
+    <button ng-if="ctrl.hasMore" class="btn btn-primary btn-xs" ng-click="ctrl.toggleCollapse()">
       <span ng-if="ctrl.isCollapsed">Hae ja näytä kaikki kuvat</span>
       <span ng-if="!ctrl.isCollapsed">Näytä vähemmän kuvia</span>
     </button> <img ng-show="ctrl.isLoadingImages" src="images/loading.gif" />

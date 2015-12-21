@@ -25,12 +25,7 @@
             Haetaan kuvia <img src="images/loading.gif" />
             </p>
           </div>
-          <div ng-show="!timemapCtrl.isLoadingImages && timemapCtrl.images.length">
-            <p>
-            {{ timemapCtrl.images.length }} kuvaa
-            </p>
-            <photo-scroller images="timemapCtrl.images"></photo-scroller>
-          </div>
+          <photo-gallery data-images="timemapCtrl.images"></photo-gallery>
         </div>
         <div ng-if="timemapCtrl.isLoadingTimemap">
           <h3>Rakennetaan aikajanaa <img src="images/loading.gif" /></h3>

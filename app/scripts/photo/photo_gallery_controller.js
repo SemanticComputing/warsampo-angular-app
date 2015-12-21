@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-.controller('PhotoGalleryCtrl', function($scope) {
+.controller('PhotoGalleryCtrl', function($scope, $timeout) {
     var self = this;
 
     self.isCollapsed = true;
@@ -36,6 +36,8 @@ angular.module('eventsApp')
     };
 
     $scope.$watch('images', function(val) {
+        self.photos = null;
+        self.imageCount = 0;
         self.isCollapsed = true;
         self.imagePager = val;
         self.imagePager.getTotalCount().then(function(count) {
@@ -45,9 +47,15 @@ angular.module('eventsApp')
         self.imagePager.getPage(0).then(function(page) {
             self.isLoadingImages = false;
             self.photos = page;
+            $timeout(function() {
+                checkOverFlow();
+            }, 0);
         });
     });
 
-//    $("#photo-thumbs").mThumbnailScroller({ type: "hover-30",
-//        markup: { thumbnailsContainer: "div", thumbnailContainer: "a" } });
+    function checkOverFlow() {
+        var fullHeight = $('#photo-thumbs')[0].scrollHeight;
+        var visibleHeight = $('#photo-thumbs')[0].clientHeight;
+        self.hasMore = fullHeight > visibleHeight ? true : false;
+    }
 });
