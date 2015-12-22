@@ -32,6 +32,9 @@ angular.module('eventsApp')
         self.hasMore = false;
         self.isCollapsed = true;
         self.imagePager = val;
+        if (!val) {
+            return;
+        }
         self.isLoadingImages = true;
         self.imagePager.getTotalCount().then(function(count) {
             self.imageCount = count;
@@ -61,7 +64,6 @@ angular.module('eventsApp')
             self.isCollapsed = !self.isCollapsed;
         }
     }
-
 
     function checkOverflow() {
         if (self.photos == false) {

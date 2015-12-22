@@ -1,7 +1,8 @@
-<div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">Haetaan kuvia <img src="images/loading.gif" /></div>
-<div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount">Ei tapahtumaan liittyviä kuvia</div>
-<div ng-if="ctrl.imageCount">
-  <p>{{ ctrl.imageCount }} kuvaa
+<div ng-if="ctrl.imagePager">
+  <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">Haetaan kuvia <img src="images/loading.gif" /></div>
+  <div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount">Ei tapahtumaan liittyviä kuvia</div>
+  <div ng-if="ctrl.imageCount">
+    <p>{{ ctrl.imageCount }} kuvaa
     <span ng-show="ctrl.hasMore || !ctrl.isCollapsed"> |
       <a href="" ng-click="ctrl.toggleCollapse()">
         <span ng-show="ctrl.isCollapsed">Näytä kaikki kuvat</span>
@@ -9,15 +10,17 @@
       </a>
     </span>
     <img ng-show="ctrl.isLoadingImages" src="images/loading.gif" />
-  </p>
-  <div class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed" id="photo-thumbs">
-    <div id="photo-container">
-      <a ng-repeat="img in ctrl.photos" data-gallery
-        title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
-        <div class="gallery-thumbnail-container">
-          <img fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ img.thumbnail }}" />
-        </div>
-      </a>
+    </p>
+    <div class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed" id="photo-thumbs">
+      <div id="photo-container">
+        <a ng-repeat="img in ctrl.photos" data-gallery
+          title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
+          <div class="gallery-thumbnail-container">
+            <img fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ img.thumbnail }}" />
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </div>
+
