@@ -1,4 +1,5 @@
 <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">Haetaan kuvia <img src="images/loading.gif" /></div>
+<div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount">Ei tapahtumaan liittyviä kuvia</div>
 <div ng-if="ctrl.imageCount">
   <p>{{ ctrl.imageCount }} kuvaa
     <span ng-show="ctrl.hasMore || !ctrl.isCollapsed"> |

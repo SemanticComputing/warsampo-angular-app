@@ -15,20 +15,7 @@
       </h2>
       <p>{{ ctrl.event.description }}</p>
       <p><a ng-href="events/?uri={{ ctrl.event.id }}">Näytä aikajanalla</a></p>
-      <div ng-show="ctrl.images.length === 0">
-        <p ng-if="!ctrl.isLoadingImages">
-        Ei tapahtumaan liittyviä kuvia.
-        </p>
-        <p ng-if="ctrl.isLoadingImages">
-        Haetaan kuvia <img src="images/loading.gif" />
-        </p>
-      </div>
-      <div ng-show="!ctrl.isLoadingImages && ctrl.images.length">
-        <p>
-        {{ ctrl.images.length }} kuvaa
-        </p>
-      </div>
-      <photo-scroller images="ctrl.images"></photo-scroller>
+      <photo-gallery data-images="ctrl.images"></photo-gallery>
     </div>
   </div>
   <!-- Links -->
