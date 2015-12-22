@@ -28,14 +28,20 @@ angular.module('eventsApp')
     this.getRelatedPhotosForEvent = function(event, photoSettings) {
         var start = dateUtilService.changeDateAndFormat(event.start_time, -photoSettings.beforeOffset);
         var end = dateUtilService.changeDateAndFormat(event.end_time, photoSettings.afterOffset);
+        var promise;
         if (photoSettings.inProximity) {
             var place_ids = _.pluck(event.places, 'id');
             if (!place_ids) {
                 return $q.when();
             }
-            return this.getPhotosByPlaceAndTimeSpan(place_ids, start, end, 20);
+            promise = this.getPhotosByPlaceAndTimeSpan(place_ids, start, end, 50);
+        } else {
+            promise = this.getByTimeSpan(start, end, 50);
         }
-        return this.getByTimeSpan(start, end, 20);
+        return promise.then(function(pager) {
+            pager.pagesPerQuery = 1;
+            return pager;
+        });
     };
 });
 

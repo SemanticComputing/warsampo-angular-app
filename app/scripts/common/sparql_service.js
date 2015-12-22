@@ -112,6 +112,9 @@ angular.module('eventsApp')
             if (pages[pageNo]) {
                 return pages[pageNo].promise;
             }
+            if (maxPage < 0) {
+                return $q.when([]);
+            }
             // Get the page window for the query (i.e. query for surrounding
             // pages as well according to self.pagesPerQuery).
             var start = getPageWindowStart(pageNo);

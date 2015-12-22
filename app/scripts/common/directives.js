@@ -101,7 +101,7 @@ angular.module('eventsApp')
         templateUrl: 'views/partials/link_collapse_partial_paged.html'
     };
 })
-.directive('photoGallery', function($timeout) {
+.directive('photoGallery', function() {
     return {
         restrict:'E',
         scope: {

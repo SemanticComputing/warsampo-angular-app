@@ -112,11 +112,19 @@ body {
 }
 
 .collapse-with-teaser {
-    min-height: 100px !important;
+    min-height: 105px !important;
     display: block !important;
     overflow: hidden;
 }
 
 .photo-gallery {
-    max-width: 1300px;
+    max-width: 13000px;
+}
+
+.gallery-thumbnail-container {
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+    padding: 5px;
 }
