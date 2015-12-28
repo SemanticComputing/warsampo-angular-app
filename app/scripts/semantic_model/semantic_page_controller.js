@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('SemanticPageCtrl', function($routeParams, $q, $rootScope, semanticModelService) {
+.controller('SemanticPageCtrl', function($routeParams, $q, $rootScope, _, semanticModelService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
@@ -34,7 +34,7 @@ angular.module('eventsApp')
         self.isLoadingLinks = true;
         semanticModelService.getById($routeParams.uri)
         .then(function(semanticModel) {
-            self.obj = semanticModel; 
+            self.obj = semanticModel;
             self.isLoadingEvent = false;
             return $q.when();
         }).then(function() {

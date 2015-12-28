@@ -8,16 +8,16 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-.controller('NavCtrl', function($scope, $compile, $location) {
-    $("#nav").load("/page-templates/navbar-fi.html", function() {
-        $("#subnav").load("events/views/subnav.html", function() {
+.controller('NavCtrl', function($scope, $compile) {
+    $('#nav').load('/page-templates/navbar-fi.html', function() {
+        $('#subnav').load('events/views/subnav.html', function() {
             $compile(angular.element('#nav').contents())($scope);
         });
     });
-    $("#footer").load("/page-templates/footer.html");
+    $('#footer').load('/page-templates/footer.html');
 
 })
-.controller('SubNavCtrl', function($rootScope, $location) {
+.controller('SubNavCtrl', function($rootScope, $location, _) {
     var self = this;
     self.showEventLinks = _.contains($location.url(), '/events/');
     $rootScope.$on('$locationChangeSuccess', function(event){

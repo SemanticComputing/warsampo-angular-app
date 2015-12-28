@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
 .controller('EventDemoCtrl', function ($routeParams, $location, $anchorScroll,
-              $timeout, $window, $scope, $rootScope, $route, Settings,
+              $timeout, $window, $scope, $rootScope, $route, _, Settings,
               eventService, photoService, casualtyRepository, personService, timemapService) {
 
     var self = this;

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eventsApp')
-.directive('fallbackImg', function() {
+.directive('fallbackImg', function(_) {
     return {
         restrict:'A',
         link: function(scope, element) {
@@ -21,7 +21,7 @@ angular.module('eventsApp')
         }
     };
 })
-.directive('fallbackImgForGallery', function() {
+.directive('fallbackImgForGallery', function(_) {
     return {
         restrict:'A',
         link: function(scope, element) {
@@ -44,7 +44,7 @@ angular.module('eventsApp')
         restrict:'E',
         scope: {
             title: '=',
-            related: '=',
+            related: '='
         },
         link: function(scope, element, attrs) {
             if ('external' in attrs) {
@@ -112,7 +112,7 @@ angular.module('eventsApp')
         templateUrl: 'views/partials/photo_gallery_collapse.html'
     };
 })
-.directive('pageLink', function() {
+.directive('pageLink', function(_) {
     var link = function(scope, element, attrs) {
         var setSrc = function(value) {
             var path, target, params;

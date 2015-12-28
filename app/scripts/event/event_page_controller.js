@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('EventPageCtrl', function($routeParams, $q, $rootScope, eventService,
+.controller('EventPageCtrl', function($routeParams, $q, $rootScope, _, eventService,
               photoService, Settings) {
 
     $rootScope.showHelp = null;

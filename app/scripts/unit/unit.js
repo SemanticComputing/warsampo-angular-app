@@ -4,7 +4,7 @@
  * Service for units.
  */
 angular.module('eventsApp')
-.service('unitService', function($q, unitRepository, eventRepository,
+.service('unitService', function($q, _, unitRepository, eventRepository,
                 personRepository, dateUtilService) {
 
     var self = this;

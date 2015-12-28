@@ -9,7 +9,7 @@ angular.module('eventsApp')
  * Paging is 0-based.
  * Will fetch multiple pages per query and cache them.
  */
-.factory('PagerService', function($q, Settings) {
+.factory('PagerService', function($q, _, Settings) {
     return function(sparqlQry, pageSize, getResults) {
 
         var self = this;

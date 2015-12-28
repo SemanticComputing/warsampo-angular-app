@@ -1,5 +1,7 @@
 'use strict';
 
+/* global _, SimileAjax, TimeMap, TimeMapTheme, Timeline */
+
 /**
  * @ngdoc overview
  * @name eventsApp
@@ -9,7 +11,7 @@
  * Main module of the application.
  */
 angular
-  .module('eventsApp', [
+.module('eventsApp', [
     'ngAnimate',
     'ngAria',
     'ngCookies',
@@ -20,72 +22,77 @@ angular
     'ngTouch',
     'ui.bootstrap',
     'truncate'
-  ])
-  .config(function($routeProvider) {
-      var lang = '/:lang?';
+])
+.constant('_', _)
+.constant('SimileAjax', SimileAjax)
+.constant('TimeMap', TimeMap)
+.constant('TimeMapTheme', TimeMapTheme)
+.constant('Timeline', Timeline)
+.config(function($routeProvider) {
+    var lang = '/:lang?';
     $routeProvider
-      .when(lang + '/events/page', {
+    .when(lang + '/events/page', {
         templateUrl: 'views/event_page.html',
         controller: 'EventPageCtrl',
         controllerAs: 'ctrl'
-      })
-      .when(lang + '/events/:era?', {
+    })
+    .when(lang + '/events/:era?', {
         templateUrl: 'views/event_timeline.html',
         controller: 'EventDemoCtrl',
         controllerAs: 'timemapCtrl',
         reloadOnSearch: false
-      })
-      .when(lang + '/units/page', {
+    })
+    .when(lang + '/units/page', {
         templateUrl: 'views/unit_page.html',
         controller: 'UnitPageCtrl',
         controllerAs: 'ctrl'
-      })
-      .when(lang + '/persons/page', {
+    })
+    .when(lang + '/persons/page', {
         templateUrl: 'views/person_page.html',
         controller: 'PersonPageCtrl',
         controllerAs: 'ctrl'
-      })
-      .when(lang + '/ranks/page', {
+    })
+    .when(lang + '/ranks/page', {
         templateUrl: 'views/rank_page.html',
         controller: 'RankPageCtrl',
         controllerAs: 'ctrl'
-      })
-      .when(lang + '/units/', {
+    })
+    .when(lang + '/units/', {
         templateUrl: 'views/unit_timeline.html',
         controller: 'UnitDemoCtrl',
         controllerAs: 'ctrl',
         reloadOnSearch: false
-      })
-      .when(lang + '/persons/', {
+    })
+    .when(lang + '/persons/', {
         templateUrl: 'views/person_timeline.html',
         controller: 'PersonDemoCtrl',
         controllerAs: 'ctrl',
-         reloadOnSearch: false
-      })
-      .when(lang + '/times/page', {
+        reloadOnSearch: false
+    })
+    .when(lang + '/times/page', {
         templateUrl: 'views/time_page.html',
         controller: 'TimePageCtrl',
         controllerAs: 'ctrl'
-      })
-      .when(lang + '/photographs/page', {
+    })
+    .when(lang + '/photographs/page', {
         templateUrl: 'views/semantic_page.html',
         controller: 'SemanticPageCtrl',
         controllerAs: 'ctrl'
-      })
-      .when(lang + '/casualties/page', {
+    })
+    .when(lang + '/casualties/page', {
         templateUrl: 'views/semantic_page.html',
         controller: 'SemanticPageCtrl',
         controllerAs: 'ctrl'
-      })
-      .when(lang + '/page', {
+    })
+    .when(lang + '/page', {
         templateUrl: 'views/semantic_page.html',
         controller: 'SemanticPageCtrl',
         controllerAs: 'ctrl'
-      });/*
+    });/*
       .otherwise({
         redirectTo: '/events'
       });*/
-  })
-  .config(function($locationProvider) {
-      $locationProvider.html5Mode(true);
-  });
+})
+.config(function($locationProvider) {
+    $locationProvider.html5Mode(true);
+});

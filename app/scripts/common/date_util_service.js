@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eventsApp')
-.service('dateUtilService', function() {
+.service('dateUtilService', function(_) {
     this.getExtremeDate = function(dates, min) {
         if (_.isArray(dates)) {
             var fun;
@@ -36,7 +36,7 @@ angular.module('eventsApp')
         }
         return start.toLocaleDateString();
     };
-    
+
     this.formatExtremeDateRange = function(start, end) {
         var s = this.getExtremeDate(start, true);
         var e = this.getExtremeDate(end, false);
