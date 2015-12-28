@@ -15,9 +15,11 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
         <div class="row">
           <div class="col-md-12">
             <div ng-show="ctrl.current">
-              <h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
-              <p ng-if="ctrl.current && ctrl.current.altNames">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join('; ') }}</p>
-              <div ng-show="ctrl.current.relatedEvents.length ===0">
+              <h3 ng-if="ctrl.current && ctrl.current.name">
+                {{ ctrl.current.name[0] }} <span ng-if="ctrl.current.abbrev.length">({{ ctrl.current.abbrev | concatList }})</span>
+              </h3>
+              <p ng-if="ctrl.current && ctrl.current.altNames.length">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join('; ') }}</p>
+              <div ng-show="ctrl.current.relatedEvents.length === 0">
                 Ei osastoon liittyviä tapahtumia.
               </div>
               <p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
@@ -28,7 +30,7 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
                 {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
               </h3>
               <p>{{ ctrl.current.opts.description }}</p>
-              <related-links data-title="'Henkilöitä'" data-related="ctrl.current.relatedPersons"></related-links>
+              <related-links-paged data-title="'Henkilöitä'" data-paginator="ctrl.current.relatedPersons"></related-links-paged>
               <related-links data-title="'Yläosasto'" data-related="ctrl.current.superUnits"></related-links>
               <related-links data-title="'Alaosastoja'" data-related="ctrl.current.subUnits"></related-links>
               <related-links data-title="'Muita osastoja'" data-related="ctrl.current.relatedUnits"></related-links>

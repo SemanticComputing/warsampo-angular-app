@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
 .controller('UnitDemoCtrl', function ($routeParams, $location,
-              $anchorScroll, $timeout, $window, $scope, $rootScope, $route,
+              $anchorScroll, $timeout, $window, $scope, $rootScope, $route, _,
               eventService, photoService, casualtyRepository, unitService,
               Settings, timemapService) {
 
@@ -24,111 +24,80 @@ angular.module('eventsApp')
         self.current = undefined;
     };
 
-    var fetchRelatedPeople = function(item) {
-        if (item.participant_id) {
-            casualtyRepository.getCasualtyInfo(item.participant_id).then(function(participants) {
-                self.current.related_people = participants;
-            });
-            fetchActors(item);
-        }
-    };
 
-    var fetchActors = function(item) {
-        var actorTypePrefix = 'http://ldf.fi/warsa/actors/actor_types/';
-
-        unitService.getActorInfo(item.participant_id).then(function(participants) {
-            self.current.commanders = [];
-            self.current.units = [];
-            var setActor = function(actor) {
-                if (actor.type === actorTypePrefix + 'MilitaryPerson') {
-                    self.current.commanders.push(actor);
-                } else if (actor.type === actorTypePrefix + 'MilitaryUnit') {
-                    self.current.units.push(actor);
-                }
-            };
-            if (_.isArray(participants)) {
-                participants.forEach(function(p) {
-                    setActor(p);
-                });
-            } else if (participants) {
-                setActor(participants);
-            }
-        });
-    };
-
-// Petri's testings:
-self.testUnitPath=false;
+    // Petri's testings:
+    self.testUnitPath=false;
 
     var getCasualtyLocations = function() {
-			var band = tm.timeline.getBand(1);
-			var start = band.getMinVisibleDate();
-      	if (self.testUnitPath) start = new Date(winterWarHighlights[0].startDate);
-        	var end = band.getMaxVisibleDate();
-			var unit='<'+self.current.id+'>';
+        var band = tm.timeline.getBand(1);
+        var start = band.getMinVisibleDate();
+        if (self.testUnitPath) start = new Date(winterWarHighlights[0].startDate);
+        var end = band.getMaxVisibleDate();
+        var unit='<'+self.current.id+'>';
 
-         return casualtyRepository.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
+        return casualtyRepository.getCasualtyLocationsByTimeAndUnit(start.toISODateString(), end.toISODateString(), unit)
             .then(function(casualties) {
-            	var res = [];
-               casualties.forEach(function(casualty) {
+                var res = [];
+                casualties.forEach(function(casualty) {
                     if ('lat' in casualty) res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
-               });
-       			if (self.testUnitPath) { averagePath(casualties); }
-               return res;
+                });
+                if (self.testUnitPath) { averagePath(casualties); }
+                return res;
             });
     };
 
 
     var averagePath = function (casualties) {
 
-		var obj={};
-		// casualties.sort(function(a, b){return a.death_date>b.death_date ? 1 : -1;});
+        var obj={};
+        // casualties.sort(function(a, b){return a.death_date>b.death_date ? 1 : -1;});
 
-		var coords = [], T=[], X=[], Y=[];
-		for (var i=0; i<casualties.length; i++) {
-			var c=casualties[i];
-			if ('lat' in c && 'date' in c) {
+        var coords = [], T=[], X=[], Y=[];
+        for (var i=0; i<casualties.length; i++) {
+            var c=casualties[i];
+            if ('lat' in c && 'date' in c) {
 
-				var x=parseFloat(c.lat),
-					y=parseFloat(c.lon),
-					point= new google.maps.LatLng(x, y);
-				coords.push(point);
-				X.push(x); Y.push(y);
-				T.push(new Date(c.date).getTime());
-			}
-		}
+                var x=parseFloat(c.lat),
+                    y=parseFloat(c.lon),
+                    point= new google.maps.LatLng(x, y);
+                coords.push(point);
+                X.push(x); Y.push(y);
+                T.push(new Date(c.date).getTime());
+            }
+        }
 
-		// console.log(casualties,T,X,Y);
-		if (T.length) {
-			var pf= new Polyfitter(T,2,false),
-				px=pf.solve(X), py=pf.solve(Y);
+        // console.log(casualties,T,X,Y);
+        if (T.length) {
+            var pf= new Polyfitter(T,2,false),
+                px=pf.solve(X), py=pf.solve(Y);
 
-			var tt=pf.linspace(T[0],T[T.length-1],10),
-				nx=pf.polyval(px,tt),
-				ny=pf.polyval(py,tt);
+            var tt=pf.linspace(T[0],T[T.length-1],10),
+                nx=pf.polyval(px,tt),
+                ny=pf.polyval(py,tt);
 
-			var coords=[];
-			for (var i=0; i<nx.length; i++) {
-				coords.push(new google.maps.LatLng(nx[i], ny[i]));
-			}
-			drawUnitPath(coords);
-		}
-	}
+            var coords=[];
+            for (var i=0; i<nx.length; i++) {
+                coords.push(new google.maps.LatLng(nx[i], ny[i]));
+            }
+            drawUnitPath(coords);
+        }
+    }
 
 
     self.unitPath = false;
-	 var drawUnitPath = function (coords) {
-			if (self.unitPath) { self.unitPath.setMap(null); }
-			if (coords.length) {
-				self.unitPath = new google.maps.Polyline({
-						    path: coords,
-						    geodesic: true,
-						    strokeColor: '#0000FF',
-						    strokeOpacity: 0.35,
-						    strokeWeight: 5
-						  });
-				self.unitPath.setMap(map);
-			}
-		}
+    var drawUnitPath = function (coords) {
+        if (self.unitPath) { self.unitPath.setMap(null); }
+        if (coords.length) {
+            self.unitPath = new google.maps.Polyline({
+                path: coords,
+                geodesic: true,
+                strokeColor: '#0000FF',
+                strokeOpacity: 0.35,
+                strokeWeight: 5
+            });
+            self.unitPath.setMap(map);
+        }
+    };
 
     var getCasualtyCount = function() {
         var band = tm.timeline.getBand(1);
@@ -140,13 +109,13 @@ self.testUnitPath=false;
         self.maxVisibleDate = end;
         casualtyRepository.getCasualtyCountsByTimeGroupAndUnitByType(start.toISODateString(), end.toISODateString(), unit)
         .then(function(counts) {
-        	   self.casualtyStats = counts;
+            self.casualtyStats = counts;
             var count = 0;
             counts.forEach(function(type) {
                 count += parseInt(type.count);
             });
             self.casualtyCount = count;
-         });
+        });
     };
 
     var heatmapListener = function() {
@@ -204,7 +173,7 @@ self.testUnitPath=false;
             map.setOptions({ zoomControl: true });
 
             //	control not to ever zoom too close up:
-            var zminlistener = google.maps.event.addListener(map, "idle", function() {
+            var zminlistener = google.maps.event.addListener(map, 'idle', function() {
                 if (map.getZoom() > 8) map.setZoom(8);
                 if (map.getZoom() < 2) {
                     map.setZoom(5);
@@ -215,8 +184,8 @@ self.testUnitPath=false;
 
             var band = tm.timeline.getBand(1);
             if (!tm.getItems().length) {
-					band.setCenterVisibleDate(new Date(winterWarHighlights[0].startDate))
-				}
+                band.setCenterVisibleDate(new Date(winterWarHighlights[0].startDate));
+            }
 
             getCasualtyCount();
             timemapService.setOnMouseUpListener(onMouseUpListener);
@@ -225,7 +194,7 @@ self.testUnitPath=false;
             getCasualtyLocations().then(function(locations) {
                 heatmap = new google.maps.visualization.HeatmapLayer({
                     data: locations,
-                        radius: 30
+                    radius: 30
                 });
                 self.updateHeatmap();
             });
@@ -233,26 +202,24 @@ self.testUnitPath=false;
     };
 
     var worldWarHighlight = {
-        startDate: "1939-09-01",
-        endDate: "1945-09-02",
-        color:      "#F2F2F2",
+        startDate: '1939-09-01',
+        endDate: '1945-09-02',
+        color:      '#F2F2F2',
         opacity:    20,
-        startLabel: "Toinen maailmansota",
-        endLabel:   "",
-        cssClass: "band-highlight"
+        startLabel: 'Toinen maailmansota',
+        endLabel:   '',
+        cssClass: 'band-highlight'
     };
 
-    var winterWarHighlights = [
-    {
-        startDate: "1939-11-30",
-            endDate: "1940-03-13",
-            color:      "#94BFFF",
-            opacity:    20,
-            startLabel: "Talvisota",
-            endLabel:   "",
-            cssClass: "band-highlight"
-    }
-    ];
+    var winterWarHighlights = [{
+        startDate: '1939-11-30',
+        endDate: '1940-03-13',
+        color:      '#94BFFF',
+        opacity:    20,
+        startLabel: 'Talvisota',
+        endLabel:   '',
+        cssClass: 'band-highlight'
+    }];
 
     var winterWarTimeSpan = {
         start: '1939-07-01',
@@ -278,15 +245,10 @@ self.testUnitPath=false;
         }
     };
 
-    this.updateByUri = function(uri) {
+    self.updateByUri = function(uri) {
         self.isLoadingEvent = true;
         self.isLoadingLinks = false;
         unitService.getById(uri).then(function(unit) {
-            if (_.isArray(unit.name)) {
-                var arr=unit.name;
-                unit.name=arr.shift();
-                unit.altNames=arr;
-            }
             self.current = unit;
             self.isLoadingEvent = false;
             unitService.fetchRelated(unit, true);
@@ -298,54 +260,39 @@ self.testUnitPath=false;
     };
 
     self.items= [];
-    self.queryregex="";
+    self.queryregex='';
 
-    this.getItems= function () {
-    		var rx = this.queryregex;
-    		var testAlphabet = /[^.0-9 ]/g;
+    self.getItems= function () {
+        var rx = self.queryregex;
+        var testAlphabet = /[^.0-9 ]/g;
 
-    		if (rx.length<1) { rx='^1.*$'; }
-    		else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
-    		else if (rx.length<3) { rx='^'+rx+'.*$'; }
-    		else if (rx.length<6) { rx = '(^|^.* )'+rx+'.*$'; }
-    		else { rx = '^.*'+rx+'.*$'; }
+        if (rx.length<1) { rx='^1.*$'; }
+        else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
+        else if (rx.length<3) { rx='^'+rx+'.*$'; }
+        else if (rx.length<6) { rx = '(^|^.* )'+rx+'.*$'; }
+        else { rx = '^.*'+rx+'.*$'; }
 
-    		self.items = [ {id:'#', name:"Etsitään ..."} ];
+        self.items = [ {id:'#', name:'Etsitään ...'} ];
 
-    		unitService.getItems(rx,this).then(function(data) {
-    			if (data.length) {
-	            self.items = data; }
-   			else {
-   				self.items = [ {id:'#', name:"Ei hakutuloksia."} ];
-   			}
+        unitService.getItems(rx, self).then(function(data) {
+            if (data.length) {
+                self.items = data; }
+            else {
+                self.items = [ {id:'#', name:'Ei hakutuloksia.'} ];
+            }
         });
     };
 
-    this.getItems();
+    self.getItems();
 
-    /*
-	 this.updateUnitSelection = function () {
-    	 if (this.current) {
-            var uri=this.current;
-            // this.label = this.current.name;
+    self.updateUnit = function () {
+        if (self.current && self.current.id) {
+            var uri = self.current.id;
             if ($location.search().uri != uri) {
                 self.noReload = true;
                 $location.search('uri', uri);
             }
-            this.updateByUri(uri);
-        }
-    };
-    */
-
-    this.updateUnit = function () {
-    	if (this.current && this.current.id) {
-            var uri=this.current.id;
-            this.label = this.current.name;
-            if ($location.search().uri != uri) {
-                self.noReload = true;
-                $location.search('uri', uri);
-            }
-            this.updateByUri(uri);
+            self.updateByUri(uri);
         }
     };
 
@@ -358,18 +305,11 @@ self.testUnitPath=false;
         }
     });
 
-
     if ($routeParams.uri) {
         self.updateByUri($routeParams.uri);
     } else {
-        self.current = { name: "Jalkaväkirykmentti 37", id: "http://ldf.fi/warsa/actors/actor_940" };
+        self.current = { name: 'Jalkaväkirykmentti 37', id: 'http://ldf.fi/warsa/actors/actor_940' };
         self.updateUnit();
     }
-
-
-
-
-
-
 
 });

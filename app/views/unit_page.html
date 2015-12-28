@@ -6,9 +6,8 @@
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.unit && !ctrl.isLoadingEvent">No metadata available for this object.</p>
     <div id="dataContent" ng-if="ctrl.unit">
-      <h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
       <h2>
-        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev"> ({{ ctrl.unit.abbrev | concatList }})</span>
+        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev.length"> ({{ ctrl.unit.abbrev | concatList }})</span>
       </h2>
       <div ng-include="'views/partials/unit_description_partial.html'"></div>
       <p><a ng-href="units/?uri={{ ctrl.unit.id }}">Näytä aikajanalla</a></p>
