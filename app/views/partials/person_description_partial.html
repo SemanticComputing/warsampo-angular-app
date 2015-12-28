@@ -1,6 +1,6 @@
-<p>
-  {{ ctrl.person.birth }} {{ ctrl.person.birth_place }} -
-  {{ ctrl.person.death }} {{ ctrl.person.death_place }}
+<p ng-if="ctrl.person.birth || ctrl.person.death">
+  {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
+  {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}
 </p>
 <p ng-if="ctrl.person.way_to_die">
   {{ ctrl.person.way_to_die | capitalizeFirst }}.

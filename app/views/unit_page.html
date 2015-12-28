@@ -8,11 +8,9 @@
     <div id="dataContent" ng-if="ctrl.unit">
       <h3 ng-if="ctrl.current && ctrl.current.name">{{ ctrl.label ? ctrl.label : ctrl.current.name }}</h3>
       <h2>
-        {{ ctrl.unit.getLabel() }}
+        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev"> ({{ ctrl.unit.abbrev | concatList }})</span>
       </h2>
-      <p ng-repeat="desc in ctrl.unit.getDescription() track by $index">
-      {{ desc }}
-      </p>
+      <div ng-include="'views/partials/unit_description_partial.html'"></div>
       <p><a ng-href="units/?uri={{ ctrl.unit.id }}">Näytä aikajanalla</a></p>
     </div>
   </div>

@@ -30,13 +30,13 @@ ObjectMapper.prototype.mergeObjects = function(first, second) {
         if (_.isArray(a)) {
             if (_.isArray(b)) {
                 var res = [];
-                [a, b].forEach(function(l) {
-                    l.forEach(function(val) {
-                        var value = _.find(res, val);
-                        if (!value) {
-                            res.push(val);
-                        }
+                a.concat(b).forEach(function(val) {
+                    var value = _.find(res, function(earlierVal) {
+                        return _.isEqual(val, earlierVal);
                     });
+                    if (!value) {
+                        res.push(val);
+                    }
                 });
                 return res;
             }
@@ -50,6 +50,9 @@ ObjectMapper.prototype.mergeObjects = function(first, second) {
         }
         if (b && !a) {
             return b;
+        }
+        if (_.isArray(b)) {
+            return b.concat(a);
         }
 
         return [a, b];
