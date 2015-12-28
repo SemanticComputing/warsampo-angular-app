@@ -40,8 +40,8 @@ angular.module('eventsApp')
         function countify(sparqlQry) {
             // Form a query that counts the total number of items returned
             // by the query (by replacing the first SELECT with a COUNT).
-            return sparqlQry.replace(/\bselect\b.+?(where)?\W+?\{/i,
-                'SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE {');
+            return sparqlQry.replace(/(\bselect\b.+?(where)?\W+?\{)/i,
+                'SELECT (COUNT(DISTINCT ?id) AS ?count) WHERE { $1 ') + ' }';
         }
 
         function getPageWindowStart(pageNo) {

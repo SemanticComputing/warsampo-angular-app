@@ -5,7 +5,7 @@
  */
 angular.module('eventsApp')
 .service('unitService', function($q, _, unitRepository, eventRepository,
-                personRepository, dateUtilService) {
+                personRepository, dateUtilService, Settings) {
 
     var self = this;
 
@@ -63,6 +63,7 @@ angular.module('eventsApp')
         var related = [
             self.fetchRelatedUnits(unit),
             self.fetchRelatedPersons(unit),
+            self.fetchCommanders(unit),
             self.fetchRelatedArticles(unit),
             self.fetchUnitDiaries(unit)
         ];
@@ -123,25 +124,27 @@ angular.module('eventsApp')
         });
     };
 
-    self.fetchRelatedPersons = function(unit) {
-        return personRepository.getByUnitId(unit.id).then(function(persons) {
-            unit.relatedPersons = [];
+    self.fetchCommanders = function(unit) {
+        return personRepository.getUnitCommanders(unit.id).then(function(persons) {
             unit.commanders = [];
             persons.forEach(function(p) {
-                unit.relatedPersons.push(p);
-                if (p.role) {
-                    var pname = p.role + ' ' + p.label;
-                    if (p.join_start) {
-                        var edate=dateUtilService.getExtremeDate(p.join_start, true);
-                        var edate2=dateUtilService.getExtremeDate(p.join_end, false);
-                        edate=dateUtilService.formatDateRange(edate,edate2);
-                        unit.commanders.push(pname + ', ' + edate);
-                    } else {
-                        unit.commanders.push(pname);
-                    }
+                var pname = p.role + ' ' + p.label;
+                if (p.join_start) {
+                    var edate = dateUtilService.getExtremeDate(p.join_start, true);
+                    var edate2 = dateUtilService.getExtremeDate(p.join_end, false);
+                    edate = dateUtilService.formatDateRange(edate,edate2);
+                    unit.commanders.push(pname + ', ' + edate);
+                } else {
+                    unit.commanders.push(pname);
                 }
             });
+            return unit;
+        });
+    };
 
+    self.fetchRelatedPersons = function(unit) {
+        return personRepository.getByUnitId(unit.id, Settings.pageSize).then(function(persons) {
+            unit.relatedPersons = persons;
             return unit;
         });
     };

@@ -126,8 +126,8 @@ angular.module('eventsApp')
 
     var byUnitQry = prefixes +
     'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end (COUNT(?s) AS ?no) WHERE { ' +
-    ' 	{ SELECT ?id ?role ?join_start ?join_end WHERE ' +
-    ' 	    { ?evt a etypes:PersonJoining ; ' +
+    ' 	{ SELECT ?id ?role ?join_start ?join_end WHERE { ' +
+    ' 	    ?evt a etypes:PersonJoining ; ' +
     ' 	    crm:P143_joined ?id . ' +
     ' 	    ?evt  crm:P144_joined_with {0} .  ' +
     '       OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
@@ -136,21 +136,38 @@ angular.module('eventsApp')
     '           ?join_time_id crm:P82a_begin_of_the_begin ?join_start ; ' +
     '               crm:P82b_end_of_the_end ?join_end . ' +
     '       } ' +
-    '    	} LIMIT 200' +
+    '   } ' +
     '	} UNION ' +
-    '    { SELECT ?id WHERE {' +
+    '   { SELECT ?id WHERE {' +
     ' 	    ?id owl:sameAs ?mennytmies . ' +
     ' 	    ?mennytmies a foaf:Person . ' +
     ' 	    ?mennytmies casualties:osasto {0} . ' +
-    '    	} LIMIT 200 ' +
+    '    	} ' +
     ' 	} ' +
-    '    OPTIONAL { ?s ?p ?id . } ' +
+    '   OPTIONAL { ?s ?p ?id . } ' +
+    '   ?id skos:prefLabel ?label . ' +
+    '   ?id foaf:familyName ?sname .	' +
+    '   OPTIONAL { ?id foaf:firstName ?fname .	} ' +
+    '   OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
+    '} GROUP BY ?id ?sname ?fname ?label ?no ?rank ?role ?join_start ?join_end ' +
+    ' 		ORDER BY DESC(?no) ';
+
+    var commandersByUnitQry = prefixes +
+    'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end WHERE { ' +
+    ' 	 ?evt a etypes:PersonJoining ; ' +
+    ' 	    crm:P143_joined ?id . ' +
+    ' 	 ?evt  crm:P144_joined_with {0} .  ' +
+    '    ?evt crm:P107_1_kind_of_member ?role . ' +
+    '    OPTIONAL { ' +
+    '        ?evt crm:P4_has_time-span ?join_time_id . ' +
+    '        ?join_time_id crm:P82a_begin_of_the_begin ?join_start ; ' +
+    '            crm:P82b_end_of_the_end ?join_end . ' +
+    '    } ' +
     '    ?id skos:prefLabel ?label . ' +
     '    ?id foaf:familyName ?sname .	' +
     '    OPTIONAL { ?id foaf:firstName ?fname .	} ' +
     '    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
-    '} GROUP BY ?id ?sname ?fname ?label ?no ?rank ?role ?join_start ?join_end ' +
-    ' 		ORDER BY DESC(?no) LIMIT 100 ';
+    '} ';
 
     var byRankQry = prefixes +
     'SELECT DISTINCT ?id ?sname ?fname WHERE {	' +
@@ -183,8 +200,13 @@ angular.module('eventsApp')
     '   FILTER(?death_time >= "{0}"^^xsd:date && ?death_time <= "{1}"^^xsd:date) ' +
     ' } ';
 
-    this.getByUnitId = function(id) {
+    this.getByUnitId = function(id, pageSize) {
         var qry = byUnitQry.format('<{0}>'.format(id));
+        return endpoint.getObjects(qry, pageSize);
+    };
+
+    this.getUnitCommanders = function(unitId) {
+        var qry = commandersByUnitQry.format('<{0}>'.format(unitId));
         return endpoint.getObjects(qry);
     };
 
@@ -197,7 +219,7 @@ angular.module('eventsApp')
         var qry = personQry.format('<{0}>'.format(id));
         return endpoint.getObjects(qry).then(function(data) {
             if (data.length) {
-                    // because of temporary multiple labels in casualties data set:
+                // because of temporary multiple labels in casualties data set:
                 return data[0];
             }
             return $q.reject('Does not exist');
