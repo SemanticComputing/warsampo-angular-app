@@ -89,53 +89,6 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
                 </div>
               </div>
             </div>
-            <div class="row" ng-repeat="person in ctrl.current.related_people">
-              <div class="col-md-12" style="text-transform: capitalize">
-                <h4>
-                  {{ person.sotilasarvo.toLowerCase() }} {{ person.etunimet.toLowerCase() }} {{ person.sukunimi.toLowerCase() }}
-                </h4>
-                <div class="row">
-                  <div class="col-xs-6">
-                    Kuolinaika:
-                  </div>
-                  <div class="col-xs-6">
-                    {{ person.kuolinaika }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-6">
-                    Kuolinpaikka:
-                  </div>
-                  <div class="col-xs-6">
-                    {{ person.kuolinpaikka }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-6">
-                    Menehtymisluokka:
-                  </div>
-                  <div class="col-xs-6" style="text-transform: none">
-                    {{ person.menehtymisluokka }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-6">
-                    Ammatti:
-                  </div>
-                  <div class="col-xs-6">
-                    {{ person.ammatti }}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-6">
-                    Siviilisääty:
-                  </div>
-                  <div class="col-xs-6">
-                    {{ person.siviilisaeaety }}
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
