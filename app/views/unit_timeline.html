@@ -50,7 +50,7 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
               <p>
               Kartan alla on kaksi yhdessä liikkuvaa aikajanaa.
               Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi).
-              Tämän janan keskellä on mustana laatikkona viikon mittainen aikaikkuna,
+              Tämän janan keskellä on mustana laatikkona aikaikkuna,
               jonka sisään osuvat tapahtumat näkyvät alemmalla janalla.
               Alemmassa aikajanassa pystyviivojen väli on yksi päivä.
               Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa.
@@ -60,8 +60,11 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
               Tekstiltään <span style="color: blue">sinisiin</span> tapahtumiin liittyy valokuvia.
               </p>
               <p>
-              Kartalla näkyvät viikon aikaikkunan tapahtumat, jos niiden paikka on tiedossa.
-              Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä sodassa menehtyneistä suomalaisista.
+              Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa.
+              Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien
+              sijainneissa saattaa esiintyä virheitä.
+              Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä menehtyneistä valitun
+              joukko-osaston henkilöistä.
               </p>
               <p>
               Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset". Tämän ohjeen saat näkyviin valitsemalla yläpalkista "Näkymän ohjeet".
@@ -74,18 +77,20 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
             </div>
             <hr/>
             <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
-              <p>Osastosta menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate.toLocaleDateString() }} - {{ ctrl.maxVisibleDate.toLocaleDateString() }}: {{ ctrl.casualtyCount }}
-              | <a ng-show="!timemapCtrl.showCasualtyStats">Näytä lisätietoja</a>
-              <a ng-show="timemapCtrl.showCasualtyStats">Piilota lisätiedot</a>
+              <p>Osastosta menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ ctrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ ctrl.casualtyCount }}
+              | <a ng-show="!ctrl.showCasualtyStats">Näytä lisätietoja</a>
+              <a ng-show="ctrl.showCasualtyStats">Piilota lisätiedot</a>
               </p>
             </div>
-            <div class="row animate-text" ng-if="ctrl.showCasualtyStats" ng-repeat="casualtyClass in ctrl.casualtyStats">
-              <div ng-if="casualtyClass.id">
-                <div class="col-xs-10 casualtyCount">
-                  {{ casualtyClass.description }}
-                </div>
-                <div class="col-xs-2 casualtyCount">
-                  {{ casualtyClass.count }}
+            <div uib-collapse="!ctrl.showCasualtyStats">
+              <div class="row" ng-repeat="casualtyClass in ctrl.casualtyStats">
+                <div ng-if="casualtyClass.id">
+                  <div class="col-xs-10 casualtyCount">
+                    {{ casualtyClass.description }}
+                  </div>
+                  <div class="col-xs-2 casualtyCount">
+                    {{ casualtyClass.count }}
+                  </div>
                 </div>
               </div>
             </div>

@@ -48,7 +48,7 @@
             </p>
             <p>
             Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa.
-            Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien 
+            Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien
             sijainneissa saattaa esiintyä virheitä.
             Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä sodassa menehtyneistä suomalaisista.
             </p>
@@ -63,18 +63,20 @@
           </div>
           <hr/>
           <div id="casualtyCount" ng-click="timemapCtrl.showCasualtyStats = !timemapCtrl.showCasualtyStats">
-            <p>Menehtyneitä ajanjaksolla {{ timemapCtrl.minVisibleDate.toLocaleDateString() }} - {{ timemapCtrl.maxVisibleDate.toLocaleDateString() }}: {{ timemapCtrl.casualtyCount }}
+            <p>Menehtyneitä ajanjaksolla {{ timemapCtrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ timemapCtrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ timemapCtrl.casualtyCount }}
             | <a ng-show="!timemapCtrl.showCasualtyStats">Näytä lisätietoja</a>
             <a ng-show="timemapCtrl.showCasualtyStats">Piilota lisätiedot</a>
             </p>
           </div>
-          <div class="row animate-text" ng-if="timemapCtrl.showCasualtyStats" ng-repeat="casualtyClass in timemapCtrl.casualtyStats">
-            <div ng-if="casualtyClass.id">
-              <div class="col-xs-10 casualtyCount">
-                {{ casualtyClass.description }}
-              </div>
-              <div class="col-xs-2 casualtyCount">
-                {{ casualtyClass.count }}
+          <div uib-collapse="!timemapCtrl.showCasualtyStats">
+            <div class="row" ng-repeat="casualtyClass in timemapCtrl.casualtyStats">
+              <div ng-if="casualtyClass.id">
+                <div class="col-xs-10 casualtyCount">
+                  {{ casualtyClass.description }}
+                </div>
+                <div class="col-xs-2 casualtyCount">
+                  {{ casualtyClass.count }}
+                </div>
               </div>
             </div>
           </div>
