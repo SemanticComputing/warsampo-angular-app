@@ -83,6 +83,9 @@ angular.module('eventsApp')
                         self.isLoadingPage = false;
                         self.related = page;
                     });
+                } else {
+                    self.totalItems = null;
+                    self.related = null;
                 }
             });
 
