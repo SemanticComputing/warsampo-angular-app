@@ -427,8 +427,8 @@ module.exports = function (grunt) {
             options: {
                 patterns: [
                     {
-                        match: /eventIconPath: "vendor\/timemap\/images\/"/g,
-                        replacement: 'eventIconPath: "events/vendor/timemap/images/"'
+                        match: /eventIconPath: 'vendor\/timemap\/images\/'/g,
+                        replacement: "eventIconPath: 'events/vendor/timemap/images/'"
                     }
                 ]
             },
