@@ -1,17 +1,40 @@
 'use strict';
 
-var eventTypeThemes = {
-    'Sotatoimi': 'red',
-    'Pommitus': 'red',
-    'Taistelu': 'red',
-    'Poliittinen toiminta': 'purple'
-};
-
 angular.module('eventsApp')
 .service('timemapService', function($q, _, Timeline, TimeMapTheme, TimeMap,
             SimileAjax, eventService, photoService) {
 
-    this.setOnMouseUpListener = function(fun) {
+    /* Public API */
+
+    this.createTimemapWithPhotoHighlight = createTimemapWithPhotoHighlight;
+    this.createTimemapByTimeSpan = createTimemapByTimeSpan;
+    this.createTimemapByActor = createTimemapByActor;
+    this.createTimemap = createTimemap;
+
+    this.setOnMouseUpListener = setOnMouseUpListener;
+
+    /* Private vars */
+
+    var eventTypeThemes = {
+        'Sotatoimi': 'red',
+        'Pommitus': 'red',
+        'Taistelu': 'red',
+        'Poliittinen toiminta': 'purple'
+    };
+
+    var distinctPhotoData = [];
+    var photoSettings = {
+        beforeOffset: 0,
+        afterOffset: 0,
+        inProximity: true
+    };
+
+    var oldTheme;
+    var oldEvent;
+
+    /* Public API functions */
+
+    function setOnMouseUpListener(fun) {
         Timeline._Band.prototype._onMouseUp = function() {
             if (this._dragging) {
                 this._dragging = false;
@@ -27,57 +50,134 @@ angular.module('eventsApp')
         };
     };
 
-    function arrayfy(obj, value) {
-        var val = obj[value];
-        if (!val) {
-            return;
-        }
-        return _.isArray(val) ? val : [val];
-    }
-
-    function isInProximity(event, photo) {
-        if (!event.places) {
-            return false;
-        }
-        var ap = _.pluck(event.places, 'id');
-        var bp = photo.place_id;
-        var am = arrayfy(event, 'municipality_id');
-        var bm = photo.municipality_id;
-
-        var f = _.contains;
-
-        var yes = f(ap, bp) || f(ap, bm) || f(am, bp) || f(am, bm);
-
-        return yes;
-    }
-
-    var distinctPhotoData = [];
-    var photoSettings = {
-        beforeOffset: 0,
-        afterOffset: 0,
-        inProximity: true
+    function createTimemapWithPhotoHighlight(start, end, data,
+            highlights, infoWindowCallback, photoConfig, bandInfo) {
+        var self = this;
+        return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
+            .then(function(photos) {
+                return createTimemap(start, end, data, highlights,
+                    infoWindowCallback, photos, photoConfig, bandInfo);
+            });
     };
 
-    function setPhotoHighlight(entry) {
-        var start = new Date(entry.start);
-        start.setDate(start.getDate() - photoSettings.beforeOffset);
-        var end = new Date(entry.options.event.end_time);
-        end.setDate(end.getDate() + photoSettings.afterOffset);
+    function createTimemapByTimeSpan(start, end, highlights, infoWindowCallback, photoConfig) {
+        var self = this;
+        return eventService.getEventsByTimeSpan(start, end).then(function(data) {
+            return self.createTimemapWithPhotoHighlight(start, end, data, highlights, infoWindowCallback, photoConfig);
+        }, function(data) {
+            $q.reject(data);
+        });
+    };
 
-        if (_.some(distinctPhotoData, function(photo) {
-            var d = new Date(photo.created);
+    function createTimemapByActor(actorId, start, end, highlights, infoWindowCallback, photoConfig) {
 
-            if (d >= start && d <= end && (!photoSettings.inProximity ||
-                    isInProximity(entry.options.event, photo))) {
-                return true;
-            }
+        var bandInfo = getDefaultBandInfo(start, end, highlights);
+        bandInfo[1].intervalPixels = 50;
 
-            return false;
-        })) {
-            entry.options.hasPhoto = true;
-            entry.options.theme = TimeMapTheme.create(entry.options.theme,
-                    { eventTextColor: '#000099' });
+        var self = this;
+        return eventService.getUnitAndSubUnitEventsByUnitId(actorId).then(function(data) {
+            return self.createTimemapWithPhotoHighlight(start, end, data,
+                highlights, infoWindowCallback, photoConfig, bandInfo);
+        }, function(data) {
+            $q.reject(data);
+        });
+    };
+
+    function createTimemap(start, end, events, highlights,
+            infoWindowCallback, photoData, photoConfig, bandInfo) {
+        distinctPhotoData = photoData || [];
+        angular.extend(photoSettings, photoConfig);
+
+        var res = [];
+        events.forEach(function(e) {
+            res.push(createEventObject(e));
+        });
+
+        var tm = TimeMap.init({
+            mapId: 'map',               // Id of map div element (required)
+            timelineId: 'timeline',     // Id of timeline div element (required)
+            options: {
+                // NB! THE FOLLOWING LINE (eventIconPath...) WILL BE REPLACED BY GRUNT BUILD!
+                // Any change to the line will break the build as it currently stands.
+                eventIconPath: 'vendor/timemap/images/',
+                openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
+            },
+            datasets: [{
+                id: 'warsa',
+                title: 'Itsenäisen Suomen sotien tapahtumat',
+                theme: 'orange',
+                type: 'basic',
+                options: {
+                    items: res
+                }
+            }],
+            bandInfo: bandInfo || getDefaultBandInfo(start, end, highlights)
+        });
+
+        // Add listeners for touch events for mobile support
+        [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
+            SimileAjax.DOM.registerEventWithObject(band._div,'touchmove',band,'_onTouchMove');
+            SimileAjax.DOM.registerEventWithObject(band._div,'touchend',band,'_onTouchEnd');
+            SimileAjax.DOM.registerEventWithObject(band._div,'touchstart',band,'_onTouchStart');
+        });
+
+        tm.getNativeMap().setOptions({ zoomControl: true });
+
+        return tm;
+    };
+
+    /* Utility functions */
+
+    function getDefaultBandInfo(start, end, highlights) {
+        var bandDecorators1, bandDecorators2;
+        if (highlights) {
+            bandDecorators1 = [];
+            bandDecorators2 = [];
+            highlights.forEach(function(hl) {
+                bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
+                bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
+            });
         }
+
+        var theme = Timeline.ClassicTheme.create();
+        theme.timeline_start = new Date(start);
+        theme.timeline_stop = new Date(end);
+        theme.mouseWheel = 'default';
+
+        var defaultBandInfo = [
+            {
+                theme: theme,
+                overview: true,
+                width: '40',
+                intervalPixels: 100,
+                intervalUnit: Timeline.DateTime.MONTH,
+                decorators: bandDecorators1
+            },
+            {
+                theme: theme,
+                width: '240',
+                intervalPixels: 155,
+                intervalUnit: Timeline.DateTime.DAY,
+                decorators: bandDecorators2
+            }
+        ];
+        return defaultBandInfo;
+    }
+
+    function openInfoWindow(event, callback) {
+        var band = event.timeline.getBand(1);
+        var start = band.getMinVisibleDate();
+        if (oldEvent) {
+            oldEvent.changeTheme(oldTheme);
+        }
+        oldTheme = _.clone(event.opts.theme);
+        event.changeTheme('green');
+        oldEvent = event;
+        if (callback) {
+            callback(event);
+        }
+        band.setMinVisibleDate(start);
+
     }
 
     function createEventObject(e) {
@@ -127,139 +227,58 @@ angular.module('eventsApp')
         return entry;
     }
 
-    var oldTheme;
-    var oldEvent;
+    function setPhotoHighlight(entry) {
+        var start = new Date(entry.start);
+        start.setDate(start.getDate() - photoSettings.beforeOffset);
+        var end = new Date(entry.options.event.end_time);
+        end.setDate(end.getDate() + photoSettings.afterOffset);
 
-    var openInfoWindow = function(event, callback) {
-        var band = event.timeline.getBand(1);
-        var start = band.getMinVisibleDate();
-        if (oldEvent) {
-            oldEvent.changeTheme(oldTheme);
-        }
-        oldTheme = _.clone(event.opts.theme);
-        event.changeTheme('green');
-        oldEvent = event;
-        if (callback) {
-            callback(event);
-        }
-        band.setMinVisibleDate(start);
+        if (_.some(distinctPhotoData, function(photo) {
+            var d = new Date(photo.created);
 
-    };
-
-    this.createTimemapWithPhotoHighlight = function(start, end, data,
-            highlights, infoWindowCallback, photoConfig, bandInfo) {
-        var self = this;
-        return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
-            .then(function(photos) {
-                return self.createTimemap(start, end, data, highlights,
-                    infoWindowCallback, photos, photoConfig, bandInfo);
-            });
-    };
-
-    this.getDefaultBandInfo = function(start, end, highlights) {
-        var bandDecorators1, bandDecorators2;
-        if (highlights) {
-            bandDecorators1 = [];
-            bandDecorators2 = [];
-            highlights.forEach(function(hl) {
-                bandDecorators1.push(new Timeline.SpanHighlightDecorator(hl));
-                bandDecorators2.push(new Timeline.SpanHighlightDecorator(hl));
-            });
-        }
-
-        var theme = Timeline.ClassicTheme.create();
-        theme.timeline_start = new Date(start);
-        theme.timeline_stop = new Date(end);
-        theme.mouseWheel = 'default';
-
-        var defaultBandInfo = [
-            {
-                theme: theme,
-                overview: true,
-                width: '40',
-                intervalPixels: 100,
-                intervalUnit: Timeline.DateTime.MONTH,
-                decorators: bandDecorators1
-            },
-            {
-                theme: theme,
-                width: '240',
-                intervalPixels: 155,
-                intervalUnit: Timeline.DateTime.DAY,
-                decorators: bandDecorators2
+            if (d >= start && d <= end && (!photoSettings.inProximity ||
+                    isInProximity(entry.options.event, photo))) {
+                return true;
             }
-        ];
-        return defaultBandInfo;
-    };
 
-    this.createTimemap = function(start, end, events, highlights,
-            infoWindowCallback, photoData, photoConfig, bandInfo) {
-        distinctPhotoData = photoData || [];
-        angular.extend(photoSettings, photoConfig);
+            return false;
+        })) {
+            entry.options.hasPhoto = true;
+            entry.options.theme = TimeMapTheme.create(entry.options.theme,
+                    { eventTextColor: '#000099' });
+        }
+    }
 
-        var res = [];
-        events.forEach(function(e) {
-            res.push(createEventObject(e));
-        });
 
-        var tm = TimeMap.init({
-            mapId: 'map',               // Id of map div element (required)
-            timelineId: 'timeline',     // Id of timeline div element (required)
-            options: {
-                // NB! THE FOLLOWING LINE (eventIconPath...) WILL BE REPLACED BY GRUNT BUILD!
-                // Any change to the line will break the build as it currently stands.
-                eventIconPath: 'vendor/timemap/images/',
-                openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
-            },
-            datasets: [{
-                id: 'warsa',
-                title: 'Itsenäisen Suomen sotien tapahtumat',
-                theme: 'orange',
-                type: 'basic',
-                options: {
-                    items: res
-                }
-            }],
-            bandInfo: bandInfo || this.getDefaultBandInfo(start, end, highlights)
-        });
+    function arrayfy(obj, value) {
+        var val = obj[value];
+        if (!val) {
+            return;
+        }
+        return _.isArray(val) ? val : [val];
+    }
 
-        // Add listeners for touch events for mobile support
-        [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
-            SimileAjax.DOM.registerEventWithObject(band._div,'touchmove',band,'_onTouchMove');
-            SimileAjax.DOM.registerEventWithObject(band._div,'touchend',band,'_onTouchEnd');
-            SimileAjax.DOM.registerEventWithObject(band._div,'touchstart',band,'_onTouchStart');
-        });
+    function isInProximity(event, photo) {
+        if (!event.places) {
+            return false;
+        }
+        var ap = _.pluck(event.places, 'id');
+        var bp = photo.place_id;
+        var am = arrayfy(event, 'municipality_id');
+        var bm = photo.municipality_id;
 
-        tm.getNativeMap().setOptions({ zoomControl: true });
+        var f = _.contains;
 
-        return tm;
-    };
+        var yes = f(ap, bp) || f(ap, bm) || f(am, bp) || f(am, bm);
 
-    this.createTimemapByTimeSpan = function(start, end, highlights, infoWindowCallback, photoConfig) {
-        var self = this;
-        return eventService.getEventsByTimeSpan(start, end).then(function(data) {
-            return self.createTimemapWithPhotoHighlight(start, end, data, highlights, infoWindowCallback, photoConfig);
-        }, function(data) {
-            $q.reject(data);
-        });
-    };
+        return yes;
+    }
 
-    this.createTimemapByActor = function(actorId, start, end, highlights, infoWindowCallback, photoConfig) {
-
-        var bandInfo = this.getDefaultBandInfo(start, end, highlights);
-        bandInfo[1].intervalPixels = 50;
-
-        var self = this;
-        return eventService.getUnitAndSubUnitEventsByUnitId(actorId).then(function(data) {
-            return self.createTimemapWithPhotoHighlight(start, end, data,
-                highlights, infoWindowCallback, photoConfig, bandInfo);
-        }, function(data) {
-            $q.reject(data);
-        });
-    };
 });
 
-/* Patch TimeMap and Timeline */
+/* =============================
+*  Patch TimeMap and Timeline
+*  ============================= */
 
 // Working changeTheme
 

@@ -9,87 +9,35 @@
  */
 angular.module('eventsApp')
 .controller('EventDemoCtrl', function ($routeParams, $location, $anchorScroll,
-              $timeout, $window, $scope, $rootScope, $route, _, Settings,
-              eventService, photoService, casualtyRepository, personService, timemapService) {
+              $timeout, $window, $scope, $rootScope, $route, _, Settings, WAR_INFO,
+              eventService, photoService, casualtyRepository, personService,
+              googleMapsService, timemapService) {
 
     var self = this;
 
+    /* Public vars */
+
     // The currently selected event
-    self.current = undefined;
+    self.current;
     // Images related to currently selected event
-    self.images = undefined;
+    self.images;
+    // The title for the info view
+    self.title;
+
+    /* Public functions */
+
+    self.showWinterWar = showWinterWar;
+    self.showContinuationWar = showContinuationWar;
+
+    /* Private vars */
+
     // timemap, google map, heatmap
     var tm, map, heatmap;
 
-    self.title = undefined;
+    /* Activate */
 
     $rootScope.showHelp = function() {
         self.current = undefined;
-    };
-
-    var fetchImages = function(item) {
-        var photoConfig = Settings.getPhotoConfig();
-        photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
-            self.images = imgs;
-        });
-    };
-
-    self.updateTimeline = function() {
-        self.visualize();
-    };
-
-    var getCasualtyLocations = function() {
-        var band = tm.timeline.getBand(1);
-        var start = band.getMinVisibleDate();
-        var end = band.getMaxVisibleDate();
-        return casualtyRepository.getCasualtyLocationsByTime(start.toISODateString(), end.toISODateString())
-            .then(function(casualties) {
-                var res = [];
-                casualties.forEach(function(casualty) {
-                    res.push(new google.maps.LatLng(parseFloat(casualty.lat), parseFloat(casualty.lon)));
-                });
-                return res;
-            });
-    };
-
-    var getCasualtyCount = function() {
-        var band = tm.timeline.getBand(1);
-        var start = band.getMinVisibleDate();
-        var end = band.getMaxVisibleDate();
-        self.minVisibleDate = start;
-        self.maxVisibleDate = end;
-        casualtyRepository.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
-        .then(function(counts) {
-            self.casualtyStats = counts;
-            var count = 0;
-            counts.forEach(function(type) {
-                count += parseInt(type.count);
-            });
-            self.casualtyCount = count;
-         });
-    };
-
-    var heatmapListener = function() {
-        if (Settings.showCasualtyHeatmap) {
-            getCasualtyLocations().then(function(locations) {
-                heatmap.setData(locations);
-                heatmap.setMap(map);
-            });
-        }
-    };
-
-    var clearHeatmap = function() {
-        if (tm.timeline.getBand(0)._dragging || tm.timeline.getBand(1)._dragging) {
-            heatmap.setMap(null);
-        }
-    };
-
-    self.updateHeatmap = function() {
-        if (Settings.showCasualtyHeatmap) {
-            heatmapListener();
-        } else {
-            heatmap.setMap(null);
-        }
     };
 
     // Set listener to prevent reload when it is not desired.
@@ -101,123 +49,11 @@ angular.module('eventsApp')
         }
     });
 
-    var infoWindowCallback = function(item) {
-        // Change the URL but don't reload the page
-        if ($location.search().uri !== item.opts.event.id) {
-            self.noReload = true;
-            $location.search('uri', item.opts.event.id);
-        }
+    visualize();
 
-        self.current = item;
-        eventService.fetchRelated(item.opts.event);
-        fetchImages(item);
-    };
+    function visualize() {
 
-    var onMouseUpListener = function() {
-        heatmapListener();
-        getCasualtyCount();
-    };
-
-    self.afterCreateInit = function() {
-        getCasualtyCount();
-        tm.timeline.setAutoWidth();
-        getCasualtyLocations().then(function(locations) {
-            heatmap = new google.maps.visualization.HeatmapLayer({
-                data: locations,
-                radius: 20
-            });
-            Settings.setApplyFunction(self.updateTimeline);
-            Settings.setHeatmapUpdater(self.updateHeatmap);
-            self.updateHeatmap();
-        });
-    };
-
-    self.createTimeMap = function(start, end, highlights) {
-
-        var photoConfig = Settings.getPhotoConfig();
-
-        return timemapService.createTimemapByTimeSpan(start, end, highlights,
-                infoWindowCallback, photoConfig)
-        .then(function(timemap) {
-            tm = timemap;
-            map = timemap.getNativeMap();
-            var band = tm.timeline.getBand(1);
-
-            timemapService.setOnMouseUpListener(onMouseUpListener);
-            band.addOnScrollListener(clearHeatmap);
-            if (highlights) {
-                tm.timeline.getBand(1).setMaxVisibleDate(new Date(highlights[0].startDate));
-            }
-        });
-    };
-
-    var winterWarHighlights = [
-        {
-            startDate: "1939-11-30",
-            endDate: "1940-03-13",
-            color:      "#94BFFF",
-            opacity:    20,
-            startLabel: "Talvisota",
-            endLabel:   "",
-            cssClass: "band-highlight"
-        }
-    ];
-
-    var continuationWarHighlights = [
-        {
-            startDate: "1941-06-25",
-            endDate: "1944-09-19",
-            color:      "#FFC080",
-            opacity:    20,
-            startLabel: "Jatkosota",
-            endLabel:   "",
-            cssClass: "band-highlight"
-        }
-    ];
-
-    var winterWarTimeSpan = {
-        start: '1939-07-01',
-        end: '1940-04-30'
-    };
-    var continuationWarTimeSpan = {
-        start: '1941-06-01',
-        end: '1944-12-31'
-    };
-
-    self.showWinterWar = function() {
-        self.title = "Talvisodan tapahtumat";
-        return self.createTimeMap(winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
-    };
-    self.showContinuationWar = function() {
-        self.title = "Jatkosodan tapahtumat";
-        return self.createTimeMap(continuationWarTimeSpan.start,
-                continuationWarTimeSpan.end, continuationWarHighlights);
-    };
-    var getCreateFunction = function(start, end) {
-        if (start >= new Date(winterWarTimeSpan.start) &&
-                end <= new Date(winterWarTimeSpan.end)) {
-            return self.showWinterWar;
-        } else {
-            return self.showContinuationWar;
-        }
-    };
-
-    self.createTimeMapForEvent = function(e) {
-        var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
-        return show().then(function() {
-            var item = _.find(tm.getItems(), function(item) {
-                return _.isEqual(item.opts.event.id, e.id);
-            });
-            tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
-            if (item) {
-                tm.setSelected(item);
-                item.openInfoWindow();
-            }
-        });
-    };
-
-    self.visualize = function() {
-
+        self.current = null;
         self.isLoadingTimemap = true;
         var era = $routeParams.era;
         var event_uri = $routeParams.uri;
@@ -225,7 +61,7 @@ angular.module('eventsApp')
         if (event_uri) {
             promise = eventService.getEventById(event_uri).then(function(e) {
                 if (e) {
-                    return self.createTimeMapForEvent(e);
+                    return createTimeMapForEvent(e);
                 } else {
                     $location.url($location.path());
                     return self.showWinterWar();
@@ -248,11 +84,143 @@ angular.module('eventsApp')
             promise = self.showWinterWar();
         }
 
-        return promise.then(self.afterCreateInit).then(function() {
+        return promise.then(afterCreateInit).then(function() {
             self.isLoadingTimemap = false;
+        }).catch(function(data) {
+            self.err = data;
         });
-    };
+    }
 
-    self.visualize();
+    function afterCreateInit() {
+        getCasualtyCount();
+        tm.timeline.setAutoWidth();
+        Settings.setApplyFunction(visualize);
+        Settings.setHeatmapUpdater(updateHeatmap);
+        updateHeatmap();
+    }
+
+    function showWinterWar() {
+        self.title = 'Talvisodan tapahtumat';
+        return createTimeMap(WAR_INFO.winterWarTimeSpan.start,
+                WAR_INFO.winterWarTimeSpan.end,
+                WAR_INFO.winterWarHighlights);
+    }
+
+    function showContinuationWar() {
+        self.title = 'Jatkosodan tapahtumat';
+        return createTimeMap(WAR_INFO.continuationWarTimeSpan.start,
+                WAR_INFO.continuationWarTimeSpan.end,
+                WAR_INFO.continuationWarHighlights);
+    }
+
+    function createTimeMap(start, end, highlights) {
+
+        var photoConfig = Settings.getPhotoConfig();
+
+        return timemapService.createTimemapByTimeSpan(start, end, highlights,
+                infoWindowCallback, photoConfig)
+        .then(function(timemap) {
+            tm = timemap;
+            map = timemap.getNativeMap();
+            var band = tm.timeline.getBand(1);
+
+            timemapService.setOnMouseUpListener(onMouseUpListener);
+            band.addOnScrollListener(clearHeatmap);
+            if (highlights) {
+                tm.timeline.getBand(1).setMaxVisibleDate(new Date(highlights[0].startDate));
+            }
+        });
+    }
+
+    function createTimeMapForEvent(e) {
+        var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
+        return show().then(function() {
+            var item = _.find(tm.getItems(), function(item) {
+                return _.isEqual(item.opts.event.id, e.id);
+            });
+            tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
+            if (item) {
+                tm.setSelected(item);
+                item.openInfoWindow();
+            }
+        });
+    }
+
+    function getCreateFunction(start, end) {
+        if (start >= new Date(WAR_INFO.winterWarTimeSpan.start) &&
+                end <= new Date(WAR_INFO.winterWarTimeSpan.end)) {
+            return self.showWinterWar;
+        } else {
+            return self.showContinuationWar;
+        }
+    }
+
+    function infoWindowCallback(item) {
+        // Change the URL but don't reload the page
+        if ($location.search().uri !== item.opts.event.id) {
+            self.noReload = true;
+            $location.search('uri', item.opts.event.id);
+        }
+
+        self.current = item;
+        eventService.fetchRelated(item.opts.event);
+        fetchImages(item);
+    }
+
+    function onMouseUpListener() {
+        updateHeatmap();
+        getCasualtyCount();
+    }
+
+    function fetchImages(item) {
+        var photoConfig = Settings.getPhotoConfig();
+        photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
+            self.images = imgs;
+        });
+    }
+
+    function getCasualtyLocations() {
+        var band = tm.timeline.getBand(1);
+        var start = band.getMinVisibleDate();
+        var end = band.getMaxVisibleDate();
+        return casualtyRepository.getCasualtyLocationsByTime(start.toISODateString(),
+                end.toISODateString());
+    }
+
+    function getCasualtyCount() {
+        var band = tm.timeline.getBand(1);
+        var start = band.getMinVisibleDate();
+        var end = band.getMaxVisibleDate();
+        self.minVisibleDate = start;
+        self.maxVisibleDate = end;
+        casualtyRepository.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
+        .then(function(counts) {
+            self.casualtyStats = counts;
+            var count = 0;
+            counts.forEach(function(type) {
+                count += parseInt(type.count);
+            });
+            self.casualtyCount = count;
+        });
+    }
+
+    function updateHeatmap() {
+        if (Settings.showCasualtyHeatmap) {
+            getCasualtyLocations().then(function(locations) {
+                if (!heatmap) {
+                    heatmap = googleMapsService.createHeatmap();
+                }
+                googleMapsService.updateHeatmap(heatmap, locations, map);
+            });
+        } else {
+            googleMapsService.clearHeatmap(heatmap);
+        }
+    }
+
+    function clearHeatmap() {
+        if (tm.timeline.getBand(0)._dragging || tm.timeline.getBand(1)._dragging) {
+            googleMapsService.createHeatmap(heatmap);
+        }
+    }
 
 });

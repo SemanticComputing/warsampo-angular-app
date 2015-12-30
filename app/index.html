@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css({.,app}) styles/vendor.css -->
-    <link rel="stylesheet" href="vendor/thumbnail-scroller/jquery.mThumbnailScroller.css">
     <!-- bower:css -->
     <!-- endbower -->
     <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery.css" />
@@ -24,7 +23,9 @@
     <!-- build:js(.) scripts/jquery.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <!-- endbuild -->
-    <script src="vendor/timemap/lib/mxn/mxn.js?(googlev3)"></script>
+    <script src="vendor/timemap/lib/mxn/mxn.js"></script>
+    <script src="vendor/timemap/lib/mxn/mxn.core.js"></script>
+    <script src="vendor/timemap/lib/mxn/mxn.googlev3.core.js"></script>
     <script src="vendor/timemap/lib/timeline-2.3.0.js"></script>
     <script src="vendor/timemap/timemap.js"></script>
     <script src="vendor/timemap/manipulation.js"></script>
@@ -51,7 +52,6 @@
 
   <script src="http://maps.google.com/maps/api/js?v=3&libraries=visualization"></script>
   <!-- build:js({.,app}) scripts/vendor.js -->
-  <script src="vendor/thumbnail-scroller/jquery.mThumbnailScroller.js"></script>
   <!-- bower:js -->
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
@@ -87,6 +87,7 @@
   <script src="scripts/common/directives.js"></script>
   <script src="scripts/common/filters.js"></script>
   <script src="scripts/common/date_util_service.js"></script>
+  <script src="scripts/common/google_maps_service.js"></script>
   <script src="scripts/event/event_mapper.js"></script>
   <script src="scripts/event/event_repository.js"></script>
   <script src="scripts/event/event.js"></script>

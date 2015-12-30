@@ -1,6 +1,6 @@
 'use strict';
 
-/* global _, SimileAjax, TimeMap, TimeMapTheme, Timeline */
+/* global _, google, SimileAjax, TimeMap, TimeMapTheme, Timeline */
 
 /**
  * @ngdoc overview
@@ -24,10 +24,41 @@ angular
     'truncate'
 ])
 .constant('_', _)
+.constant('google', google)
 .constant('SimileAjax', SimileAjax)
 .constant('TimeMap', TimeMap)
 .constant('TimeMapTheme', TimeMapTheme)
 .constant('Timeline', Timeline)
+.constant('WAR_INFO',
+    {
+        winterWarHighlights: [{
+            startDate: '1939-11-30',
+            endDate: '1940-03-13',
+            color:      '#94BFFF',
+            opacity:    20,
+            startLabel: 'Talvisota',
+            endLabel:   '',
+            cssClass: 'band-highlight'
+        }],
+        continuationWarHighlights: [{
+            startDate: '1941-06-25',
+            endDate: '1944-09-19',
+            color:      '#FFC080',
+            opacity:    20,
+            startLabel: 'Jatkosota',
+            endLabel:   '',
+            cssClass: 'band-highlight'
+        }],
+        winterWarTimeSpan: {
+                start: '1939-07-01',
+                end: '1940-04-30'
+        },
+        continuationWarTimeSpan: {
+                start: '1941-06-01',
+                end: '1944-12-31'
+        }
+    }
+)
 .config(function($routeProvider) {
     var lang = '/:lang?';
     $routeProvider
