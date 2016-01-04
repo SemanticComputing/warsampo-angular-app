@@ -19,14 +19,14 @@
     <img ng-show="ctrl.unit.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.isLoadingLinks && !ctrl.unit.hasLinks">No links found for this object.</p>
     <div id="linkContent">
-			<related-links data-title="'Yläosasto'" data-related="ctrl.unit.superUnits"></related-links>
-			<related-links data-title="'Alaosastoja'" data-related="ctrl.unit.subUnits"></related-links>
-			<related-links data-title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></related-links>
-      <related-links data-title="'Taistelut'" data-related="ctrl.unit.battles"></related-links>
-      <related-links-paged data-title="'Henkilöitä'" data-paginator="ctrl.unit.relatedPersons"></related-links-paged>
-      <related-links data-title="'Paikat'" data-related="ctrl.unit.places"></related-links>
-      <related-links data-title="'Kansa Taisteli -artikkelit'" data-related="ctrl.unit.articles"></related-links>
-      <related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.unit.diaries"></related-links>
+			<ws-related-links data-title="'Yläosasto'" data-related="ctrl.unit.superUnits"></ws-related-links>
+			<ws-related-links data-title="'Alaosastoja'" data-related="ctrl.unit.subUnits"></ws-related-links>
+			<ws-related-links data-title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></ws-related-links>
+      <ws-related-links data-title="'Taistelut'" data-related="ctrl.unit.battles"></ws-related-links>
+      <ws-related-links-paged data-title="'Henkilöitä'" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
+      <ws-related-links data-title="'Paikat'" data-related="ctrl.unit.places"></ws-related-links>
+      <ws-related-links data-title="'Kansa Taisteli -artikkelit'" data-related="ctrl.unit.articles"></ws-related-links>
+      <ws-related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.unit.diaries"></ws-related-links>
     </div>
   </div>
 </div>

@@ -3,14 +3,14 @@
   <div class="col-sm-12">
     <h3 ng-click="show = !show">
       <a>{{ title }} ({{ related.length }})
-        <span class="glyphicon glyphicon-menu-right" ng-show="!show"></span>
-        <span class="glyphicon glyphicon-menu-down" ng-show="show"></span></a>
+        <span ng-class="['glyphicon', {'glyphicon-menu-down': show, 'glyphicon-menu-right': !show}]"></span>
+      </a>
     </h3>
     <div uib-collapse="!show">
       <ul class="list-group">
         <li class="list-group-item" ng-repeat="thing in related">
         <span ng-if="!external">
-          <a page-link="thing.id" data-external="external">{{ thing.label | words:10 }}</a>
+          <a ws-page-link="thing.id" data-external="external">{{ thing.label | words:10 }}</a>
         </span>
         <span ng-if="external">
           <a ng-href="{{ thing.id }}">{{ thing.label | words:10 }}</a>

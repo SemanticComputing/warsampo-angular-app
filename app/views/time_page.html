@@ -31,8 +31,8 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="(!ctrl.time || !ctrl.time.hasLinks) && !ctrl.isLoadingLinks">Linkkejä ei löytynyt</p>
     <div id="linkContent">
-      <related-links data-title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></related-links>
-      <related-links-paged data-title="'Tähän aikaan menehtyneitä'" paginator="ctrl.time.casualties"></related-links-paged>
+      <ws-related-links data-title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></ws-related-links>
+      <ws-related-links-paged data-title="'Tähän aikaan menehtyneitä'" paginator="ctrl.time.casualties"></ws-related-links-paged>
     </div>
   </div>
 </div>

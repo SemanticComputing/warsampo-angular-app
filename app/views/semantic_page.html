@@ -17,7 +17,7 @@
         <h2>{{ v[0].pred_label }}</h2>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="val in v">
-            <a ng-if="val.type === 'uri'" page-link="val.value">{{ val.label }}</a>
+            <a ng-if="val.type === 'uri'" ws-page-link="val.value">{{ val.label }}</a>
             <p ng-if="val.type !== 'uri'">{{ val.value }}</p>
           </li>
         </ul>
@@ -34,13 +34,13 @@
         ng-init="relCount = ctrl.countRelations(rel); show = relCount <= 10">
         <h3 ng-click="show = !show">
           <a>{{ rel.label }} ({{ relCount }})
-          <span class="glyphicon glyphicon-menu-right" ng-show="!show"></span>
-          <span class="glyphicon glyphicon-menu-down" ng-show="show"></span></a>
+            <span ng-class="['glyphicon', {'glyphicon-menu-down': show, 'glyphicon-menu-right': !show}]"></span>
+          </a>
         </h3>
-        <div collapse="!show">
+        <div uib-collapse="!show">
           <ul class="list-group">
             <li class="list-group-item" ng-repeat="val in ctrl.getPropertyList(rel)">
-            <a page-link="val.value">{{ val.label }} ({{ val.pred_label }})</a>
+            <a ws-page-link="val.value">{{ val.label }} ({{ val.pred_label }})</a>
             </li>
           </ul>
         </div>

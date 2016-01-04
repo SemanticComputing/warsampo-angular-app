@@ -16,7 +16,7 @@
         <a ng-repeat="img in ctrl.photos" data-gallery
           title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
           <div class="gallery-thumbnail-container">
-            <img fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ img.thumbnail }}" />
+            <img ws-fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ img.thumbnail }}" />
           </div>
         </a>
       </div>

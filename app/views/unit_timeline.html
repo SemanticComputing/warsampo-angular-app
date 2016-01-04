@@ -25,25 +25,25 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
               <p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
               <h3 ng-if="ctrl.current.opts.descTitle">
                 <span ng-repeat="place in ctrl.current.opts.event.places">
-                  <a page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+                  <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
                 </span>
                 {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
               </h3>
               <p>{{ ctrl.current.opts.description }}</p>
-              <related-links-paged data-title="'Henkilöitä'" data-paginator="ctrl.current.relatedPersons"></related-links-paged>
-              <related-links data-title="'Yläosasto'" data-related="ctrl.current.superUnits"></related-links>
-              <related-links data-title="'Alaosastoja'" data-related="ctrl.current.subUnits"></related-links>
-              <related-links data-title="'Muita osastoja'" data-related="ctrl.current.relatedUnits"></related-links>
-              <related-links data-title="'Taistelut'" data-related="ctrl.current.battles"></related-links>
-              <related-links data-title="'Paikat'" data-related="ctrl.current.places"></related-links>
-              <related-links data-title="'Kansa Taisteli -artikkelit'" data-related="ctrl.current.articles"></related-links>
-              <related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.current.diaries"></related-links>
+              <ws-related-links-paged data-title="'Henkilöitä'" data-paginator="ctrl.current.relatedPersons"></ws-related-links-paged>
+              <ws-related-links data-title="'Yläosasto'" data-related="ctrl.current.superUnits"></ws-related-links>
+              <ws-related-links data-title="'Alaosastoja'" data-related="ctrl.current.subUnits"></ws-related-links>
+              <ws-related-links data-title="'Muita osastoja'" data-related="ctrl.current.relatedUnits"></ws-related-links>
+              <ws-related-links data-title="'Taistelut'" data-related="ctrl.current.battles"></ws-related-links>
+              <ws-related-links data-title="'Paikat'" data-related="ctrl.current.places"></ws-related-links>
+              <ws-related-links data-title="'Kansa Taisteli -artikkelit'" data-related="ctrl.current.articles"></ws-related-links>
+              <ws-related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.current.diaries"></ws-related-links>
 
               <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
               {{ unit.label.join(' / ') }}
               </p>
 
-              <photo-gallery data-images="ctrl.images"></photo-gallery>
+              <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>
             </div>
             <div ng-if="!ctrl.current">
               <h3>Valitse osasto valikosta.</h3>
@@ -78,8 +78,7 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
             <hr/>
             <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
               <p>Osastosta menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ ctrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ ctrl.casualtyCount }}
-              | <a ng-show="!ctrl.showCasualtyStats">Näytä lisätietoja</a>
-              <a ng-show="ctrl.showCasualtyStats">Piilota lisätiedot</a>
+              | <a>{{ ctrl.showCasualtyStats ? 'Piilota lisätiedot' : 'Näytä lisätietoja' }}</a>
               </p>
             </div>
             <div uib-collapse="!ctrl.showCasualtyStats">

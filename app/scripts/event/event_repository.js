@@ -113,6 +113,7 @@ angular.module('eventsApp')
     '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
     '   ?id skos:prefLabel ?description ; ' +
     '       crm:P7_took_place_at ?place_id .  ' +
+    '   {1} ' + // Placeholder for id filter
     '   ?place_id skos:prefLabel ?place_label . ' +
     '   OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
     '   OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
@@ -415,8 +416,10 @@ angular.module('eventsApp')
         // Get events that at least partially occured between the dates start and end.
         // Filter out the given id.
         // Returns a promise.
-        var qry = eventQry.format('FILTER(?id != {0})'.format('<' + id + '>',
-                    eventFilterWithinTimeSpanRelaxed).format(start, end));
+        var qry = eventQry
+            .format('FILTER(?id != {0})'
+                    .format('<' + id + '>'), eventFilterWithinTimeSpanRelaxed)
+                    .format(start, end);
         return endpoint.getObjects(qry, pageSize);
     };
 
@@ -429,7 +432,21 @@ angular.module('eventsApp')
         } else {
             return $q.when();
         }
-        qry = eventsByPlaceQry.format(ids);
+        qry = eventsByPlaceQry.format(ids, '');
+        return endpoint.getObjects(qry, pageSize);
+    };
+
+    this.getByPlaceIdFilterById = function(placeIds, id, pageSize) {
+        var qry;
+        if (_.isArray(placeIds)) {
+            placeIds = '<{0}>'.format(placeIds.join('> <'));
+        } else if (placeIds) {
+            placeIds = '<{0}>'.format(placeIds);
+        } else {
+            return $q.when();
+        }
+        var filter = 'FILTER(?id != {0})'.format('<' + id + '>');
+        qry = eventsByPlaceQry.format(placeIds, filter);
         return endpoint.getObjects(qry, pageSize);
     };
 

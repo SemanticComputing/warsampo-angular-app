@@ -9,13 +9,13 @@
     <div id="dataContent" ng-if="ctrl.event">
       <h2>
         <span ng-repeat="place in ctrl.event.places">
-          <a page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+          <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
         </span>
-        <a page-link="ctrl.event.time_id">{{ ctrl.event.timeSpanString }}</a> - {{ ctrl.event.type }}
+        <a ws-page-link="ctrl.event.time_id">{{ ctrl.event.timeSpanString }}</a> - {{ ctrl.event.type }}
       </h2>
       <p>{{ ctrl.event.description }}</p>
       <p><a ng-href="events/?uri={{ ctrl.event.id }}">Näytä aikajanalla</a></p>
-      <photo-gallery data-images="ctrl.images"></photo-gallery>
+      <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>
     </div>
   </div>
   <!-- Links -->
@@ -24,10 +24,10 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="(!ctrl.event || !ctrl.event.hasLinks) && !ctrl.isLoadingLinks">Linkkejä ei löytynyt</p>
     <div id="linkContent">
-      <related-links-paged data-title="'Muita tapahtumia samaan aikaan'" data-paginator="ctrl.relatedEventsByTime"></related-links-paged>
-      <related-links-paged data-title="'Muita tapahtumia samalla alueella'" data-paginator="ctrl.relatedEventsByPlace"></related-links-paged>
-      <related-links data-title="'Tapahtumaan liittyviä henkilöitä'" data-related="ctrl.event.people"></related-links>
-      <related-links data-title="'Tapahtumaan liittyviä joukko-osastoja'" data-related="ctrl.event.units"></related-links>
+      <ws-related-links-paged data-title="'Muita tapahtumia samaan aikaan'" data-paginator="ctrl.relatedEventsByTime"></ws-related-links-paged>
+      <ws-related-links-paged data-title="'Muita tapahtumia samalla alueella'" data-paginator="ctrl.relatedEventsByPlace"></ws-related-links-paged>
+      <ws-related-links data-title="'Tapahtumaan liittyviä henkilöitä'" data-related="ctrl.event.people"></ws-related-links>
+      <ws-related-links data-title="'Tapahtumaan liittyviä joukko-osastoja'" data-related="ctrl.event.units"></ws-related-links>
     </div>
   </div>
 </div>
