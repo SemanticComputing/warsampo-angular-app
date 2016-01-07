@@ -1,2 +1,10 @@
-<div ng-include="'views/partials/setting_accordion.html'"></div>
-<div ng-include="'views/partials/timemap_partial.html'"></div>
+<div ng-if="timemapCtrl.err">
+  <p class="error-msg bg-danger">
+  Tapahtui virhe: <br /><br />
+  <b>{{ timemapCtrl.err }}</b> <br /><br />
+  <a href="events/winterwar">Siirry talvisotaan</a>
+  </p>
+</div>
+
+<div ng-if="!timemapCtrl.err" ng-include="'views/partials/setting_accordion.html'"></div>
+<div ng-if="!timemapCtrl.err" ng-include="'views/partials/timemap_partial.html'"></div>

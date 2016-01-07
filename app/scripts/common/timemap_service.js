@@ -48,17 +48,16 @@ angular.module('eventsApp')
 
             fun();
         };
-    };
+    }
 
     function createTimemapWithPhotoHighlight(start, end, data,
             highlights, infoWindowCallback, photoConfig, bandInfo) {
-        var self = this;
         return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
             .then(function(photos) {
                 return createTimemap(start, end, data, highlights,
                     infoWindowCallback, photos, photoConfig, bandInfo);
             });
-    };
+    }
 
     function createTimemapByTimeSpan(start, end, highlights, infoWindowCallback, photoConfig) {
         var self = this;
@@ -67,7 +66,7 @@ angular.module('eventsApp')
         }, function(data) {
             $q.reject(data);
         });
-    };
+    }
 
     function createTimemapByActor(actorId, start, end, highlights, infoWindowCallback, photoConfig) {
 
@@ -81,7 +80,7 @@ angular.module('eventsApp')
         }, function(data) {
             $q.reject(data);
         });
-    };
+    }
 
     function createTimemap(start, end, events, highlights,
             infoWindowCallback, photoData, photoConfig, bandInfo) {
@@ -124,7 +123,7 @@ angular.module('eventsApp')
         tm.getNativeMap().setOptions({ zoomControl: true });
 
         return tm;
-    };
+    }
 
     /* Utility functions */
 
@@ -204,7 +203,6 @@ angular.module('eventsApp')
         var points = _(e.places).pluck('point').compact().value();
         var polygons = _(e.places).pluck('polygon').compact().value();
         if (points.length) {
-
             if (points.length === 1) {
                 entry.point = points[0];
             }

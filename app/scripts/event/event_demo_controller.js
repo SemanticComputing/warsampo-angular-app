@@ -9,7 +9,7 @@
  */
 angular.module('eventsApp')
 .controller('EventDemoCtrl', function ($routeParams, $location, $anchorScroll,
-              $timeout, $window, $scope, $rootScope, $route, _, Settings, WAR_INFO,
+              $timeout, $window, $scope, $rootScope, $route, $q, _, Settings, WAR_INFO,
               eventService, photoService, casualtyRepository, personService,
               googleMapsService, timemapService) {
 
@@ -36,6 +36,8 @@ angular.module('eventsApp')
 
     /* Activate */
 
+    visualize();
+
     $rootScope.showHelp = function() {
         self.current = undefined;
     };
@@ -48,8 +50,6 @@ angular.module('eventsApp')
             self.noReload = false;
         }
     });
-
-    visualize();
 
     function visualize() {
 
@@ -80,13 +80,15 @@ angular.module('eventsApp')
                 }
             }
         } else {
+            // No war or event specified -- redirect to Winter War
             $location.path('events/winterwar').replace();
-            promise = self.showWinterWar();
+            return $q.when();
         }
 
         return promise.then(afterCreateInit).then(function() {
             self.isLoadingTimemap = false;
         }).catch(function(data) {
+            self.isLoadingTimemap = false;
             self.err = data;
         });
     }
