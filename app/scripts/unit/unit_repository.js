@@ -140,6 +140,13 @@ angular.module('eventsApp')
     '    }	' +
     '} ORDER BY ?time	';
 
+    var wikipediaQry = prefixes +
+    'SELECT ?id	' +
+    'WHERE {	' +
+    '    VALUES ?unit { {0} } .	' +
+    '    ?unit foaf:page ?id .	' +
+    '} ';
+    
     var articleQry = prefixes +
     'SELECT ?id ?label ' +
     'WHERE { ' +
@@ -232,6 +239,13 @@ angular.module('eventsApp')
         });
     };
 
+	 this.getUnitWikipedia = function(unit) {
+        var qry = wikipediaQry.format('<{0}>'.format(unit));
+        return endpoint.getObjects(qry).then(function(data) {
+        		return unitMapperService.makeObjectListNoGrouping(data);
+        });
+    };
+    
     this.getUnitArticles = function(unit) {
         var qry = articleQry.format('<{0}>'.format(unit));
         return endpoint.getObjects(qry).then(function(data) {

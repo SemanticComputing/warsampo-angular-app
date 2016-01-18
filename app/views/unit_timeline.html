@@ -37,8 +37,9 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
               <ws-related-links data-title="'Taistelut'" data-related="ctrl.current.battles"></ws-related-links>
               <ws-related-links data-title="'Paikat'" data-related="ctrl.current.places"></ws-related-links>
               <ws-related-links data-title="'Kansa Taisteli -artikkelit'" data-related="ctrl.current.articles"></ws-related-links>
+				  <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.current.wikilink"></ws-related-links>
               <ws-related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.current.diaries"></ws-related-links>
-
+					
               <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
               {{ unit.label.join(' / ') }}
               </p>

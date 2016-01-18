@@ -64,6 +64,7 @@ angular.module('eventsApp')
             self.fetchRelatedUnits(unit),
             self.fetchRelatedPersons(unit),
             self.fetchCommanders(unit),
+            self.fetchWikipediaArticles(unit),
             self.fetchRelatedArticles(unit),
             self.fetchUnitDiaries(unit)
         ];
@@ -153,6 +154,15 @@ angular.module('eventsApp')
         return unitRepository.getUnitArticles(unit.id).then(function(articles) {
             if (articles && articles.length) {
                 unit.articles = articles;
+            }
+        });
+    };
+
+    self.fetchWikipediaArticles = function(unit) {
+        return unitRepository.getUnitWikipedia(unit.id).then(function(data) {
+        		if (data && data.length) {
+                unit.wikilink = data;
+                data[0].label = unit.name[0];
             }
         });
     };
