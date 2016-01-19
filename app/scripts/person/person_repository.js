@@ -32,7 +32,7 @@ angular.module('eventsApp')
 
     var personQry = prefixes +
     ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ?death_time '+
-    '       ?natiobib ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
+    '       ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
     '       ?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
     '       ?sid ?source ' +
     ' WHERE { ' +
@@ -46,7 +46,10 @@ angular.module('eventsApp')
     '   }' +
     '   OPTIONAL { ?id :hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . }' +
     ' 	OPTIONAL { ' +
-    '     ?id owl:sameAs ?natiobib .' +
+    '     ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +
+    '	} ' +
+    ' 	OPTIONAL { ' +
+    '     ?id foaf:page ?wikilink . FILTER(REGEX(STR(?wikilink),"wikipedia","i")) ' +
     '	} ' +
     '   OPTIONAL { ' +
     '     ?id owl:sameAs ?casualty .' +
