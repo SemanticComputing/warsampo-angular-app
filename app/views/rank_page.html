@@ -20,6 +20,7 @@
     <img ng-show="ctrl.isLoadingPersons" src="images/loading.gif" />
     <div id="linkContent">
     <ws-related-links-paged data-paginator="ctrl.rank.persons" data-title="'Henkilöitä'"></ws-related-links-paged>
+    <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.rank.wikilink"></ws-related-links>
     <ws-related-links data-title="'Ylempiä sotilasarvoja'" data-related="ctrl.rank.upperRanks"></ws-related-links>
     <ws-related-links data-title="'Alempia sotilasarvoja'" data-related="ctrl.rank.lowerRanks"></ws-related-links>
     <ws-related-links data-title="'Muita sotilasarvoja'" data-related="ctrl.rank.relatedRanks"></ws-related-links>

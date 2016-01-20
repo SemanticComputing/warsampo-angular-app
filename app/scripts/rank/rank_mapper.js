@@ -21,7 +21,11 @@ RankMapper.prototype.postProcess = function(ranks) {
         if (_.isArray(rank.label)) {
             rank.label = rank.label[0];
         }
+        if (rank.wikilink) {
+			   rank.wikilink = [{ id:rank.wikilink, label:rank.label}];
+        }
     });
+    
     return ranks;
 };
 

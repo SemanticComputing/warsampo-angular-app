@@ -23,13 +23,14 @@ angular.module('eventsApp')
     ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
     var rankQry = prefixes +
-    ' 	SELECT DISTINCT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) ?abbrev ?comment WHERE {  ' +
+    ' 	SELECT DISTINCT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) ?abbrev ?comment ?wikilink WHERE {  ' +
     '         VALUES ?id { {0} } .   ' +
     ' 	    ?id a <http://ldf.fi/warsa/actors/ranks/Rank> . ' +
     ' 	    ?id skos:prefLabel ?name . ' +
-    ' 	    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment . } ' +
-    ' 	    OPTIONAL { ?id skos:altLabel ?abbrev . } ' +
-    ' 	} GROUP BY ?id ?label ?abbrev ?comment ';
+    ' 	    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment } ' +
+    ' 	    OPTIONAL { ?id skos:altLabel ?abbrev } ' +
+    '			 OPTIONAL { ?id foaf:page ?wikilink } ' +
+    ' 	} GROUP BY ?id ?label ?abbrev ?comment ?wikilink ';
 
     var relatedRankQry = prefixes +
     'PREFIX org: <http://rdf.muninn-project.org/ontologies/organization#> ' +
