@@ -67,37 +67,45 @@ angular.module('eventsApp')
     '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant  ' +
     ' WHERE { ' +
     '   ?id crm:P4_has_time-span ?time_id ; ' +
-    '       a ?type_id . ' +
-    '       {0} ' + // Placeholder for type filter
-    '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-    '       FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
-    '       ?id skos:prefLabel ?description . ' +
-    '    OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
-    '    OPTIONAL { ?id crm:P7_took_place_at ?place_id .  ' +
-    '      ?place_id skos:prefLabel ?place_label . ' +
-    '      OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-    '      OPTIONAL { ' +
-    '            ?place_id geo:lat ?lat ; ' +
-    '              geo:long ?lon . ' +
-    '      } ' +
-    '      OPTIONAL { ' +
-    '           GRAPH <http://ldf.fi/places/karelian_places> { ' +
-    '               ?place_id geosparql:sfWithin ?municipality . ' +
-    '           } ' +
-    '           GRAPH <http://ldf.fi/places/municipalities> { ' +
-    '               ?municipality a suo:kunta . ' +
-    '           } ' +
+    '     a ?type_id . ' +
+    '   {0} ' + // Placeholder for type filter
+    '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
+    '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
+    '   ?id skos:prefLabel ?description . ' +
+    '   OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
+    '   OPTIONAL { ' +
+    '     ?id crm:P7_took_place_at ?place_id .  ' +
+    '     { ' +
+    '       ?place_id skos:prefLabel ?place_label . ' +
+    '       OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
+    '       OPTIONAL { ' +
+    '         ?place_id geo:lat ?lat ; ' +
+    '            geo:long ?lon . ' +
+    '        } ' +
+    '        OPTIONAL { ' +
+    '          GRAPH <http://ldf.fi/places/karelian_places> { ' +
+    '            ?place_id geosparql:sfWithin ?municipality . ' +
+    '          } ' +
+    '          GRAPH <http://ldf.fi/places/municipalities> { ' +
+    '            ?municipality a suo:kunta . ' +
+    '          } ' +
+    '        } ' +
+    '      } UNION {  ' +
+    '        SERVICE <http://ldf.fi/pnr/sparql> { ' +
+	'		 ?place_id skos:prefLabel ?place_label ; ' +
+    '    	   geo:lat ?lat ; ' +
+    '          geo:long ?lon . ' +
+    '  	    } ' +
     '      } ' +
     '   } ' +
     '   GRAPH <http://ldf.fi/warsa/events/times> { ' +
     '     ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-    '              crm:P82b_end_of_the_end ?end_time . ' +
+    '        crm:P82b_end_of_the_end ?end_time . ' +
     '     {1} ' + // Placeholder for time filter
     '   } ' +
     '   GRAPH <http://ldf.fi/warsa/events/event_types> { ' +
     '     ?type_id skos:prefLabel ?type . ' +
     '     FILTER(langMatches(lang(?type), "FI"))  ' +
-    '  ' +
     '   } ' +
     ' } ' +
     ' ORDER BY ?start_time ?end_time ';

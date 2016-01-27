@@ -54,12 +54,12 @@ PersonMapper.prototype.makeObject = function(obj) {
     if (o.living_place) {
         places.push({ id: o.living_place_uri, label: o.living_place });
     }
-	 o.places = _.uniq(places, 'id');
+    o.places = _.uniq(places, 'id');
 
-	 if (o.wikilink) {
-	 	o.wikilink = [{ id:o.wikilink, label:o.label}];
-	 }
-   
+    if (o.wikilink) {
+        o.wikilink = [{ id:o.wikilink, label:o.label}];
+    }
+
     return o;
 };
 
