@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eventsApp')
-.service('timemapService', function($q, _, Timeline, TimeMapTheme, TimeMap,
+.service('timemapService', function($q, $timeout, _, Timeline, TimeMapTheme, TimeMap,
             SimileAjax, eventService, photoService) {
 
     /* Public API */
@@ -34,6 +34,9 @@ angular.module('eventsApp')
 
     /* Public API functions */
 
+    /*
+     * Set a listener for the onmouseup event on the timeline
+     */
     function setOnMouseUpListener(fun) {
         Timeline._Band.prototype._onMouseUp = function() {
             if (this._dragging) {
@@ -50,6 +53,12 @@ angular.module('eventsApp')
         };
     }
 
+    /*
+     * Create a Timemap in which events that have associated photos
+     * are highlighted.
+     *
+     * Return a promise of the Timemap.
+     */
     function createTimemapWithPhotoHighlight(start, end, data,
             highlights, infoWindowCallback, photoConfig, bandInfo) {
         return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
@@ -59,6 +68,11 @@ angular.module('eventsApp')
             });
     }
 
+    /*
+     * Create a Timemap by a time span (start and end dates as ISO strings)
+     *
+     * Return a promise of the Timemap.
+     */
     function createTimemapByTimeSpan(start, end, highlights, infoWindowCallback, photoConfig) {
         var self = this;
         return eventService.getEventsByTimeSpan(start, end).then(function(data) {
@@ -68,6 +82,11 @@ angular.module('eventsApp')
         });
     }
 
+    /*
+     * Create a Timemap where all events in which the given actor has participated in.
+     *
+     * Return a promise of the Timemap.
+     */
     function createTimemapByActor(actorId, start, end, highlights, infoWindowCallback, photoConfig) {
 
         var bandInfo = getDefaultBandInfo(start, end, highlights);
@@ -82,6 +101,14 @@ angular.module('eventsApp')
         });
     }
 
+    /*
+     * Create a Timemap.
+     *
+     * This function is used by all the other create functions to actually
+     * create the Timemap.
+     *
+     * Return a promise of the Timemap.
+     */
     function createTimemap(start, end, events, highlights,
             infoWindowCallback, photoData, photoConfig, bandInfo) {
         distinctPhotoData = photoData || [];
@@ -92,37 +119,42 @@ angular.module('eventsApp')
             res.push(createEventObject(e));
         });
 
-        var tm = TimeMap.init({
-            mapId: 'map',               // Id of map div element (required)
-            timelineId: 'timeline',     // Id of timeline div element (required)
-            options: {
-                // NB! THE FOLLOWING LINE (eventIconPath...) WILL BE REPLACED BY GRUNT BUILD!
-                // Any change to the line will break the build as it currently stands.
-                eventIconPath: 'vendor/timemap/images/',
-                openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
-            },
-            datasets: [{
-                id: 'warsa',
-                title: 'Itsenäisen Suomen sotien tapahtumat',
-                theme: 'orange',
-                type: 'basic',
+        // Use timeout to let the template (or more specifically the map div)
+        // render before creating the timemap.
+        return $timeout(function() {
+            return TimeMap.init({
+                mapId: 'map',               // Id of map div element (required)
+                timelineId: 'timeline',     // Id of timeline div element (required)
                 options: {
-                    items: res
-                }
-            }],
-            bandInfo: bandInfo || getDefaultBandInfo(start, end, highlights)
+                    // NB! THE FOLLOWING LINE (eventIconPath...) WILL BE REPLACED BY GRUNT BUILD!
+                    // Any change to the line will break the build as it currently stands.
+                    eventIconPath: 'vendor/timemap/images/',
+                    openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
+                },
+                datasets: [{
+                    id: 'warsa',
+                    title: 'Itsenäisen Suomen sotien tapahtumat',
+                    theme: 'orange',
+                    type: 'basic',
+                    options: {
+                        items: res
+                    }
+                }],
+                bandInfo: bandInfo || getDefaultBandInfo(start, end, highlights)
+            });
+        }, 0).then(function(tm) {
+            // Add listeners for touch events for mobile support
+            [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
+                SimileAjax.DOM.registerEventWithObject(band._div,'touchmove',band,'_onTouchMove');
+                SimileAjax.DOM.registerEventWithObject(band._div,'touchend',band,'_onTouchEnd');
+                SimileAjax.DOM.registerEventWithObject(band._div,'touchstart',band,'_onTouchStart');
+            });
+
+            // Add zoom controls to the map.
+            tm.getNativeMap().setOptions({ zoomControl: true });
+
+            return tm;
         });
-
-        // Add listeners for touch events for mobile support
-        [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
-            SimileAjax.DOM.registerEventWithObject(band._div,'touchmove',band,'_onTouchMove');
-            SimileAjax.DOM.registerEventWithObject(band._div,'touchend',band,'_onTouchEnd');
-            SimileAjax.DOM.registerEventWithObject(band._div,'touchstart',band,'_onTouchStart');
-        });
-
-        tm.getNativeMap().setOptions({ zoomControl: true });
-
-        return tm;
     }
 
     /* Utility functions */
