@@ -92,10 +92,11 @@ angular.module('eventsApp')
     '        } ' +
     '      } UNION {  ' +
     '        SERVICE <http://ldf.fi/pnr/sparql> { ' +
-	'		 ?place_id skos:prefLabel ?place_label ; ' +
-    '    	   geo:lat ?lat ; ' +
-    '          geo:long ?lon . ' +
-    '  	    } ' +
+	'		   ?place_id skos:prefLabel ?place_label . ' +
+    '          FILTER(langMatches(lang(?place_label), "FI")) ' +
+    '    	   ?place_id geo:lat ?lat ; ' +
+    '            geo:long ?lon . ' +
+    '  	     } ' +
     '      } ' +
     '   } ' +
     '   GRAPH <http://ldf.fi/warsa/events/times> { ' +

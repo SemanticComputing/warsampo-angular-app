@@ -33,9 +33,7 @@
                     path = 'units/page';
                 } else if (_.includes(objId, '/ranks/')) {
                     path = 'ranks/page';
-                } else if (_.includes(objId, '/narc-menehtyneet')) {
-                    path = 'casualties/page';
-                } else if (_.includes(objId, '/places/')) {
+                } else if (_.includes(objId, '/places/') || _.includes(objId, '/pnr/')) {
                     path = 'places/page';
                     target = '_self';
                     params = '&oldMap=true';
