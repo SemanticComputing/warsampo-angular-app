@@ -33,12 +33,12 @@ angular.module('eventsApp')
     '  WHERE { ' +
     '     VALUES ?ref_place_id { {0} }    ' +
     '     GRAPH warsa:photographs { ' +
+    '       ?id dc:spatial ?place_id .    ' +
     '       ?id dc:created ?created . ' +
-    '         FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
-    '         ?id skos:prefLabel ?description ;          ' +
-    '         sch:contentUrl ?url ;          ' +
-    '         sch:thumbnailUrl ?thumbnail_url ;          ' +
-    '         dc:spatial ?place_id .    ' +
+    '       FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
+    '       ?id sch:contentUrl ?url ; ' +
+    '         sch:thumbnailUrl ?thumbnail_url . ' +
+    '       OPTIONAL { ?id skos:prefLabel ?description . } ' +
     '     } ' +
     '     OPTIONAL { ' +
     '       ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
@@ -46,7 +46,7 @@ angular.module('eventsApp')
     '     } ' +
     '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality . ?municipality a suo:kunta . } ' +
     '     FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality || ?ref_place_id = ?municipality) ' +
-    '     ?place_id skos:prefLabel ?place_label . ' +
+    '     OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
     ' }  ';
 
     var photosByTimeQry =  prefixes +
@@ -55,34 +55,33 @@ angular.module('eventsApp')
     '     GRAPH warsa:photographs { ' +
     '        ?id dc:created ?created . ' +
     '        FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-    '        ?id skos:prefLabel ?description ; ' +
-    '           sch:contentUrl ?url ; ' +
+    '        ?id sch:contentUrl ?url ; ' +
     '           sch:thumbnailUrl ?thumbnail_url . ' +
+    '        OPTIONAL { ?id skos:prefLabel ?description . } ' +
     '        OPTIONAL { ?id dc:spatial ?place_id . } ' +
     '     } ' +
     ' } ';
 
-    var minimalPhotosWithPlaceByTimeQry = prefixes + 
+    var minimalPhotosWithPlaceByTimeQry = prefixes +
     ' SELECT DISTINCT ?created ?place_id ?municipality_id' +
     ' WHERE { ' +
     '     GRAPH warsa:photographs { ' +
+    '       ?id dc:spatial ?place_id . ' +
     '       ?id dc:created ?created . ' +
     '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-    '       ?id skos:prefLabel ?description ; ' +
-    '       dc:spatial ?place_id . ' +
     '     } ' +
     '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality_id . ?municipality_id a suo:kunta . } ' +
-    ' } ' + 
+    ' } ' +
     ' ORDER BY ?created ';
 
-    var minimalPhotosByTimeQry = prefixes + 
+    var minimalPhotosByTimeQry = prefixes +
     ' SELECT DISTINCT ?created' +
     ' WHERE { ' +
     '     GRAPH warsa:photographs { ' +
     '       ?id dc:created ?created . ' +
     '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
     '     } ' +
-    ' } ' + 
+    ' } ' +
     ' ORDER BY ?created ';
 
     var photosByPersonQry = prefixes +
