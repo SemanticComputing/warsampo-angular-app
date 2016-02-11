@@ -18,55 +18,33 @@
           </p>
           <p><a ws-page-link="timemapCtrl.current.opts.event.id">Näytä tapahtuman tietosivu</a></p>
           <div ng-show="timemapCtrl.images.length === 0">
-            <p ng-if="!timemapCtrl.isLoadingImages">
-            Ei tapahtumaan liittyviä kuvia.
+            <p ng-if="!timemapCtrl.isLoadingImages" translate>
+            NO_RELATED_PHOTOS
             </p>
             <p ng-if="timemapCtrl.isLoadingImages">
-            Haetaan kuvia <img src="images/loading.gif" />
+            {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
             </p>
           </div>
           <ws-photo-gallery data-images="timemapCtrl.images"></ws-photo-gallery>
         </div>
         <div ng-if="timemapCtrl.isLoadingTimemap">
-          <h3>Rakennetaan aikajanaa <img src="images/loading.gif" /></h3>
+          <h3>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h3>
         </div>
         <div ng-show="!timemapCtrl.isLoadingTimemap">
           <div ng-if="!timemapCtrl.current">
-            <h1>{{ timemapCtrl.title }}</h1>
-            <h3>Valitse tapahtuma aikajanalta tai kartalta.</h3>
-            <p>
-            Kartan alla on kaksi yhdessä liikkuvaa aikajanaa.
-            Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi).
-            Tämän janan keskellä on mustana laatikkona aikaikkuna,
-            jonka sisään osuvat tapahtumat näkyvät alemmalla janalla.
-            Alemmassa aikajanassa pystyviivojen väli on yksi päivä.
-            Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa.
-            </p>
-            <p>
-            Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä.
-            Tekstiltään <span style="color: blue">sinisiin</span> tapahtumiin liittyy valokuvia.
-            </p>
-            <p>
-            Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa.
-            Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien
-            sijainneissa saattaa esiintyä virheitä.
-            Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä sodassa menehtyneistä suomalaisista.
-            </p>
-            <p>
-            Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset". Tämän ohjeen saat näkyviin valitsemalla yläpalkista "Näkymän ohjeet".
-            </p>
-            <p>
-            Mahdollisista virheistä voi raportoida <a target="_self" href="http://www.sotasampo.fi/palaute.html">lähettämällä palautetta</a>.
-            <h4>Tapahtumien värikoodit</h4>
-            <p><img src="vendor/timemap/images/red-circle.png"> Sotatoimi</p>
-            <p><img src="vendor/timemap/images/purple-circle.png"> Poliittinen tapahtuma</p>
-            <p><img src="vendor/timemap/images/orange-circle.png"> Muu tapahtuma</p>
-            <p><img src="vendor/timemap/images/green-circle.png"> Tällä hetkellä valittu tapahtuma</p>
+            <h1 translate>{{ timemapCtrl.title }}</h1>
+            <h3 translate>EVENT_DEMO.HELP_TEXT_TITLE</h3>
+            <translate>EVENT_DEMO.HELP_TEXT</translate>
+            <h4 translate>EVENT_COLORS</h4>
+            <p><img src="vendor/timemap/images/red-circle.png"> {{ 'MILITARY_ACTIVITY' | translate }}</p>
+            <p><img src="vendor/timemap/images/purple-circle.png"> {{ 'POLITICAL_ACTIVITY' | translate }}</p>
+            <p><img src="vendor/timemap/images/orange-circle.png"> {{ 'OTHER_EVENT' | translate }}</p>
+            <p><img src="vendor/timemap/images/green-circle.png"> {{ 'CURRENTLY_SELECTED_EVENT' | translate }}</p>
           </div>
           <hr/>
           <div id="casualtyCount" ng-click="timemapCtrl.showCasualtyStats = !timemapCtrl.showCasualtyStats">
-            <p>Menehtyneitä ajanjaksolla {{ timemapCtrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ timemapCtrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ timemapCtrl.casualtyCount }}
-            | <a>{{ timemapCtrl.showCasualtyStats ? 'Piilota lisätiedot' : 'Näytä lisätietoja' }}</a>
+            <p>{{ 'CASUALTIES_DURING_TIMESPAN' | translate }} {{ timemapCtrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ timemapCtrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ timemapCtrl.casualtyCount }}
+            | <a>{{ timemapCtrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
             </p>
           </div>
           <div uib-collapse="!timemapCtrl.showCasualtyStats">

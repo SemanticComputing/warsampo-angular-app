@@ -108,14 +108,14 @@
         }
 
         function showWinterWar() {
-            self.title = 'Talvisodan tapahtumat';
+            self.title = 'EVENT_DEMO.WINTER_WAR_EVENT_TITLE';
             return createTimeMap(WAR_INFO.winterWarTimeSpan.start,
                     WAR_INFO.winterWarTimeSpan.end,
                     WAR_INFO.winterWarHighlights);
         }
 
         function showContinuationWar() {
-            self.title = 'Jatkosodan tapahtumat';
+            self.title = 'EVENT_DEMO.CONTINUATION_WAR_EVENT_TITLE';
             return createTimeMap(WAR_INFO.continuationWarTimeSpan.start,
                     WAR_INFO.continuationWarTimeSpan.end,
                     WAR_INFO.continuationWarHighlights);

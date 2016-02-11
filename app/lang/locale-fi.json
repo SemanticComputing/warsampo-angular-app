@@ -1,0 +1,58 @@
+{
+    "EVENT_DEMO": {
+        "WINTER_WAR_EVENT_TITLE": "Talvisodan tapahtumat",
+        "CONTINATION_WAR_EVENT_TITLE": "Jatkosodan tapahtumat",
+        "HELP_TEXT_TITLE": "Valitse tapahtuma aikajanalta tai kartalta.",
+        "HELP_TEXT": "<p>Kartan alla on kaksi yhdessä liikkuvaa aikajanaa. Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi). Tämän janan keskellä on mustana laatikkona aikaikkuna, jonka sisään osuvat tapahtumat näkyvät alemmalla janalla. Alemmassa aikajanassa pystyviivojen väli on yksi päivä. Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa. </p> <p> Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä. Tekstiltään <span style=\"color: blue\">sinisiin</span> tapahtumiin liittyy valokuvia. </p> <p> Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa. Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien sijainneissa saattaa esiintyä virheitä. Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä sodassa menehtyneistä suomalaisista. </p> <p> Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista \"Asetukset\". Tämän ohjeen saat näkyviin valitsemalla yläpalkista \"Näkymän ohjeet\". </p> <p> Mahdollisista virheistä voi raportoida <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">lähettämällä palautetta</a>.",
+        "OTHER_EVENTS_AT_THE_SAME_TIME": "Muita tapahtumia samaan aikaan",
+        "OTHER_EVENTS_CLOSE": "Muita tapahtumia samalla alueella"
+    },
+    "PERSONS_DEMO": {
+        "TITLE": "Henkilöt",
+        "HELP_TEXT": "<p>Hae tunnettuja viime sotien henkilöitä kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse henkilö kentän alla olevasta listasta. Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy vasemmalle.</p>",
+        "SEARCH_BOX_PLACEHOLDER": "Hae henkilön nimellä"
+    },
+    "UNIT_DEMO": {
+        "TITLE": "Joukko-osastot",
+        "DESCRIPTION": "<p>Hae viime sotien joukko-osastoja kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse joukko-osasto kentän alla olevasta listasta. Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli kuin niistä on tietoa) ja osastoon liittyvät muut tiedot ja suosittelulinkit näkyvät oikealle.</p>",
+        "HELP_TEXT_TITLE": "Valitse osasto valikosta.",
+        "HELP_TEXT": "<p>Kartan alla on kaksi yhdessä liikkuvaa aikajanaa. Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi). Tämän janan keskellä on mustana laatikkona aikaikkuna, jonka sisään osuvat tapahtumat näkyvät alemmalla janalla. Alemmassa aikajanassa pystyviivojen väli on yksi päivä. Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa. </p> <p> Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä. Tekstiltään <span style=\"color: blue\">sinisiin</span> tapahtumiin liittyy valokuvia. </p> <p> Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa. Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien sijainneissa saattaa esiintyä virheitä. Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä menehtyneistä valitun joukko-osaston henkilöistä. </p> <p> Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista \"Asetukset\". Tämän ohjeen saat näkyviin valitsemalla yläpalkista \"Näkymän ohjeet\".</p>",
+        "SEARCH_BOX_PLACEHOLDER": "Hae joukko-osaston nimellä, esim. 1. Divisioona"
+    },
+    "SETTINGS": {
+        "PHOTO_RANGE": "Valokuvien aikahaarukka",
+        "PHOTO_DAYS_BEFORE": "päivää ennen",
+        "PHOTO_DAYS_AFTER_EVENT": "päivää jälkeen",
+        "LIMIT_TO_SAME_MUNICIPALITY": "Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.",
+        "SHOW_HEATMAP": "Näytä lämpökartta menehtyneistä."
+    },
+    "WINTER_WAR": "Talvisota",
+    "CONTINUATION_WAR": "Jatkosota",
+    "PERSPECTIVE_HELP": "Näkymän ohjeet",
+    "SETTINGS": "Asetukset",
+    "EVENT_COLORS": "Tapahtumien värikoodit",
+    "EVENT": "Tapahtuma",
+    "BUILDING_TIMELINE": "Building the timeline",
+    "RELATED_EVENTS": "Tapahtumat",
+    "RELATED_UNITS": "Joukko-osastot",
+    "RELATED_BATTLES": "Taistelut",
+    "RELATED_RANKS": "Sotilasarvot",
+    "RELATED_PLACES": "Paikat",
+    "KANSA_TAISTELI_ARTICLES": "Kansa Taisteli -artikkelit",
+    "NO_RELATED_PHOTOS": "No related photos available",
+    "SHOW_ALL_PHOTOS": "Näytä kaikki kuvat",
+    "SHOW_LESS_PHOTOS": "Näytä vähemmän kuvia",
+    "FETCHING_PHOTOS": "Haetaan kuvia",
+    "SHOW_INFO_PAGE": "Näytä tietosivu",
+    "SHOW_IN_DEMO": "Näytä visualisaatio",
+    "LINKS": "Linkit",
+    "SHOW_ADDITIONAL_INFO": "Näytä lisätietoja",
+    "HIDE_ADDITIONAL_INFO": "Piilota lisätiedot",
+    "MILITARY_ACTIVITY": "Sotatoimi",
+    "POLITICAL_ACTIVITY": "Poliittinen tapahtuma",
+    "OTHER_EVENT": "Muu tapahtuma",
+    "NO_METADATA_FOUND": "Metadataa ei löytynyt",
+    "NO_LINKS_FOUND": "Linkkejä ei löytynyt",
+    "CURRENTLY_SELECTED_EVENT": "Tällä hetkellä valittu tapahtuma",
+    "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla"
+}

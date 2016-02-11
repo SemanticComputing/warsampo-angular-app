@@ -21,7 +21,8 @@ angular
     'ngSanitize',
     'ngTouch',
     'ui.bootstrap',
-    'truncate'
+    'truncate',
+    'pascalprecht.translate'
 ])
 .constant('_', _)
 .constant('google', google)
@@ -50,12 +51,12 @@ angular
             cssClass: 'band-highlight'
         }],
         winterWarTimeSpan: {
-                start: '1939-07-01',
-                end: '1940-04-30'
+            start: '1939-07-01',
+            end: '1940-04-30'
         },
         continuationWarTimeSpan: {
-                start: '1941-06-01',
-                end: '1944-12-31'
+            start: '1941-06-01',
+            end: '1944-12-31'
         }
     }
 )
@@ -126,4 +127,12 @@ angular
 })
 .config(function($locationProvider) {
     $locationProvider.html5Mode(true);
+})
+.config(function ($translateProvider) {
+    // add translation table
+    $translateProvider.useStaticFilesLoader({
+        prefix: 'lang/locale-',
+        suffix: '.json'
+    });
+    $translateProvider.preferredLanguage('fi');
 });
