@@ -1,7 +1,8 @@
 {
     "EVENT_DEMO": {
+        "GO_TO_WINTER_WAR": "Go to Winter War",
         "WINTER_WAR_EVENT_TITLE": "Winter War Events",
-        "CONTINATION_WAR_EVENT_TITLE": "Continuation War Events",
+        "CONTINUATION_WAR_EVENT_TITLE": "Continuation War Events",
         "HELP_TEXT_TITLE": "Valitse tapahtuma aikajanalta tai kartalta.",
         "HELP_TEXT": "<p>Kartan alla on kaksi yhdessä liikkuvaa aikajanaa. Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi). Tämän janan keskellä on mustana laatikkona aikaikkuna, jonka sisään osuvat tapahtumat näkyvät alemmalla janalla. Alemmassa aikajanassa pystyviivojen väli on yksi päivä. Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa. </p> <p> Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä. Tekstiltään <span style=\"color: blue\">sinisiin</span> tapahtumiin liittyy valokuvia. </p> <p> Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa. Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien sijainneissa saattaa esiintyä virheitä. Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä sodassa menehtyneistä suomalaisista. </p> <p> Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista \"Asetukset\". Tämän ohjeen saat näkyviin valitsemalla yläpalkista \"Näkymän ohjeet\". </p> <p> Mahdollisista virheistä voi raportoida <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">lähettämällä palautetta</a>.",
         "OTHER_EVENTS_AT_THE_SAME_TIME": "Other events at the same time",
@@ -17,7 +18,20 @@
         "DESCRIPTION": "<p>Hae viime sotien joukko-osastoja kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse joukko-osasto kentän alla olevasta listasta. Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli kuin niistä on tietoa) ja osastoon liittyvät muut tiedot ja suosittelulinkit näkyvät oikealle.</p>",
         "HELP_TEXT_TITLE": "Choose a unit from the menu.",
         "HELP_TEXT": "<p>Kartan alla on kaksi yhdessä liikkuvaa aikajanaa. Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi). Tämän janan keskellä on mustana laatikkona aikaikkuna, jonka sisään osuvat tapahtumat näkyvät alemmalla janalla. Alemmassa aikajanassa pystyviivojen väli on yksi päivä. Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa. </p> <p> Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä. Tekstiltään <span style=\"color: blue\">sinisiin</span> tapahtumiin liittyy valokuvia. </p> <p> Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa. Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien sijainneissa saattaa esiintyä virheitä. Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä menehtyneistä valitun joukko-osaston henkilöistä. </p> <p> Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista \"Asetukset\". Tämän ohjeen saat näkyviin valitsemalla yläpalkista \"Näkymän ohjeet\".</p>",
-        "SEARCH_BOX_PLACEHOLDER": "Seach by unit name (in Finnish), e.g. 1. Divisioona"
+        "SEARCH_BOX_PLACEHOLDER": "Seach by unit name (in Finnish), e.g. 1. Divisioona",
+        "SUPER_UNITS": "Super units",
+        "SUB_UNITS": "Subdivisions",
+        "OTHER_UNITS": "Other units",
+        "CASUALTIES_DURING_TIMESPAN": "Unit casualties during"
+    },
+    "RANK_DEMO": {
+        "SUPER_RANKS": "Higher ranks",
+        "SUB_RANKS": "Lower ranks",
+        "OTHER_RANKS": "Other ranks"
+    },
+    "TIME_DEMO": {
+        "RELATED_EVENTS": "Events during this time",
+        "RELATED_CASUALTIES": "Casualties during this time"
     },
     "SETTINGS": {
         "PHOTO_RANGE": "Photo date range",
@@ -32,13 +46,22 @@
     "SETTINGS": "Settings",
     "EVENT_COLORS": "Event color codes",
     "EVENT": "Event",
+    "RANK": "Rank",
+    "UNIT": "Unit",
+    "PERSON": "Person",
+    "TIME": "Time",
+    "PHOTO": "Photo",
+    "N_PHOTOS": "photos",
     "BUILDING_TIMELINE": "Building the timeline",
+    "NO_RELATED_EVENTS": "No related events",
+    "RELATED_PEOPLE": "Persons",
     "RELATED_EVENTS": "Events",
     "RELATED_UNITS": "Units",
     "RELATED_BATTLES": "Battles",
     "RELATED_RANKS": "Ranks",
     "RELATED_PLACES": "Places",
     "KANSA_TAISTELI_ARTICLES": "Kansa Taisteli articles",
+    "WAR_DIARIES": "War diaries",
     "NO_RELATED_PHOTOS": "No related photos available",
     "SHOW_ALL_PHOTOS": "Show all photos",
     "SHOW_LESS_PHOTOS": "Show less photos",
@@ -53,6 +76,7 @@
     "OTHER_EVENT": "Other",
     "NO_METADATA_FOUND": "No metadata found",
     "NO_LINKS_FOUND": "No links found",
+    "ERROR_OCCURED": "An error occured",
     "CURRENTLY_SELECTED_EVENT": "Currently selected event",
     "CASUALTIES_DURING_TIMESPAN": "Casualties during"
 }

@@ -1,12 +1,12 @@
 <div ng-if="ctrl.imagePager">
-  <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">Haetaan kuvia <img src="images/loading.gif" /></div>
-  <div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount">Ei tapahtumaan liittyviä kuvia</div>
+  <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">{{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" /></div>
+  <div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount" translate>NO_RELATED_PHOTOS</div>
   <div ng-if="ctrl.imageCount">
-    <p>{{ ctrl.imageCount }} kuvaa
+    <p>{{ ctrl.imageCount }} {{ 'N_PHOTOS' | translate }}
     <span ng-show="ctrl.hasMore || !ctrl.isCollapsed"> |
       <a href="" ng-click="ctrl.toggleCollapse()">
-        <span ng-show="ctrl.isCollapsed">Näytä kaikki kuvat</span>
-        <span ng-show="!ctrl.isCollapsed">Näytä vähemmän kuvia</span>
+        <span ng-show="ctrl.isCollapsed" translate>SHOW_ALL_PHOTOS</span>
+        <span ng-show="!ctrl.isCollapsed" translate>SHOW_LESS_PHOTOS</span>
       </a>
     </span>
     <img ng-show="ctrl.isLoadingImages" src="images/loading.gif" />

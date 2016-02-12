@@ -5,7 +5,7 @@
     .directive('wsPageLink', pageLink);
 
     /* @ngInject */
-    function pageLink(_) {
+    function pageLink($translate, _) {
         var directive = {
             restrict:'A',
             link: link
@@ -42,7 +42,8 @@
                     target = '_self';
                 }
 
-                var url = path + '?uri=' + objId + (params ? params : '');
+                var lang = $translate.use();
+                var url = lang + '/' + path + '?uri=' + objId + (params ? params : '');
                 element.attr('href', url);
                 if (target) {
                     element.attr('target', target);

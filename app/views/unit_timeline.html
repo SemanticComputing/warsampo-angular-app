@@ -1,10 +1,10 @@
 <div ng-include="'views/partials/setting_accordion.html'"></div>
 <div class="row">
   <div class="col-sm-3">
-  	<h2>Joukko-osastot</h2>
-	<p>Hae viime sotien joukko-osastoja kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse joukko-osasto kentän alla olevasta listasta.
-Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli kun niistä on tietoa) ja osastoon liittyvät muut tiedot ja suosittelulinkit näkyvät oikealle.</p>
-    <input type="text" placeholder="Hae joukko-osaston nimellä, esim. 1. Divisioona" class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
+  	<h2 translate>UNIT_DEMO.TITLE</h2>
+    <translate>UNIT_DEMO.DESCRIPTION</translate>
+    <input type="text" placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
+      class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
     <select ng-model="ctrl.current" ng-change="ctrl.updateUnit()" size="32" class="form-control" id="unitselect"
             ng-options="item as item.name for item in ctrl.items"></select>
 	</div>
@@ -19,10 +19,10 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
                 {{ ctrl.current.name[0] }} <span ng-if="ctrl.current.abbrev.length">({{ ctrl.current.abbrev | concatList }})</span>
               </h3>
               <p ng-if="ctrl.current && ctrl.current.altNames.length">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join('; ') }}</p>
-              <div ng-show="ctrl.current.relatedEvents.length === 0">
-                Ei osastoon liittyviä tapahtumia.
+              <div ng-show="ctrl.current.relatedEvents.length === 0" translate>
+                NO_RELATED_EVENTS
               </div>
-              <p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}">Näytä osaston tietosivu</a></p>
+              <p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}" translate>SHOW_INFO_PAGE</a></p>
               <h3 ng-if="ctrl.current.opts.descTitle">
                 <span ng-repeat="place in ctrl.current.opts.event.places">
                   <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
@@ -30,16 +30,16 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
                 {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
               </h3>
               <p>{{ ctrl.current.opts.description }}</p>
-              <ws-related-links-paged data-title="'Henkilöitä'" data-paginator="ctrl.current.relatedPersons"></ws-related-links-paged>
-              <ws-related-links data-title="'Yläosasto'" data-related="ctrl.current.superUnits"></ws-related-links>
-              <ws-related-links data-title="'Alaosastoja'" data-related="ctrl.current.subUnits"></ws-related-links>
-              <ws-related-links data-title="'Muita osastoja'" data-related="ctrl.current.relatedUnits"></ws-related-links>
-              <ws-related-links data-title="'Taistelut'" data-related="ctrl.current.battles"></ws-related-links>
-              <ws-related-links data-title="'Paikat'" data-related="ctrl.current.places"></ws-related-links>
-              <ws-related-links data-title="'Kansa Taisteli -artikkelit'" data-related="ctrl.current.articles"></ws-related-links>
-				  <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.current.wikilink"></ws-related-links>
-              <ws-related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.current.diaries"></ws-related-links>
-					
+              <ws-related-links-paged data-title="'RELATED_PERSONS' | translate" data-paginator="ctrl.current.relatedPersons"></ws-related-links-paged>
+              <ws-related-links data-title="'UNIT_DEMO.SUPER_UNITS' | translate" data-related="ctrl.current.superUnits"></ws-related-links>
+              <ws-related-links data-title="'UNIT_DEMO.SUB_UNITS' | translate" data-related="ctrl.current.subUnits"></ws-related-links>
+              <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.current.relatedUnits"></ws-related-links>
+              <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.current.battles"></ws-related-links>
+              <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.current.places"></ws-related-links>
+              <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.current.articles"></ws-related-links>
+              <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.current.wikilink"></ws-related-links>
+              <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.current.diaries"></ws-related-links>
+
               <p ng-repeat="unit in ctrl.current.units" style="text-transform: capitalize">
               {{ unit.label.join(' / ') }}
               </p>
@@ -47,39 +47,18 @@ Joukko-osaston tapahtumat ilmestyvät kartalle ja aikajanalle keskelle (sikäli 
               <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>
             </div>
             <div ng-if="!ctrl.current">
-              <h3>Valitse osasto valikosta.</h3>
-              <p>
-              Kartan alla on kaksi yhdessä liikkuvaa aikajanaa.
-              Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi).
-              Tämän janan keskellä on mustana laatikkona aikaikkuna,
-              jonka sisään osuvat tapahtumat näkyvät alemmalla janalla.
-              Alemmassa aikajanassa pystyviivojen väli on yksi päivä.
-              Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa.
-              </p>
-              <p>
-              Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä.
-              Tekstiltään <span style="color: blue">sinisiin</span> tapahtumiin liittyy valokuvia.
-              </p>
-              <p>
-              Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa.
-              Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien
-              sijainneissa saattaa esiintyä virheitä.
-              Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä menehtyneistä valitun
-              joukko-osaston henkilöistä.
-              </p>
-              <p>
-              Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista "Asetukset". Tämän ohjeen saat näkyviin valitsemalla yläpalkista "Näkymän ohjeet".
-              </p>
-              <h4>Tapahtumien värikoodit</h4>
-              <p><img src="vendor/timemap/images/red-circle.png"> Sotatoimi</p>
-              <p><img src="vendor/timemap/images/purple-circle.png"> Poliittinen tapahtuma</p>
-              <p><img src="vendor/timemap/images/orange-circle.png"> Muu tapahtuma</p>
-              <p><img src="vendor/timemap/images/green-circle.png"> Tällä hetkellä valittu tapahtuma</p>
+              <h3 translate>UNIT_DEMO.HELP_TEXT_TITLE</h3>
+              <translate>UNIT_DEMO.HELP_TEXT</translate>
+              <h4 translate>EVENT_COLORS</h4>
+              <p><img src="vendor/timemap/images/red-circle.png"> {{ 'MILITARY_ACTIVITY' | translate }}</p>
+              <p><img src="vendor/timemap/images/purple-circle.png"> {{ 'POLITICAL_ACTIVITY' | translate }}</p>
+              <p><img src="vendor/timemap/images/orange-circle.png"> {{ 'OTHER_EVENT' | translate }}</p>
+              <p><img src="vendor/timemap/images/green-circle.png"> {{ 'CURRENTLY_SELECTED_EVENT' | translate }}</p>
             </div>
             <hr/>
             <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
-              <p>Osastosta menehtyneitä ajanjaksolla {{ ctrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ ctrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ ctrl.casualtyCount }}
-              | <a>{{ ctrl.showCasualtyStats ? 'Piilota lisätiedot' : 'Näytä lisätietoja' }}</a>
+              <p>{{ 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN' | translate }} {{ ctrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ ctrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ ctrl.casualtyCount }}
+              | <a>{{ timemapCtrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
               </p>
             </div>
             <div uib-collapse="!ctrl.showCasualtyStats">

@@ -1,38 +1,25 @@
-<div> <a id="pageTypeURL" href="events"><h1 id="pageType">Aika</h1></a></div> 
+<div> <a id="pageTypeURL" href="events"><h1 id="pageType" translate>TIME</h1></a></div> 
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingObj" src="images/loading.gif" />
-    <p ng-if="!ctrl.time && !ctrl.isLoadingObj">Metadaa ei löytynyt</p>
+    <p ng-if="!ctrl.time && !ctrl.isLoadingObj" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.time">
       <h2>
         {{ ctrl.time.timeString }}
       </h2>
-      <div ng-show="!ctrl.time.photos.length">
-        <p ng-if="!ctrl.isLoadingLinks">
-        Ei tähän aikaan otettuja kuvia.
-        </p>
-        <p ng-if="ctrl.isLoadingLinks">
-        Haetaan kuvia <img src="images/loading.gif" />
-        </p>
-      </div>
-      <div ng-show="!ctrl.isLoadingLinks && ctrl.time.photos.length">
-        <p>
-        {{ ctrl.time.photos.length }} kuvaa
-        </p>
-      </div>
-      <photo-scroller images="ctrl.time.photos"></photo-scroller>
+      <ws-photo-gallery data-images="ctrl.time.photos"></ws-photo-gallery>
     </div>
   </div>
   <!-- Links -->
   <div class="col-sm-4">
-    <h2 id="links-header" class="links-header-class">Linkit</h2>
+    <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="(!ctrl.time || !ctrl.time.hasLinks) && !ctrl.isLoadingLinks">Linkkejä ei löytynyt</p>
+    <p ng-if="(!ctrl.time || !ctrl.time.hasLinks) && !ctrl.isLoadingLinks" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
-      <ws-related-links data-title="'Tapahtumia tähän aikaan'" related="ctrl.time.events"></ws-related-links>
-      <ws-related-links-paged data-title="'Tähän aikaan menehtyneitä'" paginator="ctrl.time.casualties"></ws-related-links-paged>
+      <ws-related-links data-title="'TIME_DEMO.RELATED_EVENTS' | translate" related="ctrl.time.events"></ws-related-links>
+      <ws-related-links-paged data-title="'TIME_DEMO.RELATED_CASUALTIES' | translate" paginator="ctrl.time.casualties"></ws-related-links-paged>
     </div>
   </div>
 </div>

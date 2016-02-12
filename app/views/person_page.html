@@ -1,31 +1,31 @@
-<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType">Henkil&ouml;</h1></a></div> 
+<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>PERSON</h1></a></div> 
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
-    <p ng-if="!ctrl.person && !ctrl.isLoadingEvent">No metadata available for this object.</p>
+    <p ng-if="!ctrl.person && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">
       <h2>
         {{ ctrl.person.label }}
       </h2>
       <div ng-include="'views/partials/person_description_partial.html'"></div>
-      <p><a ng-href="persons?uri={{ ctrl.person.id }}">Näytä henkilön tapahtumasivu</a></p>
+      <p><a ng-href="persons?uri={{ ctrl.person.id }}" translate>SHOW_IN_DEMO</a></p>
     </div>
   </div>
   <!-- Links -->
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class">Linkit</h2>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.person.hasLinks">No links found for this object.</p>
+    <p ng-if="!ctrl.person.hasLinks" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
-      <ws-related-links data-title="'Tapahtumat'" data-related="ctrl.person.events"></ws-related-links>
-      <ws-related-links data-title="'Joukko-osastot'" data-related="ctrl.person.units"></ws-related-links>
-      <ws-related-links data-title="'Taistelut'" data-related="ctrl.person.battles"></ws-related-links>
-      <ws-related-links data-title="'Sotilasarvot'" data-related="ctrl.person.ranks"></ws-related-links>
-      <ws-related-links data-title="'Paikat'" data-related="ctrl.person.places"></ws-related-links>
+      <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
+      <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>
+      <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
+      <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
+      <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
       <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
-      <ws-related-links title="'Kansa Taisteli -artikkelit'" data-related="ctrl.person.articles"></ws-related-links>
+      <ws-related-links title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
      <div ng-if="ctrl.person.nationals" ng-include="'views/partials/national_bibliography_partial.html'"></div>
   </div>
 </div>

@@ -30,6 +30,7 @@ angular
 .constant('TimeMap', TimeMap)
 .constant('TimeMapTheme', TimeMapTheme)
 .constant('Timeline', Timeline)
+.constant('supportedLocales', ['fi', 'en'])
 .constant('WAR_INFO',
     {
         winterWarHighlights: [{
@@ -120,19 +121,31 @@ angular
         templateUrl: 'views/semantic_page.html',
         controller: 'SemanticPageCtrl',
         controllerAs: 'ctrl'
-    });/*
-      .otherwise({
-        redirectTo: '/events'
-      });*/
+    })
+    .otherwise({
+        redirectTo: '/fi/events'
+    });
 })
 .config(function($locationProvider) {
     $locationProvider.html5Mode(true);
 })
-.config(function ($translateProvider) {
-    // add translation table
+.config(function($translateProvider) {
     $translateProvider.useStaticFilesLoader({
         prefix: 'lang/locale-',
         suffix: '.json'
     });
     $translateProvider.preferredLanguage('fi');
+    $translateProvider.useSanitizeValueStrategy('escapeParameters');
+})
+.run(function($rootScope, $route, $routeParams, $translate, _, supportedLocales) {
+    $rootScope.$on('$routeChangeSuccess', function() {
+        var lang = $route.current.params.lang;
+        if (lang && _.contains(supportedLocales, lang)) {
+            $translate.use(lang);
+        } else {
+            var params = $route.current.params;
+            params.lang = $translate.use();
+            $route.updateParams(params);
+        }
+    });
 });

@@ -1,9 +1,10 @@
 <div ng-include="'views/partials/setting_accordion.html'"></div>
 <div class="row">
   <div class="col-sm-3">
-    <h2>Henkilöt</h2>
-    <p>Hae tunnettuja viime sotien henkilöitä kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse henkilö kentän alla olevasta listasta.
-    Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy vasemmalle.</p>
+    <h2 translate>PERSONS_DEMO.TITLE</h2>
+    <translate>
+      PERSONS_DEMO.HELP_TEXT
+    </translate>
     <input type="text" value="" class="form-control" placeholder="Hae henkilön nimellä"
     ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
     <select ng-model="ctrl.selectedItem" ng-change="ctrl.updateActor()" size="32" class="form-control" id="personselect"
@@ -11,11 +12,11 @@
   </div>
   <div class="col-sm-9">
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
-    <p ng-if="!ctrl.person && !ctrl.isLoadingEvent">No metadata available for this object.</p>
+    <p ng-if="!ctrl.person && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">
       <h2>{{ ctrl.person.label }}</h2>
       <div ng-include="'views/partials/person_description_partial.html'"></div>
-      <p><a ng-href="persons/page?uri={{ ctrl.person.id }}">Näytä henkilön tietosivu</a></p>
+      <p><a ng-href="persons/page?uri={{ ctrl.person.id }}" translate>SHOW_INFO_PAGE</a></p>
     </div>
     <!-- Links -->
     <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>
@@ -25,13 +26,13 @@
       <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
 
       <div ng-if="ctrl.person.nationals" ng-include="'views/partials/national_bibliography_partial.html'"></div>
-      <ws-related-links title="'Tapahtumat'" data-related="ctrl.person.events"></ws-related-links>
-      <ws-related-links title="'Joukko-osastot'" data-related="ctrl.person.units"></ws-related-links>
-      <ws-related-links title="'Taistelut'" data-related="ctrl.person.battles"></ws-related-links>
-      <ws-related-links title="'Sotilasarvot'" data-related="ctrl.person.ranks"></ws-related-links>
-      <ws-related-links title="'Paikat'" data-related="ctrl.person.places"></ws-related-links>      
+      <ws-related-links title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
+      <ws-related-links title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>
+      <ws-related-links title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
+      <ws-related-links title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
+      <ws-related-links title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
       <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
-      <ws-related-links title="'Kansa Taisteli -artikkelit'" data-related="ctrl.person.articles"></ws-related-links>
+      <ws-related-links title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
     </div>
   </div>
 </div>

@@ -1,17 +1,17 @@
-<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType">Sotilasarvo</h1></a></div> 
+<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>RANK</h1></a></div>
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingRank" src="images/loading.gif" />
-    <p ng-if="!ctrl.rank && !ctrl.isLoadingRank">No metadata available for this object.</p>
+    <p ng-if="!ctrl.rank && !ctrl.isLoadingRank" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.rank">
       <h2>
         {{ ctrl.rank.label }}
       </h2>
       <p ng-repeat="desc in ctrl.rank.getDescription()">
       {{ desc }}
-      </p> 
+      </p>
     </div>
   </div>
   <!-- Links -->
@@ -19,10 +19,10 @@
     <h2 id="links-header" class="links-header-class">Linkit</h2>
     <img ng-show="ctrl.isLoadingPersons" src="images/loading.gif" />
     <div id="linkContent">
-    <ws-related-links-paged data-paginator="ctrl.rank.persons" data-title="'Henkilöitä'"></ws-related-links-paged>
+    <ws-related-links-paged data-paginator="ctrl.rank.persons" data-title="'RELATED_PERSONS' | translate"></ws-related-links-paged>
     <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.rank.wikilink"></ws-related-links>
-    <ws-related-links data-title="'Ylempiä sotilasarvoja'" data-related="ctrl.rank.upperRanks"></ws-related-links>
-    <ws-related-links data-title="'Alempia sotilasarvoja'" data-related="ctrl.rank.lowerRanks"></ws-related-links>
-    <ws-related-links data-title="'Muita sotilasarvoja'" data-related="ctrl.rank.relatedRanks"></ws-related-links>
+    <ws-related-links data-title="'SUPER_RANKS' | translate" data-related="ctrl.rank.upperRanks"></ws-related-links>
+    <ws-related-links data-title="'SUB_RANKS' | translate" data-related="ctrl.rank.lowerRanks"></ws-related-links>
+    <ws-related-links data-title="'OTHER_RANKS' | translate" data-related="ctrl.rank.relatedRanks"></ws-related-links>
   </div>
 </div>

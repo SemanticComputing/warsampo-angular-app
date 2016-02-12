@@ -16,7 +16,7 @@
           <p ng-repeat="unit in timemapCtrl.current.opts.event.units" style="text-transform: capitalize">
           <a ws-page-link="unit.id">{{ unit.label }}</a>
           </p>
-          <p><a ws-page-link="timemapCtrl.current.opts.event.id">Näytä tapahtuman tietosivu</a></p>
+          <p><a ws-page-link="timemapCtrl.current.opts.event.id" translate>SHOW_INFO_PAGE</a></p>
           <div ng-show="timemapCtrl.images.length === 0">
             <p ng-if="!timemapCtrl.isLoadingImages" translate>
             NO_RELATED_PHOTOS

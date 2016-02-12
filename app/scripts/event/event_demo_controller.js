@@ -15,9 +15,9 @@
 
     /* @ngInject */
     function EventDemoController($routeParams, $location, $anchorScroll,
-                $timeout, $window, $scope, $rootScope, $route, $q, _, Settings, WAR_INFO,
-                eventService, photoService, casualtyRepository, personService,
-                googleMapsService, timemapService) {
+                $timeout, $window, $scope, $rootScope, $route, $q, $translate,
+                _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
+                personService, googleMapsService, timemapService) {
 
         var self = this;
 
@@ -78,7 +78,7 @@
                 }
             } else {
                 // No war or event specified -- redirect to Winter War
-                $location.path('events/winterwar').replace();
+                $location.path($translate.use() + '/events/winterwar').replace();
                 return $q.when();
             }
 

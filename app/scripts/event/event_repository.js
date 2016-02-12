@@ -66,9 +66,11 @@ angular.module('eventsApp')
     ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
     '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant  ' +
     ' WHERE { ' +
-    '   ?id crm:P4_has_time-span ?time_id ; ' +
-    '     a ?type_id . ' +
-    '   {0} ' + // Placeholder for type filter
+    '   GRAPH <http://ldf.fi/warsa/events> { ' +
+    '     ?id crm:P4_has_time-span ?time_id ; ' +
+    '       a ?type_id . ' +
+    '     {0} ' + // Placeholder for type filter
+    '   } ' +
     '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
     '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
     '   ?id skos:prefLabel ?description . ' +
