@@ -31,6 +31,7 @@ angular
 .constant('TimeMapTheme', TimeMapTheme)
 .constant('Timeline', Timeline)
 .constant('supportedLocales', ['fi', 'en'])
+.constant('defaultLocale', 'fi')
 .constant('WAR_INFO',
     {
         winterWarHighlights: [{
@@ -61,9 +62,39 @@ angular
         }
     }
 )
-.config(function($routeProvider) {
-    var lang = '/:lang?';
+.config(function($routeProvider, defaultLocale) {
+    var lang = '/:lang';
     $routeProvider
+    .when('/events/page', {
+        redirectTo: '/' + defaultLocale + '/events/page'
+    })
+    .when('/events/:era?', {
+        redirectTo: '/' + defaultLocale + '/events/'
+    })
+    .when('/units/page', {
+        redirectTo: '/' + defaultLocale + '/units/page'
+    })
+    .when('/persons/page', {
+        redirectTo: '/' + defaultLocale + '/persons/page'
+    })
+    .when('/ranks/page', {
+        redirectTo: '/' + defaultLocale + '/ranks/page'
+    })
+    .when('/units[/]?', {
+        redirectTo: '/' + defaultLocale + '/units/'
+    })
+    .when('/persons[/]?', {
+        redirectTo: '/' + defaultLocale + '/persons/'
+    })
+    .when('/times/page', {
+        redirectTo: '/' + defaultLocale + '/times/page'
+    })
+    .when('/photographs/page', {
+        redirectTo: '/' + defaultLocale + '/photographs/page'
+    })
+    .when('/page', {
+        redirectTo: '/' + defaultLocale + '/page'
+    })
     .when(lang + '/events/page', {
         templateUrl: 'views/event_page.html',
         controller: 'EventPageCtrl',
@@ -123,18 +154,18 @@ angular
         controllerAs: 'ctrl'
     })
     .otherwise({
-        redirectTo: '/fi/events'
+        redirectTo: '/' + defaultLocale + '/events/'
     });
 })
 .config(function($locationProvider) {
     $locationProvider.html5Mode(true);
 })
-.config(function($translateProvider) {
+.config(function($translateProvider, defaultLocale) {
     $translateProvider.useStaticFilesLoader({
-        prefix: 'lang/locale-',
+        prefix: 'events/lang/locale-',
         suffix: '.json'
     });
-    $translateProvider.preferredLanguage('fi');
+    $translateProvider.preferredLanguage(defaultLocale);
     $translateProvider.useSanitizeValueStrategy('escapeParameters');
 })
 .run(function($rootScope, $route, $routeParams, $translate, _, supportedLocales) {
@@ -142,10 +173,6 @@ angular
         var lang = $route.current.params.lang;
         if (lang && _.contains(supportedLocales, lang)) {
             $translate.use(lang);
-        } else {
-            var params = $route.current.params;
-            params.lang = $translate.use();
-            $route.updateParams(params);
         }
     });
 });

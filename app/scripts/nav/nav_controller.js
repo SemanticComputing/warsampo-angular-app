@@ -36,6 +36,7 @@ angular.module('eventsApp')
             $translate.use(lang);
             $routeParams.lang = lang;
             $route.updateParams($routeParams);
+            $route.reload();
         }
     }
 
