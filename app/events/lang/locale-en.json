@@ -11,7 +11,14 @@
     "PERSONS_DEMO": {
         "TITLE": "Persons",
         "HELP_TEXT": "<p>Hae tunnettuja viime sotien henkilöitä kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse henkilö kentän alla olevasta listasta. Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy vasemmalle.</p>",
-        "SEARCH_BOX_PLACEHOLDER": "Search by person name"
+        "SEARCH_BOX_PLACEHOLDER": "Search by person name",
+        "PROFESSION": "Profession",
+        "MARITAL_STATUS": "Marital status",
+        "BURIED_IN": "Buried in",
+        "SERVED_IN_UNIT": "Served in",
+        "NUMBER_OF_CHILDREN": "{NUM, plural, =0{no children} one{one child} other{# children}}",
+        "BORN_ON_IN": "Born on {{date}} in {{place}}",
+        "DIED_ON_IN": "Died on {{date}} in {{place}}"
     },
     "UNIT_DEMO": {
         "TITLE": "Units",
@@ -40,6 +47,8 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Limit photos to those taken in the same municipality as the events.",
         "SHOW_HEATMAP": "Show a heatmap of casualties."
     },
+    "NATIONAL_BIBLIOGRAPHY": "National Bibliography",
+    "SOURCE": "Source",
     "WINTER_WAR": "Winter War",
     "CONTINUATION_WAR": "Continuation War",
     "PERSPECTIVE_HELP": "View Help",

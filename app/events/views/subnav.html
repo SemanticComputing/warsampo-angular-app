@@ -3,6 +3,6 @@
   <li ng-show="showSettings"><a href="#" id="show-settings" ng-click="showSettings()" class="translate-cloak" translate-cloak translate>SETTINGS</a></li>
   <li ng-if="ctrl.showEventLinks"><a target="_self" ng-href="{{ ctrl.winterWarLink }}" translate-cloak translate>WINTER_WAR</a></li>
   <li ng-if="ctrl.showEventLinks"><a target="_self" ng-href="{{ ctrl.continuationWarLink }}" translate-cloak="" translate>CONTINUATION_WAR</a></li>
-  <li><a ng-click="ctrl.changeLocale('fi')" href="#">Suomeksi</a></li>
-  <li><a ng-click="ctrl.changeLocale('en')" href="#">In English</a></li>
+  <li><a ng-show="ctrl.getLocale() === 'en'" ng-click="ctrl.changeLocale('fi')" href="#">Suomeksi</a></li>
+  <li><a ng-show="ctrl.getLocale() === 'fi'"ng-click="ctrl.changeLocale('en')" href="#">In English</a></li>
 </ul>

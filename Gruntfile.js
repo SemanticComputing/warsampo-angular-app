@@ -466,13 +466,17 @@ module.exports = function (grunt) {
             '*.html',
             'images/{,*/}*.{webp}',
             'vendor/timemap/**',
-            'styles/fonts/{,*/}*.*',
-            'events/lang/*'
+            'styles/fonts/{,*/}*.*'
           ]
         }, {
           expand: true,
           cwd: '<%= yeoman.app %>/events/views',
           dest: '<%= yeoman.dist %>/views/',
+          src: ['*']
+        }, {
+          expand: true,
+          cwd: '<%= yeoman.app %>/events/lang',
+          dest: '<%= yeoman.dist %>/lang/',
           src: ['*']
         }, {
           expand: true,

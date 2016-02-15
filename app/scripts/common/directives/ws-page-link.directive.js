@@ -19,7 +19,7 @@
             });
 
             function setSrc(value) {
-                var isDemoLink = !!attrs.demo;
+                var isDemoLink = ('demo' in attrs);
                 var path, target, params;
                 var objId = value;
                 if (_.includes(objId, '/times/')) {

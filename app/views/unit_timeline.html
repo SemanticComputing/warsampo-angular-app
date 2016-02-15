@@ -22,7 +22,7 @@
               <div ng-show="ctrl.current.relatedEvents.length === 0" translate>
                 NO_RELATED_EVENTS
               </div>
-              <p ng-if="ctrl.current && ctrl.current.id"><a ng-href="units/page?uri={{ ctrl.current.id }}" translate>SHOW_INFO_PAGE</a></p>
+              <p ng-if="ctrl.current && ctrl.current.id"><a ws-page-link="ctrl.current.id" translate>SHOW_INFO_PAGE</a></p>
               <h3 ng-if="ctrl.current.opts.descTitle">
                 <span ng-repeat="place in ctrl.current.opts.event.places">
                   <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
@@ -30,7 +30,7 @@
                 {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
               </h3>
               <p>{{ ctrl.current.opts.description }}</p>
-              <ws-related-links-paged data-title="'RELATED_PERSONS' | translate" data-paginator="ctrl.current.relatedPersons"></ws-related-links-paged>
+              <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.current.relatedPersons"></ws-related-links-paged>
               <ws-related-links data-title="'UNIT_DEMO.SUPER_UNITS' | translate" data-related="ctrl.current.superUnits"></ws-related-links>
               <ws-related-links data-title="'UNIT_DEMO.SUB_UNITS' | translate" data-related="ctrl.current.subUnits"></ws-related-links>
               <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.current.relatedUnits"></ws-related-links>

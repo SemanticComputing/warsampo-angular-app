@@ -34,6 +34,7 @@
 
         self.showWinterWar = showWinterWar;
         self.showContinuationWar = showContinuationWar;
+        self.getWinterWarUrl = getWinterWarUrl;
 
         /* Private vars */
 
@@ -78,7 +79,7 @@
                 }
             } else {
                 // No war or event specified -- redirect to Winter War
-                $location.path($translate.use() + '/events/winterwar').replace();
+                $location.path(getWinterWarUrl()).replace();
                 return $q.when();
             }
 
@@ -231,5 +232,8 @@
             }
         }
 
+        function getWinterWarUrl() {
+            return $translate.use() + '/events/winterwar'
+        }
     }
 })();

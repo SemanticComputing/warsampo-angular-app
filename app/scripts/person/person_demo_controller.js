@@ -2,74 +2,74 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:UnitPageCtrl
+ * @name eventsApp.controller:PersonDemoCtrl
  * @description
- * # UnitPageCtrl
+ * # PersonDemoCtrl
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('PersonDemoCtrl', function($routeParams, $location, $q, $scope,
+.controller('PersonDemoCtrl', function($route, $routeParams, $location, $q, $scope,
               $rootScope, eventService, personService) {
+
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
-    var self = this;
-    this.personService=personService;
 
-    this.updateByUri = function(uri) {
+    var self = this;
+
+    self.updateByUri = function(uri) {
         self.isLoadingEvent = true;
         self.isLoadingLinks = false;
         personService.getById(uri)
-        .then(function(person) {
-            self.person = person;
-            self.isLoadingEvent = false;
+    .then(function(person) {
+        self.person = person;
+        self.isLoadingEvent = false;
 
-            return personService.fetchRelated2(person);
-        }).catch(function() {
-            self.isLoadingEvent = false;
-            self.isLoadingLinks = false;
-        });
-	 };
+        return personService.fetchRelated2(person);
+    }).catch(function() {
+        self.isLoadingEvent = false;
+        self.isLoadingLinks = false;
+    });
+    };
 
-    this.items= [];
-    this.queryregex="";
+    self.items = [];
+    self.queryregex = '';
 
-    this.getItems= function () {
-        var rx='', n=this.queryregex.length;
+    self.getItems = function () {
+        var rx='', n=self.queryregex.length;
         if (n<1) {
             rx= '^AA.*$';
         } else if (n<2) {
-            rx= '^'+this.queryregex+'A.*$';
+            rx= '^'+self.queryregex+'A.*$';
         } else {
-        		rx= this.queryregex;
-        		if (rx.indexOf(' ')>0) {
-        			var arr=rx.split(' ');
-        			rx='';
-        			for (var i=0; i<arr.length; i++) {
-        				rx += "(?=.*"+arr[i]+")";
-        			}
-        		}
-        		rx= '(^|^.* )'+rx+'.*$';
-        		// console.log(rx);
+            rx= self.queryregex;
+            if (rx.indexOf(' ')>0) {
+                var arr=rx.split(' ');
+                rx='';
+                for (var i=0; i<arr.length; i++) {
+                    rx += '(?=.*'+arr[i]+')';
+                }
+            }
+            rx= '(^|^.* )'+rx+'.*$';
         }
-        this.personService.getItems(rx,this);
-   };
+        personService.getItems(rx,self);
+    };
 
-   this.getItems();
+    self.getItems();
 
-   this.updateActor = function () {
-       if (this.selectedItem && this.selectedItem.id) {
-           var uri=this.selectedItem.id;
+    self.updateActor = function () {
+        if (self.selectedItem && self.selectedItem.id) {
+            var uri=self.selectedItem.id;
 
-           if (typeof $location !== 'undefined' && $location.search().uri != uri) {
-               self.noReload = true;
-               $location.search('uri', uri);
-           }
+            if ($location.search().uri != uri) {
+                self.noReload = true;
+                $location.search('uri', uri);
+            }
 
-           this.updateByUri(uri);
-       }
-   };
+            self.updateByUri(uri);
+        }
+    };
 
-	// Set listener to prevent reload when it is not desired.
+    // Set listener to prevent reload when it is not desired.
     $scope.$on('$routeUpdate', function() {
         if (!self.noReload) {
             $route.reload();
@@ -78,12 +78,12 @@ angular.module('eventsApp')
         }
     });
 
-	if ($routeParams.uri) {
-		this.updateByUri($routeParams.uri);
-	} else {
-		this.selectedItem = { name: "Talvela, Paavo Juho", id: "http://ldf.fi/warsa/actors/person_50" };
-		this.updateActor();
-	}
+    if ($routeParams.uri) {
+        self.updateByUri($routeParams.uri);
+    } else {
+        self.selectedItem = { name: 'Talvela, Paavo Juho', id: 'http://ldf.fi/warsa/actors/person_50' };
+        self.updateActor();
+    }
 });
 
 

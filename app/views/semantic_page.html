@@ -4,7 +4,7 @@
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
-    <p ng-if="!ctrl.obj && !ctrl.isLoadingEvent">Metadataa ei löytynyt</p>
+    <p ng-if="!ctrl.obj && !ctrl.isLoadingEvent" translate>METADATA_NOT_FOUND</p>
     <div id="dataContent" ng-if="ctrl.obj">
       <h2>
         {{ ctrl.obj.label }}
@@ -26,9 +26,9 @@
   </div>
   <!-- Links -->
   <div class="col-sm-4">
-    <h2 id="links-header" class="links-header-class">Linkit</h2>
+    <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.isLoadingLinks && !(ctrl.obj && ctrl.obj.hasLinks)">Linkkejä ei löytynyt</p>
+    <p ng-if="!ctrl.isLoadingLinks && !(ctrl.obj && ctrl.obj.hasLinks)" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
       <div class="related" ng-repeat="rel in ctrl.obj.related"
         ng-init="relCount = ctrl.countRelations(rel); show = relCount <= 10">

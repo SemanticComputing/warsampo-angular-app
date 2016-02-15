@@ -25,11 +25,17 @@ angular.module('eventsApp')
     self.winterWarLink = base + 'winterwar';
     self.continuationWarLink = base + 'continuationwar';
     self.showEventLinks = _.contains($location.url(), '/events/');
+
     self.changeLocale = changeLocale;
+    self.getLocale = getLocale;
 
     $rootScope.$on('$locationChangeSuccess', function(event){
         self.showEventLinks = _.contains($location.url(), '/events/');
     });
+
+    function getLocale() {
+        return $translate.use();
+    }
 
     function changeLocale(lang) {
         if (_.contains(supportedLocales, lang)) {
