@@ -21,7 +21,7 @@ angular.module('eventsApp')
     };
 
     self.fetchPhotos = function(time) {
-        return photoRepository.getByTimeSpan(time.bob, time.eoe, Settings.pageSize)
+        return photoRepository.getByTimeSpan(time.bob, time.eoe, 50)
             .then(function(photos) {
                 time.photos = photos;
                 if (photos && photos.length) {

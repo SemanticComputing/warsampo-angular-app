@@ -186,7 +186,7 @@
         return { 'checkLang': checkLang };
     }
 
-    /* ngInject */
+    /* @ngInject */
     function checkLang($route, $q, $translate, supportedLocales) {
         var lang = $route.current.params.lang;
         if (lang && _.contains(supportedLocales, lang)) {

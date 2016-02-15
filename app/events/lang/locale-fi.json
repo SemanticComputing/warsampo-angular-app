@@ -16,7 +16,9 @@
         "MARITAL_STATUS": "Aviosääty",
         "BURIED_IN": "Haudattu paikkaan",
         "SERVED_IN_UNIT": "Palvellut joukko-osastossa",
-        "NUMBER_OF_CHILDREN": "{NUM, plural, =0{ei lapsia} one{yksi lapsi} other{# lasta}}"
+        "NUMBER_OF_CHILDREN": "{NUM, plural, =0{ei lapsia} one{yksi lapsi} other{# lasta}}",
+        "BORN_ON_IN": "Syntynyt {{date}} paikassa {{place}}",
+        "DIED_ON_IN": "Kuollut {{date}} paikassa {{place}}"
     },
     "UNIT_DEMO": {
         "TITLE": "Joukko-osastot",
@@ -33,6 +35,10 @@
         "SUPER_RANKS": "Ylempiä sotilasarvoja",
         "SUB_RANKS": "Alempia sotilasarvoja",
         "OTHER_RANKS": "Muita sotilasarvoja"
+    },
+    "TIME_DEMO": {
+        "RELATED_EVENTS": "Tapahtumia tähän aikaan",
+        "RELATED_CASUALTIES": "Tähän aikaan menehtyneitä"
     },
     "SETTINGS": {
         "PHOTO_RANGE": "Valokuvien aikahaarukka",
@@ -52,7 +58,7 @@
     "RANK": "Sotilasarvo",
     "UNIT": "Joukko-osasto",
     "PERSON": "Henkilö",
-    "TIME": "Time",
+    "TIME": "Aika",
     "PHOTO": "Kuva",
     "N_PHOTOS": "kuvaa",
     "BUILDING_TIMELINE": "Rakennetaan aikajanaa",

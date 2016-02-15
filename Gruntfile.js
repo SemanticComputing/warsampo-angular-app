@@ -407,7 +407,7 @@ module.exports = function (grunt) {
     cdnify: {
         dist: {
             options: {
-                base: 'events/',
+                base: 'events/'
             },
             files: [{
                 expand: true,

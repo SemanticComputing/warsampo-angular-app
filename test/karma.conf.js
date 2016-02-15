@@ -45,9 +45,9 @@ module.exports = function(config) {
       'bower_components/lodash/lodash.js',
       'bower_components/angular-truncate-2/src/truncate.js',
       'bower_components/angular-translate/angular-translate.js',
-      'bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'bower_components/messageformat/messageformat.js',
       'bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js',
+      'bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",
