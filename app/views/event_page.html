@@ -14,7 +14,7 @@
         <a ws-page-link="ctrl.event.time_id">{{ ctrl.event.timeSpanString }}</a> - {{ ctrl.event.type }}
       </h2>
       <p>{{ ctrl.event.description }}</p>
-      <p><a ng-href="events/?uri={{ ctrl.event.id }}" translate>SHOW_IN_DEMO</a></p>
+      <p><a ws-page-link="ctrl.event.id" data-demo="true" translate>SHOW_IN_DEMO</a></p>
       <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>
     </div>
   </div>
