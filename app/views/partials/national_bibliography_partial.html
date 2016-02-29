@@ -1,21 +1,21 @@
 <h3 id="links-header" class="links-header-class" translate>NATIONAL_BIBLIOGRAPHY</h3>
 <ul class="list-group">
   <li class="list-group-item" >
-  <div>
-    <h1>{{ ctrl.person.nationals.name }}</h1>
-    <p>
-      <span translate="PERSONS_DEMO.BORN_ON_IN"
-      translate-values="{ date: ctrl.person.nationals.dateOfBirth, place: ctrl.person.nationals.placeOfBirth }">
-      </span>.
-      <span translate="PERSONS_DEMO.DIED_ON_IN"
-      translate-values="{ date: ctrl.person.nationals.dateOfDeath, place: ctrl.person.nationals.placeOfDeath }".>
-      </span>.
-    <p><img ng-src="{{ ctrl.person.nationals.images }}" class="img-rounded"/></p>
-    <p>{{ ctrl.person.nationals.shortDescription }}</p>
-    <p ng-bind-html="ctrl.person.nationals.description"></p>
-  </div>
-  <b translate>SOURCE</b>:
-  <a href="http://www.ldf.fi/dataset/history">Semanttinen Kansallisbiografia</a> \ SKS:n <a href="http://www.kansallisbiografia.fi"> Kansallisbiografia</a>
-
+    <div>
+      <h1>{{ ctrl.person.nationals.name }}</h1>
+      <p>
+        <span translate="PERSONS_DEMO.BORN_ON_IN"
+        translate-values="{ date: ctrl.person.nationals.dateOfBirth, place: ctrl.person.nationals.placeOfBirth }">
+        </span>.
+        <span translate="PERSONS_DEMO.DIED_ON_IN"
+        translate-values="{ date: ctrl.person.nationals.dateOfDeath, place: ctrl.person.nationals.placeOfDeath }".>
+        </span>.
+      </p>
+      <p><img ng-src="{{ ctrl.person.nationals.images }}" class="img-rounded"/></p>
+      <p>{{ ctrl.person.nationals.shortDescription }}</p>
+      <p ng-bind-html="ctrl.person.nationals.description"></p>
+    </div>
+    <b translate>SOURCE</b>:
+    <a href="http://www.ldf.fi/dataset/history">Semanttinen Kansallisbiografia</a> \ SKS:n <a href="http://www.kansallisbiografia.fi"> Kansallisbiografia</a>
   </li>
 </ul>

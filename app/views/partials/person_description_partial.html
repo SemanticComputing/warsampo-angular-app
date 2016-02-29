@@ -9,7 +9,10 @@
 <p ng-if="ctrl.person.profession">{{ 'PERSONS_DEMO.PROFESSION' | translate }}: {{ ctrl.person.profession }}</p>
 <p ng-if="ctrl.person.mstatus">
   {{ 'PERSONS_DEMO.MARITAL_STATUS' | translate }}: {{ ctrl.person.mstatus | lowercase }},
-  {{ 'PERSONS_DEMO.NUMBER_OF_CHILDREN' | translate:"{ NUM: ctrl.person.num_children || 0 }":"messageformat" }}</p>
+  <span translate="PERSONS_DEMO.NUMBER_OF_CHILDREN"
+    translate-values="{ NUM: ctrl.person.num_children }"
+    translate-interpolation="messageformat"></span>
+</p>
   <p ng-if="ctrl.person.cas_unit">{{ 'PERSONS_DEMO.SERVED_IN_UNIT' | translate }} {{ ctrl.person.cas_unit }}</p>
 <p ng-if="ctrl.person.rank">{{ ctrl.person.rank }}</p>
 <p ng-repeat="promotion in ctrl.person.promotions">{{ promotion }}</p>

@@ -8,7 +8,7 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('PersonPageCtrl', function($routeParams, $q, $rootScope, eventService, personService) {
+.controller('PersonPageCtrl', function($routeParams, $q, $rootScope, eventService, personService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
@@ -17,7 +17,7 @@ angular.module('eventsApp')
         self.isLoadingLinks = false;
         personService.getById($routeParams.uri)
         .then(function(person) {
-            self.person = person; 
+            self.person = person;
             self.isLoadingEvent = false;
 
             return personService.fetchRelated(person);
