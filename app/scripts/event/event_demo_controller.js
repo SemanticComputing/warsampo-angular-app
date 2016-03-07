@@ -142,6 +142,9 @@
         }
 
         function createTimeMapForEvent(e) {
+            if (!(e.start_time && e.end_time)) {
+                return self.showWinterWar();
+            }
             var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
             return show().then(function() {
                 var item = _.find(tm.getItems(), function(item) {

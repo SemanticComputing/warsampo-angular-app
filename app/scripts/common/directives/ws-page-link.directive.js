@@ -24,7 +24,7 @@
                 var objId = value;
                 if (_.includes(objId, '/times/')) {
                     path = isDemoLink ? 'time/' : 'times/page';
-                } else if (_.includes(objId, '/events/')) {
+                } else if (_.includes(objId, '/events/') || _.includes(objId, '/medals/')) {
                     path = isDemoLink ? 'events/' : 'events/page';
                 } else if (_.includes(objId, '/photographs/')) {
                     path = isDemoLink ? 'photographs/' : 'photographs/page';

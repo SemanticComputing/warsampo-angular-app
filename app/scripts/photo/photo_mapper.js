@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    /* 
+    /*
     * Service for transforming photo SPARQL results into objects.
     */
 
