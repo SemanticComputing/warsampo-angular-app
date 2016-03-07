@@ -31,22 +31,25 @@ angular.module('eventsApp')
     var photosByPlaceAndTimeQry = prefixes +
     '  SELECT ?id ?created ?description ?place_id ?place_label ?url ?thumbnail_url ?ref_municipality ?ref_place_id ' +
     '  WHERE { ' +
-    '     VALUES ?ref_place_id { {0} }    ' +
-    '     GRAPH warsa:photographs { ' +
-    '       ?id dc:spatial ?place_id .    ' +
-    '       ?id dc:created ?created . ' +
-    '       FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
-    '       ?id sch:contentUrl ?url ; ' +
-    '         sch:thumbnailUrl ?thumbnail_url . ' +
-    '       OPTIONAL { ?id skos:prefLabel ?description . } ' +
-    '     } ' +
-    '     OPTIONAL { ' +
-    '       ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
-    '       ?ref_municipality a suo:kunta . ' +
-    '     } ' +
-    '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality . ?municipality a suo:kunta . } ' +
-    '     FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality || ?ref_place_id = ?municipality) ' +
-    '     OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
+    '    VALUES ?ref_place_id { {0} }    ' +
+    '    GRAPH warsa:photographs { ' +
+    '      ?id dc:spatial ?place_id .    ' +
+    '      ?id dc:created ?created . ' +
+    '      FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
+    '      ?id sch:contentUrl ?url ; ' +
+    '        sch:thumbnailUrl ?thumbnail_url . ' +
+    '      OPTIONAL { ?id skos:prefLabel ?description . } ' +
+    '    } ' +
+    '    OPTIONAL { ' +
+    '      ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
+    '      ?ref_municipality a suo:kunta . ' +
+    '    } ' +
+    '    OPTIONAL { ' +
+    '      ?place_id geosparql:sfWithin ?municipality . ' +
+    '      ?municipality a suo:kunta . ' +
+    '    } ' +
+    '    FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality || ?ref_place_id = ?municipality) ' +
+    '    OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
     ' }  ';
 
     var photosByTimeQry =  prefixes +
@@ -87,13 +90,13 @@ angular.module('eventsApp')
     var photosByPersonQry = prefixes +
     ' SELECT * WHERE {  ' +
     ' 	VALUES ?person { {0} } . ' +
-    ' 	?id a photos:Photograph . ' +
     ' 	?id dcterms:subject ?person .  ' +
     ' 	?id dcterms:created ?created . ' +
-    ' 	?id dcterms:description ?description . ' +
     ' 	?id sch:contentUrl ?url . ' +
     ' 	?id sch:thumbnailUrl ?thumbnail_url . ' +
-    '   }';
+    ' 	?id dcterms:description ?description . ' +
+    ' 	?id a photos:Photograph . ' +
+    ' }';
 
 
     this.getByTimeSpan = function(start, end, pageSize) {
