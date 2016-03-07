@@ -87,7 +87,7 @@ angular.module('eventsApp')
     var photosByPersonQry = prefixes +
     ' SELECT * WHERE {  ' +
     ' 	VALUES ?person { {0} } . ' +
-    ' 	?id a <http://purl.org/dc/dcmitype/Image> . ' +
+    ' 	?id a photos:Photograph . ' +
     ' 	?id dcterms:subject ?person .  ' +
     ' 	?id dcterms:created ?created . ' +
     ' 	?id dcterms:description ?description . ' +

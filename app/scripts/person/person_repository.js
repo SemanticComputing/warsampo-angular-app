@@ -52,8 +52,7 @@ angular.module('eventsApp')
     '     ?id foaf:page ?wikilink . FILTER(REGEX(STR(?wikilink),"wikipedia","i")) ' +
     '	} ' +
     '   OPTIONAL { ' +
-    '     ?id owl:sameAs ?casualty .' +
-    '     ?casualty a foaf:Person .'  +
+    '     ?id crm:P70i_is_documented_in ?casualty .' +
     '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
     '     OPTIONAL { ' +
     '       ?casualty casualties:synnyinkunta ?birth_place_uri . ' +
@@ -119,7 +118,6 @@ angular.module('eventsApp')
     'SELECT DISTINCT ?name ?id WHERE {	' +
     '  SELECT DISTINCT ?name ?id WHERE {	' +
     '    GRAPH <http://ldf.fi/warsa/actors> {	' +
-    // '      ?id a atypes:MilitaryPerson .   	    	' +
     '      { ?id a crm:E21_Person } UNION { ?id a atypes:PoliticalPerson } UNION { ?id a atypes:MilitaryPerson . } ' +
     '      ?id skos:prefLabel ?name .   	    	' +
     '      FILTER (regex(?name, "^{0}$", "i"))	' +
@@ -142,8 +140,7 @@ angular.module('eventsApp')
     '   } ' +
     '	} UNION ' +
     '   { SELECT ?id WHERE {' +
-    ' 	    ?id owl:sameAs ?mennytmies . ' +
-    ' 	    ?mennytmies a foaf:Person . ' +
+    ' 	    ?id crm:P70i_is_documented_in ?mennytmies . ' +
     ' 	    ?mennytmies casualties:osasto {0} . ' +
     '    	} ' +
     ' 	} ' +
@@ -197,8 +194,7 @@ angular.module('eventsApp')
     ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
     ' WHERE { ' +
     '   ?id skos:prefLabel ?label . ' +
-    '   ?id owl:sameAs ?casualty . ' +
-    '   ?casualty a foaf:Person . ' +
+    '   ?id crm:P70i_is_documented_in ?casualty . ' +
     '   ?casualty casualties:kuolinaika ?death_time . ' +
     '   FILTER(?death_time >= "{0}"^^xsd:date && ?death_time <= "{1}"^^xsd:date) ' +
     ' } ';
