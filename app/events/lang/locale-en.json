@@ -36,6 +36,9 @@
         "SUB_RANKS": "Lower ranks",
         "OTHER_RANKS": "Other ranks"
     },
+    "MEDAL_DEMO": {
+        "RELATED_MEDALS": "Other medals"
+    },
     "TIME_DEMO": {
         "RELATED_EVENTS": "Events during this time",
         "RELATED_CASUALTIES": "Casualties during this time"
@@ -60,6 +63,7 @@
     "PERSON": "Person",
     "TIME": "Time",
     "PHOTO": "Photo",
+    "MEDAL": "Medal",
     "N_PHOTOS": "photos",
     "BUILDING_TIMELINE": "Building the timeline",
     "NO_RELATED_EVENTS": "No related events",

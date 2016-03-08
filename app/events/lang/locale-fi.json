@@ -36,6 +36,9 @@
         "SUB_RANKS": "Alempia sotilasarvoja",
         "OTHER_RANKS": "Muita sotilasarvoja"
     },
+    "MEDAL_DEMO": {
+        "RELATED_MEDALS": "Muita kunniamerkkejä"
+    },
     "TIME_DEMO": {
         "RELATED_EVENTS": "Tapahtumia tähän aikaan",
         "RELATED_CASUALTIES": "Tähän aikaan menehtyneitä"
@@ -60,6 +63,7 @@
     "PERSON": "Henkilö",
     "TIME": "Aika",
     "PHOTO": "Kuva",
+    "MEDAL": "Kunniamerkki",
     "N_PHOTOS": "kuvaa",
     "BUILDING_TIMELINE": "Rakennetaan aikajanaa",
     "NO_RELATED_EVENTS": "No related events",

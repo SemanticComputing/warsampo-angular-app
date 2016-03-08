@@ -269,7 +269,7 @@ angular.module('eventsApp')
 
     var byPersonQry = prefixes +
     ' SELECT DISTINCT ?id ?type_id ?type ?description (?description AS ?label) ' +
-    '                ?unit ?participant_role ?link ?start_time ?end_time ?time_id ' +
+    '                ?unit ?participant_role ?link ?start_time ?end_time ?time_id ?medal ' +
     ' WHERE { ' +
     ' 	  VALUES ?person { {0} } . ' +
     ' 	    { ?id crm:P11_had_participant ?person ; ' +
@@ -294,6 +294,7 @@ angular.module('eventsApp')
     '        { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
     '      } ' +
     ' 	   ?id a ?type_id . ' +
+    '			OPTIONAL { ?id crm:P141_assigned ?medal } ' +
     '       OPTIONAL { ' +
     '         ?type_id skos:prefLabel ?type . ' +
     '         FILTER(langMatches(lang(?type), "FI")) ' +

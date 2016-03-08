@@ -24,7 +24,7 @@
                 var objId = value;
                 if (_.includes(objId, '/times/')) {
                     path = isDemoLink ? 'time/' : 'times/page';
-                } else if (_.includes(objId, '/events/') || _.includes(objId, '/medals/')) {
+                } else if (_.includes(objId, '/events/')) {
                     path = isDemoLink ? 'events/' : 'events/page';
                 } else if (_.includes(objId, '/photographs/')) {
                     path = isDemoLink ? 'photographs/' : 'photographs/page';
@@ -34,6 +34,8 @@
                     path = isDemoLink ? 'units/' : 'units/page';
                 } else if (_.includes(objId, '/ranks/')) {
                     path = isDemoLink ? 'ranks/' : 'ranks/page';
+                } else if (_.includes(objId, '/medals/')) {
+                    path = isDemoLink ? 'medals/' : 'medals/page';
                 } else if (_.includes(objId, '/places/') || _.includes(objId, '/pnr/')) {
                     path = isDemoLink ? 'places/' : 'places/page';
                     target = '_self';

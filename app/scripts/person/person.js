@@ -14,7 +14,7 @@ angular.module('eventsApp')
         if (person.rank_id) {
             person.ranks.push({id:person.rank_id, label:person.rank});
         }
-
+			
         for (var i=0; i<events.length; i++) {
             var e=events[i],
                 etype=e.type_id,
@@ -41,7 +41,7 @@ angular.module('eventsApp')
         var eventlist=[];
         var battles=[];
         var articles=[];
-		var medals=[];
+        var medals=[];
         
         for (var i=0; i<events.length; i++) {
             var e = events[i],
@@ -52,7 +52,8 @@ angular.module('eventsApp')
             } else if (etype.indexOf('Article')>-1 ) {
                 articles.push(e); // 
             } else if (etype.indexOf('E13_Attribute_Assignment')>-1 ) {
-                medals.push(e);
+            	e.id = e.medal;
+            	 medals.push(e);
             } else if (etype.indexOf('PersonJoining') === -1) {
                 eventlist.push(e);
             }
@@ -71,7 +72,7 @@ angular.module('eventsApp')
             person.articles=articles;
         }
         if (medals.length) {
-            person.hasLinks = true;
+        		person.hasLinks = true;
             person.medals=medals;
         }
         return person;
@@ -82,10 +83,10 @@ angular.module('eventsApp')
             self.processLifeEvents(person, events);
         });
     };
-
+	
     self.fetchRelatedEvents = function(person) {
         return eventRepository.getByPersonId(person.id).then(function(events) {
-            return self.processRelatedEvents(person, events);
+        		return self.processRelatedEvents(person, events);
         });
     };
 

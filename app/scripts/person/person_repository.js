@@ -53,7 +53,7 @@ angular.module('eventsApp')
     '	} ' +
     '   OPTIONAL { ' +
     '     ?id crm:P70i_is_documented_in ?casualty .' +
-   /* '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
+    '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
     '     OPTIONAL { ' +
     '       ?casualty casualties:synnyinkunta ?birth_place_uri . ' +
     '       ?birth_place_uri skos:prefLabel ?birth_place . ' +
@@ -62,7 +62,7 @@ angular.module('eventsApp')
     '     OPTIONAL { ' +
     '         ?casualty casualties:kuolinkunta ?death_place_uri . '+
     '         ?death_place_uri skos:prefLabel ?death_place . ' +
-    '     }' + */
+    '     }' +
     '     OPTIONAL { ' +
     '         ?casualty casualties:hautauskunta ?bury_place_uri . ' +
     '         ?bury_place_uri skos:prefLabel ?bury_place . ' +
@@ -189,7 +189,20 @@ angular.module('eventsApp')
     '  ?id foaf:firstName ?fname . ' +
     '} ORDER BY ?sname ?fname ';
 
-
+	
+	var byMedalQry = prefixes +
+	    ' SELECT DISTINCT ?id ?sname ?fname WHERE {	 ' +
+    '    { SELECT DISTINCT ?id WHERE {  ' +
+    '  VALUES ?medal { {0} } .  ' +
+    '    ?evt a  crm:E13_Attribute_Assignment ;	 ' +
+    '    		crm:P141_assigned ?medal ; ' +
+    '    		crm:P11_had_participant ?id .  ' +
+    '  	?id a atypes:MilitaryPerson .	 ' +
+    '   } } ' +
+    '  ?id foaf:familyName ?sname ; ' +
+    '  	foaf:firstName ?fname . ' +
+    ' } ORDER BY ?sname ?fname ';
+    
     var casualtiesByTimeSpanQry = prefixes +
     ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
     ' WHERE { ' +
@@ -214,6 +227,11 @@ angular.module('eventsApp')
         return endpoint.getObjects(qry, pageSize);
     };
 
+	this.getByMedalId = function(id, pageSize) {
+        var qry = byMedalQry.format('<{0}>'.format(id));
+        return endpoint.getObjects(qry, pageSize);
+    };
+    
     this.getById = function(id) {
         var qry = personQry.format('<{0}>'.format(id));
         return endpoint.getObjects(qry).then(function(data) {

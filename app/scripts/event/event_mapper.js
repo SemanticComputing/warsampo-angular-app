@@ -22,6 +22,9 @@ EventMapper.prototype.makeObject = function(event) {
     e.type = event.type ? event.type.value : '';
     e.description = event.description ? event.description.value : '';
     e.label = e.description;
+    if (event.medal) {
+        e.medal = event.medal.value;
+    }
     if (event.rank_id) {
         e.rank_id = event.rank_id.value;
         e.rank = event.rank.value;

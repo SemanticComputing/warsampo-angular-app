@@ -81,6 +81,9 @@
         .when('/ranks/page', {
             redirectTo: '/' + defaultLocale + '/ranks/page'
         })
+        .when('/medals/page', {
+            redirectTo: '/' + defaultLocale + '/medals/page'
+        })
         .when('/units[/]?', {
             redirectTo: '/' + defaultLocale + '/units/'
         })
@@ -124,6 +127,12 @@
         .when(lang + '/ranks/page', {
             templateUrl: 'views/rank_page.html',
             controller: 'RankPageCtrl',
+            controllerAs: 'ctrl',
+            resolve: getResolve()
+        })
+        .when(lang + '/medals/page', {
+            templateUrl: 'views/medal_page.html',
+            controller: 'MedalPageCtrl',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })

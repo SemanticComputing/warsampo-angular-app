@@ -2,32 +2,32 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:RankPageCtrl
+ * @name eventsApp.controller:MedalPageCtrl
  * @description
  * # MedalPageCtrl
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-  .controller('RankPageCtrl', function($routeParams, $q, $rootScope, eventService, rankService) {
+  .controller('MedalPageCtrl', function($routeParams, $q, $rootScope, eventService, medalService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     
     var self = this;
 
     if ($routeParams.uri) {
-        self.isLoadingRank = true;
+        self.isLoadingMedal = true;
         self.isLoadingPersons = false;
-        rankService.getById($routeParams.uri)
-        .then(function(rank) {
-            self.rank = rank; 
-            self.isLoadingRank = false;
+        medalService.getById($routeParams.uri)
+        .then(function(medal) {
+            self.medal = medal; 
+            self.isLoadingMedal = false;
             self.isLoadingPersons = true;
-            return rankService.fetchRelated(rank);
+            return medalService.fetchRelated(medal);
         })
         .then(function() {
             self.isLoadingPersons = false;
         }).catch(function() {
-            self.isLoadingRank = false;
+            self.isLoadingMedal = false;
             self.isLoadingPersons = false;
         });
     }

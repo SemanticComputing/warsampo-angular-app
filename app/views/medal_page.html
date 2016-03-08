@@ -1,0 +1,25 @@
+<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>MEDAL</h1></a></div>
+<!-- Each page has metadata column on the left and link column on the right -->
+<div class="row">
+  <!-- Metadata -->
+  <div class="col-sm-8">
+    <img ng-show="ctrl.isLoadingMedal" src="images/loading.gif" />
+    <p ng-if="!ctrl.medal && !ctrl.isLoadingMedal" translate>NO_METADATA_FOUND</p>
+    <div id="dataContent" ng-if="ctrl.medal">
+      <h2>
+        {{ ctrl.medal.label }}
+      </h2>
+      <p ng-repeat="desc in ctrl.medal.getDescription()">
+      {{ desc }}
+      </p>
+    </div>
+  </div>
+  <!-- Links -->
+  <div class="col-sm-4">
+    <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
+    <img ng-show="ctrl.isLoadingPersons" src="images/loading.gif" />
+    <div id="linkContent">
+    	<ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.medal.persons"></ws-related-links-paged>
+  		<ws-related-links data-title="'MEDAL_DEMO.RELATED_MEDALS' | translate" data-related="ctrl.medal.relatedMedals"></ws-related-links-paged>
+  	</div>
+</div>
