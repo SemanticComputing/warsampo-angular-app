@@ -1,5 +1,6 @@
 (function() {
     'use strict';
+    /* eslint-disable angular/no-service-method */
 
     /*
     * Service that provides an interface for fetching events from the WarSa SPARQL endpoint.
@@ -33,6 +34,13 @@
         ' SELECT ?id ?type ?type_id ?description ?rank_id ?rank ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant ?participant_role ' +
         '  ?title ?place_id ?place_label ?polygon ?lat ?lon ';
+
+        var resultSetShell =
+        ' { ' +
+        '  SELECT DISTINCT ?id { ' +
+        '   <CONTENT> ' +
+        '  } ORDER BY ?start_time ?end_time ' +
+        ' } ';
 
         var singleEventQry = prefixes + select +
         ' { ' +
@@ -69,27 +77,27 @@
         ' } ' +
         ' ORDER BY ?start_time ?end_time ';
 
-        var eventQry = prefixes +
-        ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
-        '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant  ' +
-        ' WHERE { ' +
-        '   GRAPH <http://ldf.fi/warsa/events> { ' +
-        '     ?id crm:P4_has_time-span ?time_id ; ' +
-        '       a ?type_id . ' +
-        '     {0} ' + // Placeholder for type filter
-        '   } ' +
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
+        var eventQryResultSet = resultSetShell.replace('<CONTENT>',
+        ' GRAPH <http://ldf.fi/warsa/events> { ' +
+        '   ?id a ?type_id . ' +
+        '   {0} ' + // Placeholder for type filter
+        ' } ' +
+        ' ?id crm:P4_has_time-span ?time_id . ' +
+        ' ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '    crm:P82b_end_of_the_end ?end_time . ' +
+        ' {1} ' + // Placeholder for time filter
+        ' ?id skos:prefLabel ?description . ');
+
+        var eventQry = prefixes + select +
+        ' { ' +
+            eventQryResultSet +
+        '   ?id a ?type_id . ' +
+        '   ?type_id skos:prefLabel ?type . ' +
+        '   FILTER(langMatches(lang(?type), "FI")) ' +
+        '   ?id crm:P4_has_time-span ?time_id . ' +
+        '   ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '      crm:P82b_end_of_the_end ?end_time . ' +
         '   ?id skos:prefLabel ?description . ' +
-        '   GRAPH <http://ldf.fi/warsa/events/times> { ' +
-        '     ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '        crm:P82b_end_of_the_end ?end_time . ' +
-        '     {1} ' + // Placeholder for time filter
-        '   } ' +
-        '   GRAPH <http://ldf.fi/warsa/events/event_types> { ' +
-        '     ?type_id skos:prefLabel ?type . ' +
-        '     FILTER(langMatches(lang(?type), "FI"))  ' +
-        '   } ' +
         '   OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
         '   OPTIONAL { ' +
         '     ?id crm:P7_took_place_at ?place_id .  ' +
@@ -108,22 +116,19 @@
         '            ?municipality a suo:kunta . ' +
         '          } ' +
         '        } ' +
-        '      } UNION {  ' +
-        '        SERVICE <http://ldf.fi/pnr/sparql> { ' +
-        '		   ?place_id skos:prefLabel ?place_label . ' +
-        '          FILTER(langMatches(lang(?place_label), "FI")) ' +
-        '    	   ?place_id geo:lat ?lat ; ' +
-        '            geo:long ?lon . ' +
-        '  	     } ' +
-        '      } ' +
+        '     } UNION { ' +
+        '       SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '	      ?place_id skos:prefLabel ?place_label . ' +
+        '         FILTER(langMatches(lang(?place_label), "FI")) ' +
+        '         ?place_id geo:lat ?lat ; ' +
+        '           geo:long ?lon . ' +
+        '  	    } ' +
+        '     } ' +
         '   } ' +
-        ' } ' +
-        ' ORDER BY ?start_time ?end_time ';
+        ' } ';
 
-        var eventsByPlaceQry = prefixes +
-        ' SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
-        '           ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant  ' +
-        ' WHERE { ' +
+        var eventsByPlaceQry = prefixes + select +
+        ' { ' +
         '   VALUES ?place_id { {0} } ' +
         '   ?id crm:P4_has_time-span ?time_id ; ' +
         '       a ?type_id . ' +
@@ -140,7 +145,6 @@
         '   GRAPH <http://ldf.fi/warsa/events/event_types> { ' +
         '     ?type_id skos:prefLabel ?type . ' +
         '     FILTER(langMatches(lang(?type), "FI"))  ' +
-        '  ' +
         '   } ' +
         '   OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
         '   OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
@@ -397,7 +401,7 @@
         '   ?end_time <= "{1}"^^xsd:date) ' +
         ')';
 
-        var eventsWithinRelaxedTimeSpanQry = eventQry.format('', eventFilterWithinTimeSpanRelaxed);
+        var eventsWithinRelaxedTimeSpanQry = eventQry.format(eventTypeFilter, eventFilterWithinTimeSpanRelaxed);
 
         var allEventsQry = eventQry.format('', '');
 
@@ -435,7 +439,7 @@
             // Filter out the given id.
             // Returns a promise.
             var qry = eventQry
-                .format('FILTER(?id != {0})'
+                .format(eventTypeFilter + 'FILTER(?id != {0})'
                         .format('<' + id + '>'), eventFilterWithinTimeSpanRelaxed)
                         .format(start, end);
             return endpoint.getObjects(qry, pageSize);
