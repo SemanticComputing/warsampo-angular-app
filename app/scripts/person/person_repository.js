@@ -53,7 +53,7 @@ angular.module('eventsApp')
     '	} ' +
     '   OPTIONAL { ' +
     '     ?id crm:P70i_is_documented_in ?casualty .' +
-    '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
+   /* '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
     '     OPTIONAL { ' +
     '       ?casualty casualties:synnyinkunta ?birth_place_uri . ' +
     '       ?birth_place_uri skos:prefLabel ?birth_place . ' +
@@ -62,7 +62,7 @@ angular.module('eventsApp')
     '     OPTIONAL { ' +
     '         ?casualty casualties:kuolinkunta ?death_place_uri . '+
     '         ?death_place_uri skos:prefLabel ?death_place . ' +
-    '     }' +
+    '     }' + */
     '     OPTIONAL { ' +
     '         ?casualty casualties:hautauskunta ?bury_place_uri . ' +
     '         ?bury_place_uri skos:prefLabel ?bury_place . ' +

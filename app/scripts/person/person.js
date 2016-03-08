@@ -41,7 +41,8 @@ angular.module('eventsApp')
         var eventlist=[];
         var battles=[];
         var articles=[];
-
+		var medals=[];
+        
         for (var i=0; i<events.length; i++) {
             var e = events[i],
                 etype = e.type_id;
@@ -49,7 +50,9 @@ angular.module('eventsApp')
             if (etype.indexOf('Battle')>-1) {
                 battles.push(e);
             } else if (etype.indexOf('Article')>-1 ) {
-                articles.push(e);
+                articles.push(e); // 
+            } else if (etype.indexOf('E13_Attribute_Assignment')>-1 ) {
+                medals.push(e);
             } else if (etype.indexOf('PersonJoining') === -1) {
                 eventlist.push(e);
             }
@@ -66,6 +69,10 @@ angular.module('eventsApp')
         if (articles.length) {
             person.hasLinks = true;
             person.articles=articles;
+        }
+        if (medals.length) {
+            person.hasLinks = true;
+            person.medals=medals;
         }
         return person;
     };
