@@ -50,8 +50,8 @@ EventMapper.prototype.makeObject = function(event) {
             // The event's location is represented as a polygon.
             // Transform the polygon string into a list consisting
             // of a single lat/lon pair object list.
-            var l = event.polygon.value.split(" ");
-            l = l.map(function(p) { 
+            var l = event.polygon.value.split(' ');
+            l = l.map(function(p) {
                 var latlon = p.split(',');
                 return { lat: latlon[1], lon: latlon[0] };
             });

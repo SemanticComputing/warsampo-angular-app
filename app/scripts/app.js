@@ -63,6 +63,12 @@
             }
         }
     )
+    .constant('RESULTSET_SHELL',
+    ' { ' +
+    '  SELECT DISTINCT ?id { ' +
+    '   <CONTENT> ' +
+    '  } ORDER BY ?id ' +
+    ' } ')
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider

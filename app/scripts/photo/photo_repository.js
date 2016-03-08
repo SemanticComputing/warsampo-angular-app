@@ -4,7 +4,7 @@
  * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-.service('photoRepository', function($q, _, AdvancedSparqlService, objectMapperService, photoMapperService) {
+.service('photoRepository', function($q, _, RESULTSET_SHELL, AdvancedSparqlService, objectMapperService, photoMapperService) {
     var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
         photoMapperService);
 
@@ -28,41 +28,55 @@ angular.module('eventsApp')
     ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
     ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
 
-    var photosByPlaceAndTimeQry = prefixes +
-    '  SELECT ?id ?created ?description ?place_id ?place_label ?url ?thumbnail_url ?ref_municipality ?ref_place_id ' +
-    '  WHERE { ' +
-    '    VALUES ?ref_place_id { {0} }    ' +
-    '    GRAPH warsa:photographs { ' +
-    '      ?id dc:spatial ?place_id .    ' +
-    '      ?id dc:created ?created . ' +
-    '      FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
-    '      ?id sch:contentUrl ?url ; ' +
-    '        sch:thumbnailUrl ?thumbnail_url . ' +
-    '      OPTIONAL { ?id skos:prefLabel ?description . } ' +
-    '    } ' +
-    '    OPTIONAL { ' +
-    '      ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
-    '      ?ref_municipality a suo:kunta . ' +
-    '    } ' +
-    '    OPTIONAL { ' +
-    '      ?place_id geosparql:sfWithin ?municipality . ' +
-    '      ?municipality a suo:kunta . ' +
-    '    } ' +
-    '    FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality || ?ref_place_id = ?municipality) ' +
-    '    OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
-    ' }  ';
+    var select =
+    ' SELECT ?id ?url ?thumbnail ?thumbnail_url ?description ?created ' +
+    '  ?participant_id ?municipality ?place_id ?place_label ?lat ?lon ';
 
-    var photosByTimeQry =  prefixes +
-    ' SELECT ?id ?created ?description ?url ?thumbnail_url ?place_id ' +
-    ' WHERE { ' +
-    '     GRAPH warsa:photographs { ' +
-    '        ?id dc:created ?created . ' +
-    '        FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-    '        ?id sch:contentUrl ?url ; ' +
-    '           sch:thumbnailUrl ?thumbnail_url . ' +
-    '        OPTIONAL { ?id skos:prefLabel ?description . } ' +
-    '        OPTIONAL { ?id dc:spatial ?place_id . } ' +
-    '     } ' +
+    var photosByPlaceAndTimeResultSet = RESULTSET_SHELL.replace('<CONTENT>',
+    ' VALUES ?ref_place_id { {0} } ' +
+    '  ?id dc:spatial ?place_id . ' +
+    '  ?id dc:created ?created . ' +
+    '  FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
+    '  ?id a photos:Photograph . ' +
+    ' OPTIONAL { ' +
+    '  ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
+    '  ?ref_municipality a suo:kunta . ' +
+    ' } ' +
+    ' OPTIONAL { ' +
+    '  ?place_id geosparql:sfWithin ?municipality . ' +
+    '  ?municipality a suo:kunta . ' +
+    ' } ' +
+    ' FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality ' +
+    '  || ?ref_place_id = ?municipality) ');
+
+    var photosByPlaceAndTimeResultSetQry = prefixes + photosByPlaceAndTimeResultSet;
+
+    var photosByPlaceAndTimeQry = prefixes + select +
+    ' { ' +
+       photosByPlaceAndTimeResultSet +
+    '  ?id dc:spatial ?place_id . ' +
+    '  ?id dc:created ?created . ' +
+    '  ?id sch:contentUrl ?url ; ' +
+    '    sch:thumbnailUrl ?thumbnail_url . ' +
+    '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
+    '  OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
+    ' } ';
+
+    var photosByTimeResultSet = RESULTSET_SHELL.replace('<CONTENT>',
+    ' GRAPH warsa:photographs { ' +
+    '  ?id dc:created ?created . ' +
+    ' } ' +
+    ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ');
+
+    var photosByTimeQry =  prefixes + select +
+    ' { ' +
+       photosByTimeResultSet +
+    '  ?id dc:created ?created . ' +
+    '  FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+    '  ?id sch:contentUrl ?url ; ' +
+    '     sch:thumbnailUrl ?thumbnail_url . ' +
+    '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
+    '  OPTIONAL { ?id dc:spatial ?place_id . } ' +
     ' } ';
 
     var minimalPhotosWithPlaceByTimeQry = prefixes +
@@ -87,17 +101,19 @@ angular.module('eventsApp')
     ' } ' +
     ' ORDER BY ?created ';
 
-    var photosByPersonQry = prefixes +
-    ' SELECT * WHERE {  ' +
+    var photosByPersonResultSet = RESULTSET_SHELL.replace('<CONTENT>',
     ' 	VALUES ?person { {0} } . ' +
-    ' 	?id dcterms:subject ?person .  ' +
-    ' 	?id dcterms:created ?created . ' +
-    ' 	?id sch:contentUrl ?url . ' +
-    ' 	?id sch:thumbnailUrl ?thumbnail_url . ' +
-    ' 	?id dcterms:description ?description . ' +
-    ' 	?id a photos:Photograph . ' +
-    ' }';
+    ' 	?id dcterms:subject ?person .  ');
 
+    var photosByPersonQry = prefixes + select +
+    ' { ' +
+       photosByPersonResultSet +
+    '  ?id dcterms:created ?created . ' +
+    '  ?id sch:contentUrl ?url . ' +
+    '  ?id sch:thumbnailUrl ?thumbnail_url . ' +
+    '  ?id dcterms:description ?description . ' +
+    '  ?id a photos:Photograph . ' +
+    ' }';
 
     this.getByTimeSpan = function(start, end, pageSize) {
         var qry = photosByTimeQry.format(start, end);
