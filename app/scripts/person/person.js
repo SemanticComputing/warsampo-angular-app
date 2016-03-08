@@ -14,7 +14,8 @@ angular.module('eventsApp')
         if (person.rank_id) {
             person.ranks.push({id:person.rank_id, label:person.rank});
         }
-			
+		
+		var places = [];
         for (var i=0; i<events.length; i++) {
             var e=events[i],
                 etype=e.type_id,
@@ -23,16 +24,29 @@ angular.module('eventsApp')
             edate=dateUtilService.getExtremeDate(edate, true);
             edate2=dateUtilService.getExtremeDate(edate2, false);
             edate=dateUtilService.formatDateRange(edate,edate2);
-
+				var eplace = '';
+				if (e.places && e.places.length) { 
+					eplace=e.places[0].label;
+					places.push({ id: e.places[0].id, label: eplace });
+				}
             if (etype.indexOf('Death')>-1) {
-                person.death = edate;
-            } else if (etype.indexOf('Birth')>-1) {
+            	 person.death = edate;
+            	 if (eplace) person.death_place = eplace;
+            } else if (etype.indexOf('Birth')>-1) { 
                 person.birth = edate;
+                if (eplace) person.birth_place = eplace;
+            } else if (etype.indexOf('Wounding')>-1) { 
+                person.wound = edate;
+                if (eplace) person.wound_place = eplace;
+            } else if (etype.indexOf('Disappearing')>-1) { 
+                person.disapp = edate;
+                if (eplace) person.disapp_place = eplace;
             } else if (etype.indexOf('Promotion')>-1) {
                 person.promotions.push(e.rank + ' ' + edate);
                 person.ranks.unshift({id:e.rank_id, label:e.rank});
             }
         }
+        person.places = _.uniq(places, 'id');
         return person;
 
     };

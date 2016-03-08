@@ -39,10 +39,10 @@ PersonMapper.prototype.makeObject = function(obj) {
         o.num_children = isNaN(n) ? o.num_children : n;
     }
 
+	/*
     var places = [];
 
-
-    if (o.birth_place) {
+	if (o.birth_place) {
         places.push({ id: o.birth_place_uri, label: o.birth_place });
     }
     if (o.death_place) {
@@ -55,11 +55,12 @@ PersonMapper.prototype.makeObject = function(obj) {
         places.push({ id: o.living_place_uri, label: o.living_place });
     }
     o.places = _.uniq(places, 'id');
+	*/
 
     if (o.wikilink) {
         o.wikilink = [{ id:o.wikilink, label:o.label}];
     }
-
+	
     return o;
 };
 

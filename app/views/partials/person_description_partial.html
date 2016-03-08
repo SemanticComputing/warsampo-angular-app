@@ -1,6 +1,15 @@
+<p ng-if="ctrl.person.note">
+  {{ ctrl.person.note }}
+</p>
 <p ng-if="ctrl.person.birth || ctrl.person.death">
   {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
   {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}
+</p>
+<p ng-if="ctrl.person.wound">
+  {{ 'PERSONS_DEMO.WOUNDED' | translate }} {{ ctrl.person.wound || '?' }} {{ ctrl.person.wound_place }}
+</p>
+<p ng-if="ctrl.person.disapp">
+  {{ 'PERSONS_DEMO.DISAPPEARED' | translate }}  {{ ctrl.person.disapp || '?' }} {{ ctrl.person.disapp_place }}
 </p>
 <p ng-if="ctrl.person.way_to_die">
   {{ ctrl.person.way_to_die | capitalizeFirst }}.

@@ -315,20 +315,30 @@ angular.module('eventsApp')
 
     var personLifeEventsQry = prefixes +
     ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description ?start_time ' +
-    '                ?end_time ?rank ?rank_id ' +
+    '                ?end_time ?rank ?rank_id ?place_id ?place_label ' +
     ' WHERE { ' +
     '  VALUES ?person { {0} } ' +
     '  { ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
     '  UNION  ' +
     '  { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . } ' +
     '  UNION  ' +
+    '  { ?id a etypes:Disappearing ; crm:P11_had_participant ?person . } ' +
+    '  UNION  ' +
+    '  { ?id a etypes:Wounding ; crm:P11_had_participant ?person . } ' +
+    '  UNION  ' +
     '  { ?id a etypes:Promotion ; ' +
     '    crm:P11_had_participant ?person .  ' +
     '    OPTIONAL { ?id actors:hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . } ' +
     '  } ' +
-    '  ?id crm:P4_has_time-span ?time_id .  ' +
+    '  OPTIONAL { ?id crm:P4_has_time-span ?time_id .  ' +
     '  ?time_id crm:P82a_begin_of_the_begin ?start_time . ' +
-    '  ?time_id crm:P82b_end_of_the_end ?end_time . ' +
+    '  ?time_id crm:P82b_end_of_the_end ?end_time . } ' +
+    '	   OPTIONAL {  ' +
+    '        ?id crm:P7_took_place_at ?place_id . ' +
+    '        OPTIONAL { ' +
+    '          ?place_id skos:prefLabel ?place_label . ' +
+    '        } ' +
+    '      } ' +
     '  ?id a ?type_id . ' +
     '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
     '  OPTIONAL { ' +

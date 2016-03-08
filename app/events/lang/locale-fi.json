@@ -15,6 +15,8 @@
         "PROFESSION": "Ammatti",
         "MARITAL_STATUS": "Aviosääty",
         "BURIED_IN": "Haudattu paikkaan",
+        "DISAPPEARED": "Kadonnut",
+        "WOUNDED": "Haavoittunut",
         "SERVED_IN_UNIT": "Palvellut joukko-osastossa",
         "NUMBER_OF_CHILDREN": "{NUM, plural, =0{ei lapsia} one{yksi lapsi} other{# lasta}}",
         "BORN_ON_IN": "Syntynyt {{date}} paikassa {{place}}",

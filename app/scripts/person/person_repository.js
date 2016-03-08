@@ -19,6 +19,7 @@ angular.module('eventsApp')
     ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
     ' PREFIX sch: <http://schema.org/> ' +
     ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
+    ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
     ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
     ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
     ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
@@ -40,7 +41,7 @@ angular.module('eventsApp')
     '   ?id foaf:familyName ?sname .' +
     '   ?id skos:prefLabel ?label .' +
     '   OPTIONAL { ?id foaf:firstName ?fname . }' +
-    '   OPTIONAL { ?id crm:P3_has_note ?note . }' +
+    '   OPTIONAL { ?id crm:P3_has_note|dc:description ?note . }' +
     '   OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
     '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
     '   }' +
@@ -53,7 +54,7 @@ angular.module('eventsApp')
     '	} ' +
     '   OPTIONAL { ' +
     '     ?id crm:P70i_is_documented_in ?casualty .' +
-    '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
+   /* '     OPTIONAL { ?casualty casualties:syntymaeaika ?birth_time . }' +
     '     OPTIONAL { ' +
     '       ?casualty casualties:synnyinkunta ?birth_place_uri . ' +
     '       ?birth_place_uri skos:prefLabel ?birth_place . ' +
@@ -62,7 +63,7 @@ angular.module('eventsApp')
     '     OPTIONAL { ' +
     '         ?casualty casualties:kuolinkunta ?death_place_uri . '+
     '         ?death_place_uri skos:prefLabel ?death_place . ' +
-    '     }' +
+    '     }' + */
     '     OPTIONAL { ' +
     '         ?casualty casualties:hautauskunta ?bury_place_uri . ' +
     '         ?bury_place_uri skos:prefLabel ?bury_place . ' +
