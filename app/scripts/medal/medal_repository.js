@@ -32,7 +32,7 @@ angular.module('eventsApp')
     var relatedMedalQry = prefixes +
     ' SELECT DISTINCT ?id ?label WHERE {  ' +
     '   { SELECT DISTINCT ?id (COUNT(?actor) AS ?no) WHERE {  ' +
-    '  VALUES ?medal { <http://ldf.fi/warsa/medals/medal_100> } .  ' +
+    '  VALUES ?medal { {0} } .  ' +
     '    ?evt a  crm:E13_Attribute_Assignment ; ' +
     '    		crm:P141_assigned ?medal ; ' +
     '    		crm:P11_had_participant ?actor . ' +

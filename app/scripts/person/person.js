@@ -27,7 +27,9 @@ angular.module('eventsApp')
 				var eplace = '';
 				if (e.places && e.places.length) { 
 					eplace=e.places[0].label;
-					places.push({ id: e.places[0].id, label: eplace });
+					for (var j=0; j<e.places.length; j++) {
+						places.push({ id: e.places[j].id, label: e.places[j].label });
+					}
 				}
             if (etype.indexOf('Death')>-1) {
             	 person.death = edate;
