@@ -4,7 +4,8 @@
  * Service that provides an interface for fetching actor data.
  */
 angular.module('eventsApp')
-.service('personRepository', function($q, _, AdvancedSparqlService, SparqlService, personMapperService) {
+.service('personRepository', function($q, _, AdvancedSparqlService, SparqlService,
+            personMapperService, RESULTSET_SHELL) {
 
     var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
         personMapperService);
@@ -30,13 +31,22 @@ angular.module('eventsApp')
     ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
     ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
-    var personQry = prefixes +
+    var select =
     ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ?death_time '+
     '       ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
     '       ?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
-    '       ?sid ?source ' +
-    ' WHERE { ' +
+    '       ?sid ?source ';
+
+    var resultSetShell = RESULTSET_SHELL;
+
+    var personQryResultSet = resultSetShell.replace('<CONTENT>',
     '   VALUES ?id { {0} }' +
+    '   ?id foaf:familyName ?sname .' +
+    '   ?id skos:prefLabel ?label .');
+
+    var personQry = prefixes + select +
+    ' { ' +
+        personQryResultSet +
     '   ?id foaf:familyName ?sname .' +
     '   ?id skos:prefLabel ?label .' +
     '   OPTIONAL { ?id foaf:firstName ?fname . }' +

@@ -259,22 +259,11 @@
         '   UNION  '+
         '   { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
         '   ' +
-        '  id a ?type_id . ' +
+        '  } ' +
+        '  ?id a ?type_id . ' +
         '  OPTIONAL { ' +
         '    ?type_id skos:prefLabel ?type . ' +
         '    FILTER(langMatches(lang(?type), "FI")) ' +
-        '  } ' +
-        '  OPTIONAL { ' +
-        '    ?id crm:P4_has_time-span ?time_id .  ' +
-        '    ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
-        '    		crm:P82b_end_of_the_end ?end_time .  ' +
-        '  } ' +
-        '  OPTIONAL { ' +
-        '    ?id crm:P7_took_place_at ?place_id . ' +
-        '    OPTIONAL { ' +
-        '      ?place_id skos:prefLabel ?place_label .  ' +
-        '      ?place_id geo:lat ?lat ;  geo:long ?lon .  ' +
-        '    } ' +
         '  } ' +
         ' } ORDER BY ?start_time ?end_time ';
 

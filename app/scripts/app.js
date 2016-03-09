@@ -68,7 +68,7 @@
     '  SELECT DISTINCT ?id { ' +
     '   <CONTENT> ' +
     '  } ORDER BY ?id ' +
-    ' } ')
+    ' } FILTER(BOUND(?id)) ')
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider

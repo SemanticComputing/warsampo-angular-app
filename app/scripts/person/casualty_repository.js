@@ -69,37 +69,6 @@ angular.module('eventsApp')
     '  ?id skos:prefLabel ?description . 	' +
     '}  GROUP BY ?id ?description 	';
 
-    var casualtyInfoQry = prefixes +
-    ' SELECT * ' +
-    ' WHERE { ' +
-    '   VALUES ?id { {0} } ' +
-    '   ?id ' +
-    '    casualties:sotilasarvo ?sotilasarvo_id ; ' +
-    '    casualties:ammatti ?ammatti ; ' +
-    '    casualties:kuolinpaikka ?kuolinpaikka ; ' +
-    '    casualties:kuolinaika ?kuolinaika ; ' +
-    '    casualties:syntymaeaika ?syntymaeaika ; ' +
-    '    casualties:synnyinkunta ?synnyinkunta ; ' +
-    '    casualties:etunimet ?etunimet ; ' +
-    '    casualties:menehtymisluokka ?menehtymisluokka_id ; ' +
-    '    casualties:sukunimi ?sukunimi ; ' +
-    '    casualties:kansalaisuus ?kansalaisuus ; ' +
-    '    casualties:joukko_osasto ?joukko_osasto ; ' +
-    '    casualties:kotikunta ?kotikunta ; ' +
-    '    casualties:hautausmaa ?hautausmaa ; ' +
-    '    casualties:kansallisuus ?kansallisuus ; ' +
-    '    casualties:lasten_lukumaeaerae ?lasten_lukumaeaerae ; ' +
-    '    casualties:sukupuoli ?sukupuoli ; ' +
-    '    casualties:hautapaikka ?hautapaikka ; ' +
-    '    casualties:hautauskunta ?hautauskunta ; ' +
-    '    casualties:siviilisaeaety ?siviilisaeaety_id ; ' +
-    '    casualties:aeidinkieli ?aeidinkieli ; ' +
-    '    casualties:asuinkunta ?asuinkunta . ' +
-    '    ?sotilasarvo_id skos:prefLabel ?sotilasarvo . ' +
-    '    ?siviilisaeaety_id skos:prefLabel ?siviilisaeaety . ' +
-    '    ?menehtymisluokka_id skos:prefLabel ?menehtymisluokka . ' +
-    ' } ';
-
     var casualtyLocationsByTimeAndUnitQry = '' +
     'PREFIX : <http://ldf.fi/warsa/actors/> 	' +
     'PREFIX events: <http://ldf.fi/warsa/events/>	' +
@@ -116,7 +85,6 @@ angular.module('eventsApp')
     'PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> 	' +
     'PREFIX owl: <http://www.w3.org/2002/07/owl#> 	' +
     'PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>	' +
-    '	' +
     'SELECT ?id ?lat ?lon ?death_date ?subunit    	' +
     'WHERE {	' +
     '   { SELECT ?subunit 	' +
@@ -158,21 +126,6 @@ angular.module('eventsApp')
 
     this.getCasualtyCountsByTimeGroupAndUnitByType = function(start, end, unit) {
         var qry = casualtyCountsByTimeGroupAndUnitByTypeQry.format(start, end, unit);
-        return endpoint.getObjects(qry).then(function(data) {
-            return objectMapperService.makeObjectList(data);
-        });
-    };
-
-    this.getCasualtyInfo = function(ids) {
-        var qry;
-        if (_.isArray(ids)) {
-            ids = '<{0}>'.format(ids.join('> <'));
-        } else if (ids) {
-            ids = '<{0}>'.format(ids);
-        } else {
-            return $q.when();
-        }
-        qry = casualtyInfoQry.format(ids);
         return endpoint.getObjects(qry).then(function(data) {
             return objectMapperService.makeObjectList(data);
         });
