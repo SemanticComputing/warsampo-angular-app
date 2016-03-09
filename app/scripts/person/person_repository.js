@@ -37,10 +37,11 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ?death_time '+
-        '       ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
-        '       ?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
-        '       ?sid ?source ';
+        ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ' +
+        '   ?death_time ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ' +
+        '   ?death_place ?death_place_uri ?bury_place ?bury_place_uri ?living_place ' +
+        '   ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit ' +
+        '   ?sid ?source ';
 
         var personQryResultSet =
         '   VALUES ?id { {0} }' +
@@ -136,32 +137,34 @@
         '  } LIMIT 300 	' +
         '} ORDER BY ?name 	';
 
-        var byUnitQry = prefixes +
-        'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end (COUNT(?s) AS ?no) WHERE { ' +
-        ' 	{ SELECT ?id ?role ?join_start ?join_end WHERE { ' +
-        ' 	    ?evt a etypes:PersonJoining ; ' +
-        ' 	    crm:P143_joined ?id . ' +
-        ' 	    ?evt  crm:P144_joined_with {0} .  ' +
-        '       OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
-        '       OPTIONAL { ' +
-        '           ?evt crm:P4_has_time-span ?join_time_id . ' +
-        '           ?join_time_id crm:P82a_begin_of_the_begin ?join_start ; ' +
-        '               crm:P82b_end_of_the_end ?join_end . ' +
-        '       } ' +
-        '   } ' +
-        '	} UNION ' +
-        '   { SELECT ?id WHERE {' +
-        ' 	    ?id crm:P70i_is_documented_in ?mennytmies . ' +
-        ' 	    ?mennytmies casualties:osasto {0} . ' +
-        '    	} ' +
-        ' 	} ' +
-        '   OPTIONAL { ?s ?p ?id . } ' +
+        var byUnitQryResultSet =
+        ' SELECT ?id ?no { ' +
+        '  ?evt a etypes:PersonJoining ; ' +
+        '  crm:P143_joined ?id . ' +
+        '  ?evt  crm:P144_joined_with {0} .  ' +
+        '  ?s ?p ?id . ' +
+        '  ?id skos:prefLabel ?label . ' +
+        '  ?id foaf:familyName ?sname . ' +
+        ' }';
+
+        var byUnitQry =
+        'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end WHERE { ' +
+        '   <RESULT_SET> ' +
+        ' 	OPTIONAL { ' +
+        ' 	  ?evt a etypes:PersonJoining ; ' +
+        ' 	  crm:P143_joined ?id . ' +
+        '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
+        '     OPTIONAL { ' +
+        '         ?evt crm:P4_has_time-span ?join_time_id . ' +
+        '         ?join_time_id crm:P82a_begin_of_the_begin ?join_start ; ' +
+        '             crm:P82b_end_of_the_end ?join_end . ' +
+        '     } ' +
+        '	} ' +
         '   ?id skos:prefLabel ?label . ' +
         '   ?id foaf:familyName ?sname .	' +
         '   OPTIONAL { ?id foaf:firstName ?fname .	} ' +
         '   OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
-        '} GROUP BY ?id ?sname ?fname ?label ?no ?rank ?role ?join_start ?join_end ' +
-        ' 		ORDER BY DESC(?no) ';
+        '}';
 
         var commandersByUnitQry = prefixes +
         'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end WHERE { ' +
@@ -211,8 +214,10 @@
         ' } ';
 
         this.getByUnitId = function(id, pageSize) {
-            var qry = byUnitQry.format('<{0}>'.format(id));
-            return endpoint.getObjects(qry, pageSize);
+            var orderBy = ' ?no ';
+            var resultSet = byUnitQryResultSet.format('<{0}>'.format(id));
+            var qryObj = queryBuilder.buildQuery(byUnitQry, resultSet, orderBy);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
         this.getUnitCommanders = function(unitId) {
