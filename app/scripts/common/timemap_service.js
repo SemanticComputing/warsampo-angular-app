@@ -232,8 +232,8 @@ angular.module('eventsApp')
             end_time = entry.start;
         }
 
-        var points = _(e.places).pluck('point').compact().value();
-        var polygons = _(e.places).pluck('polygon').compact().value();
+        var points = _(e.places).map('point').compact().value();
+        var polygons = _(e.places).map('polygon').compact().value();
         if (points.length) {
             if (points.length === 1) {
                 entry.point = points[0];
@@ -292,12 +292,12 @@ angular.module('eventsApp')
         if (!event.places) {
             return false;
         }
-        var ap = _.pluck(event.places, 'id');
+        var ap = _.map(event.places, 'id');
         var bp = photo.place_id;
         var am = arrayfy(event, 'municipality_id');
         var bm = photo.municipality_id;
 
-        var f = _.contains;
+        var f = _.includes;
 
         var yes = f(ap, bp) || f(ap, bm) || f(am, bp) || f(am, bm);
 

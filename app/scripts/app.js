@@ -23,7 +23,8 @@
         'ngTouch',
         'ui.bootstrap',
         'truncate',
-        'pascalprecht.translate'
+        'pascalprecht.translate',
+        'sparql'
     ])
     .constant('_', _)
     .constant('google', google)
@@ -63,12 +64,30 @@
             }
         }
     )
-    .constant('RESULTSET_SHELL',
+    .constant('PLACE_PARTIAL_QUERY',
     ' { ' +
-    '  SELECT DISTINCT ?id { ' +
-    '   <CONTENT> ' +
-    '  } ORDER BY ?id ' +
-    ' } FILTER(BOUND(?id)) ')
+    '   ?place_id skos:prefLabel ?place_label . ' +
+    '   OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
+    '   OPTIONAL { ' +
+    '     ?place_id geo:lat ?lat ; ' +
+    '        geo:long ?lon . ' +
+    '    } ' +
+    '    OPTIONAL { ' +
+    '      GRAPH <http://ldf.fi/places/karelian_places> { ' +
+    '        ?place_id geosparql:sfWithin ?municipality . ' +
+    '      } ' +
+    '      GRAPH <http://ldf.fi/places/municipalities> { ' +
+    '        ?municipality a suo:kunta . ' +
+    '      } ' +
+    '    } ' +
+    ' } UNION { ' +
+    '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
+    '     ?place_id skos:prefLabel ?place_label . ' +
+    '     FILTER(langMatches(lang(?place_label), "FI")) ' +
+    '     ?place_id geo:lat ?lat ; ' +
+    '       geo:long ?lon . ' +
+    '   } ' +
+    ' } ')
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider
@@ -195,7 +214,7 @@
     /* @ngInject */
     function checkLang($route, $q, $translate, supportedLocales) {
         var lang = $route.current.params.lang;
-        if (lang && _.contains(supportedLocales, lang)) {
+        if (lang && _.includes(supportedLocales, lang)) {
             return $translate.use(lang);
         }
         return $q.when();

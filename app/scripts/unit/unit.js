@@ -22,7 +22,7 @@ angular.module('eventsApp')
                 edate=dateUtilService.formatDateRange(edate,edate2);
             }
             if (e.places) {
-                eplace=', ' + _.pluck(e.places, 'label').join(', ');
+                eplace=', ' + _.map(e.places, 'label').join(', ');
             }
             if (edate!=='') {edate=edate+': ';}
 

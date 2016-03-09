@@ -36,7 +36,7 @@
             var end = dateUtilService.changeDateAndFormat(event.end_time, photoSettings.afterOffset);
             var promise;
             if (photoSettings.inProximity) {
-                var place_ids = _.pluck(event.places, 'id');
+                var place_ids = _.map(event.places, 'id');
                 if (!place_ids) {
                     return $q.when();
                 }

@@ -43,12 +43,6 @@ angular.module('eventsApp')
         return eventRepository.getByTimeSpan(start, end);
     };
 
-    self.getAllEvents = function() {
-        // Get all events.
-        // Returns a promise.
-        return eventRepository.getAll();
-    };
-
     self.getEventById = function(id) {
         return eventRepository.getById(id);
     };

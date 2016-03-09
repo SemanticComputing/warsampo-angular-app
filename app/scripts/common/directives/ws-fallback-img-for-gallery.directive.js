@@ -13,7 +13,7 @@
                     } else {
                         src = '/images/no-image.png';
                     }
-                    if (!_.contains(element.attr('src'), src)) {
+                    if (!_.includes(element.attr('src'), src)) {
                         element.attr('src', src);
                     } else {
                         element.attr('src', '');
