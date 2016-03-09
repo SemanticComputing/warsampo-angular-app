@@ -36,8 +36,8 @@
         '  ?title ?place_id ?place_label ?polygon ?lat ?lon ';
 
         var eventTypeFilter =
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ';
+        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
+        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ';
 
         var resultSetShell =
         ' { ' +
@@ -47,30 +47,30 @@
         ' } FILTER(BOUND(?id)) ';
 
         var placePartial =
-        '     ?id crm:P7_took_place_at ?place_id .  ' +
-        '     { ' +
-        '       ?place_id skos:prefLabel ?place_label . ' +
-        '       OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-        '       OPTIONAL { ' +
-        '         ?place_id geo:lat ?lat ; ' +
-        '            geo:long ?lon . ' +
-        '        } ' +
-        '        OPTIONAL { ' +
-        '          GRAPH <http://ldf.fi/places/karelian_places> { ' +
-        '            ?place_id geosparql:sfWithin ?municipality . ' +
-        '          } ' +
-        '          GRAPH <http://ldf.fi/places/municipalities> { ' +
-        '            ?municipality a suo:kunta . ' +
-        '          } ' +
-        '        } ' +
-        '     } UNION { ' +
-        '       SERVICE <http://ldf.fi/pnr/sparql> { ' +
-        '	      ?place_id skos:prefLabel ?place_label . ' +
-        '         FILTER(langMatches(lang(?place_label), "FI")) ' +
-        '         ?place_id geo:lat ?lat ; ' +
-        '           geo:long ?lon . ' +
-        '  	    } ' +
-        '     } ';
+        ' ?id crm:P7_took_place_at ?place_id .  ' +
+        ' { ' +
+        '   ?place_id skos:prefLabel ?place_label . ' +
+        '   OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
+        '   OPTIONAL { ' +
+        '     ?place_id geo:lat ?lat ; ' +
+        '        geo:long ?lon . ' +
+        '    } ' +
+        '    OPTIONAL { ' +
+        '      GRAPH <http://ldf.fi/places/karelian_places> { ' +
+        '        ?place_id geosparql:sfWithin ?municipality . ' +
+        '      } ' +
+        '      GRAPH <http://ldf.fi/places/municipalities> { ' +
+        '        ?municipality a suo:kunta . ' +
+        '      } ' +
+        '    } ' +
+        ' } UNION { ' +
+        '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '     ?place_id skos:prefLabel ?place_label . ' +
+        '     FILTER(langMatches(lang(?place_label), "FI")) ' +
+        '     ?place_id geo:lat ?lat ; ' +
+        '       geo:long ?lon . ' +
+        '   } ' +
+        ' } ';
 
         var singleEventQry = prefixes + select +
         ' { ' +

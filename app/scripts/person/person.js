@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable angular/no-service-method */
+
 /*
  * Service that provides an interface for fetching actor data.
  */
