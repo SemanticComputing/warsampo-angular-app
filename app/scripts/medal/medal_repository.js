@@ -56,6 +56,7 @@ angular.module('eventsApp')
 	
     this.getRelatedMedals = function(id) {
         var qry = relatedMedalQry.format('<{0}>'.format(id));
+        console.log(qry);
         return endpoint.getObjects(qry).then(function(data) {
         		return medalMapperService.makeObjectList(data);
         });
