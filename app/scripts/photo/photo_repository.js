@@ -64,12 +64,12 @@
         '  <RESULT_SET> ' +
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
-        '  OPTIONAL { ?id dc:spatial ?place_id . } ' +
         '  OPTIONAL { ?id dc:created ?created . } ' +
         '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
         '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
-        '  OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
-           placePartial +
+        '  OPTIONAL { ?id dc:spatial ?place_id . ' +
+             placePartial +
+        '  } ' +
         ' } ';
 
         var photosByTimeResultSet =
@@ -79,7 +79,7 @@
         ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ';
 
         var photosByPersonResultSet =
-        ' VALUES ?participant_id { {0} } . ' +
+        ' VALUES ?participant_id { {0} } ' +
         ' ?id dc:subject ?participant_id .  ' +
         ' ?id a photos:Photograph . ';
 

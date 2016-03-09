@@ -203,14 +203,19 @@
         '  ?id foaf:firstName ?fname . ' +
         '} ORDER BY ?sname ?fname ';
 
+        var casualtiesByTimeSpanQryResultSet =
+        '   ?casualty casualties:kuolinaika ?death_time . ' +
+        '   FILTER(?death_time >= "{0}"^^xsd:date && ?death_time <= "{1}"^^xsd:date) ' +
+        '   ?id crm:P70i_is_documented_in ?casualty . ' +
+        '   ?id skos:prefLabel ?label . ';
 
-        var casualtiesByTimeSpanQry = prefixes +
+        var casualtiesByTimeSpanQry =
         ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
         ' WHERE { ' +
+        '   <RESULT_SET> ' +
         '   ?id skos:prefLabel ?label . ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
         '   ?casualty casualties:kuolinaika ?death_time . ' +
-        '   FILTER(?death_time >= "{0}"^^xsd:date && ?death_time <= "{1}"^^xsd:date) ' +
         ' } ';
 
         this.getByUnitId = function(id, pageSize) {
@@ -231,8 +236,9 @@
         };
 
         this.getById = function(id) {
-            var qry = personQry.format('<{0}>'.format(id));
-            return endpoint.getObjects(qry).then(function(data) {
+            var resultSet = personQryResultSet.format('<{0}>'.format(id));
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
+            return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
                     // because of temporary multiple labels in casualties data set:
                     return data[0];
@@ -255,8 +261,9 @@
         };
 
         this.getCasualtiesByTimeSpan = function(start, end, pageSize) {
-            var qry = casualtiesByTimeSpanQry.format(start, end);
-            return endpoint.getObjects(qry, pageSize);
+            var resultSet = casualtiesByTimeSpanQryResultSet.format(start, end);
+            var qryObj = queryBuilder.buildQuery(casualtiesByTimeSpanQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
         this.getNationalBibliography = function(person) {
