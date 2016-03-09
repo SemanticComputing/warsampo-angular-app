@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    /* 
+    /*
     * Service for transforming event SPARQL results into objects.
     */
 

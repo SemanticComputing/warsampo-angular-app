@@ -31,16 +31,46 @@
         ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
 
         var select =
-        ' SELECT ?id ?type ?type_id ?description ?rank_id ?rank ?time_id ' +
+        ' SELECT DISTINCT ?id ?type ?type_id ?description ?rank_id ?rank ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant ?participant_role ' +
         '  ?title ?place_id ?place_label ?polygon ?lat ?lon ';
+
+        var eventTypeFilter =
+        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
+        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ';
 
         var resultSetShell =
         ' { ' +
         '  SELECT DISTINCT ?id { ' +
         '   <CONTENT> ' +
         '  } ORDER BY ?start_time ?end_time ' +
-        ' } ';
+        ' } FILTER(BOUND(?id)) ';
+
+        var placePartial =
+        '     ?id crm:P7_took_place_at ?place_id .  ' +
+        '     { ' +
+        '       ?place_id skos:prefLabel ?place_label . ' +
+        '       OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
+        '       OPTIONAL { ' +
+        '         ?place_id geo:lat ?lat ; ' +
+        '            geo:long ?lon . ' +
+        '        } ' +
+        '        OPTIONAL { ' +
+        '          GRAPH <http://ldf.fi/places/karelian_places> { ' +
+        '            ?place_id geosparql:sfWithin ?municipality . ' +
+        '          } ' +
+        '          GRAPH <http://ldf.fi/places/municipalities> { ' +
+        '            ?municipality a suo:kunta . ' +
+        '          } ' +
+        '        } ' +
+        '     } UNION { ' +
+        '       SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '	      ?place_id skos:prefLabel ?place_label . ' +
+        '         FILTER(langMatches(lang(?place_label), "FI")) ' +
+        '         ?place_id geo:lat ?lat ; ' +
+        '           geo:long ?lon . ' +
+        '  	    } ' +
+        '     } ';
 
         var singleEventQry = prefixes + select +
         ' { ' +
@@ -52,21 +82,7 @@
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
         '   OPTIONAL { ' +
-        '     ?id crm:P7_took_place_at ?place_id .  ' +
-        '     ?place_id skos:prefLabel ?place_label . ' +
-        '     OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-        '     OPTIONAL { ' +
-        '          ?place_id geo:lat ?lat ; ' +
-        '            geo:long ?lon . ' +
-        '     } ' +
-        '     OPTIONAL { ' +
-        '         GRAPH <http://ldf.fi/places/karelian_places> { ' +
-        '             ?place_id geosparql:sfWithin ?municipality . ' +
-        '         } ' +
-        '         GRAPH <http://ldf.fi/places/municipalities> { ' +
-        '             ?municipality a suo:kunta . ' +
-        '         } ' +
-        '     } ' +
+                placePartial +
         '   } ' +
         '   OPTIONAL { ?id crm:P4_has_time-span ?time_id . ' +
         '     GRAPH <http://ldf.fi/warsa/events/times> { ' +
@@ -99,227 +115,167 @@
         '      crm:P82b_end_of_the_end ?end_time . ' +
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
-        '   OPTIONAL { ' +
-        '     ?id crm:P7_took_place_at ?place_id .  ' +
-        '     { ' +
-        '       ?place_id skos:prefLabel ?place_label . ' +
-        '       OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-        '       OPTIONAL { ' +
-        '         ?place_id geo:lat ?lat ; ' +
-        '            geo:long ?lon . ' +
-        '        } ' +
-        '        OPTIONAL { ' +
-        '          GRAPH <http://ldf.fi/places/karelian_places> { ' +
-        '            ?place_id geosparql:sfWithin ?municipality . ' +
-        '          } ' +
-        '          GRAPH <http://ldf.fi/places/municipalities> { ' +
-        '            ?municipality a suo:kunta . ' +
-        '          } ' +
-        '        } ' +
-        '     } UNION { ' +
-        '       SERVICE <http://ldf.fi/pnr/sparql> { ' +
-        '	      ?place_id skos:prefLabel ?place_label . ' +
-        '         FILTER(langMatches(lang(?place_label), "FI")) ' +
-        '         ?place_id geo:lat ?lat ; ' +
-        '           geo:long ?lon . ' +
-        '  	    } ' +
-        '     } ' +
-        '   } ' +
+        '   OPTIONAL { ' + placePartial + ' } ' +
         ' } ';
+
+        var eventsByPlaceQryResultSet = resultSetShell.replace('<CONTENT>',
+        '   VALUES ?place_id { {0} } ' +
+        '   {1} ' + // Placeholder for id filter
+        '   ?id crm:P7_took_place_at ?place_id .  ' +
+        '   ?id crm:P4_has_time-span ?time_id . ' +
+        '   ?id a ?type_id . ' +
+            eventTypeFilter);
 
         var eventsByPlaceQry = prefixes + select +
         ' { ' +
-        '   VALUES ?place_id { {0} } ' +
-        '   ?id crm:P4_has_time-span ?time_id ; ' +
-        '       a ?type_id . ' +
-        '   {1} ' + // Placeholder for id filter
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
+            eventsByPlaceQryResultSet +
         '   ?id skos:prefLabel ?description ; ' +
+        '       a ?type_id ;  ' +
+        '       crm:P4_has_time-span ?time_id ; ' +
         '       crm:P7_took_place_at ?place_id .  ' +
         '   ?place_id skos:prefLabel ?place_label . ' +
-        '   GRAPH <http://ldf.fi/warsa/events/times> { ' +
-        '     ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '              crm:P82b_end_of_the_end ?end_time . ' +
-        '   } ' +
-        '   GRAPH <http://ldf.fi/warsa/events/event_types> { ' +
-        '     ?type_id skos:prefLabel ?type . ' +
-        '     FILTER(langMatches(lang(?type), "FI"))  ' +
-        '   } ' +
+        '   ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '      crm:P82b_end_of_the_end ?end_time . ' +
+        '   ?type_id skos:prefLabel ?type . ' +
+        '   FILTER(langMatches(lang(?type), "FI"))  ' +
         '   OPTIONAL { ?id crm:P11_had_participant ?participant . } ' +
-        '   OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-        '   OPTIONAL { ' +
-        '            ?place_id geo:lat ?lat ; ' +
-        '              geo:long ?lon . ' +
+            placePartial +
+        ' } ';
+
+        var eventsByActorQryResultSet = resultSetShell.replace('<CONTENT>',
+        '   VALUES ?participant { {0} }  ' +
+        '   { ?id a crm:E66_Formation .  ' +
+        '    ?id crm:P95_has_formed ?participant .  ' +
+        '   }  ' +
+        '   UNION ' +
+        '   { ?id a etypes:TroopMovement .  ' +
+        '     ?id crm:P95_has_formed ?participant .  ' +
+        '   }  ' +
+        '   UNION  ' +
+        '   { ?id a etypes:Battle .  ' +
+        '     ?id crm:P11_had_participant ?participant .  ' +
         '   } ' +
-        '   OPTIONAL { ' +
-        '       GRAPH <http://ldf.fi/places/karelian_places> { ' +
-        '           ?place_id geosparql:sfWithin ?municipality . ' +
-        '       } ' +
-        '       GRAPH <http://ldf.fi/places/municipalities> { ' +
-        '               ?municipality a suo:kunta . ' +
-        '       } ' +
+        '   ?id crm:P4_has_time-span ?time_id ;  ');
+
+        var eventsByActorQry = prefixes + select +
+        ' {  ' +
+            eventsByActorQryResultSet +
+        '   ?id crm:P4_has_time-span ?time_id ;  ' +
+        '       a ?type_id .  ' +
+        '   ?id skos:prefLabel ?description .  ' +
+        '   { ?id crm:P95_has_formed ?participant . } ' +
+        '   UNION  ' +
+        '   { ?id crm:P11_had_participant ?participant . }  ' +
+        '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
+        '   OPTIONAL {  ' +
+                placePartial +
+        '   }  ' +
+        '   ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
+        '      crm:P82b_end_of_the_end ?end_time .  ' +
+        '   ?type_id skos:prefLabel ?type .  ' +
+        '   FILTER(langMatches(lang(?type), "FI"))   ' +
+        ' } ';
+
+        var eventsAndSubUnitEventsByUnitQryResultSet = resultSetShell.replace('<CONTENT>',
+        ' { ' +
+        '   VALUES ?participant { {0} } ' +
+        '   { ' +
+        '       ?id a crm:E66_Formation ; ' +
+        '           crm:P95_has_formed ?participant . ' +
+        '   } UNION { ' +
+        '       ?id a etypes:TroopMovement ; ' +
+        '           crm:P95_has_formed ?participant . ' +
+        '   } ' +
+        ' } UNION { ' +
+        '   { ' +
+        '     SELECT ?participant ?abbrev ' +
+        '     WHERE { ' +
+        '       VALUES ?unit { {0} } . ' +
+        '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant . ' +
+        '       ?participant a atypes:MilitaryUnit . ' +
+        '       ?participant skos:altLabel ?abbrev . ' +
+        '     } ' +
+        '   } UNION { ' +
+        '       VALUES ?participant { {0} } . ' +
+        '       ?participant skos:altLabel ?abbrev . ' +
+        '   } ' +
+        '   ?id a etypes:Battle . ' +
+        '   { ' +
+        '       ?id events:hadUnit ?abbrev . ' +
+        '   } UNION { ' +
+        '       ?id crm:P11_had_participant ?participant . ' +
         '   } ' +
         ' } ' +
-        ' ORDER BY ?start_time ?end_time ';
+        ' ?id crm:P4_has_time-span ?time_id . ' +
+        ' ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '      crm:P82b_end_of_the_end ?end_time . ' +
+        ' FILTER (?start_time<=?end_time) . ');
 
-        var eventsByActorQry = prefixes +
-        '  SELECT ?id ?start_time ?end_time ?time_id ?description ?place_label ' +
-        '       ?commander ?place_id ?municipality ?lat ?lon ?polygon ?type ?type_id ?participant ' +
-        '   WHERE {  ' +
-        '      ' +
-        '       VALUES ?participant { {0} }  ' +
-        '      ' +
-        '       ?id crm:P4_has_time-span ?time_id ;  ' +
-        '           a ?type_id .  ' +
-        '        ' +
-        '       { ?id a crm:E66_Formation .  ' +
-        '        ?id crm:P95_has_formed ?participant .  ' +
-        '        ?id skos:prefLabel ?description .  ' +
-        '        OPTIONAL { ?actor crm:P3_has_note ?note . } ' +
-        '      }  ' +
-        '      UNION ' +
-        '      { ?id a etypes:TroopMovement .  ' +
-        '        ?id skos:prefLabel ?description .  ' +
-        '        ?id crm:P95_has_formed ?participant .  ' +
-        '      }  ' +
-        '      UNION  ' +
-        '      { ?id a etypes:Battle .  ' +
-        '        ?id skos:prefLabel ?description .  ' +
-        '        ?id crm:P11_had_participant ?participant .  ' +
-        '        OPTIONAL { ?id events:hadCommander ?commander . } ' +
-        '      } ' +
-        '          ' +
-        '       OPTIONAL { ?id crm:P7_took_place_at ?place_id .   ' +
-        '        ?place_id skos:prefLabel ?place_label .  ' +
-        '        OPTIONAL { ?place_id sch:polygon ?polygon . }  ' +
-        '        OPTIONAL {  ' +
-        '              ?place_id geo:lat ?lat ;  ' +
-        '                geo:long ?lon .  ' +
-        '        }  ' +
-        '        OPTIONAL {  ' +
-        '             GRAPH <http://ldf.fi/places/karelian_places> { ?place_id geosparql:sfWithin ?municipality .  }  ' +
-        '             GRAPH <http://ldf.fi/places/municipalities> {   ?municipality a suo:kunta .  }  ' +
-        '        }  ' +
-        '     }  ' +
-        '     GRAPH <http://ldf.fi/warsa/events/times> {  ' +
-        '       ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
-        '                crm:P82b_end_of_the_end ?end_time .  ' +
-        '     }  ' +
-        '     GRAPH <http://ldf.fi/warsa/events/event_types> {  ' +
-        '       ?type_id skos:prefLabel ?type .  ' +
-        '       FILTER(langMatches(lang(?type), "FI"))   ' +
-        '     }  ' +
-        '   }  ' +
-        '   ORDER BY ?start_time ?end_time ';
+        var eventsAndSubUnitEventsByUnitQry = prefixes + select +
+        ' { ' +
+           eventsAndSubUnitEventsByUnitQryResultSet +
+        '  { ' +
+        '    { ' +
+        '      ?id crm:P95_has_formed ?participant . ' +
+        '    }' +
+        '    UNION { ' +
+        '      ?id crm:P11_had_participant ?participant . ' +
+        '    } ' +
+        '    ?id crm:P4_has_time-span ?time_id ; ' +
+        '        a ?type_id . ' +
+        '    ?type_id skos:prefLabel ?type . ' +
+        '    FILTER(langMatches(lang(?type), "FI")) ' +
+        '    ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '         crm:P82b_end_of_the_end ?end_time . ' +
+        '    ?id skos:prefLabel ?description . ' +
+        '    OPTIONAL { ?id events:hadCommander ?commander . } ' +
+        '    OPTIONAL { ' +
+                placePartial +
+        '    } ' +
+        '  } ' +
+        ' } ';
 
-        var eventsAndSubUnitEventsByUnitQry = prefixes +
-        ' SELECT ?id ?start_time ?end_time ?time_id ?description ?note ' +
-        ' ?place_label ?commander ?place_id ?municipality ?lat ?lon ?type ' +
-        ' ?type_id ?participant ' +
-        ' WHERE { ' +
-        '     { ' +
-        '         VALUES ?participant { {0} } ' +
-        '         { ' +
-        '             ?id a crm:E66_Formation ; ' +
-        '                 crm:P95_has_formed ?participant ; ' +
-        '                 skos:prefLabel ?description . ' +
-        '             OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '         } UNION { ' +
-        '             ?id a etypes:TroopMovement ; ' +
-        '                 skos:prefLabel ?description ; ' +
-        '                 crm:P95_has_formed ?participant . ' +
-        '         } ' +
-        '     } UNION { ' +
-        '         { ' +
-        '             SELECT ?participant ?abbrev ' +
-        '             WHERE { ' +
-        '                 VALUES ?unit { {0} } . ' +
-        '                 ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant . ' +
-        '                 ?participant a atypes:MilitaryUnit . ' +
-        '                 ?participant skos:altLabel ?abbrev . ' +
-        '             } ' +
-        '         } UNION { ' +
-        '             VALUES ?participant { {0} } . ' +
-        '             ?participant skos:altLabel ?abbrev . ' +
-        '         } ' +
-        '         ?id a etypes:Battle . ' +
-        '         ?id skos:prefLabel ?description . ' +
-        '         { ' +
-        '             ?id events:hadUnit ?abbrev . ' +
-        '         } UNION { ' +
-        '             ?id crm:P11_had_participant ?participant . ' +
-        '         } ' +
-        '         OPTIONAL { ?id events:hadCommander ?commander . } ' +
-        '     } ' +
-        '     ?id crm:P4_has_time-span ?time_id ; ' +
-        '         a ?type_id . ' +
-        '     GRAPH <http://ldf.fi/warsa/events/times> { ' +
-        '         ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '             crm:P82b_end_of_the_end ?end_time . ' +
-        '         FILTER (?start_time<=?end_time) . ' +
-        '     } ' +
-        '     ?type_id skos:prefLabel ?type . ' +
-        '     FILTER(langMatches(lang(?type), "FI")) ' +
-        '     OPTIONAL { ' +
-        '         ?id crm:P7_took_place_at ?place_id . ' +
-        '         ?place_id skos:prefLabel ?place_label . ' +
-        '         OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
-        '         OPTIONAL { ?place_id geo:lat ?lat ; geo:long ?lon . } ' +
-        '         OPTIONAL { ' +
-        '             GRAPH <http://ldf.fi/places/karelian_places> { ' +
-        '                 ?place_id geosparql:sfWithin ?municipality . ' +
-        '             } ' +
-        '             GRAPH <http://ldf.fi/places/municipalities> { ' +
-        '                 ?municipality a suo:kunta . ' +
-        '             } ' +
-        '         } ' +
-        '     } ' +
-        ' } ORDER BY ?start_time ?end_time ';
-
-        var byPersonQry = prefixes +
-        ' SELECT DISTINCT ?id ?type_id ?type ?description (?description AS ?label) ' +
-        '                ?unit ?participant_role ?link ?start_time ?end_time ?time_id ' +
-        ' WHERE { ' +
-        ' 	  VALUES ?person { {0} } . ' +
-        ' 	    { ?id crm:P11_had_participant ?person ; ' +
-        ' 	      	skos:prefLabel ?description . ' +
-        ' 	      	OPTIONAL { ?id events:hadUnit ?unit . } ' +
-        '        }' +
-        ' 	    UNION  ' +
-        ' 	    { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
-        ' 	      ?id crm:P107_1_kind_of_member ?participant_role .  ' +
-        ' 	      ?id crm:P144_joined_with ?unit . ' +
-        ' 	      ?unit skos:prefLabel ?description . '+
-        ' 	    }  '+
-        ' 	    UNION '+
-        ' 	    { '+
-        '        ?id a articles:Article ; '+
-        '        dcterms:hasFormat ?link ; '+
-        '        <http://purl.org/dc/elements/1.1/title> ?description ; '+
-        '        { ?id dcterms:subject ?person . }  '+
-        '        UNION  '+
-        '        { ?id articles:nerperson ?person . }  '+
-        '        UNION  '+
-        '        { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
-        '      } ' +
-        ' 	   ?id a ?type_id . ' +
-        '       OPTIONAL { ' +
-        '         ?type_id skos:prefLabel ?type . ' +
-        '         FILTER(langMatches(lang(?type), "FI")) ' +
-        ' 	    } ' +
-        ' 	    OPTIONAL { ' +
-        ' 	      ?id crm:P4_has_time-span ?time_id .  ' +
-        ' 	      ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
-        ' 	      		crm:P82b_end_of_the_end ?end_time .  ' +
-        ' 	    } ' +
-        ' 	    OPTIONAL { ' +
-        ' 	      ?id crm:P7_took_place_at ?place_id . ' +
-        ' 	      OPTIONAL { ' +
-        ' 	        ?place_id skos:prefLabel ?place_label .  ' +
-        ' 	        ?place_id geo:lat ?lat ;  geo:long ?lon .  ' +
-        ' 	      } ' +
-        ' 	    } ' +
+        var byPersonQry = prefixes + select +
+        ' { ' +
+        '  VALUES ?person { {0} } . ' +
+        '  { ?id crm:P11_had_participant ?person ; ' +
+        '    	skos:prefLabel ?description . ' +
+        '    	OPTIONAL { ?id events:hadUnit ?unit . } ' +
+        '  }' +
+        '  UNION  ' +
+        '  { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
+        '    ?id crm:P107_1_kind_of_member ?participant_role .  ' +
+        '    ?id crm:P144_joined_with ?unit . ' +
+        '    ?unit skos:prefLabel ?description . '+
+        '  }  '+
+        '  UNION '+
+        '  { '+
+        '   ?id a articles:Article ; '+
+        '   dcterms:hasFormat ?link ; '+
+        '   <http://purl.org/dc/elements/1.1/title> ?description ; '+
+        '   { ?id dcterms:subject ?person . }  '+
+        '   UNION  '+
+        '   { ?id articles:nerperson ?person . }  '+
+        '   UNION  '+
+        '   { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
+        '   ' +
+        '  id a ?type_id . ' +
+        '  OPTIONAL { ' +
+        '    ?type_id skos:prefLabel ?type . ' +
+        '    FILTER(langMatches(lang(?type), "FI")) ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '    ?id crm:P4_has_time-span ?time_id .  ' +
+        '    ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
+        '    		crm:P82b_end_of_the_end ?end_time .  ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '    ?id crm:P7_took_place_at ?place_id . ' +
+        '    OPTIONAL { ' +
+        '      ?place_id skos:prefLabel ?place_label .  ' +
+        '      ?place_id geo:lat ?lat ;  geo:long ?lon .  ' +
+        '    } ' +
+        '  } ' +
         ' } ORDER BY ?start_time ?end_time ';
 
         var personLifeEventsQry = prefixes +
@@ -345,48 +301,6 @@
         '    FILTER(langMatches(lang(?type), "FI")) ' +
         '  } ' +
         ' } ORDER BY ?start_time  ';
-
-        var unitEventQry = prefixes +
-        '  SELECT ?id ?type_id ?type ?description ?time_id ?start_time ?end_time ' +
-        '          ?place_id ?place_label ' +
-        '  WHERE { ' +
-        '      VALUES ?unit  { {0} } ' +
-        '      { ' +
-        '        ?id a crm:E66_Formation ; ' +
-        '        	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
-        '      } UNION { ' +
-        '        ?id a etypes:UnitNaming ; ' +
-        '          	crm:P95_has_formed ?unit . OPTIONAL { ?id skos:altLabel ?abbrev . }' +
-        '      } UNION { ' +
-        '       	?id a etypes:TroopMovement ; ' +
-        '        	crm:P95_has_formed ?unit . ' +
-        '      } UNION { ' +
-        '        ?id a etypes:Battle ; ' +
-        '        	crm:P11_had_participant ?unit . ' +
-        '      } ' +
-        '      ?id a ?type_id . ' +
-        '       OPTIONAL { ' +
-        '         ?type_id skos:prefLabel ?type . ' +
-        '         FILTER(langMatches(lang(?type), "FI")) ' +
-        ' 	    } ' +
-        '	   OPTIONAL { ?id skos:prefLabel ?description . } ' +
-        '	    ' +
-        '	   OPTIONAL { ' +
-        '        ?id crm:P4_has_time-span ?time_id .  ' +
-        '        ?time crm:P82a_begin_of_the_begin ?start_time ;  ' +
-        '              crm:P82b_end_of_the_end ?end_time .  ' +
-        '	   } ' +
-        '	   OPTIONAL {  ' +
-        '        ?id crm:P7_took_place_at ?place_id . ' +
-        '        OPTIONAL { ' +
-        '          ?place_id skos:prefLabel ?place_label . ' +
-        '        } ' +
-        '      } ' +
-        '	} ORDER BY ?start_time ?end_time ';
-
-        var eventTypeFilter =
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-        '   FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ';
 
         var eventFilterWithinTimeSpan =
         'FILTER(?start_time >= "{0}"^^xsd:date && ?end_time <= "{1}"^^xsd:date)';
@@ -519,18 +433,6 @@
                 return $q.when();
             }
             qry = personLifeEventsQry.format(id);
-            return endpoint.getObjects(qry, pageSize);
-        };
-
-        this.getMinimalDataWithPlaceByUnitId = function(id, pageSize) {
-            if (_.isArray(id)) {
-                id = '<{0}>'.format(id.join('> <'));
-            } else if (id) {
-                id = '<{0}>'.format(id);
-            } else {
-                return $q.when();
-            }
-            var qry = unitEventQry.format(id);
             return endpoint.getObjects(qry, pageSize);
         };
     }
