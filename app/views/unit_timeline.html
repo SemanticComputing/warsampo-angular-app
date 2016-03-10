@@ -18,6 +18,7 @@
               <h3 ng-if="ctrl.current && ctrl.current.name">
                 {{ ctrl.current.name[0] }} <span ng-if="ctrl.current.abbrev.length">({{ ctrl.current.abbrev | concatList }})</span>
               </h3>
+              <p ng-if="ctrl.current.desc">{{ ctrl.current.desc }} (Wikipedia)</p>
               <p ng-if="ctrl.current && ctrl.current.altNames.length">Osasto on tunnettu myös nimillä {{ ctrl.current.altNames.join('; ') }}</p>
               <div ng-show="ctrl.current.relatedEvents.length === 0" translate>
                 NO_RELATED_EVENTS

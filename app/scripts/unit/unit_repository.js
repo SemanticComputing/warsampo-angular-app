@@ -14,6 +14,7 @@ angular.module('eventsApp')
     ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
     ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
     ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
+    ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
     ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
     ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
     ' PREFIX sch: <http://schema.org/> ' +
@@ -30,7 +31,7 @@ angular.module('eventsApp')
     ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
 
     var unitQry = prefixes +
-    '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?sid ?source WHERE {  ' +
+    '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?desc ?sid ?source WHERE {  ' +
     '      ?ename a etypes:UnitNaming . ' +
     '      ?ename skos:prefLabel ?name . ' +
     '      BIND(?name AS ?label) ' +
@@ -39,7 +40,8 @@ angular.module('eventsApp')
     '        OPTIONAL { ?sid skos:prefLabel ?source . } ' +
     '      } ' +
     '      ?ename crm:P95_has_formed ?id . ' +
-    '      OPTIONAL {?id crm:P3_has_note ?note . } ' +
+    '      OPTIONAL { ?id crm:P3_has_note ?note . } ' +
+    '      OPTIONAL { ?id dc:description ?desc . } ' +
     '      VALUES ?id  { {0} } ' +
     '  } ';
 
