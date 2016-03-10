@@ -19,13 +19,16 @@ angular.module('eventsApp')
         for (var i=0; i<events.length; i++) {
             var e=events[i],
                 etype=e.type_id,
+            	edate, edate2;
+            if ('start_time' in e) {
                 edate=e.start_time,
                 edate2=e.end_time;
-            edate=dateUtilService.getExtremeDate(edate, true);
-            edate2=dateUtilService.getExtremeDate(edate2, false);
-            edate=dateUtilService.formatDateRange(edate,edate2);
+            	edate=dateUtilService.getExtremeDate(edate, true);
+            	edate2=dateUtilService.getExtremeDate(edate2, false);
+            	edate=dateUtilService.formatDateRange(edate,edate2);
+            }
 				var eplace = '';
-				if (e.places && e.places.length) { 
+				if (e.places && e.places.length) {
 					eplace=e.places[0].label;
 					for (var j=0; j<e.places.length; j++) {
 						places.push({ id: e.places[j].id, label: e.places[j].label });
@@ -44,7 +47,7 @@ angular.module('eventsApp')
                 person.disapp = edate;
                 if (eplace) person.disapp_place = eplace;
             } else if (etype.indexOf('Promotion')>-1) {
-                person.promotions.push(e.rank + ' ' + edate);
+            	if (edate) person.promotions.push(e.rank + ' ' + edate);
                 person.ranks.unshift({id:e.rank_id, label:e.rank});
             }
         }

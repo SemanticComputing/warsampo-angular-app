@@ -32,7 +32,7 @@ angular.module('eventsApp')
     ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
     var personQry = prefixes +
-    ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ?death_time '+
+    ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?birth_time ?death_time '+ // ?rank ?rank_id 
     '       ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ?death_place ?death_place_uri ?bury_place ?bury_place_uri '+
     '       ?living_place ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit '+
     '       ?sid ?source ' +
@@ -45,7 +45,7 @@ angular.module('eventsApp')
     '   OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
     '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
     '   }' +
-    '   OPTIONAL { ?id :hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . }' +
+  //  '   OPTIONAL { ?id :hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . }' +
     ' 	OPTIONAL { ' +
     '     ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +
     '	} ' +
@@ -127,7 +127,7 @@ angular.module('eventsApp')
     '} ORDER BY ?name 	';
 
     var byUnitQry = prefixes +
-    'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end (COUNT(?s) AS ?no) WHERE { ' +
+    'SELECT ?id ?sname ?fname ?label ?role ?join_start ?join_end (COUNT(?s) AS ?no) WHERE { ' + // ?rank 
     ' 	{ SELECT ?id ?role ?join_start ?join_end WHERE { ' +
     ' 	    ?evt a etypes:PersonJoining ; ' +
     ' 	    crm:P143_joined ?id . ' +
@@ -149,12 +149,12 @@ angular.module('eventsApp')
     '   ?id skos:prefLabel ?label . ' +
     '   ?id foaf:familyName ?sname .	' +
     '   OPTIONAL { ?id foaf:firstName ?fname .	} ' +
-    '   OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
-    '} GROUP BY ?id ?sname ?fname ?label ?no ?rank ?role ?join_start ?join_end ' +
+    //'   OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
+    '} GROUP BY ?id ?sname ?fname ?label ?no ?role ?join_start ?join_end ' + // ?rank 
     ' 		ORDER BY DESC(?no) ';
 
     var commandersByUnitQry = prefixes +
-    'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end WHERE { ' +
+    'SELECT ?id ?sname ?fname ?label ?role ?join_start ?join_end WHERE { ' + // ?rank 
     ' 	 ?evt a etypes:PersonJoining ; ' +
     ' 	    crm:P143_joined ?id . ' +
     ' 	 ?evt  crm:P144_joined_with {0} .  ' +
@@ -167,9 +167,24 @@ angular.module('eventsApp')
     '    ?id skos:prefLabel ?label . ' +
     '    ?id foaf:familyName ?sname .	' +
     '    OPTIONAL { ?id foaf:firstName ?fname .	} ' +
-    '    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
+    //'    OPTIONAL { ?id :hasRank ?ranktype . ?ranktype skos:prefLabel ?rank . } ' +
     '} ';
 
+	var byRankQry = prefixes +
+    'SELECT DISTINCT ?id ?sname ?fname WHERE {	' +
+    '  { ' +
+    'SELECT DISTINCT ?id WHERE { ' +
+    '  VALUES ?rank { {0} } . ' +
+    '    ?evt a etypes:Promotion .	' +
+    '    ?evt :hasRank ?rank . ' +
+    '    ?evt crm:P11_had_participant ?id . ' +
+    '  	?id a atypes:MilitaryPerson .	' +
+    '    } }	' +
+    '  ?id foaf:familyName ?sname .	' +
+    '  ?id foaf:firstName ?fname . ' +
+    '} ORDER BY ?sname ?fname ';
+    
+/*
     var byRankQry = prefixes +
     'SELECT DISTINCT ?id ?sname ?fname WHERE {	' +
     '  { ' +
@@ -189,7 +204,7 @@ angular.module('eventsApp')
     '  ?id foaf:familyName ?sname .	' +
     '  ?id foaf:firstName ?fname . ' +
     '} ORDER BY ?sname ?fname ';
-
+*/
 	
 	var byMedalQry = prefixes +
 	    ' SELECT DISTINCT ?id ?sname ?fname WHERE {	 ' +
