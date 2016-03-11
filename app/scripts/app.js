@@ -74,10 +74,10 @@
     '    } ' +
     '    OPTIONAL { ' +
     '      GRAPH <http://ldf.fi/places/karelian_places> { ' +
-    '        ?place_id geosparql:sfWithin ?municipality . ' +
+    '        ?place_id geosparql:sfWithin ?municipality_id . ' +
     '      } ' +
     '      GRAPH <http://ldf.fi/places/municipalities> { ' +
-    '        ?municipality a suo:kunta . ' +
+    '        ?municipality_id a suo:kunta . ' +
     '      } ' +
     '    } ' +
     ' } UNION { ' +
@@ -86,8 +86,15 @@
     '     FILTER(langMatches(lang(?place_label), "FI")) ' +
     '     ?place_id geo:lat ?lat ; ' +
     '       geo:long ?lon . ' +
+    '     OPTIONAL { ' +
+    '       ?place_id crm:P89_falls_within  ?municipality_id . ' +
+    '       ?municipality_id a ?mt . ' +
+    '       FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
+    '           ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
+    '     } ' +
     '   } ' +
     ' } ')
+    .constant('PHOTO_PAGE_SIZE', 50)
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider

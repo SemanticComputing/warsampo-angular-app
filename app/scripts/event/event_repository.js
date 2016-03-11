@@ -42,7 +42,8 @@
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ';
+        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
+        ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E67_Birth>) ';
 
         var placePartial =
         ' ?id crm:P7_took_place_at ?place_id .  ' +

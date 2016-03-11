@@ -40,10 +40,9 @@
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?ref_place_id { {0} } ' +
-        '  ?id dc:spatial ?place_id . ' +
-        '  ?id dc:created ?created . ' +
-        '  FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
-        '  ?id a photos:Photograph . ' +
+        ' ?id dc:spatial ?place_id . ' +
+        ' ?id dc:created ?created . ' +
+        ' FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
         ' OPTIONAL { ' +
         '  ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
         '  ?ref_municipality a suo:kunta . ' +
@@ -53,24 +52,28 @@
         '  ?municipality a suo:kunta . ' +
         ' } ' +
         ' FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality ' +
-        '  || ?ref_place_id = ?municipality) ';
+        '  || ?ref_place_id = ?municipality) ' +
+        '  ?id a photos:Photograph . ';
 
         var placePartial =
-        ' ?id dc:spatial ?place_id . ' +
-        PLACE_PARTIAL_QUERY;
+        ' OPTIONAL { ?id dc:spatial ?place_id . ' +
+        '   ?id dc:spatial ?place_id . ' +
+            PLACE_PARTIAL_QUERY +
+        ' } ';
 
         var photoQry = select +
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
+        '  OPTIONAL { ?id dc:description ?description . } ' +
         '  OPTIONAL { ?id dc:created ?created . } ' +
         '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
-        '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
-        '  OPTIONAL { ?id dc:spatial ?place_id . ' +
-             placePartial +
-        '  } ' +
+        '  <PLACE> ' +
         ' } ';
+
+        var photoQryExtended = photoQry.replace('<PLACE>', placePartial);
+        photoQry = photoQry.replace('<PLACE>', '');
 
         var photosByTimeResultSet =
         ' GRAPH warsa:photographs { ' +
@@ -84,14 +87,26 @@
         ' ?id a photos:Photograph . ';
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +
-        ' SELECT DISTINCT ?created ?place_id ?municipality_id' +
-        ' WHERE { ' +
-        '     GRAPH warsa:photographs { ' +
-        '       ?id dc:spatial ?place_id . ' +
-        '       ?id dc:created ?created . ' +
-        '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-        '     } ' +
-        '     OPTIONAL { ?place_id geosparql:sfWithin ?municipality_id . ?municipality_id a suo:kunta . } ' +
+        ' SELECT DISTINCT ?created ?place_id ?municipality_id WHERE { ' +
+        '  GRAPH warsa:photographs { ' +
+        '   ?id dc:spatial ?place_id . ' +
+        '   ?id dc:created ?created . ' +
+        '   FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   ?place_id geosparql:sfWithin ?municipality_id . ' +
+        '   ?municipality_id a suo:kunta . ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '    OPTIONAL { ' +
+        '     ?place_id crm:P89_falls_within  ?municipality_id . ' +
+        '     ?municipality_id a ?mt . ' +
+        '     FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
+        '      ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
+        '    } ' +
+        '   } ' +
+        '  } ' +
         ' } ' +
         ' ORDER BY ?created ';
 
@@ -105,13 +120,14 @@
         ' } ' +
         ' ORDER BY ?created ';
 
-        this.getByTimeSpan = function(start, end, pageSize) {
+        this.getByTimeSpan = function(start, end, options) {
             var resultSet = photosByTimeResultSet.format(start, end);
-            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            var query =  options.extended ? photoQryExtended : photoQry;
+            var qryObj = queryBuilder.buildQuery(query, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         };
 
-        this.getByPlaceAndTimeSpan = function(place_id, start, end, pageSize) {
+        this.getByPlaceAndTimeSpan = function(place_id, start, end, options) {
             if (_.isArray(place_id)) {
                 place_id = '<{0}>'.format(place_id.join('> <'));
             } else if (place_id) {
@@ -121,7 +137,7 @@
             }
             var resultSet = photosByPlaceAndTimeResultSet.format(place_id, start, end);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         };
 
         this.getByPersonId = function(id, pageSize) {
