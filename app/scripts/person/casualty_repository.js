@@ -9,7 +9,7 @@
     .service('casualtyRepository', function($q, _, SparqlService, objectMapperService) {
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
-        var prefixes = '' +
+        var prefixes =
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
@@ -71,7 +71,7 @@
         '  ?id skos:prefLabel ?description . 	' +
         '}  GROUP BY ?id ?description 	';
 
-        var casualtyLocationsByTimeAndUnitQry = '' +
+        var casualtyLocationsByTimeAndUnitQry =
         'PREFIX : <http://ldf.fi/warsa/actors/> 	' +
         'PREFIX events: <http://ldf.fi/warsa/events/>	' +
         'PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> 	' +

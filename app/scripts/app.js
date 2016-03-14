@@ -95,6 +95,16 @@
     '   } ' +
     ' } ')
     .constant('PHOTO_PAGE_SIZE', 50)
+    // TODO: Add all types
+    .constant('EVENT_TYPES', {
+        BATTLE: 'http://ldf.fi/warsa/events/event_types/Battle',
+        POLITICAL_ACTIVITY: 'http://ldf.fi/warsa/events/event_types/PoliticalActivity',
+        TROOP_MOVEMENT: 'http://ldf.fi/warsa/events/event_types/TroopMovement',
+        PROMOTION: 'http://ldf.fi/warsa/events/event_types/Promotion',
+        BIRTH: 'http://www.cidoc-crm.org/cidoc-crm/E67_Birth',
+        DEATH: 'http://www.cidoc-crm.org/cidoc-crm/E69_Death',
+        DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing'
+    })
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider

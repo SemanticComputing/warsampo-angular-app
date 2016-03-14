@@ -180,27 +180,27 @@
             });
         };
 
-        this.getById = function(id) {
+        self.getById = function(id) {
             return unitRepository.getById(id);
         };
 
-        this.getByIdList = function(ids) {
+        self.getByIdList = function(ids) {
             return unitRepository.getByIdList(ids);
         };
 
-        this.getRelatedUnits = function(id) {
+        self.getRelatedUnits = function(id) {
             return unitRepository.getRelatedUnits(id);
         };
 
-        this.getSubUnits = function(unit) {
+        self.getSubUnits = function(unit) {
             return unitRepository.getSubUnits(unit);
         };
 
-        this.getItems = function (regx, controller) {
+        self.getItems = function (regx, controller) {
             return unitRepository.getItems(regx, controller);
         };
 
-        this.getActorInfo = function(ids) {
+        self.getActorInfo = function(ids) {
             return unitRepository.getByUnitId(ids);
         };
     }

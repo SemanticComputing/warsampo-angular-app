@@ -1,5 +1,6 @@
 (function() {
     'use strict';
+    /* eslint-disable angular/no-service-method */
 
     /*
     * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.

@@ -16,7 +16,7 @@
         </span>{{ ctrl.event.type }}
       </h2>
       <p>{{ ctrl.event.description }}</p>
-      <p><a ws-page-link="ctrl.event.id" demo translate>SHOW_IN_DEMO</a></p>
+      <p><a ng-href="{{ ctrl.demoLink }}" translate>SHOW_IN_DEMO</a></p>
       <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>
     </div>
   </div>

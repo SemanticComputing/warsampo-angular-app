@@ -20,7 +20,6 @@
 
         if ($routeParams.uri) {
             self.isLoadingMedal = true;
-            self.isLoadingPersons = false;
             medalService.getById($routeParams.uri)
             .then(function(medal) {
                 self.medal = medal;

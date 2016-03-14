@@ -1,11 +1,13 @@
-'use strict';
+(function() {
+    'use strict';
+    /* eslint-disable angular/no-service-method */
 
-/*
- * Service that provides an interface for fetching semanticModels from the WarSa SPARQL endpoint.
- */
-angular.module('eventsApp')
+    /*
+    * Service that provides an interface for fetching semanticModels from the WarSa SPARQL endpoint.
+    */
+    angular.module('eventsApp')
     .service('semanticModelService', function($q, SparqlService,
-                semanticModelRepository) {
+                    semanticModelRepository) {
 
         this.fetchRelated = function(obj) {
             return semanticModelRepository.getRelated(obj.id).then(function(related) {
@@ -24,5 +26,5 @@ angular.module('eventsApp')
         this.getRelated = function(id) {
             return semanticModelRepository.getRelated(id);
         };
-});
-
+    });
+})();

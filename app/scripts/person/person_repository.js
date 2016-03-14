@@ -178,27 +178,21 @@
         '  } GROUP BY ?id ' +
         ' }	';
 
-        var byRankQry = select +
+        var minimalQry = select +
         ' {	' +
         '  <RESULT_SET> ' +
         '  ?id foaf:familyName ?sname .	' +
         '  ?id foaf:firstName ?fname . ' +
         ' } ORDER BY ?sname ?fname ';
 
-        var byMedalQry = prefixes +
-        ' SELECT DISTINCT ?id ?sname ?fname WHERE {	 ' +
-        '  { ' +
-        '   SELECT DISTINCT ?id WHERE {  ' +
-        '    VALUES ?medal { {0} } .  ' +
-        '    ?evt a  crm:E13_Attribute_Assignment ;	 ' +
-        '      crm:P141_assigned ?medal ; ' +
-        '      crm:P11_had_participant ?id .  ' +
-        '  	 ?id a atypes:MilitaryPerson .	 ' +
-        '   } ' +
-        '  } ' +
-        '  ?id foaf:familyName ?sname ; ' +
-        '  	foaf:firstName ?fname . ' +
-        ' } ORDER BY ?sname ?fname ';
+        var byMedalQryResultSet =
+        ' VALUES ?medal { {0} } .  ' +
+        ' ?evt a  crm:E13_Attribute_Assignment ;	 ' +
+        '   crm:P141_assigned ?medal ; ' +
+        '   crm:P11_had_participant ?id .  ' +
+        ' ?id a atypes:MilitaryPerson .	 ' +
+        ' ?id foaf:familyName ?sname ; ' +
+        '   foaf:firstName ?fname . ';
 
         var casualtiesByTimeSpanQryResultSet =
         '   ?casualty casualties:kuolinaika ?death_time . ' +
@@ -230,13 +224,15 @@
         this.getByRankId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
             var resultSet = byRankQryResultSet.format('<{0}>'.format(id));
-            var qryObj = queryBuilder.buildQuery(byRankQry, resultSet, orderBy);
+            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
-        this.getByMedalId = function(id) {
-            var qry = byMedalQry.format('<{0}>'.format(id));
-            return endpoint.getObjects(qry);
+        this.getByMedalId = function(id, pageSize) {
+            var orderBy = ' ?sname ?fname ';
+            var resultSet = byMedalQryResultSet.format('<{0}>'.format(id));
+            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, orderBy);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
         this.getById = function(id) {

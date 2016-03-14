@@ -43,6 +43,8 @@
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
+        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Disappearing>) ' +
+        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Wounding>) ' +
         ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E67_Birth>) ';
 
         var placePartial =
