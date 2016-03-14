@@ -1,9 +1,11 @@
-'use strict';
+(function() {
+    'use strict';
+    /* eslint-disable angular/no-service-method */
 
-/*
- * Service that provides an interface for fetching actor data.
- */
-angular.module('eventsApp')
+    /*
+    * Service that provides an interface for fetching actor data.
+    */
+    angular.module('eventsApp')
     .service('rankService', function($q, SparqlService, rankRepository,
                 personRepository, Settings) {
 
@@ -13,9 +15,9 @@ angular.module('eventsApp')
             return self.getRelatedPersonPager(rank.id).then(function(pager) {
                 rank.persons = pager;
                 return rank.persons.getTotalCount().then(function(count) {
-            	    if (count) {
+                    if (count) {
                         rank.hasLinks = true;
-            	    }
+                    }
                     return rank;
                 });
             });
@@ -59,24 +61,24 @@ angular.module('eventsApp')
             });
         };
 
-		this.getById = function(id) {
+        self.getById = function(id) {
             return rankRepository.getById(id);
         };
 
-		this.getRelatedPersons = function(id) {
+        self.getRelatedPersons = function(id) {
             return personRepository.getByRankId(id);
         };
 
-		this.getRelatedRanks = function(id) {
+        self.getRelatedRanks = function(id) {
             return rankRepository.getRelatedRanks(id);
         };
 
-        this.countByRankId = function(id) {
+        self.countByRankId = function(id) {
             return personRepository.countByRankId(id);
         };
 
         self.getRelatedPersonPager = function(id) {
             return personRepository.getByRankId(id, Settings.pageSize);
         };
-});
-
+    });
+})();

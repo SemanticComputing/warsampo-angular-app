@@ -21,7 +21,7 @@ angular.module('eventsApp')
     };
 
     self.fetchPhotos = function(time) {
-        return photoRepository.getByTimeSpan(time.bob, time.eoe, 50)
+        return photoRepository.getByTimeSpan(time.bob, time.eoe, { pageSize: 50 })
             .then(function(photos) {
                 time.photos = photos;
                 if (photos && photos.length) {
@@ -32,16 +32,17 @@ angular.module('eventsApp')
     };
 
     self.fetchCasualties = function(time) {
-        return personRepository.getCasualtiesByTimeSpan(time.bob, time.eoe, Settings.pageSize)
-            .then(function(data) {
-                time.casualties = data;
-                data.getTotalCount().then(function(count) {
-                    if (count) {
-                        time.hasLinks = true;
-                    }
-                });
-                return time;
+        return personRepository.getCasualtiesByTimeSpan(time.bob, time.eoe,
+                { pageSize: Settings.pageSize })
+        .then(function(data) {
+            time.casualties = data;
+            data.getTotalCount().then(function(count) {
+                if (count) {
+                    time.hasLinks = true;
+                }
             });
+            return time;
+        });
     };
 
     self.fetchRelated = function(time) {

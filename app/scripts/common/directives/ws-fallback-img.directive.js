@@ -8,7 +8,7 @@
             link: function(scope, element) {
                 element.error(function() {
                     var src = '/images/no-image-sm.png';
-                    if (!_.contains(element.attr('src'), src)) {
+                    if (!_.includes(element.attr('src'), src)) {
                         element.attr('src', src);
                         var a = element.parent();
                         a.attr('href', '/images/no-image.png');

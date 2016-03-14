@@ -1,11 +1,16 @@
-'use strict';
+(function() {
+    'use strict';
+    /* eslint-disable angular/no-service-method */
 
-/*
- * Service that provides an interface for fetching actor data.
- */
-angular.module('eventsApp')
-    .service('medalService', function($q, SparqlService, medalRepository,
-                personRepository, Settings) {
+    /*
+    * Service that provides an interface for fetching medal data.
+    */
+    angular.module('eventsApp')
+    .service('medalService', medalService);
+
+    /* @ngInject */
+    function medalService($q, SparqlService, medalRepository,
+                    personRepository, Settings) {
 
         var self = this;
 
@@ -13,9 +18,9 @@ angular.module('eventsApp')
             return self.getRelatedPersonPager(medal.id).then(function(pager) {
                 medal.persons = pager;
                 return medal.persons.getTotalCount().then(function(count) {
-            	    if (count) {
+                    if (count) {
                         medal.hasLinks = true;
-            	    }
+                    }
                     return medal;
                 });
             });
@@ -27,7 +32,7 @@ angular.module('eventsApp')
                 if (relatedMedals && relatedMedals.length) {
                     medal.hasLinks = true;
                     relatedMedals.forEach(function(relatedMedal) {
-                    		medal.relatedMedals.push(relatedMedal);
+                        medal.relatedMedals.push(relatedMedal);
                     });
                 }
                 return medal;
@@ -45,24 +50,20 @@ angular.module('eventsApp')
             });
         };
 
-		this.getById = function(id) {
+        self.getById = function(id) {
             return medalRepository.getById(id);
         };
 
-		this.getRelatedPersons = function(id) {
+        self.getRelatedPersons = function(id) {
             return personRepository.getByMedalId(id);
         };
 
-		this.getRelatedMedals = function(id) {
+        self.getRelatedMedals = function(id) {
             return medalRepository.getRelatedMedals(id);
-        };
-
-        this.countByMedalId = function(id) {
-            return personRepository.countByMedalId(id);
         };
 
         self.getRelatedPersonPager = function(id) {
             return personRepository.getByMedalId(id, Settings.pageSize);
         };
-});
-
+    }
+})();
