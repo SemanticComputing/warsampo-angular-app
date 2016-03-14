@@ -48,8 +48,16 @@
         '  ?ref_municipality a suo:kunta . ' +
         ' } ' +
         ' OPTIONAL { ' +
-        '  ?place_id geosparql:sfWithin ?municipality . ' +
-        '  ?municipality a suo:kunta . ' +
+        '  ?place_id geosparql:sfWithin ?municipality_id . ' +
+        '  ?municipality_id a suo:kunta . ' +
+        ' } ' +
+        ' OPTIONAL { ' +
+        '  SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '    ?place_id crm:P89_falls_within  ?municipality_id . ' +
+        '    ?municipality_id a ?mt . ' +
+        '    FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
+        '     ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
+        '  } ' +
         ' } ' +
         ' FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality ' +
         '  || ?ref_place_id = ?municipality) ' +
@@ -88,10 +96,14 @@
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +
         ' SELECT DISTINCT ?created ?place_id ?municipality_id WHERE { ' +
-        '  GRAPH warsa:photographs { ' +
-        '   ?id dc:spatial ?place_id . ' +
-        '   ?id dc:created ?created . ' +
-        '   FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '  { ' +
+        '   SELECT DISTINCT ?place_id ?created { ' +
+        '    GRAPH warsa:photographs { ' +
+        '     ?id dc:spatial ?place_id . ' +
+        '     ?id dc:created ?created . ' +
+        '     FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '    } ' +
+        '   } ' +
         '  } ' +
         '  OPTIONAL { ' +
         '   ?place_id geosparql:sfWithin ?municipality_id . ' +
@@ -99,12 +111,10 @@
         '  } ' +
         '  OPTIONAL { ' +
         '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
-        '    OPTIONAL { ' +
-        '     ?place_id crm:P89_falls_within  ?municipality_id . ' +
-        '     ?municipality_id a ?mt . ' +
-        '     FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
-        '      ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
-        '    } ' +
+        '    ?place_id crm:P89_falls_within  ?municipality_id . ' +
+        '    ?municipality_id a ?mt . ' +
+        '    FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
+        '     ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
         '   } ' +
         '  } ' +
         ' } ' +
@@ -113,10 +123,10 @@
         var minimalPhotosByTimeQry = prefixes +
         ' SELECT DISTINCT ?created' +
         ' WHERE { ' +
-        '     GRAPH warsa:photographs { ' +
-        '       ?id dc:created ?created . ' +
-        '       FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-        '     } ' +
+        '  GRAPH warsa:photographs { ' +
+        '   ?id dc:created ?created . ' +
+        '   FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '  } ' +
         ' } ' +
         ' ORDER BY ?created ';
 

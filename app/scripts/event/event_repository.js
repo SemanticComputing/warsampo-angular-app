@@ -125,25 +125,6 @@
         '   } ' +
         '   ?id crm:P4_has_time-span ?time_id ;  ';
 
-        var eventsByActorQry = select +
-        ' {  ' +
-        '   <RESULT_SET> ' +
-        '   ?id crm:P4_has_time-span ?time_id ;  ' +
-        '       a ?type_id .  ' +
-        '   ?id skos:prefLabel ?description .  ' +
-        '   { ?id crm:P95_has_formed ?participant . } ' +
-        '   UNION  ' +
-        '   { ?id crm:P11_had_participant ?participant . }  ' +
-        '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
-        '   OPTIONAL {  ' +
-                placePartial +
-        '   }  ' +
-        '   ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
-        '      crm:P82b_end_of_the_end ?end_time .  ' +
-        '   ?type_id skos:prefLabel ?type .  ' +
-        '   FILTER(langMatches(lang(?type), "FI"))   ' +
-        ' } ';
-
         var eventsAndSubUnitEventsByUnitQryResultSet =
         ' { ' +
         '   VALUES ?participant { {0} } ' +
@@ -178,30 +159,6 @@
         ' ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
         '      crm:P82b_end_of_the_end ?end_time . ' +
         ' FILTER (?start_time<=?end_time) . ';
-
-        var eventsAndSubUnitEventsByUnitQry = select +
-        ' { ' +
-        '  <RESULT_SET> ' +
-        '  { ' +
-        '    { ' +
-        '      ?id crm:P95_has_formed ?participant . ' +
-        '    }' +
-        '    UNION { ' +
-        '      ?id crm:P11_had_participant ?participant . ' +
-        '    } ' +
-        '    ?id crm:P4_has_time-span ?time_id ; ' +
-        '        a ?type_id . ' +
-        '    ?type_id skos:prefLabel ?type . ' +
-        '    FILTER(langMatches(lang(?type), "FI")) ' +
-        '    ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '         crm:P82b_end_of_the_end ?end_time . ' +
-        '    ?id skos:prefLabel ?description . ' +
-        '    OPTIONAL { ?id events:hadCommander ?commander . } ' +
-        '    OPTIONAL { ' +
-                placePartial +
-        '    } ' +
-        '  } ' +
-        ' } ';
 
         var byPersonQry = prefixes + select +
         ' { ' +
