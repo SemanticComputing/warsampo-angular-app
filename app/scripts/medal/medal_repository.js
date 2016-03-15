@@ -38,10 +38,10 @@
         '    VALUES ?medal { {0} } .  ' +
         '    { ' +
         '     SELECT DISTINCT ?actor { ' +
-        '      ?evt crm:P141_assigned ?medal ; ' +
+        '      ?evt crm:P141_assigned {0} ; ' +
         '        crm:P11_had_participant ?actor ; ' +
         '        a crm:E13_Attribute_Assignment . ' +
-        '     } ' +
+        '     } LIMIT 50 ' +
         '    } ' +
         '    ?evt2 crm:P11_had_participant ?actor ; ' +
         '      crm:P141_assigned ?id ; ' +
