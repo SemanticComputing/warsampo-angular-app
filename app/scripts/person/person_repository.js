@@ -56,7 +56,7 @@
         '  ?id foaf:familyName ?sname .' +
         '  ?id skos:prefLabel ?label .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
-        '  OPTIONAL { ?id crm:P3_has_note|dct:description ?note . }' +
+        '  OPTIONAL { ?id crm:P3_has_note|dc:description ?note . }' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
@@ -239,7 +239,7 @@
             var resultSet = personQryResultSet.format('<{0}>'.format(id));
             var qryObj = queryBuilder.buildQuery(personQry, resultSet);
             return endpoint.getObjects(qryObj.query).then(function(data) {
-                if (data.length) {
+            	if (data.length) {
                     // because of temporary multiple labels in casualties data set:
                     return data[0];
                 }
