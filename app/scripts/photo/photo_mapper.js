@@ -22,7 +22,7 @@
         e.thumbnail = photo.thumbnail_url.value;
         e.description = photo.description ? photo.description.value : '';
         e.created = photo.created ? photo.created.value : undefined;
-        e.participant_id = photo.participant ? photo.participant.value : '';
+        e.participant_id = photo.participant_id ? photo.participant_id.value : '';
         e.municipality_id = photo.municipality ? photo.municipality.value : '';
 
         if (photo.place_id) {

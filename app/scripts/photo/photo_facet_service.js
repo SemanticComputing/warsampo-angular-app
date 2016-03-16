@@ -42,7 +42,7 @@
             '?place_id',
             '?place_label',
             '?place_string',
-            '?participant',
+            '?participant_id',
             '?url',
             '?thumbnail_url'
         ];
@@ -89,7 +89,7 @@
         '     ?id dc:created ?created . ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '     ?id dc:subject ?participant . ' +
+        '     ?id dc:subject ?participant_id . ' +
         '   } ' +
         '   OPTIONAL { ?id photos:place_string ?place_string . } ' +
         '   OPTIONAL { ?id skos:prefLabel ?description . } ' +
