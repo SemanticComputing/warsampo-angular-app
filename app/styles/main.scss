@@ -14,101 +14,18 @@ body {
   padding: 0;
 }
 
-/* Custom page header */
-.header {
-
-  /* Make the masthead heading the same height as the navigation */
-  h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
-  }
-}
-
-.container-narrow > hr {
-  margin: 30px 0;
-}
-
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-
-  /* Remove the padding we set earlier */
-  .header,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.nav-btn-container {
-    line-height: 20px;
-}
-
 .input-short {
     width: 80px !important;
 }
 
-.infoBox {
-    background: rgb(255, 255, 255);
-    border: 1px solid black;
-    margin-top: 8px;
-    padding: 5px;
-    width: 350px;
-}
-
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
-
-.animate-top {
-    opacity: 1;
-}
-
-.animate-top.ng-hide-remove,
-.animate-top.ng-hide-add,
-.animate-top.ng-enter,
-.animate-top.ng-leave {
-  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-  position: relative;
-  top: 0;
-}
-
-.animate-top.ng-enter, .animate-top.ng-hide,
-.animate-top.ng-leave.ng-leave-active {
-  opacity: 0;
-  height: 0;
-  top: -50px;
-}
-
-.animate-top.ng-leave,
-.animate-top.ng-enter.ng-enter-active {
-  opacity: 1;
-}
-
-.animate-text {
-    @extend .animate-top
-}
-
-.animate-text.ng-enter,
-.animate-text.ng-hide,
-.animate-text.ng-leave.ng-leave-active {
-    top: 0;
-}
 
 .navbar {
     margin-bottom: 0;
 }
 
-.no-side-padding {
-    padding-left: 0;
-    padding-right: 0;
-}
-
 .no-margin {
     margin: 0 !important;
-}
-
-.center-align {
-    margin: auto;
 }
 
 .collapse-with-teaser {
@@ -133,7 +50,15 @@ body {
     padding: 15px;
 }
 
-.translate-cloak {
-    /*display: none !important;*/
+.facet {
+  padding-bottom: 10px;
+}
+.facet-name {
+	font-weight: bold;
+  margin-bottom: 1px;
 }
 
+.loading-img {
+  display: block;
+  margin: auto;
+}

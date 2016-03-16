@@ -1,0 +1,29 @@
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-8">
+      <div>
+      <img ng-src="{{::vm.photo.url}}"
+        title="{{::vm.photo.description}} | SA-kuva {{::vm.photo.created}}" />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div>
+        {{vm.photo.created | date:'dd.MM.yyyy'}}
+      </div>
+      <div>
+        {{vm.photo.place_string}}
+      </div>
+      <div>
+        <span ng-repeat="place in photo.places">
+          <a ws-page-link="place.id">{{ place.label }}</a>
+        </span>
+      </div>
+      <div ng-repeat="person in vm.photo.people">
+          <a ws-page-link="person.id">{{ person.label }}</a>
+      </div>
+      <p>
+        {{vm.photo.description}}
+      </p>
+    </div>
+  </div>
+</div>

@@ -24,7 +24,9 @@
         'ui.bootstrap',
         'truncate',
         'pascalprecht.translate',
-        'sparql'
+        'infinite-scroll',
+        'sparql',
+        'seco.facetedSearch'
     ])
     .constant('_', _)
     .constant('google', google)
@@ -137,6 +139,13 @@
         })
         .when('/photographs/page', {
             redirectTo: '/' + defaultLocale + '/photographs/page'
+        })
+        .when(lang + '/photographs[/]?', {
+            templateUrl: 'views/photo_demo.html',
+            controller: 'PhotoDemoController',
+            controllerAs: 'vm',
+            reloadOnSearch: false,
+            resolve: getResolve()
         })
         .when('/page', {
             redirectTo: '/' + defaultLocale + '/page'

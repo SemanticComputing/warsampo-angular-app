@@ -6,14 +6,33 @@
     * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.
     */
     angular.module('eventsApp')
-    .service('photoService', function($q, _, photoRepository, dateUtilService,
-            PHOTO_PAGE_SIZE) {
+    .service('photoService', function($q, _, photoRepository, personRepository,
+            dateUtilService, PHOTO_PAGE_SIZE) {
 
         var self = this;
 
         var defaultOptions = {
             pageSize: PHOTO_PAGE_SIZE,
             extended: false
+        };
+
+        self.fetchPeople = function(photo) {
+            return personRepository.getByIdList(photo.participant_id).then(function(people) {
+                if (people && people.length) {
+                    photo.people = people;
+                    photo.hasLinks = true;
+                }
+                return photo;
+            });
+        };
+
+        self.fetchRelated = function(photo) {
+            var related = [
+                self.fetchPeople(photo)
+            ];
+            return $q.all(related).then(function() {
+                return photo;
+            });
         };
 
         self.getPhotosByPlaceAndTimeSpan = function(place_id, start, end, options) {

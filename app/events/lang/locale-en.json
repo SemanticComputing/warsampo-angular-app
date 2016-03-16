@@ -52,6 +52,11 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Limit photos to those taken in the same municipality as the events.",
         "SHOW_HEATMAP": "Show a heatmap of casualties."
     },
+    "PHOTO_TAKEN_BETWEEN": "Photo taken between",
+    "DESCRIPTION": "Description",
+    "PLACE": "Place",
+    "PARTICIPANT": "Participant",
+    "PHOTOGRAPHER": "Photograper",
     "NATIONAL_BIBLIOGRAPHY": "National Bibliography",
     "SOURCE": "Source",
     "WINTER_WAR": "Winter War",

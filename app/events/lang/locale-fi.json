@@ -52,6 +52,11 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.",
         "SHOW_HEATMAP": "Näytä lämpökartta menehtyneistä."
     },
+    "PHOTO_TAKEN_BETWEEN": "Kuva otettu välillä",
+    "DESCRIPTION": "Kuvaus",
+    "PLACE": "Paikka",
+    "PARTICIPANT": "Osallinen",
+    "PHOTOGRAPHER": "Valokuvaaja",
     "NATIONAL_BIBLIOGRAPHY": "Kansallisbiografia",
     "SOURCE": "Lähde",
     "WINTER_WAR": "Talvisota",
