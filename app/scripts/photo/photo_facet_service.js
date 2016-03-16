@@ -110,10 +110,14 @@
             return $translate(['PHOTO_TAKEN_BETWEEN', 'DESCRIPTION', 'PLACE',
                     'PARTICIPANT', 'PHOTOGRAPHER'])
             .then(function(translations) {
-                _.forOwn(facets, function(val) {
-                    val.name = translations[val.name];
+                var facetClone = _.cloneDeep(facets);
+                _.forOwn(facetClone, function(val) {
+                    var trans = translations[val.name];
+                    if (trans) {
+                        val.name = trans;
+                    }
                 });
-                return facets;
+                return facetClone;
             });
         }
 
