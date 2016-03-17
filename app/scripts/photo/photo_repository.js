@@ -7,8 +7,13 @@
     * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.
     */
     angular.module('eventsApp')
-    .service('photoRepository', function($q, _, AdvancedSparqlService, PLACE_PARTIAL_QUERY,
+    .service('photoRepository', photoRepository);
+
+    /* @ngInject */
+    function photoRepository($q, _, AdvancedSparqlService, PLACE_PARTIAL_QUERY,
                 objectMapperService, photoMapperService, QueryBuilderService) {
+
+        var self = this;
 
         var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
             photoMapperService);
@@ -16,7 +21,7 @@
         var minimalDataService = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
             objectMapperService);
 
-        var prefixes = '' +
+        var prefixes =
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
@@ -36,7 +41,7 @@
 
         var select =
         ' SELECT DISTINCT ?id ?url ?thumbnail ?thumbnail_url ?description ?created ' +
-        '  ?participant_id ?municipality ?place_id ?place_label ?lat ?lon ';
+        '  ?participant_id ?municipality ?place_id ?place_label ?lat ?lon ?place_string ';
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?ref_place_id { {0} } ' +
@@ -77,11 +82,18 @@
         '  OPTIONAL { ?id dc:description ?description . } ' +
         '  OPTIONAL { ?id dc:created ?created . } ' +
         '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
+        '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
         '  <PLACE> ' +
         ' } ';
 
         var photoQryExtended = photoQry.replace('<PLACE>', placePartial);
         photoQry = photoQry.replace('<PLACE>', '');
+
+        var singlePhotoQryResultSet =
+        ' GRAPH warsa:photographs { ' +
+        '  BIND(<{0}> AS ?id) ' +
+        '  ?id sch:contentUrl ?url . ' +
+        ' } ';
 
         var photosByTimeResultSet =
         ' GRAPH warsa:photographs { ' +
@@ -130,14 +142,47 @@
         ' } ' +
         ' ORDER BY ?created ';
 
-        this.getByTimeSpan = function(start, end, options) {
+        var facetQryResultSet =
+        '   {0} ' +
+        '   ?s a photos:Photograph .' +
+        '   BIND(?s AS ?id) ';
+
+        self.getById = getById;
+        self.getByTimeSpan = getByTimeSpan;
+        self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
+        self.getByPersonId = getByPersonId;
+        self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
+        self.getMinimalDataByTimeSpan = getMinimalDataByTimeSpan;
+        self.getByFacetSelections = getByFacetSelections;
+
+
+        function getById(id) {
+            var resultSet = singlePhotoQryResultSet.format(id);
+            var qryObj = queryBuilder.buildQuery(photoQryExtended, resultSet);
+            return endpoint.getObjects(qryObj.query).then(function(data) {
+                if (data.length) {
+                    return (data)[0];
+                }
+                return $q.reject('Does not exist');
+            });
+        }
+
+        function getByFacetSelections(facetSelections, options) {
+            var resultSet = facetQryResultSet.format(facetSelections);
+            var qryObj = queryBuilder.buildQuery(photoQryExtended, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize,
+                    qryObj.resultSetQuery);
+        }
+
+        function getByTimeSpan(start, end, options) {
             var resultSet = photosByTimeResultSet.format(start, end);
             var query =  options.extended ? photoQryExtended : photoQry;
             var qryObj = queryBuilder.buildQuery(query, resultSet);
-            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
-        };
+            return endpoint.getObjects(qryObj.query, options.pageSize,
+                    qryObj.resultSetQuery);
+        }
 
-        this.getByPlaceAndTimeSpan = function(place_id, start, end, options) {
+        function getByPlaceAndTimeSpan(place_id, start, end, options) {
             if (_.isArray(place_id)) {
                 place_id = '<{0}>'.format(place_id.join('> <'));
             } else if (place_id) {
@@ -148,9 +193,9 @@
             var resultSet = photosByPlaceAndTimeResultSet.format(place_id, start, end);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getByPersonId = function(id, pageSize) {
+        function getByPersonId(id, pageSize) {
             if (_.isArray(id)) {
                 id = '<{0}>'.format(id.join('> <'));
             } else if (id) {
@@ -161,18 +206,18 @@
             var resultSet = photosByPersonResultSet.format(id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getMinimalDataWithPlaceByTimeSpan = function(start, end) {
+        function getMinimalDataWithPlaceByTimeSpan(start, end) {
             // start and end as strings
             var qry = minimalPhotosWithPlaceByTimeQry.format(start, end);
             return minimalDataService.getObjectsNoGrouping(qry);
-        };
+        }
 
-        this.getMinimalDataByTimeSpan = function(start, end) {
+        function getMinimalDataByTimeSpan(start, end) {
             // start and end as strings
             var qry = minimalPhotosByTimeQry.format(start, end);
             return minimalDataService.getObjectsNoGrouping(qry);
-        };
-    });
+        }
+    }
 })();

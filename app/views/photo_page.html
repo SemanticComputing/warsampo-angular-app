@@ -1,0 +1,38 @@
+<div><a id="pageTypeURL" href="photographs"><h1 id="pageType" translate>PHOTO</h1></a></div> 
+<!-- Each page has metadata column on the left and link column on the right -->
+<div class="row">
+  <!-- Metadata -->
+  <div class="col-sm-8">
+    <img ng-show="vm.isLoadingObj" src="images/loading.gif" />
+    <p ng-if="!vm.photo && !vm.isLoadingObj" translate>NO_METADATA_FOUND</p>
+    <div id="dataContent" ng-if="vm.photo">
+      <h2>
+        <span ng-repeat="place in vm.photo.places">
+          <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+        </span>
+        <span ng-if="vm.photo.created">
+          {{ vm.photo.created | date:'dd.MM.yyyy' }}
+        </span>
+      </h2>
+      <p>
+        {{ vm.photo.description }}
+        <span ng-if="vm.photo.place_string">({{ vm.photo.place_string }})</span>
+      </p>
+      <img ng-src="{{ vm.photo.url }}" />
+    </div>
+  </div>
+  <!-- Links -->
+  <div class="col-sm-4">
+    <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
+    <img ng-show="vm.isLoadingLinks" src="images/loading.gif" />
+    <p ng-if="(!vm.photo || !vm.photo.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p>
+    <div id="linkContent">
+      <ws-related-links data-title="'PHOTO_DEMO.RELATED_PEOPLE' | translate"
+        data-related="vm.photo.people"></ws-related-links-paged>
+      <ws-related-links-paged data-title="'PHOTO_DEMO.EVENTS_AT_THE_SAME_TIME' | translate"
+        data-paginator="vm.relatedEventsByTime"></ws-related-links-paged>
+      <ws-related-links-paged data-title="'PHOTO_DEMO.EVENTS_CLOSE' | translate"
+        data-paginator="vm.relatedEventsByPlace"></ws-related-links-paged>
+    </div>
+  </div>
+</div>

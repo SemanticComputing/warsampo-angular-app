@@ -6,7 +6,10 @@
     * Service that provides an interface for fetching photograph metadata from the WarSa SPARQL endpoint.
     */
     angular.module('eventsApp')
-    .service('photoService', function($q, _, photoRepository, personRepository,
+    .service('photoService', photoService);
+
+    /* @ngInject */
+    function photoService($q, _, photoRepository, personRepository,
             dateUtilService, PHOTO_PAGE_SIZE) {
 
         var self = this;
@@ -16,46 +19,60 @@
             extended: false
         };
 
-        self.fetchPeople = function(photo) {
-            return personRepository.getByIdList(photo.participant_id).then(function(people) {
+        self.fetchPeople = fetchPeople;
+        self.fetchRelated = fetchRelated;
+        self.getPhotosByPlaceAndTimeSpan = getPhotosByPlaceAndTimeSpan;
+        self.getByTimeSpan = getByTimeSpan;
+        self.getDistinctPhotoData = getDistinctPhotoData;
+        self.getRelatedPhotosForEvent = getRelatedPhotosForEvent;
+        self.getById = getById;
+
+
+        function fetchPeople(photo) {
+            return personRepository.getByIdList(photo.participant_id)
+            .then(function(people) {
                 if (people && people.length) {
                     photo.people = people;
                     photo.hasLinks = true;
                 }
                 return photo;
             });
-        };
+        }
 
-        self.fetchRelated = function(photo) {
+        function fetchRelated(photo) {
             var related = [
                 self.fetchPeople(photo)
             ];
             return $q.all(related).then(function() {
                 return photo;
             });
-        };
+        }
 
-        self.getPhotosByPlaceAndTimeSpan = function(place_id, start, end, options) {
+        function getById(id) {
+            return photoRepository.getById(id);
+        }
+
+        function getPhotosByPlaceAndTimeSpan(place_id, start, end, options) {
             if (place_id) {
                 return photoRepository.getByPlaceAndTimeSpan(place_id, start, end, options);
             }
-        };
+        }
 
-        self.getByTimeSpan = function(start, end, options) {
+        function getByTimeSpan(start, end, options) {
             // start and end as strings
             var opts = angular.extend({}, defaultOptions, options);
             return photoRepository.getByTimeSpan(start, end, opts);
-        };
+        }
 
-        self.getDistinctPhotoData = function(start, end, getPlace) {
+        function getDistinctPhotoData(start, end, getPlace) {
             // start and end as strings
             if (getPlace) {
                 return photoRepository.getMinimalDataWithPlaceByTimeSpan(start, end);
             }
             return photoRepository.getMinimalDataByTimeSpan(start, end);
-        };
+        }
 
-        self.getRelatedPhotosForEvent = function(event, photoSettings) {
+        function getRelatedPhotosForEvent(event, photoSettings) {
             var opts = angular.extend({}, defaultOptions, photoSettings);
             if (!(event.start_time && event.end_time)) {
                 return $q.when();
@@ -76,6 +93,6 @@
                 pager.pagesPerQuery = 1;
                 return pager;
             });
-        };
-    });
+        }
+    }
 })();

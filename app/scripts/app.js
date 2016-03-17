@@ -107,6 +107,7 @@
         DEATH: 'http://www.cidoc-crm.org/cidoc-crm/E69_Death',
         DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing'
     })
+    .constant('SPARQL_ENDPOINT_URL', 'http://ldf.fi/warsa/sparql')
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider
@@ -208,9 +209,9 @@
             resolve: getResolve()
         })
         .when(lang + '/photographs/page', {
-            templateUrl: 'views/semantic_page.html',
-            controller: 'SemanticPageCtrl',
-            controllerAs: 'ctrl',
+            templateUrl: 'views/photo_page.html',
+            controller: 'PhotoPageCtrl',
+            controllerAs: 'vm',
             resolve: getResolve()
         })
         .when(lang + '/casualties/page', {

@@ -7,18 +7,16 @@
 
     'use strict';
 
-    /* eslint-disable angular/no-service-method */
     angular.module('eventsApp')
 
     /*
     * Controller for the results view.
     */
-    .controller( 'PhotoDemoController', PhotoDemoController )
-    .controller( 'PhotoModalController', PhotoModalController );
+    .controller('PhotoDemoController', PhotoDemoController);
 
     /* @ngInject */
-    function PhotoDemoController( $uibModal, _, photoFacetService,
-            facetUrlStateHandlerService ) {
+    function PhotoDemoController($uibModal, _, photoFacetService,
+            facetUrlStateHandlerService) {
         var vm = this;
 
         photoFacetService.getFacets().then(function(facets) {
@@ -93,12 +91,5 @@
                 return nextPage();
             });
         }
-    }
-
-    /* @ngInject */
-    function PhotoModalController(photo, photoService) {
-        var vm = this;
-        vm.photo = photo;
-        photoService.fetchRelated(photo);
     }
 })();

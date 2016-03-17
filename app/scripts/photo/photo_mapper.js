@@ -24,6 +24,9 @@
         e.created = photo.created ? photo.created.value : undefined;
         e.participant_id = photo.participant_id ? photo.participant_id.value : '';
         e.municipality_id = photo.municipality ? photo.municipality.value : '';
+        if (photo.place_string) {
+            e.place_string = photo.place_string.value;
+        }
 
         if (photo.place_id) {
             var place = {
