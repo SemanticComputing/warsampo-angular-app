@@ -236,7 +236,7 @@
         }
 
         function getWinterWarUrl() {
-            return $translate.use() + '/events/winterwar'
+            return $translate.use() + '/events/winterwar';
         }
     }
 })();

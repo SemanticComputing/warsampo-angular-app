@@ -15,14 +15,14 @@
     .controller('PhotoDemoController', PhotoDemoController);
 
     /* @ngInject */
-    function PhotoDemoController($uibModal, _, photoFacetService,
+    function PhotoDemoController($rootScope, $uibModal, _, photoFacetService,
             facetUrlStateHandlerService) {
         var vm = this;
 
-        photoFacetService.getFacets().then(function(facets) {
-            vm.facets = facets;
-        });
-        vm.facetOptions = getFacetOptions();
+        $rootScope.showHelp = showHelp;
+
+        vm.facets;
+        vm.facetOptions;
 
         vm.disableFacets = disableFacets;
         vm.isScrollDisabled = isScrollDisabled;
@@ -30,10 +30,27 @@
         vm.nextPage = nextPage;
         vm.openModal = openModal;
 
-        vm.photos = [];
+        vm.photos;
 
         var nextPageNo;
         var maxPage;
+
+        init();
+
+        function init() {
+            photoFacetService.getFacets().then(function(facets) {
+                vm.facets = facets;
+            });
+            vm.facetOptions = getFacetOptions();
+            vm.photos = [];
+        }
+
+        function showHelp() {
+            $uibModal.open({
+                templateUrl: 'views/partials/photo.help.html',
+                size: 'lg'
+            });
+        }
 
         function openModal(photo) {
             $uibModal.open({

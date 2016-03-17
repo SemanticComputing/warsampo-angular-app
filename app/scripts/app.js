@@ -129,10 +129,10 @@
         .when('/medals/page', {
             redirectTo: '/' + defaultLocale + '/medals/page'
         })
-        .when('/units[/]?', {
+        .when('/units', {
             redirectTo: '/' + defaultLocale + '/units/'
         })
-        .when('/persons[/]?', {
+        .when('/persons', {
             redirectTo: '/' + defaultLocale + '/persons/'
         })
         .when('/times/page', {
@@ -141,7 +141,10 @@
         .when('/photographs/page', {
             redirectTo: '/' + defaultLocale + '/photographs/page'
         })
-        .when(lang + '/photographs[/]?', {
+        .when('/photographs', {
+            redirectTo: '/' + defaultLocale + '/photographs/'
+        })
+        .when(lang + '/photographs', {
             templateUrl: 'views/photo_demo.html',
             controller: 'PhotoDemoController',
             controllerAs: 'vm',
@@ -225,9 +228,6 @@
             controller: 'SemanticPageCtrl',
             controllerAs: 'ctrl',
             resolve: getResolve()
-        })
-        .otherwise({
-            redirectTo: '/' + defaultLocale + '/events/'
         });
     })
     .config(function($locationProvider) {

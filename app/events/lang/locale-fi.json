@@ -46,6 +46,8 @@
         "RELATED_CASUALTIES": "Tähän aikaan menehtyneitä"
     },
     "PHOTO_DEMO": {
+        "HELP_TEXT_TITLE": "Sodanajan valokuvat",
+        "HELP_TEXT": "<h4>Katsele valokuvia talvi- ja jatkosodan ajalta.</h4><p>Kuvia latautuu lisää, kun sivua vieritetään alaspäin.</p><p>Tuloksia voi rajata käyttämällä vasemmalla olevia suodattimia. Avaa suodatin plus-merkistä ja valitse arvo valikosta (esim. paikka paikkasuodattimesta) tai hae kuvauksista kirjoittamalla tekstiä käyttäen kuvaussuodatinta. Suodattimet rajoittavat toisiaan, joten jos suodattimessa on valittuna arvo, muissa valikkosuodattimissa näkyvät vain arvot, jotka tuottavat tuloksia.</p>",
         "EVENTS_CLOSE": "Tapahtumia samalla alueella",
         "EVENTS_AT_THE_SAME_TIME": "Tapahtumia samaan aikaan",
         "RELATED_PEOPLE": "Henkilöt"

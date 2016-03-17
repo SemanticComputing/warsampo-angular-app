@@ -9,7 +9,7 @@
     .service('photoService', photoService);
 
     /* @ngInject */
-    function photoService($q, _, photoRepository, personRepository,
+    function photoService($q, _, photoRepository, personRepository, eventRepository,
             dateUtilService, PHOTO_PAGE_SIZE) {
 
         var self = this;
@@ -28,6 +28,15 @@
         self.getById = getById;
 
 
+        function fetchRelated(photo) {
+            var related = [
+                self.fetchPeople(photo)
+            ];
+            return $q.all(related).then(function() {
+                return photo;
+            });
+        }
+
         function fetchPeople(photo) {
             return personRepository.getByIdList(photo.participant_id)
             .then(function(people) {
@@ -35,15 +44,6 @@
                     photo.people = people;
                     photo.hasLinks = true;
                 }
-                return photo;
-            });
-        }
-
-        function fetchRelated(photo) {
-            var related = [
-                self.fetchPeople(photo)
-            ];
-            return $q.all(related).then(function() {
                 return photo;
             });
         }

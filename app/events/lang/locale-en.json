@@ -46,6 +46,8 @@
         "RELATED_CASUALTIES": "Casualties during this time"
     },
     "PHOTO_DEMO": {
+        "HELP_TEXT_TITLE": "Wartime Photographs",
+        "HELP_TEXT": "<h4>View photos taken during the Winter War and Continuation War</h4><p>More photographs are loaded when the page is scrolled down.</p><p>The results can be narrowed down using the filters on the left. Open a filter by clicking on the plus sign, and choose a value in a selection filter (e.g. a place using the place filter), or freely type text to find using the description filter. The filters restrict each other so that if a filter has a value selected, other selection facets only display values that return results.</p>",
         "EVENTS_CLOSE": "Events in the same region",
         "EVENTS_AT_THE_SAME_TIME": "Events at the same time",
         "RELATED_PEOPLE": "Persons"

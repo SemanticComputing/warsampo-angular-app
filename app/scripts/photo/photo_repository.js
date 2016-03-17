@@ -42,7 +42,8 @@
 
         var select =
         ' SELECT DISTINCT ?id ?url ?thumbnail ?thumbnail_url ?description ?created ' +
-        '  ?participant_id ?municipality ?place_id ?place_label ?lat ?lon ?place_string ';
+        '  ?participant_id ?municipality ?place_id ?place_label ?lat ?lon ?place_string ' +
+        '  ?source ';
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?ref_place_id { {0} } ' +
@@ -83,6 +84,7 @@
         '  OPTIONAL { ?id dc:description ?description . } ' +
         '  OPTIONAL { ?id dc:created ?created . } ' +
         '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
+        '  OPTIONAL { ?id dc:source ?source . } ' +
         '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
         '  <PLACE> ' +
         ' } ';

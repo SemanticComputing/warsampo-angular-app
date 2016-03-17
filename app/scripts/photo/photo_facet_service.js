@@ -28,7 +28,7 @@
                 name: 'PLACE',
                 service: '<http://ldf.fi/pnr/sparql>'
             },
-            '<http://purl.org/dc/terms/subject>': { name: 'PARTICIPANT' },
+            '<http://purl.org/dc/terms/subject>': { name: 'PERSON' },
             '<http://purl.org/dc/terms/creator>': { name: 'PHOTOGRAPHER' }
         };
 
@@ -54,7 +54,7 @@
 
         function getFacets() {
             return $translate(['PHOTO_TAKEN_BETWEEN', 'DESCRIPTION', 'PLACE',
-                    'PARTICIPANT', 'PHOTOGRAPHER'])
+                    'PERSON', 'PHOTOGRAPHER'])
             .then(function(translations) {
                 var facetClone = _.cloneDeep(facets);
                 _.forOwn(facetClone, function(val) {

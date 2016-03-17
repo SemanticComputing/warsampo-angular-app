@@ -8,31 +8,32 @@
     angular.module('eventsApp')
     .service('timeService', timeService);
 
-    function timeService($q, SparqlService, timeRepository,
-                eventRepository, photoRepository, personRepository, Settings) {
+    function timeService($q, SparqlService, timeRepository, eventRepository,
+            photoRepository, personRepository, Settings, PHOTO_PAGE_SIZE) {
 
         var self = this;
 
         self.fetchEvents = function(time) {
             return eventRepository.getLooselyWithinTimeSpan(time.bob, time.eoe)
-                .then(function(events) {
-                    time.events = events;
-                    if (events && events.length) {
-                        time.hasLinks = true;
-                    }
-                    return time;
-                });
+            .then(function(events) {
+                time.events = events;
+                if (events && events.length) {
+                    time.hasLinks = true;
+                }
+                return time;
+            });
         };
 
         self.fetchPhotos = function(time) {
-            return photoRepository.getByTimeSpan(time.bob, time.eoe, { pageSize: 50 })
-                .then(function(photos) {
-                    time.photos = photos;
-                    if (photos && photos.length) {
-                        time.hasLinks = true;
-                    }
-                    return time;
-                });
+            return photoRepository.getByTimeSpan(time.bob, time.eoe,
+                    { pageSize: PHOTO_PAGE_SIZE })
+            .then(function(photos) {
+                time.photos = photos;
+                if (photos && photos.length) {
+                    time.hasLinks = true;
+                }
+                return time;
+            });
         };
 
         self.fetchCasualties = function(time) {

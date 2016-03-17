@@ -1,16 +1,23 @@
-<div class="row">
-  <div class="col-sm-4 col-md-3">
-    <facet-selector
-    ng-if="vm.facets"
-    data-facets="vm.facets"
-    data-update-results="vm.updateResults"
-    data-options="vm.facetOptions"
-    data-disable="vm.disableFacets">
-    </facet-selector>
-  </div>
+<div class="row photo-list-container">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4 col-md-3 facet-container">
+        <facet-selector
+        ng-if="vm.facets"
+        data-facets="vm.facets"
+        data-update-results="vm.updateResults"
+        data-options="vm.facetOptions"
+        data-disable="vm.disableFacets">
+        </facet-selector>
+      </div>
 
-  <div class="col-sm-8 col-md-9 photo-list-container">
-    <div ng-include="'views/partials/photo_list_partial.html'"></div>
+      <div class="col-sm-8 col-md-9">
+        <div ng-include="'views/partials/photo_list_partial.html'"></div>
+      </div>
+    </div>
   </div>
-
 </div>

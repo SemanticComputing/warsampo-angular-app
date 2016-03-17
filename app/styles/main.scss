@@ -56,13 +56,19 @@ body {
 }
 
 .photo-list-container {
+    padding-top: 15px;
     background-color: black;
 }
 
 .photo {
     padding-bottom: 10px;
-    color: white;
 }
+
 a.no-decoration {
     text-decoration: none;
+    color: black;
+}
+
+.modal-open {
+    overflow-y: scroll;
 }
