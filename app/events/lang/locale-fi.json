@@ -45,6 +45,11 @@
         "RELATED_EVENTS": "Tapahtumia tähän aikaan",
         "RELATED_CASUALTIES": "Tähän aikaan menehtyneitä"
     },
+    "PHOTO_DEMO": {
+        "EVENTS_CLOSE": "Tapahtumia samalla alueella",
+        "EVENTS_AT_THE_SAME_TIME": "Tapahtumia samaan aikaan",
+        "RELATED_PEOPLE": "Henkilöt"
+    },
     "SETTINGS": {
         "PHOTO_RANGE": "Valokuvien aikahaarukka",
         "PHOTO_DAYS_BEFORE": "päivää ennen",

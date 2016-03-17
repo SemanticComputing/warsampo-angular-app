@@ -45,6 +45,11 @@
         "RELATED_EVENTS": "Events during this time",
         "RELATED_CASUALTIES": "Casualties during this time"
     },
+    "PHOTO_DEMO": {
+        "EVENTS_CLOSE": "Events in the same region",
+        "EVENTS_AT_THE_SAME_TIME": "Events at the same time",
+        "RELATED_PEOPLE": "Persons"
+    },
     "SETTINGS": {
         "PHOTO_RANGE": "Photo date range",
         "PHOTO_DAYS_BEFORE": "days before",
