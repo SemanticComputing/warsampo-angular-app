@@ -34,6 +34,7 @@
         ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
         ' PREFIX dctype: <http://purl.org/dc/dcmitype/> ' +
         ' PREFIX dc: <http://purl.org/dc/terms/> ' +
+        ' PREFIX text: <http://jena.apache.org/text#> ' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
 
