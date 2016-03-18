@@ -228,6 +228,9 @@
             controller: 'SemanticPageCtrl',
             controllerAs: 'ctrl',
             resolve: getResolve()
+        })
+        .otherwise({
+            redirectTo: '/' + defaultLocale + '/events/'
         });
     })
     .config(function($locationProvider) {
