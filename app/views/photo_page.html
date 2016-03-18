@@ -18,6 +18,7 @@
         {{ vm.photo.description }}
         <span ng-if="vm.photo.place_string">({{ vm.photo.place_string }})</span>
       </p>
+      <p ng-if="vm.photo.creator"><span translate>PHOTOGRAPHER</span>: {{ vm.photo.creator }}</p>
       <img ng-src="{{ vm.photo.url }}" />
     </div>
   </div>

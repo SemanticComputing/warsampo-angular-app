@@ -1,10 +1,17 @@
 <div class="modal-header">
-  <h3 class="modal-title">
-    {{vm.photo.created | date:'dd.MM.yyyy'}}
-    <span ng-repeat="place in vm.photo.places">
-      <a ng-click="vm.close()" ws-page-link="place.id">{{ place.label }}</a>
-    </span>
-  </h3>
+  <div class="row">
+    <div class="col-xs-10 text-left">
+      <h3 class="modal-title">
+        {{vm.photo.created | date:'dd.MM.yyyy'}}
+        <span ng-repeat="place in vm.photo.places">
+          <a ng-click="vm.close()" ws-page-link="place.id">{{ place.label }}</a>
+        </span>
+      </h3>
+    </div>
+    <div class="col-xs-2">
+      <a href="#" ng-click="$close()" class="no-decoration btn-lg pull-right glyphicon glyphicon-remove"></a>
+    </div>
+  </div>
 </div>
 <div class="modal-body">
   <div class="row">
@@ -14,14 +21,20 @@
     </div>
     <div class="col-md-5">
       <p>
-        {{vm.photo.description}}
-        <span ng-if="vm.photo.place_string">({{vm.photo.place_string}})</span>
+      {{vm.photo.description}}
+      <span ng-if="vm.photo.place_string">({{vm.photo.place_string}})</span>
       </p>
-      <ul class="list-unstyled" ng-if="vm.photo.people">
-        <li ng-repeat="person in vm.photo.people">
-        <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label }}</a>
-        </li>
-      </ul>
+      <div ng-if="vm.photo.people">
+        <h5><span translate>PHOTO_DEMO.RELATED_PEOPLE</span>:</h5>
+        <ul class="list-unstyled" ng-if="vm.photo.people">
+          <li ng-repeat="person in vm.photo.people">
+            <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label }}</a>
+          </li>
+        </ul>
+      </div>
+      <p ng-if="vm.photo.creator">
+        <span translate>PHOTOGRAPHER</span>: {{ vm.photo.creator }}
+      </p>
       <p><a ng-click="vm.close()" ws-page-link="vm.photo.id" translate>SHOW_INFO_PAGE</a></p>
     </div>
   </div>
