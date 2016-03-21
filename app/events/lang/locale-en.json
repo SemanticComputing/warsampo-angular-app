@@ -105,6 +105,7 @@
     "NO_METADATA_FOUND": "No metadata found",
     "NO_LINKS_FOUND": "No links found",
     "ERROR_OCCURED": "An error occured",
+    "REFRESH_TO_RETRY": "Refresh the page to try again",
     "CURRENTLY_SELECTED_EVENT": "Currently selected event",
     "CASUALTIES_DURING_TIMESPAN": "Casualties during"
 }

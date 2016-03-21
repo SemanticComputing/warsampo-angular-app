@@ -105,6 +105,7 @@
     "NO_METADATA_FOUND": "Metadataa ei löytynyt",
     "NO_LINKS_FOUND": "Linkkejä ei löytynyt",
     "ERROR_OCCURED": "Tapahtui virhe",
+    "REFRESH_TO_RETRY": "Päivitä sivu yrittääksesi uudelleen",
     "CURRENTLY_SELECTED_EVENT": "Tällä hetkellä valittu tapahtuma",
     "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla"
 }

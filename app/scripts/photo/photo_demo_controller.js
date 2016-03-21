@@ -106,6 +106,9 @@
                 maxPage = no;
                 vm.isLoadingResults = false;
                 return nextPage();
+            }).catch(function(error) {
+                vm.isLoadingResults = false;
+                vm.error = error;
             });
         }
     }
