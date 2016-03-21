@@ -10,6 +10,7 @@
             {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}
           </h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
+          <p ng-if="timemapCtrl.current.opts.event.source"><small>{{ 'SOURCE' | translate }}: {{ timemapCtrl.current.opts.event.source }}</small></p>
           <p ng-repeat="person in timemapCtrl.current.opts.event.people" style="text-transform: capitalize">
           <a ws-page-link="person.id">{{ person.label }}</a>
           </p>

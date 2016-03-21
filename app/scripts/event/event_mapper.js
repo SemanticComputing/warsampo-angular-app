@@ -23,6 +23,9 @@
         e.type = event.type ? event.type.value : '';
         e.description = event.description ? event.description.value : '';
         e.label = e.description;
+        if (event.source) {
+            e.source = event.source.value;
+        }
         if (event.medal) {
             e.medal = event.medal.value;
         }

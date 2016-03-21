@@ -19,6 +19,7 @@
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
+        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
@@ -38,7 +39,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description ?rank_id ?rank ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant ?participant_role ' +
-        '  ?title ?place_id ?place_label ?polygon ?lat ?lon ?medal ';
+        '  ?title ?place_id ?place_label ?polygon ?lat ?lon ?medal ?source ';
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -60,6 +61,11 @@
         '   FILTER(langMatches(lang(?type), "FI"))  ' +
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ?id crm:P11_had_participant|crm:P100_was_death_of ?participant . } ' +
+        '   OPTIONAL { ' +
+        '    ?id dc:source ?source_id . ' +
+        '    ?source_id skos:prefLabel ?source . ' +
+        '    FILTER(langMatches(lang(?source), "FI"))  ' +
+        '   } ' +
         '   OPTIONAL { ' +
                 placePartial +
         '   } ' +
@@ -93,6 +99,11 @@
         '   ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
         '      crm:P82b_end_of_the_end ?end_time . ' +
         '   ?id skos:prefLabel ?description . ' +
+        '   OPTIONAL { ' +
+        '    ?id dc:source ?source_id . ' +
+        '    ?source_id skos:prefLabel ?source . ' +
+        '    FILTER(langMatches(lang(?source), "FI"))  ' +
+        '   } ' +
         '   OPTIONAL { ' +
         '    { ?id crm:P95_has_formed ?participant . } ' +
         '    UNION  ' +
