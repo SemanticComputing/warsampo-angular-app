@@ -84,7 +84,10 @@
         '  OPTIONAL { ?id dc:description ?description . } ' +
         '  OPTIONAL { ?id dc:created ?created . } ' +
         '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
-        '  OPTIONAL { ?id dc:source ?source . } ' +
+        '  OPTIONAL { ' +
+        '   ?id dc:source ?source_id . ' +
+        '   ?source_id skos:prefLabel ?source . ' +
+        '  } ' +
         '  OPTIONAL { ?id dc:creator ?creator . } ' +
         '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
         '  <PLACE> ' +

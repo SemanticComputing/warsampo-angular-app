@@ -14,7 +14,7 @@
     <div class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed" id="photo-thumbs">
       <div id="photo-container">
         <a ng-repeat="img in ctrl.photos" data-gallery
-          title="{{ img.description }} ({{ img.created }} SA-kuva)" href="{{ img.url }}">
+          title="{{ img.description }} ({{ img.created }} {{ img.source }})" href="{{ img.url }}">
           <div class="gallery-thumbnail-container">
             <img ws-fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ img.thumbnail }}" />
           </div>
