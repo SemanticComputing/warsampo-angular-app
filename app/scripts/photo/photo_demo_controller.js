@@ -77,8 +77,8 @@
 
         function nextPage() {
             vm.isLoadingResults = true;
-            if (nextPageNo <= maxPage) {
-                vm.pager.getPage(nextPageNo++)
+            if (nextPageNo++ <= maxPage) {
+                vm.pager.getPage(nextPageNo-1)
                 .then(function(page) {
                     vm.photos = vm.photos.concat(page);
                     vm.isLoadingResults = false;
