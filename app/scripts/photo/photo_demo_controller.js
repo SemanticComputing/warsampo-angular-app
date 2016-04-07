@@ -82,6 +82,9 @@
                 .then(function(page) {
                     vm.photos = vm.photos.concat(page);
                     vm.isLoadingResults = false;
+                }).catch(function(error) {
+                    vm.isLoadingResults = false;
+                    vm.error = error;
                 });
             } else {
                 vm.isLoadingResults = false;
