@@ -47,31 +47,42 @@
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?ref_place_id { {0} } ' +
-        ' ?id dc:spatial ?place_id . ' +
         ' ?id dc:created ?created . ' +
         ' FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
-        ' OPTIONAL { ' +
-        '  ?ref_place_id geosparql:sfWithin ?ref_municipality . ' +
-        '  ?ref_municipality a suo:kunta . ' +
-        ' } ' +
-        ' OPTIONAL { ' +
-        '  ?place_id geosparql:sfWithin ?municipality_id . ' +
-        '  ?municipality_id a suo:kunta . ' +
-        ' } ' +
-        ' OPTIONAL { ' +
-        '  SERVICE <http://ldf.fi/pnr/sparql> { ' +
-        '    ?place_id crm:P89_falls_within  ?municipality_id . ' +
-        '    ?municipality_id a ?mt . ' +
-        '    FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
-        '     ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
-        '  } ' +
-        ' } ' +
-        ' FILTER(?place_id = ?ref_place_id || ?place_id = ?ref_municipality ' +
-        '  || ?ref_place_id = ?municipality) ' +
-        '  ?id a photos:Photograph . ';
+        ' ?id a photos:Photograph . ' +
+        ' { ?id dc:spatial ?place_id  . ' +
+        '   { ' +
+        '     ?place_id geosparql:sfWithin ?municipality . ' +
+        '     ?municipality a suo:kunta . ' +
+        '     ?ref_place_id geosparql:sfWithin ?municipality . ' +
+        '   } UNION ' +
+        '   { ' +
+        '     { ?place_id a suo:kunta . } UNION { ?ref_place_id a suo:kunta . } ' +
+        '     ?ref_place_id geosparql:sfWithin|^geosparql:sfWithin ?place_id ' +
+        '   } ' +
+        ' } UNION { ?id dc:spatial ?ref_place_id } ' +
+        ' UNION { ' +
+        '   { ?id dc:spatial ?place_id . ' +
+        '     FILTER NOT EXISTS { ' +
+        '       ?place_id a [] . ' +
+        '       ?ref_place_id a [] . ' +
+        '     } ' +
+        '   } ' +
+        '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '     { ' +
+        '       ?place_id crm:P89_falls_within  ?municipality . ' +
+        '       { ?municipality a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?municipality a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+        '       ?ref_place_id crm:P89_falls_within  ?municipality . ' +
+        '     } ' +
+        '     UNION { ' +
+        '       { ?place_id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?ref_place_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+        '       ?ref_place_id crm:P89_falls_within|^crm:P89_falls_within ?place_id ' +
+        '     } ' +
+        '   } ' +
+        ' } ';
 
         var placePartial =
-        ' OPTIONAL { ?id dc:spatial ?place_id . ' +
+        ' OPTIONAL { ' +
         '   ?id dc:spatial ?place_id . ' +
             PLACE_PARTIAL_QUERY +
         ' } ';
@@ -87,6 +98,7 @@
         '  OPTIONAL { ' +
         '   ?id dc:source ?source_id . ' +
         '   ?source_id skos:prefLabel ?source . ' +
+        '   FILTER(langMatches(lang(?source), "fi")) ' +
         '  } ' +
         '  OPTIONAL { ?id dc:creator ?creator . } ' +
         '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
@@ -94,7 +106,8 @@
         ' } ';
 
         var photoQryExtended = photoQry.replace('<PLACE>', placePartial);
-        photoQry = photoQry.replace('<PLACE>', '');
+        photoQry = photoQry.replace('<PLACE>',
+                'OPTIONAL { ?id dc:spatial ?place_id . }');
 
         var singlePhotoQryResultSet =
         ' GRAPH warsa:photographs { ' +
@@ -131,9 +144,9 @@
         '  OPTIONAL { ' +
         '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
         '    ?place_id crm:P89_falls_within  ?municipality_id . ' +
-        '    ?municipality_id a ?mt . ' +
-        '    FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
-        '     ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
+        '    { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
+        '    UNION ' +
+        '    { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
         '   } ' +
         '  } ' +
         ' } ' +

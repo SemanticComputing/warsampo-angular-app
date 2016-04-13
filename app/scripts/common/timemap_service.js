@@ -283,7 +283,7 @@ angular.module('eventsApp')
     function arrayfy(obj, value) {
         var val = obj[value];
         if (!val) {
-            return;
+            return [];
         }
         return _.isArray(val) ? val : [val];
     }
@@ -292,14 +292,18 @@ angular.module('eventsApp')
         if (!event.places) {
             return false;
         }
+
         var ap = _.map(event.places, 'id');
-        var bp = photo.place_id;
         var am = arrayfy(event, 'municipality_id');
-        var bm = photo.municipality_id;
+        var bp = arrayfy(photo, 'place_id');
+        var bm = arrayfy(photo, 'municipality_id');
 
-        var f = _.includes;
+        var eventPlaces = ap.concat(am);
+        var photoPlaces = bp.concat(bm);
 
-        var yes = f(ap, bp) || f(ap, bm) || f(am, bp) || f(am, bm);
+        var yes = !!_.intersection(eventPlaces, photoPlaces).length;
+
+        //var yes = f(ap, bp) || f(ap, bm) || f(am, bp) || f(am, bm);
 
         return yes;
     }

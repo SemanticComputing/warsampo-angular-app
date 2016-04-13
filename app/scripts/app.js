@@ -83,6 +83,11 @@
     '      } ' +
     '    } ' +
     ' } UNION { ' +
+    '   { ' +
+    '     FILTER NOT EXISTS { ' +
+    '       ?place_id a ?place_type . ' +
+    '     } ' +
+    '   } ' +
     '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
     '     ?place_id skos:prefLabel ?place_label . ' +
     '     FILTER(langMatches(lang(?place_label), "FI")) ' +
@@ -90,9 +95,9 @@
     '       geo:long ?lon . ' +
     '     OPTIONAL { ' +
     '       ?place_id crm:P89_falls_within  ?municipality_id . ' +
-    '       ?municipality_id a ?mt . ' +
-    '       FILTER(?mt = <http://ldf.fi/pnr-schema#place_type_540> || ' +
-    '           ?mt = <http://ldf.fi/pnr-schema#place_type_550>) ' +
+    '       { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
+    '       UNION ' +
+    '       { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
     '     } ' +
     '   } ' +
     ' } ')

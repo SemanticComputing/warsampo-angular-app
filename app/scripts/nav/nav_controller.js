@@ -1,12 +1,5 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name eventsApp.controller:PageCtrl
- * @description
- * # PageCtrl
- * Controller of the eventsApp
- */
 angular.module('eventsApp')
 .controller('NavCtrl', function($scope, $compile) {
     $('#nav').load('/page-templates/navbar-fi.html', function() {
@@ -24,14 +17,16 @@ angular.module('eventsApp')
     var base = lang + '/events/';
     self.winterWarLink = base + 'winterwar';
     self.continuationWarLink = base + 'continuationwar';
-    self.showEventLinks = _.includes($location.url(), '/events/');
+    setEventsUrlDisplay();
 
     self.changeLocale = changeLocale;
     self.getLocale = getLocale;
 
-    $rootScope.$on('$locationChangeSuccess', function(event){
-        self.showEventLinks = _.includes($location.url(), '/events/');
-    });
+    $rootScope.$on('$locationChangeSuccess', setEventsUrlDisplay);
+
+    function setEventsUrlDisplay() {
+        self.showEventLinks = _.includes($location.url(), '/events');
+    }
 
     function getLocale() {
         return $translate.use();
