@@ -57,8 +57,12 @@
         '     ?ref_place_id geosparql:sfWithin ?municipality . ' +
         '   } UNION ' +
         '   { ' +
-        '     { ?place_id a suo:kunta . } UNION { ?ref_place_id a suo:kunta . } ' +
-        '     ?ref_place_id geosparql:sfWithin|^geosparql:sfWithin ?place_id ' +
+        '     ?place_id a suo:kunta . ' +
+        '     ?ref_place_id geosparql:sfWithin ?place_id ' +
+        '   } UNION ' +
+        '   { ' +
+        '     ?ref_place_id a suo:kunta . ' +
+        '     ?place_id geosparql:sfWithin ?ref_place_id ' +
         '   } ' +
         ' } UNION { ?id dc:spatial ?ref_place_id } ' +
         ' UNION { ' +
@@ -73,10 +77,12 @@
         '       ?place_id crm:P89_falls_within  ?municipality . ' +
         '       { ?municipality a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?municipality a <http://ldf.fi/pnr-schema#place_type_550> } ' +
         '       ?ref_place_id crm:P89_falls_within  ?municipality . ' +
-        '     } ' +
-        '     UNION { ' +
-        '       { ?place_id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?ref_place_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
-        '       ?ref_place_id crm:P89_falls_within|^crm:P89_falls_within ?place_id ' +
+        '     } UNION { ' +
+        '       { ?place_id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?place_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+        '       ?ref_place_id crm:P89_falls_within ?place_id ' +
+        '     } UNION { ' +
+        '       { ?ref_place_id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?ref_place_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+        '       ?place_id crm:P89_falls_within ?ref_place_id ' +
         '     } ' +
         '   } ' +
         ' } ';
