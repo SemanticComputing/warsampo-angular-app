@@ -140,7 +140,7 @@
         '    ?uri crm:P70_documents ?unit .	' +
         '    ?uri skos:prefLabel ?label .	' +
         '    ?uri <http://purl.org/dc/terms/hasFormat> ?id .	' +
-        '    ?uri crm:P4_has_time-span ?time .	' +
+        '    OPTIONAL { ?uri crm:P4_has_time-span ?time . }	' +
         '    }	' +
         '} ORDER BY ?time	';
 
