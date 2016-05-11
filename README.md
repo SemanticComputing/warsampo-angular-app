@@ -1,11 +1,14 @@
-# events
-
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
-version 0.12.0.
+# Events
 
 ## Build & development
 
-Run `grunt` for building and `grunt serve` for preview.
+    sudo apt-get install ruby-compass
+    sudo gem install compass
+    npm install
+    npm install -g grunt-cli
+    bower install
+
+Run `grunt build` for building and `grunt serve` for preview.
 
 ## Testing
 
