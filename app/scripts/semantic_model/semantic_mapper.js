@@ -8,7 +8,7 @@
     function SemanticModel() { }
 
     SemanticModel.prototype.nonProperties = ['type', 'label', 'id', 'properties',
-        'fetchRelated', 'nonProperties', 'lat', 'lon', 'imageUrl'];
+        'fetchRelated', 'nonProperties', 'lat', 'lon', 'imageUrl', 'link'];
 
     function SemanticModelMapper() { }
 
@@ -73,6 +73,13 @@
         }
 
         o[objKey] = prop;
+
+        if (obj.link) {
+            o.link = {
+                id: obj.link.value,
+                label: obj.link_label ? obj.link_label.value : ''
+            };
+        }
 
         return o;
     };

@@ -36,8 +36,6 @@ angular.module('eventsApp')
         .then(function(semanticModel) {
             self.obj = semanticModel;
             self.isLoadingEvent = false;
-            return $q.when();
-        }).then(function() {
             return semanticModelService.fetchRelated(self.obj);
         }).then(function() {
             self.isLoadingLinks = false;

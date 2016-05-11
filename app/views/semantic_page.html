@@ -30,20 +30,8 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.isLoadingLinks && !(ctrl.obj && ctrl.obj.hasLinks)" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
-      <div class="related" ng-repeat="rel in ctrl.obj.related"
-        ng-init="relCount = ctrl.countRelations(rel); show = relCount <= 10">
-        <h3 ng-click="show = !show">
-          <a>{{ rel.label }} ({{ relCount }})
-            <span ng-class="['glyphicon', {'glyphicon-menu-down': show, 'glyphicon-menu-right': !show}]"></span>
-          </a>
-        </h3>
-        <div uib-collapse="!show">
-          <ul class="list-group">
-            <li class="list-group-item" ng-repeat="val in ctrl.getPropertyList(rel)">
-            <a ws-page-link="val.value">{{ val.label }} ({{ val.pred_label }})</a>
-            </li>
-          </ul>
-        </div>
+      <div ng-repeat="rel in ctrl.obj.related">
+			<ws-related-links-paged data-title="rel.link.label" data-paginator="rel.related"></ws-related-links-paged>
       </div>
     </div>
   </div>
