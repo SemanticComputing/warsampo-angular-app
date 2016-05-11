@@ -72,3 +72,17 @@ a.no-decoration {
 .modal-open {
     overflow-y: scroll;
 }
+
+.death-record {
+    // font-family: "Courier New", Courier, monospace;
+    width: 65%;
+    border: 1px solid #ddd;
+}
+
+.death-record > tbody > tr > td {
+    border-top: 1px solid #ddd;
+    padding: 4px !important;
+}
+table.death-record tr:nth-child(even) {
+    background-color: #f8f6f4;
+}

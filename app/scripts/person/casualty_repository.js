@@ -10,6 +10,8 @@
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
         var prefixes =
+        ' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
+        ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>	' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
@@ -21,6 +23,7 @@
         ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
+        ' PREFIX sf: <http://ldf.fi/functions#>'  +
         ' PREFIX georss: <http://www.georss.org/georss/> ';
 
         var casualtyLocationsByTimeQry = prefixes +
@@ -105,6 +108,18 @@
         '  	?id casualties:osasto ?subunit .	' +
         '}	';
 
+        var personDeathRecordQry = prefixes +
+        'SELECT ?id ?pred_lbl ?obj_text ?obj_link WHERE {'  +
+        '   ?id crm:P70_documents <{0}> . ' +
+        '   ?id ?pred ?obj .'  +
+        '   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "" ?pred_lbl) .'  +
+        '   OPTIONAL {' +
+        '   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "" ?obj_lbl) .'  +
+        '   }' +
+        '   BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) .'  +
+        '   BIND(COALESCE(?obj_lbl, ?obj) as ?obj_text)'  +
+        '} ORDER BY ?pred_lbl';
+
         this.getCasualtyLocationsByTime = function(start, end) {
             var qry = casualtyLocationsByTimeQry.format(start, end);
             return endpoint.getObjects(qry).then(function(data) {
@@ -135,6 +150,13 @@
 
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
             var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
+            return endpoint.getObjects(qry).then(function(data) {
+                return objectMapperService.makeObjectListNoGrouping(data);
+            });
+        };
+
+        this.getPersonDeathRecord = function(id, lang) {
+            var qry = personDeathRecordQry.format(id, "fi");
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectListNoGrouping(data);
             });

@@ -10,7 +10,7 @@
 
     /* @ngInject */
     function personService($q, _, personRepository, eventRepository,
-                    unitRepository, photoRepository, dateUtilService) {
+                    unitRepository, photoRepository, casualtyRepository, dateUtilService) {
         var self = this;
 
         self.processLifeEvents = function(person, events) {
@@ -114,13 +114,21 @@
             });
         };
 
+        self.fetchDeathRecord = function(person) {
+            return casualtyRepository.getPersonDeathRecord(person.id).then(function(deathRecord) {
+                person.deathRecord = deathRecord;
+                return person;
+            });
+        };
+
         // for info page:
         self.fetchRelated = function(person) {
             var related = [
                 self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
                 self.fetchRelatedUnits(person),
-                self.fetchNationalBib(person)
+                self.fetchNationalBib(person),
+                self.fetchDeathRecord(person)
             ];
 
             return $q.all(related).then(function() {
