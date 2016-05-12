@@ -1,9 +1,11 @@
-<h3 translate="Death Record"></h3>
+<div ng-if="ctrl.person.deathRecord.length">
+  <h3 translate="DEATH_RECORD"></h3>
 
-<table class="table death-record">
-  <tr ng-repeat="prop in ctrl.person.deathRecord">
-    <td>{{ prop.pred_lbl }}</td>
-    <td ng-if="prop.obj_link"><a href="{{ prop.obj_link }}">{{ prop.obj_text }}</a></td>
-    <td ng-if="!prop.obj_link">{{ prop.obj_text }}</td>
-  </tr>
-</table>
+  <table class="table death-record">
+    <tr ng-repeat="prop in ctrl.person.deathRecord">
+      <td>{{ prop.pred_lbl }}</td>
+      <td ng-if="prop.obj_link"><a ws-page-link="prop.obj_link">{{ prop.obj_text }}</a></td>
+      <td ng-if="!prop.obj_link">{{ prop.obj_text }}</td>
+    </tr>
+  </table>
+</div>

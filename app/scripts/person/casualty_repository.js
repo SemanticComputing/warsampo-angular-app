@@ -112,9 +112,9 @@
         'SELECT ?id ?pred_lbl ?obj_text ?obj_link WHERE {'  +
         '   ?id crm:P70_documents <{0}> . ' +
         '   ?id ?pred ?obj .'  +
-        '   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "" ?pred_lbl) .'  +
+        '   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?pred_lbl) .'  +
         '   OPTIONAL {' +
-        '   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "" ?obj_lbl) .'  +
+        '   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?obj_lbl) .'  +
         '   }' +
         '   BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) .'  +
         '   BIND(COALESCE(?obj_lbl, ?obj) as ?obj_text)'  +

@@ -107,5 +107,6 @@
     "ERROR_OCCURED": "Tapahtui virhe",
     "REFRESH_TO_RETRY": "Päivitä sivu yrittääksesi uudelleen",
     "CURRENTLY_SELECTED_EVENT": "Tällä hetkellä valittu tapahtuma",
-    "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla"
+    "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla",
+    "DEATH_RECORD": "Kuolinasiakirja"
 }
