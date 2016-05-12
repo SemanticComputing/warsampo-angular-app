@@ -232,8 +232,7 @@
             var resultSet = personQryResultSet.format('<{0}>'.format(id));
             var qryObj = queryBuilder.buildQuery(personQry, resultSet);
             return endpoint.getObjects(qryObj.query).then(function(data) {
-            	if (data.length) {
-                    // because of temporary multiple labels in casualties data set:
+                if (data.length) {
                     return data[0];
                 }
                 return $q.reject('Does not exist');

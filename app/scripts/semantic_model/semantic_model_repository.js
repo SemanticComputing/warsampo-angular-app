@@ -92,7 +92,7 @@
             var orderBy = '?label';
             var resultSet = relatedQryResultSet.format('<' + link + '>', '<' + id + '>');
             var qryObj = queryBuilder.buildQuery(relatedQry, resultSet, orderBy);
-            return relatedEndpoint.getObjects(qryObj.query, 10, qryObj.resultSetQuery);
+            return relatedEndpoint.getObjects(qryObj.query, 10, qryObj.resultSetQuery, 5);
         }
     }
 })();
