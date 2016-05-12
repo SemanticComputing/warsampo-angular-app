@@ -4,7 +4,7 @@
 
     /*
     * Service that provides an interface for fetching arbitrary resources
-    * from the WarSa SPARQL endpoint.
+    * from a SPARQL endpoint.
     */
     angular.module('eventsApp')
     .service('semanticModelService', semanticModelService);
@@ -20,7 +20,7 @@
                 return $q.when(obj);
             }
             var promises = _.map(links, function(link) {
-                return semanticModelRepository.getRelated(obj.id, link)
+                return semanticModelRepository.getRelated(obj.id, link.id)
                 .then(function(rel) {
                     return { link: link, related: rel };
                 });

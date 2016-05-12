@@ -31,7 +31,7 @@
     <p ng-if="!ctrl.isLoadingLinks && !(ctrl.obj && ctrl.obj.hasLinks)" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
       <div ng-repeat="rel in ctrl.obj.related">
-			<ws-related-links-paged data-title="rel.link.label" data-paginator="rel.related"></ws-related-links-paged>
+        <ws-related-links-paged data-title="rel.link.label" data-paginator="rel.related"></ws-related-links-paged>
       </div>
     </div>
   </div>
