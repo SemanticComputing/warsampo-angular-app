@@ -75,14 +75,7 @@
         '   OPTIONAL { ' +
         '    ?casualty casualties:asuinkunta ?living_place_uri . '+
         '    ?living_place_uri skos:prefLabel ?living_place . }' +
-        '   OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
-        '   OPTIONAL {  ' +
-        '    ?casualty casualties:siviilisaeaety ?mstatus_uri . ' +
-        '    ?mstatus_uri skos:prefLabel ?mstatus . ' +
-        '   }' +
-        '   OPTIONAL { ?casualty casualties:ammatti ?profession . }' +
         '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
-        '   OPTIONAL { ?casualty casualties:lasten_lukumaeaerae ?num_children . } '+
         '   OPTIONAL { ' +
         '    ?casualty casualties:menehtymisluokka ?way_id . ' +
         '    ?way_id skos:prefLabel ?way_to_die . ' +
