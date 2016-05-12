@@ -30,17 +30,17 @@ angular.module('eventsApp')
     };
 
     if ($routeParams.uri) {
-        self.isLoadingEvent = true;
+        self.isLoadingObject = true;
         self.isLoadingLinks = true;
         semanticModelService.getById($routeParams.uri)
         .then(function(semanticModel) {
             self.obj = semanticModel;
-            self.isLoadingEvent = false;
+            self.isLoadingObject = false;
             return semanticModelService.fetchRelated(self.obj);
         }).then(function() {
             self.isLoadingLinks = false;
         }).catch(function() {
-            self.isLoadingEvent = false;
+            self.isLoadingObject = false;
             self.isLoadingLinks = false;
         });
     }

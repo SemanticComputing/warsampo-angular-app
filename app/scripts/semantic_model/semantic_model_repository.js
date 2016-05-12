@@ -35,29 +35,38 @@
         var byIdQry = prefixes +
         ' SELECT DISTINCT ?id  ?label ?link_label ?type ?type_label ?pred ?pred_label ?obj ' +
         '  ?obj_label ?link { ' +
-        '  VALUES ?id { {0} }  ' +
-        '  ?id ?pred ?obj . ' +
-        '  ?id a ?type . ' +
         '  { ' +
-        '   SELECT DISTINCT ?link { ' +
-        '    VALUES ?id { {0} }  ' +
-        '    ?o ?link ?id .' +
+        '   VALUES ?id { {0} }  ' +
+        '   OPTIONAL { ' +
+        '    ?id a ?type . ' +
+        '    OPTIONAL { ?type rdfs:label|skos:prefLabel|skos:altLabel ?type_label . } ' +
+        '   } ' +
+        '   OPTIONAL { ?id rdfs:label|skos:prefLabel|skos:altLabel ?label . } ' +
+        '   OPTIONAL { ' +
+        '    ?id ?pred ?obj . ' +
+        '    OPTIONAL { ?pred rdfs:label|skos:prefLabel|skos:altLabel ?pred_label . } ' +
+        '    OPTIONAL { ?obj rdfs:label|skos:prefLabel|skos:altLabel ?obj_label . } ' +
         '   } ' +
         '  } ' +
         '  OPTIONAL { ' +
-        '   FILTER(BOUND(?link)) ' +
-        '   ?link skos:prefLabel ?link_label . ' +
+        '   { ' +
+        '    SELECT DISTINCT ?link { ' +
+        '     VALUES ?id { {0} }  ' +
+        '     ?o ?link ?id .' +
+        '    } ' +
+        '   } ' +
+        '   OPTIONAL { ' +
+        '    FILTER(BOUND(?link)) ' +
+        '    ?link skos:prefLabel ?link_label . ' +
+        '   } ' +
         '  } ' +
-        '  OPTIONAL { ?type rdfs:label|skos:prefLabel|skos:altLabel ?type_label . } ' +
-        '  OPTIONAL { ?id rdfs:label|skos:prefLabel|skos:altLabel ?label . } ' +
-        '  OPTIONAL { ?pred rdfs:label|skos:prefLabel|skos:altLabel ?pred_label . } ' +
-        '  OPTIONAL { ?obj rdfs:label|skos:prefLabel|skos:altLabel ?obj_label . } ' +
         ' } ';
 
         var relatedQryResultSet =
-        ' VALUES ?ref { {0} } ' +
-        ' VALUES ?pred { {1} } ' +
-        ' ?id ?pred ?ref . ';
+        ' ?id {0} {1}  . ' +
+        ' OPTIONAL { ?id skos:prefLabel ?label . } ' +
+        ' OPTIONAL { ?id rdfs:label ?label . } ' +
+        ' OPTIONAL { ?id skos:altLabel ?label . } ';
 
         var relatedQry = prefixes +
         ' SELECT DISTINCT ?id ?label { ' +
@@ -80,8 +89,9 @@
         }
 
         function getRelated(id, link) {
-            var resultSet = relatedQryResultSet.format('<' + id + '>', '<' + link + '>');
-            var qryObj = queryBuilder.buildQuery(relatedQry, resultSet);
+            var orderBy = '?label';
+            var resultSet = relatedQryResultSet.format('<' + link + '>', '<' + id + '>');
+            var qryObj = queryBuilder.buildQuery(relatedQry, resultSet, orderBy);
             return relatedEndpoint.getObjects(qryObj.query, 10, qryObj.resultSetQuery);
         }
     }

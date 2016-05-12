@@ -49,11 +49,25 @@
             var o = new SemanticModel();
 
             o.id = obj.id.value;
-            o.type = {
-                id: obj.type.value,
-                label: getLabel(obj, 'type', 'type_label')
-            };
+            if (obj.type) {
+                o.type = {
+                    id: obj.type.value,
+                    label: getLabel(obj, 'type', 'type_label')
+                };
+            }
             o.label = getLabel(obj, 'id', 'label');
+
+            if (obj.link) {
+                o.link = {
+                    id: obj.link.value,
+                    label: getLabel(obj, 'link', 'link_label')
+                };
+            }
+
+            if (!obj.pred) {
+                return o;
+            }
+
             var objKey =  obj.pred.value;
             var prop = {};
             prop = {
@@ -80,13 +94,6 @@
             }
 
             o[objKey] = prop;
-
-            if (obj.link) {
-                o.link = {
-                    id: obj.link.value,
-                    label: getLabel(obj, 'link', 'link_label')
-                };
-            }
 
             return o;
         }
