@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:PageCtrl
+ * @name eventsApp.controller:SemanticPageCtrl
  * @description
- * # PageCtrl
+ * # SemanticPageCtrl
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
