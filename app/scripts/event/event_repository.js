@@ -60,7 +60,9 @@
         '   ?type_id skos:prefLabel ?type . ' +
         '   FILTER(langMatches(lang(?type), "FI"))  ' +
         '   ?id skos:prefLabel ?description . ' +
-        '   OPTIONAL { ?id crm:P11_had_participant|crm:P100_was_death_of ?participant . } ' +
+        '   OPTIONAL { '+
+        '     ?id crm:P11_had_participant|crm:P100_was_death_of|crm:P98_brought_into_life ?participant . '+
+        '   } ' +
         '   OPTIONAL { ' +
         '    ?id dc:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
@@ -109,7 +111,7 @@
         '    UNION  ' +
         '    { ?id crm:P95_has_formed ?participant . } ' +
         '    UNION  ' +
-        '    { ?id crm:P11_had_participant|crm:P100_was_death_of ?participant . }  ' +
+        '    { ?id crm:P11_had_participant|crm:P100_was_death_of|crm:P98_brought_into_life ?participant . }  ' +
         '   } ' +
         '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
         '   OPTIONAL { ' + placePartial + ' } ' +
