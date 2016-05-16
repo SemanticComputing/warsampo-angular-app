@@ -243,8 +243,9 @@
         '  } ' +
         '  OPTIONAL {  ' +
         '   ?id crm:P7_took_place_at ?place_id . ' +
-        '   OPTIONAL { ' +
-        '    ?place_id skos:prefLabel ?place_label . ' +
+        '   OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
+        '   OPTIONAL {	service <http://ldf.fi/pnr/sparql> { ?place_id skos:prefLabel ?place_label } ' +
+        '   	filter (langmatches(lang(?place_label),"fi")) ' +
         '   } ' +
         '  } ' +
         '  ?id a ?type_id . ' +
