@@ -108,6 +108,7 @@
         '  } ' +
         '  OPTIONAL { ?id dc:creator ?creator . } ' +
         '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
+        '  OPTIONAL { ?id photos:creator_string ?creator_string . } ' +
         '  <PLACE> ' +
         ' } ';
 
@@ -129,7 +130,9 @@
 
         var photosByPersonResultSet =
         ' VALUES ?participant_id { {0} } ' +
-        ' ?id dc:subject ?participant_id .  ' +
+        ' { ?id dc:subject ?participant_id . } ' +
+        ' UNION ' +
+        ' { ?id dc:creator ?participant_id . } ' +
         ' ?id a photos:Photograph . ';
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +

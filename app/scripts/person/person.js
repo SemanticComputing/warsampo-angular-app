@@ -128,7 +128,8 @@
                 self.fetchRelatedEvents(person),
                 self.fetchRelatedUnits(person),
                 self.fetchNationalBib(person),
-                self.fetchDeathRecord(person)
+                self.fetchDeathRecord(person),
+                self.fetchRelatedPhotos(person)
             ];
 
             return $q.all(related).then(function() {

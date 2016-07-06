@@ -11,6 +11,9 @@
       </h2>
       <div ng-include="'views/partials/person_description_partial.html'"></div>
       <p><a ws-page-link="ctrl.person.id" demo translate>SHOW_IN_DEMO</a></p>
+
+      <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
+
       <div ng-include="'views/partials/person_death_record_partial.html'"></div>
     </div>
   </div>

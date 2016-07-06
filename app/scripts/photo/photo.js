@@ -38,10 +38,20 @@
         }
 
         function fetchPeople(photo) {
-            return personRepository.getByIdList(photo.participant_id)
+            var people = [
+                personRepository.getByIdList(photo.creator_id),
+                personRepository.getByIdList(photo.participant_id)
+            ];
+            return $q.all(people)
             .then(function(people) {
-                if (people && people.length) {
-                    photo.people = people;
+                var creators = people[0];
+                var participants = people[1];
+                if (participants && participants.length) {
+                    photo.people = participants;
+                    photo.hasLinks = true;
+                }
+                if (creators && creators.length) {
+                    photo.creators = creators;
                     photo.hasLinks = true;
                 }
                 return photo;

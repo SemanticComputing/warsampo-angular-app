@@ -24,17 +24,29 @@
       {{vm.photo.description}}
       <span ng-if="vm.photo.place_string">({{vm.photo.place_string}})</span>
       </p>
-      <div ng-if="vm.photo.people">
-        <h5><span translate>PHOTO_DEMO.RELATED_PEOPLE</span>:</h5>
-        <ul class="list-unstyled" ng-if="vm.photo.people">
-          <li ng-repeat="person in vm.photo.people">
-            <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label }}</a>
-          </li>
-        </ul>
+      <div class="row">
+        <div class="col-md-6">
+          <div ng-if="vm.photo.creators">
+            <h5><span translate>PHOTOGRAPHER</span>:</h5>
+            <ul class="list-unstyled" ng-if="vm.photo.creators">
+              <li ng-repeat="person in vm.photo.creators">
+              <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label || person.sname }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div ng-if="vm.photo.people">
+            <h5><span translate>PHOTO_DEMO.RELATED_PEOPLE</span>:</h5>
+            <ul class="list-unstyled" ng-if="vm.photo.people">
+              <li ng-repeat="person in vm.photo.people">
+              <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <p ng-if="vm.photo.creator">
-        <span translate>PHOTOGRAPHER</span>: {{ vm.photo.creator }}
-      </p>
+      <hr/>
       <p><a ng-click="vm.close()" ws-page-link="vm.photo.id" translate>SHOW_INFO_PAGE</a></p>
     </div>
   </div>
