@@ -26,13 +26,14 @@
       </p>
       <div class="row">
         <div class="col-md-6">
-          <div ng-if="vm.photo.creators">
+          <div ng-if="vm.photo.creators || vm.photo.photographer_string">
             <h5><span translate>PHOTOGRAPHER</span>:</h5>
             <ul class="list-unstyled" ng-if="vm.photo.creators">
               <li ng-repeat="person in vm.photo.creators">
               <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label || person.sname }}</a>
               </li>
             </ul>
+            <p ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</p>
           </div>
         </div>
         <div class="col-md-6">

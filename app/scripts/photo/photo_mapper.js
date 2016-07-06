@@ -25,7 +25,8 @@
         e.participant_id = photo.participant_id ? photo.participant_id.value : '';
         e.municipality_id = photo.municipality ? photo.municipality.value : '';
         e.source = photo.source ? photo.source.value : '';
-        e.creator_id = photo.creator ? photo.creator.value : '';
+        e.creator_id = photo.creator ? photo.creator.value : undefined;
+        e.photographer_string = photo.photographer_string ? photo.photographer_string.value : '';
         if (photo.place_string) {
             e.place_string = photo.place_string.value;
         }
