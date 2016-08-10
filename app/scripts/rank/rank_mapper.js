@@ -25,7 +25,13 @@
             if (rank.wikilink) {
                 rank.wikilink = [{ id:rank.wikilink, label:rank.label}];
             }
-        });
+            
+            var descs=[];
+        		if(rank.desc_fi) { descs.push(rank.desc_fi);}
+		  		if(rank.desc_en) { descs.push(rank.desc_en);}
+		  		if (window.location.href.indexOf('/en/')>-1)  descs.reverse(); 
+		  		if (descs.length) rank.desc=descs[0];
+        		});
 
         return ranks;
     };

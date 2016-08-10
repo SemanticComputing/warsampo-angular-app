@@ -9,9 +9,10 @@
       <h2>
         {{ ctrl.rank.label }}
       </h2>
-      <p ng-repeat="desc in ctrl.rank.getDescription()">
+      <!-- <p ng-repeat="desc in ctrl.rank.getDescription()">
       {{ desc }}
-      </p>
+      </p> --> 
+      <p ng-if="ctrl.rank.desc">{{ ctrl.rank.desc }} (Wikipedia)</p>
     </div>
   </div>
   <!-- Links -->

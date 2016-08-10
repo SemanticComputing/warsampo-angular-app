@@ -15,6 +15,7 @@ angular.module('eventsApp')
     ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
     ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
     ' PREFIX sch: <http://schema.org/> ' +
+    ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
     ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
     ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
     ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
@@ -23,14 +24,16 @@ angular.module('eventsApp')
     ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
 
     var rankQry = prefixes +
-    ' 	SELECT DISTINCT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) ?abbrev ?comment ?wikilink WHERE {  ' +
+    ' 	SELECT DISTINCT ?id (GROUP_CONCAT(?name;separator=", ") AS ?label) ?abbrev ?comment ?wikilink ?desc_fi ?desc_en WHERE {  ' +
     '         VALUES ?id { {0} } .   ' +
     ' 	    ?id a <http://ldf.fi/warsa/actors/ranks/Rank> . ' +
     ' 	    ?id skos:prefLabel ?name . ' +
     ' 	    OPTIONAL { ?id <http://www.w3.org/2000/01/rdf-schema#comment> ?comment } ' +
     ' 	    OPTIONAL { ?id skos:altLabel ?abbrev } ' +
+    '  OPTIONAL { ?id dc:description ?desc_fi . filter (lang(?desc_fi)!="en") }' +
+    '  OPTIONAL { ?id dc:description ?desc_en . filter (lang(?desc_en)="en") }' +
     '			 OPTIONAL { ?id foaf:page ?wikilink } ' +
-    ' 	} GROUP BY ?id ?label ?abbrev ?comment ?wikilink ';
+    ' 	} GROUP BY ?id ?label ?abbrev ?comment ?wikilink ?desc_fi ?desc_en ';
 
     var relatedRankQry = prefixes +
     'PREFIX org: <http://rdf.muninn-project.org/ontologies/organization#> ' +
