@@ -33,7 +33,7 @@
         ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
 
         var unitQry = prefixes +
-        '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?desc ?sid ?source WHERE {  ' +
+        '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?desc_fi ?desc_en ?sid ?source WHERE {  ' +
         '      ?ename a etypes:UnitNaming . ' +
         '      ?ename skos:prefLabel ?name . ' +
         '      BIND(?name AS ?label) ' +
@@ -43,7 +43,8 @@
         '      } ' +
         '      ?ename crm:P95_has_formed ?id . ' +
         '      OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '      OPTIONAL { ?id dc:description ?desc . } ' +
+        '  OPTIONAL { ?id dc:description ?desc_fi . filter (lang(?desc_fi)!="en") }' +
+        '  OPTIONAL { ?id dc:description ?desc_en . filter (lang(?desc_en)="en") }' +
         '      VALUES ?id  { {0} } ' +
         '  } ';
 

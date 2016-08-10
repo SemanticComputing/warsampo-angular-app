@@ -43,7 +43,13 @@
         if (o.wikilink) {
             o.wikilink = [{ id:o.wikilink, label:o.label}];
         }
-
+        
+        var descs=[];
+        if(o.desc_fi) { descs.push(o.desc_fi);}
+		  if(o.desc_en) { descs.push(o.desc_en);}
+		  if (window.location.href.indexOf('/en/')>-1)  descs.reverse(); 
+		  if (descs.length) o.note=descs[0];
+		  
         return o;
     };
 

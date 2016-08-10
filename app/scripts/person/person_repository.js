@@ -39,7 +39,7 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?label ?sname ?fname ?note ?rank ?rank_id ?birth_time ' +
+        ' SELECT DISTINCT ?id ?label ?sname ?fname ?desc_fi ?desc_en ?rank ?rank_id ?birth_time ' +
         '  ?death_time ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ' +
         '  ?death_place ?death_place_uri ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit ' +
@@ -56,7 +56,8 @@
         '  ?id foaf:familyName ?sname .' +
         '  ?id skos:prefLabel ?label .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
-        '  OPTIONAL { ?id crm:P3_has_note|dc:description ?note . }' +
+        '  OPTIONAL { ?id dc:description ?desc_fi . filter (lang(?desc_fi)!="en") }' +
+        '  OPTIONAL { ?id dc:description ?desc_en . filter (lang(?desc_en)="en") }' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
