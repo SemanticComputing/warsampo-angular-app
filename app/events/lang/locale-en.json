@@ -24,13 +24,10 @@
     },
     "UNIT_DEMO": {
         "TITLE": "Units",
-        "DESCRIPTION": "<p>Search for military units of the past Finnish wars by writing their name in the text input below and/or selecting one from the list below.  Events linked to the unit will appear on the map and timeline in the center of the page (in so far as there are events available for the unit), and other information and recommendation links will be displayed on the right.</p>",
+    	  "DESCRIPTION": "<p>Search for military units of the past Finnish wars by writing their name in the text input below and/or selecting one from the list below.  Events linked to the unit will appear on the map and timeline in the center of the page (in so far as there are events available for the unit), and other information and recommendation links will be displayed on the right.</p>",
         "HELP_TEXT_TITLE": "Choose a unit from the menu.",
         "HELP_TEXT": "<p>There are two timelines beneath the map. The upper one is an overview of the war (one month between each vertical line).  In the middle of this timeline is a time frame shown as a black box.  Events that occured within this time frame are shown in the lower timeline.  The vertical lines in the lower timeline represent days.  You can move the timelines by dragging them with your mouse.  </p> <p> Click on an event on the timeline or map to get more information regarding it.  Events with <span style=\"color: blue\">blue</span> text have related photographs.  </p> <p> The map displays events that fall within the time frame of the upper timeline, if the place of the event is available.  The events are linked to places programmatically so there may be errors in event placements.  The map also displays a heatmap of casualties of the selected unit during the selected time frame.  </p> <p> Settings, such as the date range of photos retrieved for events, can be modified by clicking on \"Settings\" in the navigation bar on the top of the page.  Clicking on \"View Help\" on the navigation bar displays this information.  </p> <p> Possible errors can be reported by <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">sending feedback</a>.</p>",
         "SEARCH_BOX_PLACEHOLDER": "Seach by unit name (in Finnish), e.g. 1. Divisioona",
-        "SUPER_UNITS": "Super units",
-        "SUB_UNITS": "Subdivisions",
-        "OTHER_UNITS": "Other units",
         "CASUALTIES_DURING_TIMESPAN": "Unit casualties during"
     },
     "RANK_DEMO": {
@@ -87,7 +84,10 @@
     "RELATED_BATTLES": "Battles",
     "RELATED_RANKS": "Ranks",
     "RELATED_MEDALS": "Medals",
-    "RELATED_PLACES": "Places",
+    "RELATED_PLACES": "Places",   
+    "SUPER_UNITS": "Super units",
+    "SUB_UNITS": "Subdivisions",
+    "OTHER_UNITS": "Other units", 
     "KANSA_TAISTELI_ARTICLES": "Kansa Taisteli articles",
     "WAR_DIARIES": "War diaries",
     "NO_RELATED_PHOTOS": "No related photos available",

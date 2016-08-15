@@ -28,9 +28,6 @@
         "HELP_TEXT_TITLE": "Valitse osasto valikosta.",
         "HELP_TEXT": "<p>Kartan alla on kaksi yhdessä liikkuvaa aikajanaa. Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi). Tämän janan keskellä on mustana laatikkona aikaikkuna, jonka sisään osuvat tapahtumat näkyvät alemmalla janalla. Alemmassa aikajanassa pystyviivojen väli on yksi päivä. Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa. </p> <p> Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä. Tekstiltään <span style=\"color: blue\">sinisiin</span> tapahtumiin liittyy valokuvia. </p> <p> Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa. Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien sijainneissa saattaa esiintyä virheitä. Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä menehtyneistä valitun joukko-osaston henkilöistä. </p> <p> Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista \"Asetukset\". Tämän ohjeen saat näkyviin valitsemalla yläpalkista \"Näkymän ohjeet\". <p>Mahdollisista virheistä voi raportoida <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">lähettämällä palautetta</a>.</p>",
         "SEARCH_BOX_PLACEHOLDER": "Hae joukko-osaston nimellä, esim. 1. Divisioona",
-        "SUPER_UNITS": "Yläosastoja",
-        "SUB_UNITS": "Alaosastoja",
-        "OTHER_UNITS": "Muita osastoja",
         "CASUALTIES_DURING_TIMESPAN": "Osastosta menehtyneitä ajanjaksolla"
     },
     "RANK_DEMO": {
@@ -88,6 +85,9 @@
     "RELATED_RANKS": "Sotilasarvot",
     "RELATED_MEDALS": "Kunniamerkit ja -mitalit",
     "RELATED_PLACES": "Paikat",
+    "SUPER_UNITS": "Yläosastoja",
+    "SUB_UNITS": "Alaosastoja",
+    "OTHER_UNITS": "Muita osastoja",
     "KANSA_TAISTELI_ARTICLES": "Kansa Taisteli -artikkelit",
     "WAR_DIARIES": "Sotapäiväkirjat",
     "NO_RELATED_PHOTOS": "Ei resurssiin liittyviä kuvia",

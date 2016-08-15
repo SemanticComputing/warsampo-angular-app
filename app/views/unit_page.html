@@ -19,15 +19,15 @@
     <img ng-show="ctrl.unit.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.isLoadingLinks && !ctrl.unit.hasLinks">No links found for this object.</p>
     <div id="linkContent">
-			<ws-related-links data-title="'Yläosasto'" data-related="ctrl.unit.superUnits"></ws-related-links>
-			<ws-related-links data-title="'Alaosastoja'" data-related="ctrl.unit.subUnits"></ws-related-links>
-			<ws-related-links data-title="'Muita osastoja'" data-related="ctrl.unit.relatedUnits"></ws-related-links>
-      <ws-related-links data-title="'Taistelut'" data-related="ctrl.unit.battles"></ws-related-links>
-      <ws-related-links-paged data-title="'Henkilöitä'" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
-      <ws-related-links data-title="'Paikat'" data-related="ctrl.unit.places"></ws-related-links>
-      <ws-related-links data-title="'Kansa Taisteli -artikkelit'" data-related="ctrl.unit.articles"></ws-related-links>
+			<ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.unit.superUnits"></ws-related-links>
+			<ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.unit.subUnits"></ws-related-links>
+			<ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.unit.relatedUnits"></ws-related-links>
+      <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.unit.battles"></ws-related-links>
+      <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
+      <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.unit.places"></ws-related-links>
+      <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.unit.articles"></ws-related-links>
       <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.unit.wikilink"></ws-related-links>
-      <ws-related-links data-external data-title="'Sotapäiväkirjat'" data-related="ctrl.unit.diaries"></ws-related-links>
+      <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.unit.diaries"></ws-related-links>
     </div>
   </div>
 </div>
