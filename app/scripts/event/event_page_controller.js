@@ -71,7 +71,7 @@
             var app, id;
             switch(event.type_id) {
                 case EVENT_TYPES.BATTLE:
-                    app = 'units';
+                    app = 'events';
                     id = event.id;
                     break;
                 case EVENT_TYPES.PROMOTION:

@@ -33,7 +33,7 @@
     "RANK_DEMO": {
         "SUPER_RANKS": "Ylempiä sotilasarvoja",
         "SUB_RANKS": "Alempia sotilasarvoja",
-        "OTHER_RANKS": "Muita sotilasarvoja"
+        "OTHER_RANKS": "Muita sotilasarvoja"  
     },
     "MEDAL_DEMO": {
         "RELATED_MEDALS": "Muita kunniamerkkejä"

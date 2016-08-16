@@ -233,8 +233,12 @@
         '  { ?id a etypes:Wounding ; crm:P11_had_participant ?person . } ' +
         '  UNION  ' +
         '  { ?id a etypes:Promotion ; ' +
-        '   crm:P11_had_participant ?person .  ' +
-        '   OPTIONAL { ?id actors:hasRank ?rank_id . ?rank_id skos:prefLabel ?rank . } ' +
+        '   crm:P11_had_participant ?person ; ' + 
+        '   actors:hasRank ?rank_id . ' +        
+        '  VALUES ?preflang { "{1}" } ' +
+        '  OPTIONAL { ?rank_id skos:prefLabel ?rank_any .  filter ( lang(?rank_any) != ?preflang ) }  '+
+		  '  OPTIONAL { ?rank_id skos:prefLabel ?rank_pref . filter ( lang(?rank_pref) = ?preflang ) }  '+
+	  	  '  BIND ( COALESCE(?rank_pref, ?rank_any, "") AS ?rank ) '+ 
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P4_has_time-span ?time_id .  ' +
@@ -388,7 +392,9 @@
             } else {
                 return $q.when();
             }
-            qry = personLifeEventsQry.format(id);
+            var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ,
+            qry = personLifeEventsQry.format(id).format('{1}',langtag);
+            console.log(qry);
             return endpoint.getObjects(qry);
         };
     }
