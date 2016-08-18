@@ -33,7 +33,7 @@
         ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
 
         var unitQry = prefixes +
-        '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?desc_fi ?desc_en ?sid ?source WHERE {  ' +
+        '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?desc ?sid ?source WHERE {  ' +
         '      ?ename a etypes:UnitNaming . ' +
         '      ?ename skos:prefLabel ?name . ' +
         '      BIND(?name AS ?label) ' +
@@ -43,9 +43,11 @@
         '      } ' +
         '      ?ename crm:P95_has_formed ?id . ' +
         '      OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '  OPTIONAL { ?id dc:description ?desc_fi . filter (lang(?desc_fi)!="en") }' +
-        '  OPTIONAL { ?id dc:description ?desc_en . filter (lang(?desc_en)="en") }' +
         '      VALUES ?id  { {0} } ' +
+        '  VALUES ?preflang { "{1}" } '+
+		 '  OPTIONAL { ?id dc:description ?desc_any . filter (lang(?desc_any)!=?preflang) }	 '+
+		 '  OPTIONAL { ?id dc:description ?desc_pref . filter (lang(?desc_pref)=?preflang) } '+
+		 '  BIND ( COALESCE(?desc_pref,?desc_any, "") AS ?desc ) '+
         '  } ';
 
         var relatedUnitQry = prefixes +
@@ -104,18 +106,17 @@
         '} GROUP BY ?id ';
 
         var selectorQuery = prefixes +
-        'SELECT DISTINCT ?name ?id WHERE {   '+
-        '  { SELECT DISTINCT ?name ?id WHERE { '+
-        '    ?ename a etypes:UnitNaming .      '+
-        '    ?ename skos:prefLabel ?name . '+
-        '    ?ename crm:P95_has_formed ?id . '+
-        // '    OPTIONAL { ?ename skos:altLabel ?abbrev .  }'+
-        ''+
-        '  FILTER ( regex(?name, "{0}", "i") )    '+
-        '     } LIMIT 300 '+
-        '  } '+
-        '  '+
-        '} ORDER BY lcase(?name) ';
+        	'SELECT DISTINCT ?name ?id  ' + 
+			'WHERE { ' + 
+			' 	{ SELECT DISTINCT ?ename ' + 
+			' 	   WHERE { ' + 
+			' 	      ?ename a etypes:UnitNaming . ' + 
+			' 	      ?ename skos:prefLabel|skos:altLabel|skos:hiddenLabel ?name . ' + 
+			' 	      FILTER ( regex(?name, "{0}", "i") ) ' + 
+			' 	   } ' + 
+			' 	   LIMIT 300 ' + 
+			' 	} ?ename skos:prefLabel ?name ; crm:P95_has_formed ?id . ' + 
+			'} ORDER BY lcase(?name) ' ;
 
         var actorInfoQry = prefixes +
         ' SELECT ?id ?type ?label ?familyName ?firstName ' +
@@ -164,7 +165,8 @@
         '} ORDER BY ?label ';
 
         this.getById = function(id) {
-            var qry = unitQry.format('<{0}>'.format(id));
+        		var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ,
+            	qry = unitQry.format('<{0}>'.format(id)).format('{1}',langtag);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
                     return unitMapperService.makeObjectList(data)[0];
@@ -216,7 +218,7 @@
         };
 
         this.getItems = function(regx) {
-            var qry = selectorQuery.format('{0}'.format(regx));
+        	   var qry = selectorQuery.format('{0}'.format(regx));
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectListNoGrouping(data);
             });

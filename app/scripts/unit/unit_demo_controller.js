@@ -268,9 +268,11 @@ angular.module('eventsApp')
 
         if (rx.length<1) { rx='^1.*$'; }
         else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
-        else if (rx.length<3) { rx='^'+rx+'.*$'; }
-        else if (rx.length<6) { rx = '(^|^.* )'+rx+'.*$'; }
-        else { rx = '^.*'+rx+'.*$'; }
+        else if (rx.length<2) { rx='^'+rx; }
+        else if (rx.length<5) { rx = '(^|^.* )'+rx+'.*$'; }
+        else { 
+        	rx = rx.replace(' ','.*');
+        	rx = '^.*'+rx+'.*$'; }
 
         self.items = [ {id:'#', name:'Etsitään ...'} ];
 

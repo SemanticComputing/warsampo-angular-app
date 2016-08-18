@@ -394,7 +394,6 @@
             }
             var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ,
             qry = personLifeEventsQry.format(id).format('{1}',langtag);
-            console.log(qry);
             return endpoint.getObjects(qry);
         };
     }
