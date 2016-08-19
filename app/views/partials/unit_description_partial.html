@@ -1,9 +1,9 @@
 <p ng-if="ctrl.unit.altNames.length">
   Osasto tunnettu myös nimillä {{ ctrl.unit.altNames | concatList }}
 </p>
-<p ng-if="ctrl.unit.desc">{{ ctrl.unit.desc }} (Wikipedia)</p>
+<p ng-if="ctrl.unit.getDescription()">{{ ctrl.unit.getDescription() }} (Wikipedia)</p>
 <p ng-repeat="cmd in ctrl.unit.commanders">{{ cmd }}</p>
-<p ng-repeat="desc in ctrl.unit.description">{{ desc }}</p>
+<p ng-repeat="desc in ctrl.unit.descriptions">{{ desc }}</p>
 <p ng-repeat="note in ctrl.unit.note">{{ note }}</p>
 <p ng-if="ctrl.unit.source || ctrl.unit.sid">
   Lähde: {{ ctrl.unit.source || ctrl.unit.sid | concatList }}

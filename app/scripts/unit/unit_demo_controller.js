@@ -227,22 +227,12 @@ angular.module('eventsApp')
     };
 
     self.showWinterWar = function(id) {
-        return self.createTimeMap(id, winterWarTimeSpan.start, winterWarTimeSpan.end, winterWarHighlights);
+        return self.createTimeMap(id, worldWarHighlight.startDate, worldWarHighlight.endDate, winterWarHighlights);
     };
 
     self.createTimeMapForActor = function(id) {
         self.currentUnitId = id;
         return self.showWinterWar(id);
-    };
-
-    self.showPerson = function() {
-        var uri = getSelectionUri('unitSelector');
-        if (!uri) { return initSelector('unitSelector'); /* uri = ':actor_940'; */ }
-        self.noReload = true;
-        $location.search('uri', uri);
-        if (uri) {
-            return self.showWinterWar(uri);
-        }
     };
 
     self.updateByUri = function(uri) {
@@ -270,7 +260,7 @@ angular.module('eventsApp')
         else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
         else if (rx.length<2) { rx='^'+rx; }
         else if (rx.length<5) { rx = '(^|^.* )'+rx+'.*$'; }
-        else { 
+        else {
         	rx = rx.replace(' ','.*');
         	rx = '^.*'+rx+'.*$'; }
 

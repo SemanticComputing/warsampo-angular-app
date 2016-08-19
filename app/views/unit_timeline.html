@@ -30,7 +30,7 @@
                 </span>
                 {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
               </h3>
-              <p>{{ ctrl.current.opts.description }}</p>
+              <p>{{ ctrl.current.opts.description || ctrl.current.getDescription() }}</p>
               <p ng-if="ctrl.current.opts.event.source"><small>{{ 'SOURCE' | translate }}: {{ ctrl.current.opts.event.source }}</small></p>
               <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.current.relatedPersons"></ws-related-links-paged>
               <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.current.superUnits"></ws-related-links>

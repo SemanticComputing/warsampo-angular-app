@@ -9,7 +9,7 @@
       <h2>
         {{ ctrl.obj.getLabel() }}
       </h2>
-      <p>{{ ctrl.obj.description }}</p>
+      <p>{{ ctrl.obj.getDescription() }}</p>
       <img ng-if="ctrl.obj.imageUrl" ng-src="{{ ctrl.obj.imageUrl }}" />
       <img ng-if="ctrl.obj.lat"
       ng-src="https://maps.googleapis.com/maps/api/staticmap?size=600x300&zoom=5&markers=color:red%7C{{ ctrl.obj.lat }},{{ ctrl.obj.lon }}" />

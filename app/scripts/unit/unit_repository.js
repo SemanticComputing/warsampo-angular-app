@@ -33,21 +33,18 @@
         ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
 
         var unitQry = prefixes +
-        '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?desc ?sid ?source WHERE {  ' +
-        '      ?ename a etypes:UnitNaming . ' +
-        '      ?ename skos:prefLabel ?name . ' +
-        '      BIND(?name AS ?label) ' +
-        '      OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
+        '  SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?description ?sid ?source WHERE {  ' +
+        '    ?ename a etypes:UnitNaming . ' +
+        '    ?ename skos:prefLabel ?name . ' +
+        '    BIND(?name AS ?label) ' +
+        '    OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
         ' 	 OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
-        '        OPTIONAL { ?sid skos:prefLabel ?source . } ' +
-        '      } ' +
-        '      ?ename crm:P95_has_formed ?id . ' +
-        '      OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '      VALUES ?id  { {0} } ' +
-        '  VALUES ?preflang { "{1}" } '+
-        '  OPTIONAL { ?id dc:description ?desc_any . filter (lang(?desc_any)!=?preflang) }	 '+
-        '  OPTIONAL { ?id dc:description ?desc_pref . filter (lang(?desc_pref)=?preflang) } '+
-        '  BIND ( COALESCE(?desc_pref,?desc_any, "") AS ?desc ) '+
+        '      OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+        '    } ' +
+        '    ?ename crm:P95_has_formed ?id . ' +
+        '    OPTIONAL { ?id crm:P3_has_note ?note . } ' +
+        '    VALUES ?id  { {0} } ' +
+        '    OPTIONAL { ?id dc:description ?description . }	 '+
         '  } ';
 
         var relatedUnitQry = prefixes +
@@ -165,8 +162,7 @@
         '} ORDER BY ?label ';
 
         this.getById = function(id) {
-            var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ,
-                qry = unitQry.format('<{0}>'.format(id)).format('{1}',langtag);
+            var qry = unitQry.format('<{0}>'.format(id));
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
                     return unitMapperService.makeObjectList(data)[0];

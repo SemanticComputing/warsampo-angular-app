@@ -55,9 +55,10 @@
     function Unit() { }
 
     angular.module('eventsApp')
-    .factory('unitMapperService', function(objectMapperService) {
-        var proto = Object.getPrototypeOf(objectMapperService);
+    .factory('unitMapperService', function(translateableObjectMapperService, Unit) {
+        var proto = Object.getPrototypeOf(translateableObjectMapperService);
         UnitMapper.prototype = angular.extend({}, proto, UnitMapper.prototype);
+        UnitMapper.prototype.objectClass = Unit;
 
         return new UnitMapper();
     })

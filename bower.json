@@ -19,7 +19,7 @@
     "angular-translate": "~2.9.0",
     "angular-translate-interpolation-messageformat": "~2.9.1",
     "angular-translate-loader-static-files": "~2.9.0",
-    "angular-paging-sparql-service": "^0.1.0",
+    "angular-paging-sparql-service": "^0.1.1",
     "blueimp-gallery": "~2.18.1",
     "sparql-faceter": "^0.4.2",
     "ngInfiniteScroll": "^1.2.2",

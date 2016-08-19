@@ -53,7 +53,7 @@
                 description = formations.concat(description);
             }
             if (description.length) {
-                unit.description = description;
+                unit.descriptions = description;
             }
         };
 

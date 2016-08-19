@@ -220,8 +220,8 @@
         ' } ORDER BY ?start_time ?end_time ';
 
         var personLifeEventsQry = prefixes +
-        ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description ?start_time ' +
-        '  ?end_time ?rank ?rank_id ?place_id ?place_label ' +
+        ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description (?description AS ?label) ' +
+        '  ?start_time ?end_time ?rank ?rank_id ?place_id ?place_label ' +
         ' WHERE { ' +
         '  VALUES ?person { {0} } ' +
         '  { ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
@@ -392,8 +392,7 @@
             } else {
                 return $q.when();
             }
-            var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi";
-            qry = personLifeEventsQry.format(id).format('{1}',langtag);
+            qry = personLifeEventsQry.format(id);
             return endpoint.getObjects(qry);
         };
     }
