@@ -15,7 +15,7 @@
           <a ws-page-link="ctrl.event.time_id">{{ ctrl.event.timeSpanString }}</a> -
         </span>{{ ctrl.event.type }}
       </h2>
-      <p>{{ ctrl.event.description }}</p>
+      <p>{{ ctrl.event.getDescription() }}</p>
       <p ng-if="ctrl.event.source"><small>{{ 'SOURCE' | translate }}: {{ ctrl.event.source }}</small></p>
       <p><a ng-href="{{ ctrl.demoLink }}" translate>SHOW_IN_DEMO</a></p>
       <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>

@@ -7,7 +7,7 @@
     <p ng-if="!ctrl.obj && !ctrl.isLoadingObject" translate>METADATA_NOT_FOUND</p>
     <div id="dataContent" ng-if="ctrl.obj">
       <h2>
-        {{ ctrl.obj.label }}
+        {{ ctrl.obj.getLabel() }}
       </h2>
       <p>{{ ctrl.obj.description }}</p>
       <img ng-if="ctrl.obj.imageUrl" ng-src="{{ ctrl.obj.imageUrl }}" />

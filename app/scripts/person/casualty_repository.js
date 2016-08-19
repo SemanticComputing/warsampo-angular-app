@@ -156,7 +156,7 @@
         };
 
         this.getPersonDeathRecord = function(id, lang) {
-            var qry = personDeathRecordQry.format(id, "fi");
+            var qry = personDeathRecordQry.format(id, lang || 'fi');
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectListNoGrouping(data);
             });

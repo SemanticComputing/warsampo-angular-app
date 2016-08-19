@@ -32,11 +32,11 @@
                 if (edate!=='') {edate=edate+': ';}
 
                 if (etype.indexOf('Battle') > -1) {
-                    battles.push({ label: e.label, id: e.id });
+                    battles.push({ label: e.getLabel(), id: e.id });
                 } else if (etype.indexOf('Formation') > -1) {
-                    formations.push(edate + 'Perustaminen: ' + e.label + eplace);
+                    formations.push(edate + 'Perustaminen: ' + e.getLabel() + eplace);
                 } else if (etype.indexOf('TroopMovement') > -1) {
-                    description.push(edate + e.label + eplace);
+                    description.push(edate + e.getLabel() + eplace);
                 }
 
                 if (e.places) {

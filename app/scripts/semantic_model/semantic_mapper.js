@@ -8,20 +8,24 @@
     .factory('semanticModelMapperService', semanticModelMapperService);
 
     /* ngInject */
-    function semanticModelMapperService(_, objectMapperService) {
+    function semanticModelMapperService(_, objectMapperService, TranslateableObject) {
         var imageTypes = ['png', 'jpg', 'jpeg', 'gif'];
         // If other location uris are required, these can be made into lists
         var imageUri = 'http://schema.org/contentUrl';
         var latUri = 'http://www.w3.org/2003/01/geo/wgs84_pos#lat';
         var lonUri = 'http://www.w3.org/2003/01/geo/wgs84_pos#long';
 
+        var objProto = Object.getPrototypeOf(TranslateableObject);
+        SemanticModel.prototype = angular.extend({}, objProto, TranslateableObject.prototype);
         SemanticModel.prototype.nonProperties = ['type', 'label', 'id', 'properties',
-            'fetchRelated', 'nonProperties', 'lat', 'lon', 'imageUrl', 'link'];
-        SemanticModelMapper.prototype.postProcess = postProcess;
-        SemanticModelMapper.prototype.makeObject = makeObject;
+            'fetchRelated', 'nonProperties', 'lat', 'lon', 'imageUrl', 'link', 'getLabel',
+            'getDescription', 'getLangAttr'];
 
         var proto = Object.getPrototypeOf(objectMapperService);
         SemanticModelMapper.prototype = angular.extend({}, proto, SemanticModelMapper.prototype);
+
+        SemanticModelMapper.prototype.postProcess = postProcess;
+        SemanticModelMapper.prototype.makeObject = makeObject;
 
         return new SemanticModelMapper();
 

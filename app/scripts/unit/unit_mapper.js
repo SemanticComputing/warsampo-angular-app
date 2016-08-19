@@ -5,8 +5,6 @@
     * Service for transforming event SPARQL results into objects.
     */
 
-    function Unit() { }
-
     function UnitMapper() {
         this.objectClass = Unit;
     }
@@ -20,13 +18,6 @@
 
         o.name = o.name ? [o.name] : [];
         o.abbrev = o.abbrev ? [o.abbrev] : [];
-		  /*
-		  var descs=[];
-        if(o.desc_fi) { descs.push(o.desc_fi);}
-		  if(o.desc_en) { descs.push(o.desc_en);}
-		  if (window.location.href.indexOf('/en/')>-1)  descs.reverse(); 
-		  if (descs.length) o.desc=descs[0];
-		  */
         return o;
     };
 
@@ -61,6 +52,7 @@
         return abb2;
     }
 
+    function Unit() { }
 
     angular.module('eventsApp')
     .factory('unitMapperService', function(objectMapperService) {
@@ -69,7 +61,8 @@
 
         return new UnitMapper();
     })
-    .factory('Unit', function() {
+    .factory('Unit', function(TranslateableObject) {
+        Unit.prototype = TranslateableObject.prototype;
         return Unit;
     });
 })();

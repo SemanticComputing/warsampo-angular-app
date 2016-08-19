@@ -73,7 +73,8 @@
         '  <RESULT_SET> ' +
         '  OPTIONAL { ' +
         '   ?id rdfs:label|skos:prefLabel|skos:altLabel ?lbl . ' +
-        '   FILTER(langmatches(lang(?lbl), "FI")) } ' +
+        '   FILTER(langmatches(lang(?lbl), "FI")) ' +
+        '  } ' +
         '  OPTIONAL { ?id rdfs:label|skos:prefLabel|skos:altLabel ?lbl . } ' +
         '  BIND(COALESCE(?lbl, REPLACE(STR(?id), "^.+[/#](.+?)$", "$1")) as ?label)' +
         ' } ';

@@ -36,6 +36,8 @@
             eventService.getEventById($routeParams.uri)
             .then(function(event) {
                 self.event = event;
+                return eventService.fetchRelated(self.event);
+            }).then(function(event) {
                 self.demoLink = getDemoLink(event);
                 self.isLoadingEvent = false;
 
@@ -46,7 +48,6 @@
                 return $q.all([
                     placeEventPromise,
                     timeEventPromise,
-                    eventService.fetchRelated(self.event),
                     fetchImages(self.event)
                 ]);
             })
@@ -71,8 +72,8 @@
             var app, id;
             switch(event.type_id) {
                 case EVENT_TYPES.BATTLE:
-                    app = 'events';
-                    id = event.id;
+                    app = 'units';
+                    id = ((event.units || [])[0] || {}).id;
                     break;
                 case EVENT_TYPES.PROMOTION:
                 case EVENT_TYPES.BIRTH:

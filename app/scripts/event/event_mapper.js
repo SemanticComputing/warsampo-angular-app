@@ -5,12 +5,7 @@
     * Service for transforming event SPARQL results into objects.
     */
 
-    function Event() { }
-
-    function EventMapper(dateUtilService) {
-        this.objectClass = Event;
-        this.dateUtilService = dateUtilService;
-    }
+    function EventMapper() { }
 
     EventMapper.prototype.makeObject = function(event) {
         // Take the event as received and turn it into an object that
@@ -21,8 +16,10 @@
         e.id = event.id.value;
         e.type_id = event.type_id ? event.type_id.value : '';
         e.type = event.type ? event.type.value : '';
+
         e.description = event.description ? event.description.value : '';
         e.label = e.description;
+
         if (event.source) {
             e.source = event.source.value;
         }
@@ -78,15 +75,22 @@
         return e;
     };
 
+    function Event() { }
 
     angular.module('eventsApp')
-    .factory('eventMapperService', function(objectMapperService, dateUtilService) {
-        var proto = Object.getPrototypeOf(objectMapperService);
+    .factory('eventMapperService', function(translateableObjectMapperService, dateUtilService, defaultLocale, Event) {
+        var proto = Object.getPrototypeOf(translateableObjectMapperService);
         EventMapper.prototype = angular.extend({}, proto, EventMapper.prototype);
 
-        return new EventMapper(dateUtilService);
+        EventMapper.prototype.objectClass = Event;
+        EventMapper.prototype.dateUtilService = dateUtilService;
+        EventMapper.prototype.defaultLocale = defaultLocale;
+
+        return new EventMapper(dateUtilService, defaultLocale);
     })
-    .factory('Event', function() {
+    .factory('Event', function($translate, TranslateableObject) {
+        Event.prototype = TranslateableObject.prototype;
+
         return Event;
     });
 })();

@@ -15,7 +15,9 @@
 
         function link(scope, element, attrs) {
             scope.$watch(attrs.wsPageLink, function(value) {
-                setSrc(value);
+                if (value) {
+                    setSrc(value);
+                }
             });
 
             function setSrc(value) {
@@ -46,7 +48,9 @@
                 }
 
                 var lang = $translate.use();
-                var url = lang + '/' + path + '?uri=' + encodeURIComponent(objId + (params ? params : ''));
+                var url = lang + '/' + path +
+                    '?uri=' + encodeURIComponent(objId) +
+                    (params ? params : '');
                 element.attr('href', url);
                 if (target) {
                     element.attr('target', target);

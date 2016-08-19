@@ -52,16 +52,16 @@
 
         var personQry = select +
         ' { ' +
-        '  <RESULT_SET> ' +        
-		  '  ?id foaf:familyName ?sname .' +
+        '  <RESULT_SET> ' +
+        '  ?id foaf:familyName ?sname .' +
         '  ?id skos:prefLabel ?label .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
-		//' OPTIONAL { ?id dc:description ?desc } ' + 
-		  '  VALUES ?preflang { "{1}" } '+
-        '  OPTIONAL { ?id dc:description ?desc_any  . filter ( lang(?desc_any)!= ?preflang ) }  '+
-		  '  OPTIONAL { ?id dc:description ?desc_pref . filter ( lang(?desc_pref)= ?preflang ) }  '+
-	  	  '  BIND ( COALESCE(?desc_pref, ?desc_any, "") AS ?desc ) '+
-	  	  
+		//' OPTIONAL { ?id dc:description ?desc } ' +
+        '  VALUES ?preflang { "{1}" } '+
+        '  OPTIONAL { ?id dc:description ?desc_any  . filter ( lang(?desc_any)!= ?preflang ) }  ' +
+        '  OPTIONAL { ?id dc:description ?desc_pref . filter ( lang(?desc_pref)= ?preflang ) }  ' +
+        '  BIND ( COALESCE(?desc_pref, ?desc_any, "") AS ?desc ) ' +
+
         '  OPTIONAL { ?id dc:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +

@@ -15,7 +15,7 @@
     });
 
     /* @ngInject */
-    function PhotoGalleryContoller($scope, $q, $timeout, $log, $window) {
+    function PhotoGalleryContoller($scope, $q, $timeout, $window, _) {
         var self = this;
 
         self.isCollapsed = true;
@@ -34,14 +34,14 @@
         });
 
         $scope.$watch('images', function(val) {
+            if (!val || _.isArray(val)) {
+                return;
+            }
             self.imageCount = 0;
             self.photos = [];
             self.hasMore = false;
             self.isCollapsed = true;
             self.imagePager = val;
-            if (!val) {
-                return;
-            }
             self.isLoadingImages = true;
             self.imagePager.getTotalCount().then(function(count) {
                 self.imageCount = count;
@@ -77,10 +77,13 @@
                 self.isLoadingImages = false;
                 return;
             }
-            var fullHeight = $('#photo-thumbs')[0].scrollHeight;
-            var visibleHeight = $('#photo-thumbs')[0].clientHeight;
-            self.hasMore = fullHeight > visibleHeight ? true : false;
-            $scope.$apply();
+            var elem = angular.element('#photo-thumbs');
+            if (elem) {
+                var fullHeight = elem[0].scrollHeight;
+                var visibleHeight = elem[0].clientHeight;
+                self.hasMore = fullHeight > visibleHeight ? true : false;
+                $scope.$apply();
+            }
         }
 
         function getAllPhotos() {

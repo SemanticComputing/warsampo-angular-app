@@ -10,7 +10,7 @@
 
         var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
 
-        var prefixes = '' +
+        var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
@@ -45,9 +45,9 @@
         '      OPTIONAL { ?id crm:P3_has_note ?note . } ' +
         '      VALUES ?id  { {0} } ' +
         '  VALUES ?preflang { "{1}" } '+
-		 '  OPTIONAL { ?id dc:description ?desc_any . filter (lang(?desc_any)!=?preflang) }	 '+
-		 '  OPTIONAL { ?id dc:description ?desc_pref . filter (lang(?desc_pref)=?preflang) } '+
-		 '  BIND ( COALESCE(?desc_pref,?desc_any, "") AS ?desc ) '+
+        '  OPTIONAL { ?id dc:description ?desc_any . filter (lang(?desc_any)!=?preflang) }	 '+
+        '  OPTIONAL { ?id dc:description ?desc_pref . filter (lang(?desc_pref)=?preflang) } '+
+        '  BIND ( COALESCE(?desc_pref,?desc_any, "") AS ?desc ) '+
         '  } ';
 
         var relatedUnitQry = prefixes +
@@ -106,17 +106,17 @@
         '} GROUP BY ?id ';
 
         var selectorQuery = prefixes +
-        	'SELECT DISTINCT ?name ?id  ' + 
-			'WHERE { ' + 
-			' 	{ SELECT DISTINCT ?ename ' + 
-			' 	   WHERE { ' + 
-			' 	      ?ename a etypes:UnitNaming . ' + 
-			' 	      ?ename skos:prefLabel|skos:altLabel|skos:hiddenLabel ?name . ' + 
-			' 	      FILTER ( regex(?name, "{0}", "i") ) ' + 
-			' 	   } ' + 
-			' 	   LIMIT 300 ' + 
-			' 	} ?ename skos:prefLabel ?name ; crm:P95_has_formed ?id . ' + 
-			'} ORDER BY lcase(?name) ' ;
+        'SELECT DISTINCT ?name ?id  ' +
+        'WHERE { ' +
+        ' 	{ SELECT DISTINCT ?ename ' +
+        ' 	   WHERE { ' +
+        ' 	      ?ename a etypes:UnitNaming . ' +
+        ' 	      ?ename skos:prefLabel|skos:altLabel|skos:hiddenLabel ?name . ' +
+        ' 	      FILTER ( regex(?name, "{0}", "i") ) ' +
+        ' 	   } ' +
+        ' 	   LIMIT 300 ' +
+        ' 	} ?ename skos:prefLabel ?name ; crm:P95_has_formed ?id . ' +
+        '} ORDER BY lcase(?name) ' ;
 
         var actorInfoQry = prefixes +
         ' SELECT ?id ?type ?label ?familyName ?firstName ' +
@@ -165,8 +165,8 @@
         '} ORDER BY ?label ';
 
         this.getById = function(id) {
-        		var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ,
-            	qry = unitQry.format('<{0}>'.format(id)).format('{1}',langtag);
+            var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ,
+                qry = unitQry.format('<{0}>'.format(id)).format('{1}',langtag);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
                     return unitMapperService.makeObjectList(data)[0];
@@ -218,7 +218,7 @@
         };
 
         this.getItems = function(regx) {
-        	   var qry = selectorQuery.format('{0}'.format(regx));
+            var qry = selectorQuery.format('{0}'.format(regx));
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectListNoGrouping(data);
             });
