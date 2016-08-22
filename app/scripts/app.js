@@ -106,6 +106,8 @@
     .constant('EVENT_TYPES', {
         BATTLE: 'http://ldf.fi/warsa/events/event_types/Battle',
         POLITICAL_ACTIVITY: 'http://ldf.fi/warsa/events/event_types/PoliticalActivity',
+        MILITARY_ACTIVITY: 'http://ldf.fi/warsa/events/event_types/MilitaryActivity',
+        BOMBARDMENT: 'http://ldf.fi/warsa/events/event_types/Bombardment',
         TROOP_MOVEMENT: 'http://ldf.fi/warsa/events/event_types/TroopMovement',
         PROMOTION: 'http://ldf.fi/warsa/events/event_types/Promotion',
         BIRTH: 'http://www.cidoc-crm.org/cidoc-crm/E67_Birth',

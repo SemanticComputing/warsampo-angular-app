@@ -28,7 +28,7 @@
                 <span ng-repeat="place in ctrl.current.opts.event.places">
                   <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
                 </span>
-                {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.type }}
+                {{ ctrl.current.opts.descTitle }} - {{ ctrl.current.opts.event.getTypeLabel() }}
               </h3>
               <p>{{ ctrl.current.opts.description || ctrl.current.getDescription() }}</p>
               <p ng-if="ctrl.current.opts.event.source"><small>{{ 'SOURCE' | translate }}: {{ ctrl.current.opts.event.source }}</small></p>

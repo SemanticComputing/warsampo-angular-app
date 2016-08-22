@@ -58,7 +58,6 @@
         '   ?type_id rdfs:subClassOf* crm:E5_Event . ' +
         '   ?id a ?type_id . ' +
         '   ?type_id skos:prefLabel ?type . ' +
-        '   FILTER(langMatches(lang(?type), "FI"))  ' +
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { '+
         '     ?id crm:P11_had_participant|crm:P100_was_death_of|crm:P98_brought_into_life ?participant . '+
@@ -96,7 +95,6 @@
         '   <RESULT_SET> ' +
         '   ?id a ?type_id . ' +
         '   ?type_id skos:prefLabel ?type . ' +
-        '   FILTER(langMatches(lang(?type), "FI")) ' +
         '   ?id crm:P4_has_time-span ?time_id . ' +
         '   ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
         '      crm:P82b_end_of_the_end ?end_time . ' +
@@ -203,7 +201,6 @@
         '  OPTIONAL { ?id crm:P141_assigned ?medal } ' +
         '  OPTIONAL { ' +
         '    ?type_id skos:prefLabel ?type . ' +
-        '    FILTER(langMatches(lang(?type), "FI")) ' +
         '  } ' +
         '  OPTIONAL { ' +
         '    ?id crm:P4_has_time-span ?time_id .  ' +
@@ -256,7 +253,6 @@
         '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
         '  OPTIONAL { ' +
         '    ?type_id skos:prefLabel ?type . ' +
-        '    FILTER(langMatches(lang(?type), "FI")) ' +
         '  } ' +
         ' } ORDER BY ?start_time  ';
 

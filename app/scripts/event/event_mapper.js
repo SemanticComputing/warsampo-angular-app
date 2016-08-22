@@ -86,7 +86,7 @@
         EventMapper.prototype.dateUtilService = dateUtilService;
         EventMapper.prototype.defaultLocale = defaultLocale;
 
-        return new EventMapper(dateUtilService, defaultLocale);
+        return new EventMapper();
     })
     .factory('Event', function($translate, TranslateableObject) {
         Event.prototype = TranslateableObject.prototype;

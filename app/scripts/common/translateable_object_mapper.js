@@ -8,6 +8,7 @@
         function reviseObject(obj, orig) {
             setLangAttr(obj, 'label', orig);
             setLangAttr(obj, 'description', orig);
+            setLangAttr(obj, 'type', orig);
             return obj;
         }
 
@@ -38,6 +39,9 @@
         };
         TranslateableObject.prototype.getDescription = function() {
             return this.getLangAttr('description');
+        };
+        TranslateableObject.prototype.getTypeLabel = function() {
+            return this.getLangAttr('type');
         };
 
         function getLangAttr(attr) {

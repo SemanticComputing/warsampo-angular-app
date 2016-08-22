@@ -7,7 +7,7 @@
             <span ng-repeat="place in timemapCtrl.current.opts.event.places">
               <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
             </span>
-            {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.type }}
+            {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.getTypeLabel() }}
           </h3>
           <p>{{ timemapCtrl.current.opts.description }}</p>
           <p ng-if="timemapCtrl.current.opts.event.source"><small>{{ 'SOURCE' | translate }}: {{ timemapCtrl.current.opts.event.source }}</small></p>

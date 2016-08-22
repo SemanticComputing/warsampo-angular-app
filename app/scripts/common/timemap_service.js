@@ -2,7 +2,7 @@
 
 angular.module('eventsApp')
 .service('timemapService', function($q, $timeout, _, Timeline, TimeMapTheme, TimeMap,
-            SimileAjax, eventService, photoService) {
+            SimileAjax, eventService, photoService, EVENT_TYPES) {
 
     /* Public API */
 
@@ -15,12 +15,11 @@ angular.module('eventsApp')
 
     /* Private vars */
 
-    var eventTypeThemes = {
-        'Sotatoimi': 'red',
-        'Pommitus': 'red',
-        'Taistelu': 'red',
-        'Poliittinen toiminta': 'purple'
-    };
+    var eventTypeThemes = {};
+    eventTypeThemes[EVENT_TYPES.MILITARY_ACTIVITY] = 'red';
+    eventTypeThemes[EVENT_TYPES.BOMBARDMENT] = 'red';
+    eventTypeThemes[EVENT_TYPES.BATTLE] = 'red';
+    eventTypeThemes[EVENT_TYPES.POLITICAL_ACTIVITY] = 'red';
 
     var distinctPhotoData = [];
     var photoSettings = {
@@ -217,7 +216,7 @@ angular.module('eventsApp')
             start: new Date(e.start_time),
             title: description.length < 50 ? description : description.substr(0, 47) + '...',
             options: {
-                theme: eventTypeThemes[e.type] || 'orange',
+                theme: eventTypeThemes[e.type_id] || 'orange',
                 descTitle: e.timeSpanString,
                 description: description,
                 event: e

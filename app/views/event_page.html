@@ -13,7 +13,7 @@
         </span>
         <span ng-if="ctrl.event.timeSpanString">
           <a ws-page-link="ctrl.event.time_id">{{ ctrl.event.timeSpanString }}</a> -
-        </span>{{ ctrl.event.type }}
+        </span>{{ ctrl.event.getTypeLabel() }}
       </h2>
       <p>{{ ctrl.event.getDescription() }}</p>
       <p ng-if="ctrl.event.source"><small>{{ 'SOURCE' | translate }}: {{ ctrl.event.source }}</small></p>
