@@ -6,8 +6,9 @@
     * Service that provides an interface for fetching casualty data.
     */
     angular.module('eventsApp')
-    .service('casualtyRepository', function($q, _, SparqlService, objectMapperService) {
-        var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
+    .service('casualtyRepository', function($q, _, SparqlService, objectMapperService,
+            SPARQL_ENDPOINT_URL) {
+        var endpoint = new SparqlService(SPARQL_ENDPOINT_URL);
 
         var prefixes =
         ' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
@@ -19,6 +20,7 @@
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
+        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> 	' +
         ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
         ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
@@ -54,17 +56,17 @@
         ' } ' +
         ' GROUP BY ?id ?description ';
 
-        var casualtyCountsByTimeGroupAndUnitByTypeQry = prefixes +
+        var casualtyCountsByTimeGroupByUnitAndTypeQry = prefixes +
         'PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/>	' +
         'SELECT ?id ?description (COUNT(?id) AS ?count)  WHERE {  	' +
         '  { SELECT ?subunit 	' +
         '    	WHERE { 	' +
-        '      		VALUES ?unit { {2} } .	' +
+        '      		VALUES ?unit { <{2}> } .	' +
         '          ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
         '          ?subunit a atypes:MilitaryUnit . 	' +
         '    	} 	' +
         '  	} UNION {	' +
-        '    	VALUES ?subunit { {2} } .	' +
+        '    	VALUES ?subunit { <{2}> } .	' +
         '   }	' +
         '  	' +
         '  ?cas_id casualties:kuolinaika ?death_date .         	' +
@@ -74,32 +76,17 @@
         '  ?id skos:prefLabel ?description . 	' +
         '}  GROUP BY ?id ?description 	';
 
-        var casualtyLocationsByTimeAndUnitQry =
-        'PREFIX : <http://ldf.fi/warsa/actors/> 	' +
-        'PREFIX events: <http://ldf.fi/warsa/events/>	' +
-        'PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> 	' +
-        'PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> 	' +
-        'PREFIX ranks: <http://ldf.fi/warsa/actors/ranks/>	' +
-        'PREFIX dcterms: <http://purl.org/dc/terms/> 	' +
-        'PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/>	' +
-        'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
-        'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>	' +
-        'PREFIX skos: <http://www.w3.org/2004/02/skos/core#> 	' +
-        'PREFIX xml: <http://www.w3.org/XML/1998/namespace> 	' +
-        'PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 	' +
-        'PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> 	' +
-        'PREFIX owl: <http://www.w3.org/2002/07/owl#> 	' +
-        'PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>	' +
-        'SELECT ?id ?lat ?lon ?death_date ?subunit    	' +
+        var casualtyLocationsByTimeAndUnitQry = prefixes +
+        'SELECT ?id ?lat ?lon ?death_date ?subunit ' +
         'WHERE {	' +
         '   { SELECT ?subunit 	' +
         '    	WHERE { 	' +
-        '      		VALUES ?unit { {2} } .	' +
+        '      		VALUES ?unit { <{2}> } .	' +
         '          ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
         '          ?subunit a atypes:MilitaryUnit . 	' +
         '    	} 	' +
         '  	} UNION {	' +
-        '    	VALUES ?subunit { {2} } .	' +
+        '    	VALUES ?subunit { <{2}> } .	' +
         '    }	' +
         '	?id casualties:kuolinaika ?death_date .        	' +
         '  FILTER(?death_date >= "{0}"^^xsd:date && ?death_date <= "{1}"^^xsd:date) ' +
@@ -127,6 +114,22 @@
             });
         };
 
+        this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
+            // Expects a single unit
+            var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
+            return endpoint.getObjects(qry).then(function(data) {
+                return objectMapperService.makeObjectListNoGrouping(data);
+            });
+        };
+
+        this.getCasualtyCountsByTimeGroupByUnitAndType = function(start, end, unit) {
+            // Expects a single unit
+            var qry = casualtyCountsByTimeGroupByUnitAndTypeQry.format(start, end, unit);
+            return endpoint.getObjects(qry).then(function(data) {
+                return objectMapperService.makeObjectList(data);
+            });
+        };
+
         this.getCasualtyCountByTime = function(start, end) {
             var qry = casualtyCountByTimeQry.format(start, end);
             return endpoint.getObjects(qry).then(function(data) {
@@ -138,20 +141,6 @@
             var qry = casualtyCountsByTimeGroupByTypeQry.format(start, end);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
-            });
-        };
-
-        this.getCasualtyCountsByTimeGroupAndUnitByType = function(start, end, unit) {
-            var qry = casualtyCountsByTimeGroupAndUnitByTypeQry.format(start, end, unit);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
-            });
-        };
-
-        this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
-            var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectListNoGrouping(data);
             });
         };
 

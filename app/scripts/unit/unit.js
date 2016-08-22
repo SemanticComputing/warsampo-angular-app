@@ -196,8 +196,8 @@
             return unitRepository.getSubUnits(unit);
         };
 
-        self.getItems = function (regx, controller) {
-            return unitRepository.getItems(regx, controller);
+        self.getItems = function (regx) {
+            return unitRepository.getItems(regx);
         };
 
         self.getActorInfo = function(ids) {

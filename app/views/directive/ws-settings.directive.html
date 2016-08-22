@@ -1,6 +1,6 @@
-<div class="row" ng-controller="SettingCtrl as ctrl">
+<div class="row">
   <div class="col-md-12">
-    <div uib-collapse="!ctrl.settingsVisible">
+    <div uib-collapse="!ctrl.getSettingsVisibility()">
       <div class="form-inline">
         <label for="photo-days-before">Valokuvien aikahaarukka 
           <input min="0" name="photo-days-before" class="form-control input-short"

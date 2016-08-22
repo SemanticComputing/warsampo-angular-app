@@ -1,11 +1,3 @@
-/**
- * @ngdoc function
- * @name eventsApp.controller:EventDemoCtrl
- * @description
- * # EventDemoCtrl
- * Controller of the eventsApp
- */
-
 (function() {
 
     'use strict';
@@ -14,8 +6,7 @@
     .controller('EventDemoCtrl', EventDemoController);
 
     /* @ngInject */
-    function EventDemoController($routeParams, $location, $anchorScroll,
-                $timeout, $window, $scope, $rootScope, $route, $q, $translate,
+    function EventDemoController($routeParams, $location, $scope, $q, $translate,
                 _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
                 personService, googleMapsService, timemapService) {
 
@@ -43,20 +34,31 @@
 
         /* Activate */
 
-        visualize();
+        init();
 
-        $rootScope.showHelp = function() {
-            self.current = undefined;
-        };
+        /* Implementation */
+
+        function init() {
+            Settings.setHelpFunction(showHelp);
+            Settings.enableSettings();
+            Settings.setApplyFunction(visualize);
+            Settings.setHeatmapUpdater(updateHeatmap);
+
+            $scope.$on('$destroy', function() {
+                Settings.clearEventSettings();
+            });
+
+            return visualize();
+        }
 
         function visualize() {
-
             self.current = null;
             self.isLoadingTimemap = true;
             var era = $routeParams.era;
             var event_uri = $routeParams.uri;
             var promise;
             if (event_uri) {
+                // Single event given as parameter
                 promise = eventService.getEventById(event_uri).then(function(e) {
                     if (e) {
                         return createTimeMapForEvent(e);
@@ -67,6 +69,7 @@
 
                 });
             } else if (era) {
+                // Only war given
                 switch(era.toLowerCase()) {
                     case 'winterwar': {
                         promise = self.showWinterWar();
@@ -83,15 +86,6 @@
                 return $q.when();
             }
 
-            // Set listener to prevent reload when it is not desired.
-            $scope.$on('$routeUpdate', function() {
-                if (!self.noReload) {
-                    $route.reload();
-                } else {
-                    self.noReload = false;
-                }
-            });
-
             return promise.then(afterCreateInit).then(function() {
                 self.isLoadingTimemap = false;
             }).catch(function(data) {
@@ -103,8 +97,6 @@
         function afterCreateInit() {
             getCasualtyCount();
             tm.timeline.setAutoWidth();
-            Settings.setApplyFunction(visualize);
-            Settings.setHeatmapUpdater(updateHeatmap);
             updateHeatmap();
         }
 
@@ -122,6 +114,10 @@
                     WAR_INFO.continuationWarHighlights);
         }
 
+        function showHelp() {
+            self.current = undefined;
+        }
+
         function createTimeMap(start, end, highlights) {
 
             var photoConfig = Settings.getPhotoConfig();
@@ -136,7 +132,7 @@
                 timemapService.setOnMouseUpListener(onMouseUpListener);
                 band.addOnScrollListener(clearHeatmap);
                 if (highlights) {
-                    tm.timeline.getBand(1).setMaxVisibleDate(new Date(highlights[0].startDate));
+                    band.setMaxVisibleDate(new Date(highlights[0].startDate));
                 }
             });
         }
@@ -170,7 +166,6 @@
         function infoWindowCallback(item) {
             // Change the URL but don't reload the page
             if ($location.search().uri !== item.opts.event.id) {
-                self.noReload = true;
                 $location.search('uri', item.opts.event.id);
             }
 

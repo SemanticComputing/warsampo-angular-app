@@ -2,39 +2,45 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('SettingCtrl', function($rootScope, Settings) {
-        var self = this;
+    .directive('wsSettings', wsSettingsDirective);
 
-        self.settingsVisible = false;
-
-        $rootScope.showSettings = function() {
-            self.settingsVisible = !self.settingsVisible;
+    function wsSettingsDirective(Settings) {
+        return {
+            templateUrl: 'views/directive/ws-settings.directive.html',
+            controller: SettingsController,
+            controllerAs: 'ctrl',
+            scope: {}
         };
 
-        self.photoDaysBeforeSetting = Settings.photoDaysBefore;
-        self.photoDaysAfterSetting = Settings.photoDaysAfter;
-        self.photoPlaceSetting = Settings.photoPlace;
-        self.showCasualtyHeatmap = Settings.showCasualtyHeatmap;
+        function SettingsController() {
+            var self = this;
 
-        self.photoConfigChanged = function() {
-            return (Settings.photoDaysBefore !== self.photoDaysBeforeSetting) ||
-                (Settings.photoDaysAfter !== self.photoDaysAfterSetting) ||
-                (Settings.photoPlace !== self.photoPlaceSetting);
-        };
+            self.photoDaysBeforeSetting = Settings.photoDaysBefore;
+            self.photoDaysAfterSetting = Settings.photoDaysAfter;
+            self.photoPlaceSetting = Settings.photoPlace;
+            self.showCasualtyHeatmap = Settings.showCasualtyHeatmap;
 
-        self.update = function() {
-            Settings.photoDaysBefore = self.photoDaysBeforeSetting;
-            Settings.photoDaysAfter = self.photoDaysAfterSetting;
-            Settings.photoPlace = self.photoPlaceSetting;
-            Settings.showCasualtyHeatmap = self.showCasualtyHeatmap;
+            self.getSettingsVisibility = Settings.getSettingsVisibility;
 
-            Settings.apply();
-        };
+            self.photoConfigChanged = function() {
+                return (Settings.photoDaysBefore !== self.photoDaysBeforeSetting) ||
+                    (Settings.photoDaysAfter !== self.photoDaysAfterSetting) ||
+                    (Settings.photoPlace !== self.photoPlaceSetting);
+            };
 
-        self.updateHeatmap = function() {
-            Settings.showCasualtyHeatmap = self.showCasualtyHeatmap;
-            Settings.updateHeatmap();
-        };
+            self.update = function() {
+                Settings.photoDaysBefore = self.photoDaysBeforeSetting;
+                Settings.photoDaysAfter = self.photoDaysAfterSetting;
+                Settings.photoPlace = self.photoPlaceSetting;
+                Settings.showCasualtyHeatmap = self.showCasualtyHeatmap;
 
-    });
+                Settings.apply();
+            };
+
+            self.updateHeatmap = function() {
+                Settings.showCasualtyHeatmap = self.showCasualtyHeatmap;
+                Settings.updateHeatmap();
+            };
+        }
+    }
 })();

@@ -5,8 +5,9 @@
     .directive('wsNavbar', wsNavbarDirective);
 
     /* @ngInject */
-    function wsNavbarDirective($templateRequest, $compile, $translate, $rootScope,
-            $route, $location, $routeParams, _, supportedLocales) {
+    function wsNavbarDirective($templateRequest, $compile, $translate, $route,
+            $location, $routeParams, _, supportedLocales, Settings) {
+
         return {
             link: link,
             controller: NavbarController,
@@ -28,16 +29,28 @@
             });
         }
 
-        function NavbarController() {
+        /* @ngInject */
+        function NavbarController($scope) {
             var self = this;
 
             self.changeLocale = changeLocale;
+            self.getEventLinksVisibility = getEventLinksVisibility;
 
-            $rootScope.$on('$locationChangeSuccess', init);
+            self.toggleSettings = Settings.toggleSettings;
+            self.getSettingsVisibility = Settings.getSettingsVisibility;
+            self.getHelpButtonVisibility = Settings.getHelpButtonVisibility;
+            self.getSettingsButtonVisibility = Settings.getSettingsButtonVisibility;
+
+            self.showHelp = showHelp;
+
+            function showHelp() {
+                return Settings.getHelp();
+            }
+
+            $scope.$on('$locationChangeSuccess', init);
 
             function init() {
                 return $translate.onReady().then(function() {
-                    setEventsUrlDisplay();
                     self.lang = $translate.use();
                     var base = self.lang + '/events/';
                     self.winterWarLink = base + 'winterwar';
@@ -45,8 +58,8 @@
                 });
             }
 
-            function setEventsUrlDisplay() {
-                self.showEventLinks = _.includes($location.url(), '/events');
+            function getEventLinksVisibility() {
+                return _.includes($location.url(), '/events');
             }
 
             function changeLocale(lang) {
