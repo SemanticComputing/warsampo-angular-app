@@ -33,7 +33,7 @@
     "RANK_DEMO": {
         "SUPER_RANKS": "Ylempiä sotilasarvoja",
         "SUB_RANKS": "Alempia sotilasarvoja",
-        "OTHER_RANKS": "Muita sotilasarvoja"  
+        "OTHER_RANKS": "Muita sotilasarvoja"
     },
     "MEDAL_DEMO": {
         "RELATED_MEDALS": "Muita kunniamerkkejä"
@@ -66,6 +66,8 @@
     "WINTER_WAR": "Talvisota",
     "CONTINUATION_WAR": "Jatkosota",
     "PERSPECTIVE_HELP": "Näkymän ohjeet",
+    "IN_fi": "Suomeksi",
+    "IN_en": "In English",
     "SETTINGS": "Asetukset",
     "EVENT_COLORS": "Tapahtumien värikoodit",
     "EVENT": "Tapahtuma",

@@ -1,8 +1,8 @@
-<ul class="nav navbar-nav" ng-controller="SubNavCtrl as ctrl">
+<ul class="nav navbar-nav">
   <li ng-show="showHelp"><a href="#" id="show-help" ng-click="showHelp()" class="translate-cload" translate-cloak translate>PERSPECTIVE_HELP</a></li>
   <li ng-show="showSettings"><a href="#" id="show-settings" ng-click="showSettings()" class="translate-cloak" translate-cloak translate>SETTINGS</a></li>
   <li ng-if="ctrl.showEventLinks"><a target="_self" ng-href="{{ ctrl.winterWarLink }}" translate-cloak translate>WINTER_WAR</a></li>
   <li ng-if="ctrl.showEventLinks"><a target="_self" ng-href="{{ ctrl.continuationWarLink }}" translate-cloak="" translate>CONTINUATION_WAR</a></li>
-  <li><a ng-show="ctrl.getLocale() === 'en'" ng-click="ctrl.changeLocale('fi')" href="#">Suomeksi</a></li>
-  <li><a ng-show="ctrl.getLocale() === 'fi'"ng-click="ctrl.changeLocale('en')" href="#">In English</a></li>
+  <li><a ng-show="ctrl.lang === 'en'" ng-click="ctrl.changeLocale('fi')" href="" translate>IN_fi</a></li>
+  <li><a ng-show="ctrl.lang === 'fi'" ng-click="ctrl.changeLocale('en')" href="" translate>IN_en</a></li>
 </ul>

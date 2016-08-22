@@ -78,7 +78,7 @@
                 return;
             }
             var elem = angular.element('#photo-thumbs');
-            if (elem) {
+            if (elem && elem[0]) {
                 var fullHeight = elem[0].scrollHeight;
                 var visibleHeight = elem[0].clientHeight;
                 self.hasMore = fullHeight > visibleHeight ? true : false;

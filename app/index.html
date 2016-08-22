@@ -32,9 +32,7 @@
   <![endif]-->
 
   <!-- Add your site or application content here -->
-  <div class="header" ng-controller="NavCtrl">
-    <div id="nav"></div>
-  </div>
+  <ws-navbar></ws-navbar>
 
   <div ng-include="'views/partials/photo_gallery_partial.html'"></div>
 
@@ -42,7 +40,7 @@
     <div ng-view=""></div>
   </div>
 
-  <div class="footer" id="footer"></div>
+  <div ng-include="'/page-templates/footer.html'"></div>
 
   <!-- build:js({.,app}) scripts/vendor.js -->
   <script src="vendor/timemap/lib/mxn/mxn.js"></script>
@@ -142,7 +140,7 @@
   <script src="scripts/semantic_model/semantic_model_service.js"></script>
   <script src="scripts/semantic_model/semantic_page_controller.js"></script>
   <script src="scripts/nav/setting_controller.js"></script>
-  <script src="scripts/nav/nav_controller.js"></script>
+  <script src="scripts/common/directives/ws-navbar.directive.js"></script>
   <!-- endbuild -->
 
   </body>
