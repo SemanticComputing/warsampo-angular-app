@@ -44,12 +44,12 @@
           </div>
           <hr/>
           <div id="casualtyCount" ng-click="timemapCtrl.showCasualtyStats = !timemapCtrl.showCasualtyStats">
-            <p>{{ 'CASUALTIES_DURING_TIMESPAN' | translate }} {{ timemapCtrl.minVisibleDate | date : 'd.M.yyyy' }} - {{ timemapCtrl.maxVisibleDate | date : 'd.M.yyyy' }}: {{ timemapCtrl.casualtyCount }}
+            <p>{{ 'CASUALTIES_DURING_TIMESPAN' | translate }} {{ timemapCtrl.getMinVisibleDate() | date : 'd.M.yyyy' }} - {{ timemapCtrl.getMaxVisibleDate() | date : 'd.M.yyyy' }}: {{ timemapCtrl.getCasualtyCount() }}
             | <a>{{ timemapCtrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
             </p>
           </div>
-          <div uib-collapse="!timemapCtrl.showCasualtyStats">
-            <div class="row" ng-repeat="casualtyClass in timemapCtrl.casualtyStats">
+          <div uib-collapse="!timemapCtrl.getCasualtStats()">
+            <div class="row" ng-repeat="casualtyClass in timemapCtrl.getCasualtStats()">
               <div ng-if="casualtyClass.id">
                 <div class="col-xs-10 casualtyCount">
                   {{ casualtyClass.description }}

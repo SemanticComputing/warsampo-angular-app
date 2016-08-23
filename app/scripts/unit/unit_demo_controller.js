@@ -208,6 +208,8 @@
         }
 
         function infoWindowCallback(item) {
+            // Change the URL but don't reload the page
+            $location.search('event', item.opts.event.id);
             self.current = item;
             eventService.fetchRelated(item.opts.event);
             fetchImages(item);

@@ -8,9 +8,12 @@
     /* @ngInject */
     function EventDemoController($routeParams, $location, $scope, $q, $translate,
                 _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
-                personService, googleMapsService, timemapService) {
+                googleMapsService, timemapService, EventDemoService) {
+
+        /* Private vars */
 
         var self = this;
+        var eventDemoService = new EventDemoService(infoWindowCallback);
 
         /* Public vars */
 
@@ -21,16 +24,12 @@
         // The title for the info view
         self.title;
 
-        /* Public functions */
+        self.showCasualtyStats = false;
 
-        self.showWinterWar = showWinterWar;
-        self.showContinuationWar = showContinuationWar;
-        self.getWinterWarUrl = getWinterWarUrl;
-
-        /* Private vars */
-
-        // timemap, google map, heatmap
-        var tm, map, heatmap;
+        self.getCasualtyCount = getCasualtyCount;
+        self.getCasualtyStats = getCasualtyStats;
+        self.getMinVisibleDate = getMinVisibleDate;
+        self.getMaxVisibleDate = getMaxVisibleDate;
 
         /* Activate */
 
@@ -38,11 +37,27 @@
 
         /* Implementation */
 
+        function getCasualtyCount() {
+            return eventDemoService.getCasualtyCount();
+        }
+
+        function getCasualtyStats() {
+            return eventDemoService.getCasualtyStats();
+        }
+
+        function getMinVisibleDate() {
+            return eventDemoService.getMinVisibleDate();
+        }
+
+        function getMaxVisibleDate() {
+            return eventDemoService.getMaxVisibleDate();
+        }
+
         function init() {
             Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
             Settings.setApplyFunction(visualize);
-            Settings.setHeatmapUpdater(updateHeatmap);
+            Settings.setHeatmapUpdater(eventDemoService.updateHeatmap);
 
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
@@ -64,7 +79,7 @@
                         return createTimeMapForEvent(e);
                     } else {
                         $location.url($location.path());
-                        return self.showWinterWar();
+                        return showWinterWar();
                     }
 
                 });
@@ -72,7 +87,7 @@
                 // Only war given
                 switch(era.toLowerCase()) {
                     case 'winterwar': {
-                        promise = self.showWinterWar();
+                        promise = showWinterWar();
                         break;
                     }
                     case 'continuationwar': {
@@ -86,7 +101,7 @@
                 return $q.when();
             }
 
-            return promise.then(afterCreateInit).then(function() {
+            return promise.then(function() {
                 self.isLoadingTimemap = false;
             }).catch(function(data) {
                 self.isLoadingTimemap = false;
@@ -94,22 +109,16 @@
             });
         }
 
-        function afterCreateInit() {
-            getCasualtyCount();
-            tm.timeline.setAutoWidth();
-            updateHeatmap();
-        }
-
         function showWinterWar() {
             self.title = 'EVENT_DEMO.WINTER_WAR_EVENT_TITLE';
-            return createTimeMap(WAR_INFO.winterWarTimeSpan.start,
+            return eventDemoService.createTimemap(WAR_INFO.winterWarTimeSpan.start,
                     WAR_INFO.winterWarTimeSpan.end,
                     WAR_INFO.winterWarHighlights);
         }
 
         function showContinuationWar() {
             self.title = 'EVENT_DEMO.CONTINUATION_WAR_EVENT_TITLE';
-            return createTimeMap(WAR_INFO.continuationWarTimeSpan.start,
+            return eventDemoService.createTimemap(WAR_INFO.continuationWarTimeSpan.start,
                     WAR_INFO.continuationWarTimeSpan.end,
                     WAR_INFO.continuationWarHighlights);
         }
@@ -118,49 +127,23 @@
             self.current = undefined;
         }
 
-        function createTimeMap(start, end, highlights) {
-
-            var photoConfig = Settings.getPhotoConfig();
-
-            return timemapService.createTimemapByTimeSpan(start, end, highlights,
-                    infoWindowCallback, photoConfig)
-            .then(function(timemap) {
-                tm = timemap;
-                map = timemap.getNativeMap();
-                var band = tm.timeline.getBand(1);
-
-                timemapService.setOnMouseUpListener(onMouseUpListener);
-                band.addOnScrollListener(clearHeatmap);
-                if (highlights) {
-                    band.setMaxVisibleDate(new Date(highlights[0].startDate));
-                }
-            });
+        function getCreateFunction(start, end) {
+            if (start >= new Date(WAR_INFO.winterWarTimeSpan.start) &&
+                    end <= new Date(WAR_INFO.winterWarTimeSpan.end)) {
+                return showWinterWar;
+            } else {
+                return showContinuationWar;
+            }
         }
 
         function createTimeMapForEvent(e) {
             if (!(e.start_time && e.end_time)) {
-                return self.showWinterWar();
+                return showWinterWar();
             }
             var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
             return show().then(function() {
-                var item = _.find(tm.getItems(), function(item) {
-                    return _.isEqual(item.opts.event.id, e.id);
-                });
-                tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
-                if (item) {
-                    tm.setSelected(item);
-                    item.openInfoWindow();
-                }
+                eventDemoService.navigateToEvent(e);
             });
-        }
-
-        function getCreateFunction(start, end) {
-            if (start >= new Date(WAR_INFO.winterWarTimeSpan.start) &&
-                    end <= new Date(WAR_INFO.winterWarTimeSpan.end)) {
-                return self.showWinterWar;
-            } else {
-                return self.showContinuationWar;
-            }
         }
 
         function infoWindowCallback(item) {
@@ -171,63 +154,7 @@
 
             self.current = item;
             eventService.fetchRelated(item.opts.event);
-            fetchImages(item);
-        }
-
-        function onMouseUpListener() {
-            updateHeatmap();
-            getCasualtyCount();
-        }
-
-        function fetchImages(item) {
-            var photoConfig = Settings.getPhotoConfig();
-            photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
-                self.images = imgs;
-            });
-        }
-
-        function getCasualtyLocations() {
-            var band = tm.timeline.getBand(1);
-            var start = band.getMinVisibleDate();
-            var end = band.getMaxVisibleDate();
-            return casualtyRepository.getCasualtyLocationsByTime(start.toISODateString(),
-                    end.toISODateString());
-        }
-
-        function getCasualtyCount() {
-            var band = tm.timeline.getBand(1);
-            var start = band.getMinVisibleDate();
-            var end = band.getMaxVisibleDate();
-            self.minVisibleDate = start;
-            self.maxVisibleDate = end;
-            casualtyRepository.getCasualtyCountsByTimeGroupByType(start.toISODateString(), end.toISODateString())
-            .then(function(counts) {
-                self.casualtyStats = counts;
-                var count = 0;
-                counts.forEach(function(type) {
-                    count += parseInt(type.count);
-                });
-                self.casualtyCount = count;
-            });
-        }
-
-        function updateHeatmap() {
-            if (Settings.showCasualtyHeatmap) {
-                getCasualtyLocations().then(function(locations) {
-                    if (!heatmap) {
-                        heatmap = googleMapsService.createHeatmap();
-                    }
-                    googleMapsService.updateHeatmap(heatmap, locations, map);
-                });
-            } else {
-                googleMapsService.clearHeatmap(heatmap);
-            }
-        }
-
-        function clearHeatmap() {
-            if (tm.timeline.getBand(0)._dragging || tm.timeline.getBand(1)._dragging) {
-                googleMapsService.createHeatmap(heatmap);
-            }
+            eventDemoService.fetchImages(item);
         }
 
         function getWinterWarUrl() {

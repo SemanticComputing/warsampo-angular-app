@@ -33,10 +33,7 @@
         ' WHERE { ' +
         '        ?id casualties:kuolinaika ?death_date . ' +
         '        FILTER(?death_date >= "{0}"^^xsd:date && ?death_date <= "{1}"^^xsd:date) ' +
-        '        ?id casualties:kuolinkunta ?kunta . ' +
-        '        SERVICE <http://ldf.fi/warsa/sparql> { ' +
-        '               ?kunta geo:lat ?lat ; geo:long ?lon . ' +
-        '        } ' +
+        '        ?id casualties:kuolinkunta [ geo:lat ?lat ; geo:long ?lon ] . ' +
         ' } ';
 
         var casualtyCountByTimeQry = prefixes +
