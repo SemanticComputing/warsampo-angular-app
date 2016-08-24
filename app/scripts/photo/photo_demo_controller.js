@@ -15,11 +15,9 @@
     .controller('PhotoDemoController', PhotoDemoController);
 
     /* @ngInject */
-    function PhotoDemoController($rootScope, $uibModal, _, photoFacetService,
-            facetUrlStateHandlerService) {
+    function PhotoDemoController($scope, $uibModal, _, photoFacetService,
+            facetUrlStateHandlerService, Settings) {
         var vm = this;
-
-        $rootScope.showHelp = showHelp;
 
         vm.facets;
         vm.facetOptions;
@@ -38,9 +36,16 @@
         init();
 
         function init() {
+            Settings.setHelpFunction(showHelp);
+
+            $scope.$on('$destroy', function() {
+                Settings.clearEventSettings();
+            });
+
             photoFacetService.getFacets().then(function(facets) {
                 vm.facets = facets;
             });
+
             vm.facetOptions = getFacetOptions();
             vm.photos = [];
         }
