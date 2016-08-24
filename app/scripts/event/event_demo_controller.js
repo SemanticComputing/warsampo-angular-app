@@ -8,7 +8,7 @@
     /* @ngInject */
     function EventDemoController($routeParams, $location, $scope, $q, $translate,
                 _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
-                googleMapsService, timemapService, EventDemoService) {
+                googleMapsService, EventDemoService) {
 
         /* Private vars */
 
@@ -154,7 +154,16 @@
 
             self.current = item;
             eventService.fetchRelated(item.opts.event);
-            eventDemoService.fetchImages(item);
+            fetchImages(item);
+        }
+
+        function fetchImages(item) {
+            var photoConfig = Settings.getPhotoConfig();
+            if (item.opts.event) {
+                photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
+                    self.images = imgs;
+                });
+            }
         }
 
         function getWinterWarUrl() {

@@ -14,6 +14,8 @@
         this.createTimemap = createTimemap;
 
         this.setOnMouseUpListener = setOnMouseUpListener;
+        this.addOnScrollListener = addOnScrollListener;
+        this.setCenterVisibleDate = setCenterVisibleDate;
 
         /* Private vars */
 
@@ -38,20 +40,36 @@
         /*
         * Set a listener for the onmouseup event on the timeline
         */
-        function setOnMouseUpListener(fun) {
-            Timeline._Band.prototype._onMouseUp = function() {
-                if (this._dragging) {
-                    this._dragging = false;
-                } else if (this._orthogonalDragging) {
-                    this._orthogonalDragging = false;
-                } else {
-                    return;
-                }
+        function setOnMouseUpListener(tm, fun) {
+            [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
+                band._onMouseUp = function() {
+                    if (this._dragging) {
+                        this._dragging = false;
+                    } else if (this._orthogonalDragging) {
+                        this._orthogonalDragging = false;
+                    } else {
+                        return;
+                    }
 
-                this.getTimeline().setAutoWidth();
+                    this.getTimeline().setAutoWidth();
 
-                fun();
-            };
+                    fun();
+                };
+            });
+        }
+
+        /*
+        /* Add a scroll listener to the timeline
+         */
+        function addOnScrollListener(tm, fun) {
+            tm.timeline.getBand(1).addOnScrollListener(fun);
+        }
+
+        /*
+         * Set center visible date of the timeline
+         */
+        function setCenterVisibleDate(tm, date) {
+            tm.timeline.getBand(1).setCenterVisibleDate(date);
         }
 
         /*

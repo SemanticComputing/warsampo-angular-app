@@ -6,8 +6,7 @@
     .factory('EventDemoService', EventDemoService);
 
     /* @ngInject */
-    function EventDemoService(_, timemapService, googleMapsService, Settings, casualtyRepository,
-            eventService, photoService) {
+    function EventDemoService(_, timemapService, googleMapsService, Settings, casualtyRepository) {
 
         EventDemoServiceConstructor.prototype.getTimemap = getTimemap;
         EventDemoServiceConstructor.prototype.getMap = getMap;
@@ -22,11 +21,13 @@
         EventDemoServiceConstructor.prototype.updateHeatmap = updateHeatmap;
         EventDemoServiceConstructor.prototype.onMouseUpListener = onMouseUpListener;
         EventDemoServiceConstructor.prototype.clearHeatmap = clearHeatmap;
-        EventDemoServiceConstructor.prototype.fetchImages = fetchImages;
         EventDemoServiceConstructor.prototype.getMinVisibleDate = getMinVisibleDate;
         EventDemoServiceConstructor.prototype.getMaxVisibleDate = getMaxVisibleDate;
         EventDemoServiceConstructor.prototype.getVisibleDateRange = getVisibleDateRange;
         EventDemoServiceConstructor.prototype.navigateToEvent = navigateToEvent;
+        EventDemoServiceConstructor.prototype.setCenterVisibleDate = setCenterVisibleDate;
+        EventDemoServiceConstructor.prototype.addOnScrollListener = addOnScrollListener;
+        EventDemoServiceConstructor.prototype.setOnMouseUpListener = setOnMouseUpListener;
 
         return EventDemoServiceConstructor;
 
@@ -61,6 +62,17 @@
             return this.casualtyStats;
         }
 
+        function setCenterVisibleDate(date) {
+            timemapService.setCenterVisibleDate(this.tm, date);
+        }
+
+        function addOnScrollListener(fun) {
+            timemapService.addOnScrollListener(this.tm, fun);
+        }
+
+        function setOnMouseUpListener(fun) {
+            timemapService.setOnMouseUpListener(this.tm, fun);
+        }
 
         function createTimemapByTimeSpan(start, end, highlights) {
             var self = this;
@@ -68,7 +80,10 @@
             return timemapService.createTimemapByTimeSpan(start, end, highlights,
                     self.infoWindowCallback, photoConfig)
             .then(function(timemap) {
-                return self.setupTimemap(timemap, highlights);
+                self.tm = timemap;
+                self.map = timemap.getNativeMap();
+
+                return self.setupTimemap(highlights);
             });
         }
 
@@ -86,22 +101,18 @@
             return false;
         }
 
-        function setupTimemap(timemap, highlights) {
+        function setupTimemap(highlights) {
             var self = this;
-
-            self.tm = timemap;
-            self.map = timemap.getNativeMap();
 
             googleMapsService.normalizeMapZoom(self.map);
 
-            var band = self.tm.timeline.getBand(1);
             if (highlights) {
-                band.setCenterVisibleDate(new Date(highlights[0].startDate));
+                self.setCenterVisibleDate(new Date(highlights[0].startDate));
             }
 
             self.calculateCasualties();
-            timemapService.setOnMouseUpListener(function() { self.onMouseUpListener(); });
-            band.addOnScrollListener(function() { self.clearHeatmap(); });
+            self.setOnMouseUpListener(function() { self.onMouseUpListener(); });
+            self.addOnScrollListener(function() { self.clearHeatmap(); });
             self.tm.timeline.setAutoWidth();
             self.updateHeatmap();
         }
@@ -135,7 +146,7 @@
         function calculateCasualties() {
             var self = this;
             var dates = self.getVisibleDateRange();
-            return casualtyRepository.getCasualtyCountsByTimeGroupByType(dates.start.toISODateString(),
+            return self.getCasualties(dates.start.toISODateString(),
                     dates.end.toISODateString())
             .then(function(counts) {
                 self.casualtyStats = counts;
@@ -178,16 +189,6 @@
             if (!(this.tm.timeline.getBand(0)._dragging || this.tm.timeline.getBand(1)._dragging)) {
                 this.updateHeatmap();
                 this.calculateCasualties();
-            }
-        }
-
-        function fetchImages(item) {
-            var self = this;
-            var photoConfig = Settings.getPhotoConfig();
-            if (item.opts.event) {
-                photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
-                    self.images = imgs;
-                });
             }
         }
     }
