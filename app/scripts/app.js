@@ -75,10 +75,10 @@
     '        geo:long ?lon . ' +
     '    } ' +
     '    OPTIONAL { ' +
-    '      GRAPH <http://ldf.fi/places/karelian_places> { ' +
+    '      GRAPH <http://ldf.fi/warsa/places/karelian_places> { ' +
     '        ?place_id geosparql:sfWithin ?municipality_id . ' +
     '      } ' +
-    '      GRAPH <http://ldf.fi/places/municipalities> { ' +
+    '      GRAPH <http://ldf.fi/warsa/places/municipalities> { ' +
     '        ?municipality_id a suo:kunta . ' +
     '      } ' +
     '    } ' +
