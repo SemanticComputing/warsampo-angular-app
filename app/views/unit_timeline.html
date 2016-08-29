@@ -22,7 +22,7 @@
               <div ng-show="ctrl.currentUnit.relatedEvents.length === 0" translate>
                 NO_RELATED_EVENTS
               </div>
-              <p>{{ ctrl.current.getDescription() }}</p>
+              <p>{{ ctrl.currentUnit.getDescription() }}</p>
               <p><a ws-page-link="ctrl.currentUnit.id" translate>SHOW_INFO_PAGE</a></p>
 
               <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.current.relatedPersons"></ws-related-links-paged>
