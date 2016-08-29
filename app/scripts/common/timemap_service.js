@@ -3,7 +3,7 @@
     /* eslint-disable angular/no-service-method */
 
     angular.module('eventsApp')
-    .service('timemapService', function($q, $timeout, _, Timeline, TimeMapTheme, TimeMap,
+    .service('timemapService', function($q, $timeout, $window, _, Timeline, TimeMapTheme, TimeMap,
             SimileAjax, eventService, photoService, EVENT_TYPES) {
 
         /* Public API */
@@ -38,6 +38,8 @@
         var oldEvent;
 
         function cleanUp() {
+            // Remove the onresize function set by Timemap...
+            $window.onresize = undefined;
             oldTheme = undefined;
             oldEvent = undefined;
         }

@@ -98,7 +98,7 @@
                         break;
                     }
                     case 'continuationwar': {
-                        promise = self.showContinuationWar();
+                        promise = showContinuationWar();
                         break;
                     }
                 }
