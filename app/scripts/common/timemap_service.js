@@ -17,6 +17,8 @@
         this.addOnScrollListener = addOnScrollListener;
         this.setCenterVisibleDate = setCenterVisibleDate;
 
+        this.cleanUp = cleanUp;
+
         /* Private vars */
 
         var eventTypeThemes = {};
@@ -25,15 +27,20 @@
         eventTypeThemes[EVENT_TYPES.BATTLE] = 'red';
         eventTypeThemes[EVENT_TYPES.POLITICAL_ACTIVITY] = 'purple';
 
-        var distinctPhotoData = [];
         var photoSettings = {
             beforeOffset: 0,
             afterOffset: 0,
             inProximity: true
         };
 
+        // TODO: this should be a stateless service or a service constructor
         var oldTheme;
         var oldEvent;
+
+        function cleanUp() {
+            oldTheme = undefined;
+            oldEvent = undefined;
+        }
 
         /* Public API functions */
 
@@ -70,6 +77,7 @@
          */
         function setCenterVisibleDate(tm, date) {
             tm.timeline.getBand(1).setCenterVisibleDate(date);
+            tm.timeline.setAutoWidth();
         }
 
         /*
@@ -130,12 +138,12 @@
         */
         function createTimemap(start, end, events, highlights,
                 infoWindowCallback, photoData, photoConfig, bandInfo) {
-            distinctPhotoData = photoData || [];
+            var distinctPhotoData = photoData || [];
             angular.extend(photoSettings, photoConfig);
 
             var res = [];
             events.forEach(function(e) {
-                res.push(createEventObject(e));
+                res.push(createEventObject(e, distinctPhotoData));
             });
 
             // Use timeout to let the template (or more specifically the map div)
@@ -230,7 +238,7 @@
 
         }
 
-        function createEventObject(e) {
+        function createEventObject(e, distinctPhotoData) {
             var description = e.getDescription();
             var entry = {
                 start: new Date(e.start_time),
@@ -272,12 +280,12 @@
             } else {
                 entry.options.noPlacemarkLoad = true;
             }
-            setPhotoHighlight(entry);
+            setPhotoHighlight(entry, distinctPhotoData);
 
             return entry;
         }
 
-        function setPhotoHighlight(entry) {
+        function setPhotoHighlight(entry, distinctPhotoData) {
             var start = new Date(entry.start);
             start.setDate(start.getDate() - photoSettings.beforeOffset);
             var end = new Date(entry.options.event.end_time);

@@ -2,23 +2,23 @@
   <div class="col-lg-5 col-lg-push-7 col-md-12">
     <div class="row">
       <div class="col-md-12">
-        <div ng-if="timemapCtrl.current">
+        <div ng-if="timemapCtrl.getCurrent()">
           <h3>
-            <span ng-repeat="place in timemapCtrl.current.opts.event.places">
+            <span ng-repeat="place in timemapCtrl.getCurrent().places">
               <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
             </span>
-            {{ timemapCtrl.current.opts.descTitle }} - {{ timemapCtrl.current.opts.event.getTypeLabel() }}
+            {{ timemapCtrl.getCurrent().timeSpanString }} - {{ timemapCtrl.getCurrent().getTypeLabel() }}
           </h3>
-          <p>{{ timemapCtrl.current.opts.description }}</p>
-          <p ng-if="timemapCtrl.current.opts.event.source"><small>{{ 'SOURCE' | translate }}: {{ timemapCtrl.current.opts.event.source }}</small></p>
-          <p ng-repeat="person in timemapCtrl.current.opts.event.people" style="text-transform: capitalize">
+          <p>{{ timemapCtrl.getCurrent().getDescription() }}</p>
+          <p ng-if="timemapCtrl.getCurrent().source"><small>{{ 'SOURCE' | translate }}: {{ timemapCtrl.getCurrent().source }}</small></p>
+          <p ng-repeat="person in timemapCtrl.getCurrent().people" style="text-transform: capitalize">
           <a ws-page-link="person.id">{{ person.label }}</a>
           </p>
-          <p ng-repeat="unit in timemapCtrl.current.opts.event.units" style="text-transform: capitalize">
+          <p ng-repeat="unit in timemapCtrl.getCurrent().units" style="text-transform: capitalize">
           <a ws-page-link="unit.id">{{ unit.label }}</a>
           </p>
-          <p><a ws-page-link="timemapCtrl.current.opts.event.id" translate>SHOW_INFO_PAGE</a></p>
-          <div ng-show="timemapCtrl.images.length === 0">
+          <p><a ws-page-link="timemapCtrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
+          <div ng-show="timemapCtrl.getImages().length === 0">
             <p ng-if="!timemapCtrl.isLoadingImages" translate>
             NO_RELATED_PHOTOS
             </p>
@@ -26,13 +26,13 @@
             {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
             </p>
           </div>
-          <ws-photo-gallery data-images="timemapCtrl.images"></ws-photo-gallery>
+          <ws-photo-gallery data-images="timemapCtrl.getImages()"></ws-photo-gallery>
         </div>
         <div ng-if="timemapCtrl.isLoadingTimemap">
           <h3>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h3>
         </div>
         <div ng-show="!timemapCtrl.isLoadingTimemap">
-          <div ng-if="!timemapCtrl.current">
+          <div ng-if="!timemapCtrl.getCurrent()">
             <h1 translate>{{ timemapCtrl.title }}</h1>
             <h3 translate>EVENT_DEMO.HELP_TEXT_TITLE</h3>
             <translate>EVENT_DEMO.HELP_TEXT</translate>
@@ -48,8 +48,8 @@
             | <a>{{ timemapCtrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
             </p>
           </div>
-          <div uib-collapse="!timemapCtrl.getCasualtStats()">
-            <div class="row" ng-repeat="casualtyClass in timemapCtrl.getCasualtStats()">
+          <div uib-collapse="!timemapCtrl.showCasualtyStats">
+            <div class="row" ng-repeat="casualtyClass in timemapCtrl.getCasualtyStats()">
               <div ng-if="casualtyClass.id">
                 <div class="col-xs-10 casualtyCount">
                   {{ casualtyClass.description }}

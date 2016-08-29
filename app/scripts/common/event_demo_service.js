@@ -6,13 +6,16 @@
     .factory('EventDemoService', EventDemoService);
 
     /* @ngInject */
-    function EventDemoService(_, timemapService, googleMapsService, Settings, casualtyRepository) {
+    function EventDemoService($location, $q, _, timemapService, googleMapsService, Settings,
+            eventService, photoService, casualtyRepository) {
 
         EventDemoServiceConstructor.prototype.getTimemap = getTimemap;
         EventDemoServiceConstructor.prototype.getMap = getMap;
         EventDemoServiceConstructor.prototype.getHeatmap = getHeatmap;
         EventDemoServiceConstructor.prototype.getCasualtyCount = getCasualtyCount;
         EventDemoServiceConstructor.prototype.getCasualtyStats = getCasualtyStats;
+        EventDemoServiceConstructor.prototype.getCurrent = getCurrent;
+        EventDemoServiceConstructor.prototype.getImages = getImages;
 
         EventDemoServiceConstructor.prototype.createTimemap = createTimemapByTimeSpan;
         EventDemoServiceConstructor.prototype.setupTimemap = setupTimemap;
@@ -28,18 +31,43 @@
         EventDemoServiceConstructor.prototype.setCenterVisibleDate = setCenterVisibleDate;
         EventDemoServiceConstructor.prototype.addOnScrollListener = addOnScrollListener;
         EventDemoServiceConstructor.prototype.setOnMouseUpListener = setOnMouseUpListener;
+        EventDemoServiceConstructor.prototype.fetchImages = fetchImages;
+
+        EventDemoServiceConstructor.prototype.cleanUp = cleanUp;
 
         return EventDemoServiceConstructor;
 
-        function EventDemoServiceConstructor(infoWindowCallback) {
-            this.infoWindowCallback = infoWindowCallback;
+        function EventDemoServiceConstructor() {
+            var self = this;
+            self.tm;
+            self.map;
+            self.heatmap;
+            self.highlights;
+            self.casualtyCount;
+            self.casualtyStats;
+            self.current;
+            self.images;
 
-            this.tm;
-            this.map;
-            this.heatmap;
-            this.highlights;
-            this.casualtyCount;
-            this.casualtyStats;
+            self.infoWindowCallback = infoWindowCallback;
+
+            function infoWindowCallback(item) {
+                // Change the URL but don't reload the page
+                if ($location.search().uri !== item.opts.event.id) {
+                    $location.search('uri', item.opts.event.id);
+                }
+
+                self.current = item;
+                eventService.fetchRelated(item.opts.event);
+                self.fetchImages(item);
+            }
+
+        }
+
+        function cleanUp() {
+            if (this.tm) {
+                this.tm.timeline.dispose();
+            }
+            return timemapService.cleanUp();
         }
 
         function getTimemap() {
@@ -62,6 +90,16 @@
             return this.casualtyStats;
         }
 
+        function getCurrent() {
+            if (this.current) {
+                return this.current.opts.event;
+            }
+        }
+
+        function getImages() {
+            return this.images;
+        }
+
         function setCenterVisibleDate(date) {
             timemapService.setCenterVisibleDate(this.tm, date);
         }
@@ -82,8 +120,9 @@
             .then(function(timemap) {
                 self.tm = timemap;
                 self.map = timemap.getNativeMap();
+                self.setCenterVisibleDate(new Date(highlights[0].startDate));
 
-                return self.setupTimemap(highlights);
+                return self.setupTimemap();
             });
         }
 
@@ -91,7 +130,7 @@
             var item = _.find(this.tm.getItems(), function(item) {
                 return _.isEqual(item.opts.event.id, e.id);
             });
-            this.tm.timeline.getBand(1).setCenterVisibleDate(new Date(e.start_time));
+            this.setCenterVisibleDate(new Date(e.start_time));
             this.calculateCasualties();
             if (item) {
                 this.tm.setSelected(item);
@@ -101,20 +140,18 @@
             return false;
         }
 
-        function setupTimemap(highlights) {
+        function setupTimemap() {
             var self = this;
 
             googleMapsService.normalizeMapZoom(self.map);
 
-            if (highlights) {
-                self.setCenterVisibleDate(new Date(highlights[0].startDate));
-            }
-
-            self.calculateCasualties();
             self.setOnMouseUpListener(function() { self.onMouseUpListener(); });
             self.addOnScrollListener(function() { self.clearHeatmap(); });
             self.tm.timeline.setAutoWidth();
-            self.updateHeatmap();
+
+            var promises = [self.calculateCasualties(), self.updateHeatmap()];
+
+            return $q.all(promises);
         }
 
         function getMinVisibleDate() {
@@ -146,8 +183,7 @@
         function calculateCasualties() {
             var self = this;
             var dates = self.getVisibleDateRange();
-            return self.getCasualties(dates.start.toISODateString(),
-                    dates.end.toISODateString())
+            return casualtyRepository.getCasualtyCountsByTimeGroupByType(dates.start, dates.end)
             .then(function(counts) {
                 self.casualtyStats = counts;
                 var count = 0;
@@ -191,5 +227,16 @@
                 this.calculateCasualties();
             }
         }
+
+        function fetchImages(item) {
+            var self = this;
+            var photoConfig = Settings.getPhotoConfig();
+            if (item.opts.event) {
+                photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
+                    self.images = imgs;
+                });
+            }
+        }
+
     }
 })();

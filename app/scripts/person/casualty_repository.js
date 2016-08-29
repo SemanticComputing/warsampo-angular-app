@@ -105,6 +105,8 @@
         '} ORDER BY ?pred_lbl';
 
         this.getCasualtyLocationsByTime = function(start, end) {
+            start = formatDate(start);
+            end = formatDate(end);
             var qry = casualtyLocationsByTimeQry.format(start, end);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
@@ -113,6 +115,8 @@
 
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
             // Expects a single unit
+            start = formatDate(start);
+            end = formatDate(end);
             var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectListNoGrouping(data);
@@ -121,6 +125,8 @@
 
         this.getCasualtyCountsByTimeGroupByUnitAndType = function(start, end, unit) {
             // Expects a single unit
+            start = formatDate(start);
+            end = formatDate(end);
             var qry = casualtyCountsByTimeGroupByUnitAndTypeQry.format(start, end, unit);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
@@ -128,6 +134,8 @@
         };
 
         this.getCasualtyCountByTime = function(start, end) {
+            start = formatDate(start);
+            end = formatDate(end);
             var qry = casualtyCountByTimeQry.format(start, end);
             return endpoint.getObjects(qry).then(function(data) {
                 return data[0].count.value;
@@ -135,6 +143,8 @@
         };
 
         this.getCasualtyCountsByTimeGroupByType = function(start, end) {
+            start = formatDate(start);
+            end = formatDate(end);
             var qry = casualtyCountsByTimeGroupByTypeQry.format(start, end);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);
@@ -148,5 +158,11 @@
             });
         };
 
+        function formatDate(date) {
+            if (date.toISODateString) {
+                return date.toISODateString();
+            }
+            return date;
+        }
     });
 })();

@@ -7,20 +7,16 @@
 
     /* @ngInject */
     function EventDemoController($routeParams, $location, $scope, $q, $translate,
-                _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
+                $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
                 googleMapsService, EventDemoService) {
 
         /* Private vars */
 
         var self = this;
-        var eventDemoService = new EventDemoService(infoWindowCallback);
+        var eventDemoService = new EventDemoService();
 
         /* Public vars */
 
-        // The currently selected event
-        self.current;
-        // Images related to currently selected event
-        self.images;
         // The title for the info view
         self.title;
 
@@ -30,6 +26,8 @@
         self.getCasualtyStats = getCasualtyStats;
         self.getMinVisibleDate = getMinVisibleDate;
         self.getMaxVisibleDate = getMaxVisibleDate;
+        self.getCurrent = getCurrent;
+        self.getImages = getImages;
 
         /* Activate */
 
@@ -53,6 +51,14 @@
             return eventDemoService.getMaxVisibleDate();
         }
 
+        function getCurrent() {
+            return eventDemoService.getCurrent();
+        }
+
+        function getImages() {
+            return eventDemoService.getImages();
+        }
+
         function init() {
             Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
@@ -61,13 +67,13 @@
 
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
+                eventDemoService.cleanUp();
             });
 
             return visualize();
         }
 
         function visualize() {
-            self.current = null;
             self.isLoadingTimemap = true;
             var era = $routeParams.era;
             var event_uri = $routeParams.uri;
@@ -78,8 +84,9 @@
                     if (e) {
                         return createTimeMapForEvent(e);
                     } else {
-                        $location.url($location.path());
-                        return showWinterWar();
+                        // Event not found, redirect to Winter War
+                        $location.path(getWinterWarUrl()).replace();
+                        return $q.when();
                     }
 
                 });
@@ -123,13 +130,8 @@
                     WAR_INFO.continuationWarHighlights);
         }
 
-        function showHelp() {
-            self.current = undefined;
-        }
-
-        function getCreateFunction(start, end) {
-            if (start >= new Date(WAR_INFO.winterWarTimeSpan.start) &&
-                    end <= new Date(WAR_INFO.winterWarTimeSpan.end)) {
+        function getCreateFunction(start) {
+            if (new Date(start) < new Date(WAR_INFO.winterWarTimeSpan.end)) {
                 return showWinterWar;
             } else {
                 return showContinuationWar;
@@ -137,37 +139,24 @@
         }
 
         function createTimeMapForEvent(e) {
-            if (!(e.start_time && e.end_time)) {
+            if (!e.start_time) {
                 return showWinterWar();
             }
-            var show = getCreateFunction(new Date(e.start_time), new Date(e.end_time));
+            var show = getCreateFunction(e.start_time);
             return show().then(function() {
                 eventDemoService.navigateToEvent(e);
             });
         }
 
-        function infoWindowCallback(item) {
-            // Change the URL but don't reload the page
-            if ($location.search().uri !== item.opts.event.id) {
-                $location.search('uri', item.opts.event.id);
-            }
-
-            self.current = item;
-            eventService.fetchRelated(item.opts.event);
-            fetchImages(item);
-        }
-
-        function fetchImages(item) {
-            var photoConfig = Settings.getPhotoConfig();
-            if (item.opts.event) {
-                photoService.getRelatedPhotosForEvent(item.opts.event, photoConfig).then(function(imgs) {
-                    self.images = imgs;
-                });
-            }
-        }
-
         function getWinterWarUrl() {
             return $translate.use() + '/events/winterwar';
+        }
+
+        function showHelp() {
+            $uibModal.open({
+                templateUrl: 'views/partials/event.help.html',
+                size: 'lg'
+            });
         }
     }
 })();
