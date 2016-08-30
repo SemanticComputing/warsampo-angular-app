@@ -89,7 +89,7 @@
                     vm.isLoadingResults = false;
                 }).catch(function(error) {
                     vm.isLoadingResults = false;
-                    vm.error = error;
+                    vm.error = error.message || error;
                 });
             } else {
                 vm.isLoadingResults = false;
@@ -100,23 +100,24 @@
             return vm.isLoadingResults || nextPageNo > maxPage;
         }
 
-        function updateResults( facetSelections ) {
+        function updateResults(facetSelections) {
+            vm.error = undefined;
             facetUrlStateHandlerService.updateUrlParams(facetSelections);
             vm.isLoadingResults = true;
             vm.photos = [];
             nextPageNo = 0;
 
-            photoFacetService.getResults( facetSelections )
-            .then( function ( pager ) {
+            photoFacetService.getResults(facetSelections)
+            .then(function(pager) {
                 vm.pager = pager;
                 return vm.pager.getMaxPageNo();
-            }).then( function(no) {
+            }).then(function(no) {
                 maxPage = no;
                 vm.isLoadingResults = false;
                 return nextPage();
             }).catch(function(error) {
                 vm.isLoadingResults = false;
-                vm.error = error;
+                vm.error = error.message || error;
             });
         }
     }

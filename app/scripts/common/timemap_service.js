@@ -3,7 +3,7 @@
     /* eslint-disable angular/no-service-method */
 
     angular.module('eventsApp')
-    .service('timemapService', function($q, $timeout, _, Timeline, TimeMapTheme, TimeMap,
+    .service('timemapService', function($q, $timeout, $window, _, Timeline, TimeMapTheme, TimeMap,
             SimileAjax, eventService, photoService, EVENT_TYPES) {
 
         /* Public API */
@@ -14,6 +14,10 @@
         this.createTimemap = createTimemap;
 
         this.setOnMouseUpListener = setOnMouseUpListener;
+        this.addOnScrollListener = addOnScrollListener;
+        this.setCenterVisibleDate = setCenterVisibleDate;
+
+        this.cleanUp = cleanUp;
 
         /* Private vars */
 
@@ -23,35 +27,59 @@
         eventTypeThemes[EVENT_TYPES.BATTLE] = 'red';
         eventTypeThemes[EVENT_TYPES.POLITICAL_ACTIVITY] = 'purple';
 
-        var distinctPhotoData = [];
         var photoSettings = {
             beforeOffset: 0,
             afterOffset: 0,
             inProximity: true
         };
 
+        // TODO: this should be a stateless service or a service constructor
         var oldTheme;
         var oldEvent;
+
+        function cleanUp() {
+            // Remove the onresize function set by Timemap...
+            $window.onresize = undefined;
+            oldTheme = undefined;
+            oldEvent = undefined;
+        }
 
         /* Public API functions */
 
         /*
         * Set a listener for the onmouseup event on the timeline
         */
-        function setOnMouseUpListener(fun) {
-            Timeline._Band.prototype._onMouseUp = function() {
-                if (this._dragging) {
-                    this._dragging = false;
-                } else if (this._orthogonalDragging) {
-                    this._orthogonalDragging = false;
-                } else {
-                    return;
-                }
+        function setOnMouseUpListener(tm, fun) {
+            [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
+                band._onMouseUp = function() {
+                    if (this._dragging) {
+                        this._dragging = false;
+                    } else if (this._orthogonalDragging) {
+                        this._orthogonalDragging = false;
+                    } else {
+                        return;
+                    }
 
-                this.getTimeline().setAutoWidth();
+                    this.getTimeline().setAutoWidth();
 
-                fun();
-            };
+                    fun();
+                };
+            });
+        }
+
+        /*
+        /* Add a scroll listener to the timeline
+         */
+        function addOnScrollListener(tm, fun) {
+            tm.timeline.getBand(1).addOnScrollListener(fun);
+        }
+
+        /*
+         * Set center visible date of the timeline
+         */
+        function setCenterVisibleDate(tm, date) {
+            tm.timeline.getBand(1).setCenterVisibleDate(date);
+            tm.timeline.setAutoWidth();
         }
 
         /*
@@ -63,10 +91,12 @@
         function createTimemapWithPhotoHighlight(start, end, data,
                 highlights, infoWindowCallback, photoConfig, bandInfo) {
             return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
-                .then(function(photos) {
-                    return createTimemap(start, end, data, highlights,
-                        infoWindowCallback, photos, photoConfig, bandInfo);
-                });
+            .then(function(photos) {
+                return createTimemap(start, end, data, highlights,
+                    infoWindowCallback, photos, photoConfig, bandInfo);
+            }).catch(function(data) {
+                return $q.reject(data);
+            });
         }
 
         /*
@@ -78,8 +108,8 @@
             var self = this;
             return eventService.getEventsByTimeSpan(start, end).then(function(data) {
                 return self.createTimemapWithPhotoHighlight(start, end, data, highlights, infoWindowCallback, photoConfig);
-            }, function(data) {
-                $q.reject(data);
+            }).catch(function(data) {
+                return $q.reject(data);
             });
         }
 
@@ -94,11 +124,12 @@
             bandInfo[1].intervalPixels = 50;
 
             var self = this;
-            return eventService.getUnitAndSubUnitEventsByUnitId(actorId).then(function(data) {
+            return eventService.getUnitAndSubUnitEventsByUnitId(actorId)
+            .then(function(data) {
                 return self.createTimemapWithPhotoHighlight(start, end, data,
                     highlights, infoWindowCallback, photoConfig, bandInfo);
-            }, function(data) {
-                $q.reject(data);
+            }).catch(function(data) {
+                return $q.reject(data);
             });
         }
 
@@ -112,12 +143,12 @@
         */
         function createTimemap(start, end, events, highlights,
                 infoWindowCallback, photoData, photoConfig, bandInfo) {
-            distinctPhotoData = photoData || [];
+            var distinctPhotoData = photoData || [];
             angular.extend(photoSettings, photoConfig);
 
             var res = [];
             events.forEach(function(e) {
-                res.push(createEventObject(e));
+                res.push(createEventObject(e, distinctPhotoData));
             });
 
             // Use timeout to let the template (or more specifically the map div)
@@ -212,7 +243,7 @@
 
         }
 
-        function createEventObject(e) {
+        function createEventObject(e, distinctPhotoData) {
             var description = e.getDescription();
             var entry = {
                 start: new Date(e.start_time),
@@ -254,12 +285,12 @@
             } else {
                 entry.options.noPlacemarkLoad = true;
             }
-            setPhotoHighlight(entry);
+            setPhotoHighlight(entry, distinctPhotoData);
 
             return entry;
         }
 
-        function setPhotoHighlight(entry) {
+        function setPhotoHighlight(entry, distinctPhotoData) {
             var start = new Date(entry.start);
             start.setDate(start.getDate() - photoSettings.beforeOffset);
             var end = new Date(entry.options.event.end_time);

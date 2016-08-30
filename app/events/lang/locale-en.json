@@ -28,7 +28,8 @@
         "HELP_TEXT_TITLE": "Choose a unit from the menu.",
         "HELP_TEXT": "<p>There are two timelines beneath the map. The upper one is an overview of the war (one month between each vertical line).  In the middle of this timeline is a time frame shown as a black box.  Events that occured within this time frame are shown in the lower timeline.  The vertical lines in the lower timeline represent days.  You can move the timelines by dragging them with your mouse.  </p> <p> Click on an event on the timeline or map to get more information regarding it.  Events with <span style=\"color: blue\">blue</span> text have related photographs.  </p> <p> The map displays events that fall within the time frame of the upper timeline, if the place of the event is available.  The events are linked to places programmatically so there may be errors in event placements.  The map also displays a heatmap of casualties of the selected unit during the selected time frame.  </p> <p> Settings, such as the date range of photos retrieved for events, can be modified by clicking on \"Settings\" in the navigation bar on the top of the page.  Clicking on \"View Help\" on the navigation bar displays this information.  </p> <p> Possible errors can be reported by <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">sending feedback</a>.</p>",
         "SEARCH_BOX_PLACEHOLDER": "Seach by unit name (in Finnish), e.g. 1. Divisioona",
-        "CASUALTIES_DURING_TIMESPAN": "Unit casualties during"
+        "CASUALTIES_DURING_TIMESPAN": "Unit casualties during",
+        "GO_HOME": "Go to unit demo home"
     },
     "RANK_DEMO": {
         "SUPER_RANKS": "Higher ranks",
