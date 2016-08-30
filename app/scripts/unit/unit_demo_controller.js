@@ -121,6 +121,8 @@
         }
 
         function updateByUri(uri) {
+            self.err = undefined;
+            self.isLoadingTimeline = true;
             self.isLoadingEvent = true;
             self.isLoadingLinks = false;
             if ($location.search().uri != uri) {

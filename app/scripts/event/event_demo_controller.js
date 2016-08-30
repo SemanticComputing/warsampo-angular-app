@@ -74,6 +74,7 @@
         }
 
         function visualize() {
+            self.err = undefined;
             self.isLoadingTimemap = true;
             var era = $routeParams.era;
             var event_uri = $routeParams.uri;
