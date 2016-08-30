@@ -19,6 +19,7 @@
 
         EventDemoServiceConstructor.prototype.createTimemap = createTimemapByTimeSpan;
         EventDemoServiceConstructor.prototype.setupTimemap = setupTimemap;
+        EventDemoServiceConstructor.prototype.refresh = refresh;
         EventDemoServiceConstructor.prototype.calculateCasualties = calculateCasualties;
         EventDemoServiceConstructor.prototype.getCasualtyLocations = getCasualtyLocations;
         EventDemoServiceConstructor.prototype.updateHeatmap = updateHeatmap;
@@ -122,8 +123,14 @@
                 self.map = timemap.getNativeMap();
                 self.setCenterVisibleDate(new Date(highlights[0].startDate));
 
-                return self.setupTimemap();
+                self.setupTimemap();
             });
+        }
+
+        function refresh() {
+            var self = this;
+            var promises = [self.calculateCasualties(), self.updateHeatmap()];
+            return $q.all(promises);
         }
 
         function navigateToEvent(e) {
@@ -131,13 +138,12 @@
                 return _.isEqual(item.opts.event.id, e.id);
             });
             this.setCenterVisibleDate(new Date(e.start_time));
-            this.calculateCasualties();
             if (item) {
                 this.tm.setSelected(item);
                 item.openInfoWindow();
-                return true;
+                return this.refresh();
             }
-            return false;
+            return $q.reject('Event not found on timeline');
         }
 
         function setupTimemap() {
@@ -148,10 +154,6 @@
             self.setOnMouseUpListener(function() { self.onMouseUpListener(); });
             self.addOnScrollListener(function() { self.clearHeatmap(); });
             self.tm.timeline.setAutoWidth();
-
-            var promises = [self.calculateCasualties(), self.updateHeatmap()];
-
-            return $q.all(promises);
         }
 
         function getMinVisibleDate() {

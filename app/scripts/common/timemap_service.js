@@ -91,10 +91,12 @@
         function createTimemapWithPhotoHighlight(start, end, data,
                 highlights, infoWindowCallback, photoConfig, bandInfo) {
             return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
-                .then(function(photos) {
-                    return createTimemap(start, end, data, highlights,
-                        infoWindowCallback, photos, photoConfig, bandInfo);
-                });
+            .then(function(photos) {
+                return createTimemap(start, end, data, highlights,
+                    infoWindowCallback, photos, photoConfig, bandInfo);
+            }).catch(function(data) {
+                return $q.reject(data);
+            });
         }
 
         /*
@@ -106,8 +108,8 @@
             var self = this;
             return eventService.getEventsByTimeSpan(start, end).then(function(data) {
                 return self.createTimemapWithPhotoHighlight(start, end, data, highlights, infoWindowCallback, photoConfig);
-            }, function(data) {
-                $q.reject(data);
+            }).catch(function(data) {
+                return $q.reject(data);
             });
         }
 
@@ -122,11 +124,12 @@
             bandInfo[1].intervalPixels = 50;
 
             var self = this;
-            return eventService.getUnitAndSubUnitEventsByUnitId(actorId).then(function(data) {
+            return eventService.getUnitAndSubUnitEventsByUnitId(actorId)
+            .then(function(data) {
                 return self.createTimemapWithPhotoHighlight(start, end, data,
                     highlights, infoWindowCallback, photoConfig, bandInfo);
-            }, function(data) {
-                $q.reject(data);
+            }).catch(function(data) {
+                return $q.reject(data);
             });
         }
 

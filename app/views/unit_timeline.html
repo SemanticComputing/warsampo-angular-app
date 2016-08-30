@@ -81,12 +81,22 @@
         </div>
       </div>
       <div class="col-lg-7 col-lg-pull-5 col-md-12">
-        <div id="timemap" class="animate-right">
+        <div ng-if="ctrl.isLoadingTimeline">
+          <h2>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h2>
+        </div>
+        <div ng-if="ctrl.err">
+          <p class="error-msg bg-danger">
+          {{ 'ERROR_OCCURED' | translate }} <br /><br />
+          <b>{{ ctrl.err }}</b> <br /><br />
+          <a ng-href="{{ ctrl.getDefaultUrl() }}" target="_self" translate>UNIT_DEMO.GO_HOME</a>
+          </p>
+        </div>
+        <div ng-if="!ctrl.err" id="timemap" class="animate-right">
           <div id="mapcontainer">
             <div id="map"></div>
           </div>
           <div id="timelinecontainer">
-            <div id=timeline></div>
+            <div id="timeline"></div>
           </div>
         </div>
       </div>

@@ -94,11 +94,11 @@
                 // Only war given
                 switch(era.toLowerCase()) {
                     case 'winterwar': {
-                        promise = showWinterWar();
+                        promise = showWinterWar().then(function() { return eventDemoService.refresh(); });
                         break;
                     }
                     case 'continuationwar': {
-                        promise = showContinuationWar();
+                        promise = showContinuationWar().then(function() { return eventDemoService.refresh(); });
                         break;
                     }
                 }
@@ -112,7 +112,7 @@
                 self.isLoadingTimemap = false;
             }).catch(function(data) {
                 self.isLoadingTimemap = false;
-                self.err = data;
+                self.err = data.message || data;
             });
         }
 
@@ -144,7 +144,7 @@
             }
             var show = getCreateFunction(e.start_time);
             return show().then(function() {
-                eventDemoService.navigateToEvent(e);
+                return eventDemoService.navigateToEvent(e);
             });
         }
 

@@ -6,7 +6,7 @@
 
     /* @ngInject */
     function UnitDemoController($routeParams, $location, $scope, $q, $uibModal,
-            _, unitService, eventService, Settings, UnitDemoService, WAR_INFO) {
+            $translate, _, unitService, eventService, Settings, UnitDemoService, WAR_INFO) {
 
         var self = this;
 
@@ -19,6 +19,8 @@
         self.getItems = getItems;
         self.updateUnit = updateUnit;
         self.currentUnit;
+
+        self.getDefaultUrl = getDefaultUrl;
 
         self.getCasualtyCount = getCasualtyCount;
         self.getCasualtyStats = getCasualtyStats;
@@ -127,19 +129,23 @@
             return unitService.getById(uri).then(function(unit) {
                 self.currentUnit = unit;
                 self.isLoadingEvent = false;
+                self.isLoadingTimeline = true;
                 unitService.fetchRelated(unit, true);
-                return createTimeMap(uri).then(function() {
-                    var eventId = $location.search().event;
-                    if (typeof eventId === 'string') {
-                        return eventService.getEventById(eventId).then(function(event) {
-                            return unitDemoService.navigateToEvent(event);
-                        });
-                    }
-                    return $q.when();
-                });
-            }).catch(function() {
+                return createTimeMap(uri);
+            }).then(function() {
+                self.isLoadingTimeline = false;
+                var eventId = $location.search().event;
+                if (typeof eventId === 'string') {
+                    return eventService.getEventById(eventId).then(function(event) {
+                        return unitDemoService.navigateToEvent(event);
+                    });
+                }
+                return unitDemoService.refresh();
+            }).catch(function(data) {
+                self.err = data.message || data;
                 self.isLoadingEvent = false;
                 self.isLoadingLinks = false;
+                self.isLoadingTimeline = false;
             });
         }
 
@@ -148,6 +154,10 @@
                 templateUrl: 'views/partials/unit.help.html',
                 size: 'lg'
             });
+        }
+
+        function getDefaultUrl() {
+            return $translate.use() + '/units';
         }
     }
 })();

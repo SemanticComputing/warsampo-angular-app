@@ -6,7 +6,7 @@
     .factory('UnitDemoService', UnitDemoService);
 
     /* @ngInject */
-    function UnitDemoService($location, EventDemoService, eventService, timemapService, Settings, casualtyRepository) {
+    function UnitDemoService($q, $location, EventDemoService, eventService, timemapService, Settings, casualtyRepository) {
 
         UnitDemoServiceConstructor.prototype.createTimemap = createTimemapByActor;
         UnitDemoServiceConstructor.prototype.calculateCasualties = calculateCasualties;
@@ -53,14 +53,16 @@
                 self.tm = timemap;
                 self.map = timemap.getNativeMap();
 
-                return self.setupTimemap(highlights);
+                self.setupTimemap();
+            }).catch(function(data) {
+                return $q.reject(data);
             });
         }
 
         function calculateCasualties() {
             var self = this;
             var dates = self.getVisibleDateRange();
-            casualtyRepository.getCasualtyCountsByTimeGroupByUnitAndType(dates.start.toISODateString(),
+            return casualtyRepository.getCasualtyCountsByTimeGroupByUnitAndType(dates.start.toISODateString(),
                     dates.end.toISODateString(), self.currentUnitId)
             .then(function(counts) {
                 self.casualtyStats = counts;
@@ -69,6 +71,7 @@
                     count += parseInt(type.count);
                 });
                 self.casualtyCount = count;
+                return { stats: counts, total: count };
             });
         }
 
