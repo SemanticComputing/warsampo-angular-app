@@ -44,6 +44,7 @@
 
         function createTimemapByActor(id, start, end, highlights) {
             var self = this;
+            self.current = undefined;
             self.currentUnitId = id;
             self.highlights = highlights;
             var photoConfig = Settings.getPhotoConfig();
