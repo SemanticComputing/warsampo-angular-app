@@ -6,7 +6,7 @@
     .factory('EventDemoService', EventDemoService);
 
     /* @ngInject */
-    function EventDemoService($location, $q, _, timemapService, googleMapsService, Settings,
+    function EventDemoService($location, $timeout, $q, _, timemapService, googleMapsService, Settings,
             eventService, photoService, casualtyRepository) {
 
         EventDemoServiceConstructor.prototype.getTimemap = getTimemap;
@@ -29,6 +29,8 @@
         EventDemoServiceConstructor.prototype.getMaxVisibleDate = getMaxVisibleDate;
         EventDemoServiceConstructor.prototype.getVisibleDateRange = getVisibleDateRange;
         EventDemoServiceConstructor.prototype.navigateToEvent = navigateToEvent;
+        EventDemoServiceConstructor.prototype.navigateToDate = navigateToDate;
+        EventDemoServiceConstructor.prototype.navigateToEarliestEvent = navigateToEarliestEvent;
         EventDemoServiceConstructor.prototype.setCenterVisibleDate = setCenterVisibleDate;
         EventDemoServiceConstructor.prototype.addOnScrollListener = addOnScrollListener;
         EventDemoServiceConstructor.prototype.setOnMouseUpListener = setOnMouseUpListener;
@@ -121,29 +123,40 @@
             .then(function(timemap) {
                 self.tm = timemap;
                 self.map = timemap.getNativeMap();
-                self.setCenterVisibleDate(new Date(highlights[0].startDate));
+                self.navigateToDate(new Date(highlights[0].startDate));
 
-                self.setupTimemap();
+                return self.setupTimemap();
             });
         }
 
         function refresh() {
             var self = this;
             var promises = [self.calculateCasualties(), self.updateHeatmap()];
-            return $q.all(promises);
+            return $q.all(promises).then(function(res) {
+                self.tm.timeline.setAutoWidth();
+                return res;
+            });
         }
 
         function navigateToEvent(e) {
             var item = _.find(this.tm.getItems(), function(item) {
                 return _.isEqual(item.opts.event.id, e.id);
             });
-            this.setCenterVisibleDate(new Date(e.start_time));
+            this.navigateToDate(new Date(e.start_time));
             if (item) {
                 this.tm.setSelected(item);
                 item.openInfoWindow();
                 return this.refresh();
             }
             return $q.reject('Event not found on timeline');
+        }
+
+        function navigateToDate(date) {
+            this.tm.scrollToDate(date);
+        }
+
+        function navigateToEarliestEvent() {
+            this.navigateToDate('earliest');
         }
 
         function setupTimemap() {
@@ -153,7 +166,6 @@
 
             self.setOnMouseUpListener(function() { self.onMouseUpListener(); });
             self.addOnScrollListener(function() { self.clearHeatmap(); });
-            self.tm.timeline.setAutoWidth();
         }
 
         function getMinVisibleDate() {

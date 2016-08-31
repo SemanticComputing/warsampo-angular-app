@@ -137,7 +137,7 @@
             }).then(function() {
                 self.isLoadingTimeline = false;
                 var eventId = $location.search().event;
-                if (typeof eventId === 'string') {
+                if (angular.isString(eventId)) {
                     return eventService.getEventById(eventId).then(function(event) {
                         return unitDemoService.navigateToEvent(event);
                     });

@@ -8,9 +8,17 @@
 
         /* Public API */
 
+        // Function(start, end, data, highlights, infoWindowCallback, photoConfig,
+        //      bandInfo, existingTimemap) -> promise (timemap instance)
         this.createTimemapWithPhotoHighlight = createTimemapWithPhotoHighlight;
+        // Function(start, end, highlights, infoWindowCallback,
+        //      photoConfig, existingTimemap) -> promise (timemap instance)
         this.createTimemapByTimeSpan = createTimemapByTimeSpan;
+        // Function(actorId, start, end, highlights, infoWindowCallback,
+        //      photoConfig, existingTimemap) -> promise (timemap instance)
         this.createTimemapByActor = createTimemapByActor;
+        // Function(start, end, events, highlights, infoWindowCallback,
+        //      photoData, photoConfig, bandInfo, existingTimemap) -> promise (timemap instance)
         this.createTimemap = createTimemap;
 
         this.setOnMouseUpListener = setOnMouseUpListener;
@@ -86,14 +94,18 @@
         * Create a Timemap in which events that have associated photos
         * are highlighted.
         *
+        * If existingTimemap is given, the events of that timemap instance are
+        * replaced with new ones instead of creating a new timemap instance.
+        *
+        *
         * Return a promise of the Timemap.
         */
         function createTimemapWithPhotoHighlight(start, end, data,
-                highlights, infoWindowCallback, photoConfig, bandInfo) {
+                highlights, infoWindowCallback, photoConfig, bandInfo, existingTimemap) {
             return photoService.getDistinctPhotoData(start, end, photoConfig.inProximity)
             .then(function(photos) {
                 return createTimemap(start, end, data, highlights,
-                    infoWindowCallback, photos, photoConfig, bandInfo);
+                    infoWindowCallback, photos, photoConfig, bandInfo, existingTimemap);
             }).catch(function(data) {
                 return $q.reject(data);
             });
@@ -102,12 +114,18 @@
         /*
         * Create a Timemap by a time span (start and end dates as ISO strings)
         *
+        * If existingTimemap is given, the events of that timemap instance are
+        * replaced with new ones instead of creating a new timemap instance.
+        *
+        *
         * Return a promise of the Timemap.
         */
-        function createTimemapByTimeSpan(start, end, highlights, infoWindowCallback, photoConfig) {
+        function createTimemapByTimeSpan(start, end, highlights, infoWindowCallback,
+                photoConfig, existingTimemap) {
             var self = this;
             return eventService.getEventsByTimeSpan(start, end).then(function(data) {
-                return self.createTimemapWithPhotoHighlight(start, end, data, highlights, infoWindowCallback, photoConfig);
+                return self.createTimemapWithPhotoHighlight(start, end, data, highlights,
+                    infoWindowCallback, photoConfig, existingTimemap);
             }).catch(function(data) {
                 return $q.reject(data);
             });
@@ -116,9 +134,13 @@
         /*
         * Create a Timemap where all events in which the given actor has participated in.
         *
+        * If existingTimemap is given, the events of that timemap instance are
+        * replaced with new ones instead of creating a new timemap instance.
+        *
         * Return a promise of the Timemap.
         */
-        function createTimemapByActor(actorId, start, end, highlights, infoWindowCallback, photoConfig) {
+        function createTimemapByActor(actorId, start, end, highlights, infoWindowCallback,
+                photoConfig, existingTimemap) {
 
             var bandInfo = getDefaultBandInfo(start, end, highlights);
             bandInfo[1].intervalPixels = 50;
@@ -127,7 +149,7 @@
             return eventService.getUnitAndSubUnitEventsByUnitId(actorId)
             .then(function(data) {
                 return self.createTimemapWithPhotoHighlight(start, end, data,
-                    highlights, infoWindowCallback, photoConfig, bandInfo);
+                    highlights, infoWindowCallback, photoConfig, bandInfo, existingTimemap);
             }).catch(function(data) {
                 return $q.reject(data);
             });
@@ -139,10 +161,13 @@
         * This function is used by all the other create functions to actually
         * create the Timemap.
         *
+        * If existingTimemap is given, the events of that timemap instance are
+        * replaced with new ones instead of creating a new timemap instance.
+        *
         * Return a promise of the Timemap.
         */
         function createTimemap(start, end, events, highlights,
-                infoWindowCallback, photoData, photoConfig, bandInfo) {
+                infoWindowCallback, photoData, photoConfig, bandInfo, existingTimemap) {
             var distinctPhotoData = photoData || [];
             angular.extend(photoSettings, photoConfig);
 
@@ -150,6 +175,13 @@
             events.forEach(function(e) {
                 res.push(createEventObject(e, distinctPhotoData));
             });
+
+            if (existingTimemap) {
+                var dataset = existingTimemap.datasets.warsa;
+                dataset.clear();
+                dataset.loadItems(res);
+                return $q.when(existingTimemap);
+            }
 
             // Use timeout to let the template (or more specifically the map div)
             // render before creating the timemap.

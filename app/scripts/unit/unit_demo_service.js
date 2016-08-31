@@ -48,12 +48,16 @@
             self.highlights = highlights;
             var photoConfig = Settings.getPhotoConfig();
             return timemapService.createTimemapByActor(id, start, end, highlights,
-                self.infoWindowCallback, photoConfig)
+                self.infoWindowCallback, photoConfig, self.tm)
             .then(function(timemap) {
+                var isNew = !self.tm;
                 self.tm = timemap;
                 self.map = timemap.getNativeMap();
 
-                self.setupTimemap();
+                if (isNew) {
+                    return self.setupTimemap();
+                }
+                return self.navigateToEarliestEvent();
             }).catch(function(data) {
                 return $q.reject(data);
             });
