@@ -72,12 +72,18 @@
             var app, id;
             switch(event.type_id) {
                 case EVENT_TYPES.BATTLE:
+                case EVENT_TYPES.TROOP_MOVEMENT:
+                case EVENT_TYPES.UNIT_JOINING:
+                case EVENT_TYPES.UNIT_FORMATION:
+                case EVENT_TYPES.UNIT_NAMING:
                     app = 'units';
                     id = ((event.units || [])[0] || {}).id;
                     break;
                 case EVENT_TYPES.PROMOTION:
                 case EVENT_TYPES.BIRTH:
+                case EVENT_TYPES.DEATH:
                 case EVENT_TYPES.DISSAPEARING:
+                case EVENT_TYPES.MEDAL_ASSIGNMENT:
                     app = 'persons';
                     id = event.participant_id;
                     break;

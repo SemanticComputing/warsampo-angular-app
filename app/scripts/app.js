@@ -102,17 +102,20 @@
     '   } ' +
     ' } ')
     .constant('PHOTO_PAGE_SIZE', 50)
-    // TODO: Add all types
     .constant('EVENT_TYPES', {
         BATTLE: 'http://ldf.fi/warsa/events/event_types/Battle',
         POLITICAL_ACTIVITY: 'http://ldf.fi/warsa/events/event_types/PoliticalActivity',
         MILITARY_ACTIVITY: 'http://ldf.fi/warsa/events/event_types/MilitaryActivity',
         BOMBARDMENT: 'http://ldf.fi/warsa/events/event_types/Bombardment',
         TROOP_MOVEMENT: 'http://ldf.fi/warsa/events/event_types/TroopMovement',
+        UNIT_JOINING: 'http://ldf.fi/warsa/events/event_types/UnitJoining',
+        UNIT_FORMATION: 'http://www.cidoc-crm.org/cidoc-crm/E66_Formation',
+        UNIT_NAMING: 'http://ldf.fi/warsa/events/event_types/UnitNaming',
         PROMOTION: 'http://ldf.fi/warsa/events/event_types/Promotion',
         BIRTH: 'http://www.cidoc-crm.org/cidoc-crm/E67_Birth',
         DEATH: 'http://www.cidoc-crm.org/cidoc-crm/E69_Death',
-        DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing'
+        DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing',
+        MEDAL_ASSIGNMENT: 'http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment'
     })
     .constant('SPARQL_ENDPOINT_URL', 'http://ldf.fi/warsa/sparql')
     .config(function($routeProvider, defaultLocale) {

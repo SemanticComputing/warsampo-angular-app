@@ -39,6 +39,7 @@
         function normalizeMapZoom(map) {
             //	control not to ever zoom too close up:
             var zminlistener = google.maps.event.addListener(map, 'idle', function() {
+                if (map.getZoom() > 8) map.setZoom(8);
                 if (map.getZoom() < 2) {
                     map.setZoom(5);
                     map.setCenter({lat: 62.0, lng: 25.0 });

@@ -153,6 +153,7 @@
 
         function navigateToDate(date) {
             this.tm.scrollToDate(date);
+            googleMapsService.normalizeMapZoom(this.map);
         }
 
         function navigateToEarliestEvent() {

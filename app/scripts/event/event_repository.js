@@ -59,8 +59,9 @@
         '   ?id a ?type_id . ' +
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id skos:prefLabel ?description . ' +
-        '   OPTIONAL { '+
-        '     ?id crm:P11_had_participant|crm:P100_was_death_of|crm:P98_brought_into_life ?participant . '+
+        '   OPTIONAL { ' +
+        '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
+        '     ?id ?part_pred ?participant . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '    ?id dc:source ?source_id . ' +
@@ -105,11 +106,8 @@
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '    { ?id crm:P95_has_formed ?participant . } ' +
-        '    UNION  ' +
-        '    { ?id crm:P95_has_formed ?participant . } ' +
-        '    UNION  ' +
-        '    { ?id crm:P11_had_participant|crm:P100_was_death_of|crm:P98_brought_into_life ?participant . }  ' +
+        '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
+        '     ?id ?part_pred ?participant . ' +
         '   } ' +
         '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
         '   OPTIONAL { ' + placePartial + ' } ' +
@@ -125,17 +123,8 @@
 
         var eventsByActorQryResultSet =
         '   VALUES ?participant { {0} }  ' +
-        '   { ?id a crm:E66_Formation .  ' +
-        '    ?id crm:P95_has_formed ?participant .  ' +
-        '   }  ' +
-        '   UNION ' +
-        '   { ?id a etypes:TroopMovement .  ' +
-        '     ?id crm:P95_has_formed ?participant .  ' +
-        '   }  ' +
-        '   UNION  ' +
-        '   { ?id a etypes:Battle .  ' +
-        '     ?id crm:P11_had_participant ?participant .  ' +
-        '   } ' +
+        '   ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
+        '   ?id ?part_pred ?participant . ' +
         '   ?id crm:P4_has_time-span ?time_id ;  ';
 
         var eventsAndSubUnitEventsByUnitQryResultSet =
@@ -173,6 +162,7 @@
         '      crm:P82b_end_of_the_end ?end_time . ' +
         ' FILTER (?start_time<=?end_time) . ';
 
+        // TODO: harmonize
         var byPersonQry = prefixes + select +
         ' { ' +
         '  VALUES ?person { {0} } . ' +
@@ -216,6 +206,7 @@
         '  } ' +
         ' } ORDER BY ?start_time ?end_time ';
 
+        // TODO: harmonize
         var personLifeEventsQry = prefixes +
         ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description (?description AS ?label) ' +
         '  ?start_time ?end_time ?rank ?rank_id ?place_id ?place_label ' +
