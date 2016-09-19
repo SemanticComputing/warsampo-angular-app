@@ -112,3 +112,27 @@ table.death-record tr:nth-child(even) {
     top: 0px;
     left: 0px;
 }
+
+.blueimp-gallery {
+    .title {
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 85%;
+    }
+    .description {
+        position: absolute;
+        top: 50px;
+        left: 15px;
+        color: #fff;
+        display: none;
+
+        a {
+            color: #fff;
+        }
+    }
+}
+.blueimp-gallery-controls {
+    .description {
+        display: block;
+    }
+}

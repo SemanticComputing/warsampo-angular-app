@@ -15,7 +15,7 @@
     });
 
     /* @ngInject */
-    function PhotoGalleryContoller($scope, $q, $timeout, $window, _) {
+    function PhotoGalleryContoller($scope, $q, $timeout, $window, _, $translate) {
         var self = this;
 
         self.isCollapsed = true;
@@ -31,6 +31,12 @@
 
         $scope.$on('$destroy', function() {
             win.unbind('resize', checkOverflow);
+        });
+
+        angular.element('#blueimp-gallery').on('slide', function (event, index) {
+            var elem = angular.element('#photo-container a').eq(index);
+            var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
+            angular.element(this).children('.description').attr('href', url);
         });
 
         $scope.$watch('images', function(val) {
