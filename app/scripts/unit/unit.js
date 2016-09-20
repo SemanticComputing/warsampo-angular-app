@@ -150,8 +150,10 @@
 
         self.fetchRelatedPersons = function(unit) {
             return personRepository.getByUnitId(unit.id, Settings.pageSize).then(function(persons) {
-                if (persons && persons.length) {
-                    unit.relatedPersons = persons;
+                unit.relatedPersons = persons;
+                return persons.getTotalCount();
+            }).then(function(count) {
+                if (count) {
                     unit.hasLinks = true;
                 }
                 return unit;
