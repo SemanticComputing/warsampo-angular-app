@@ -17,7 +17,7 @@
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
     <img ng-show="ctrl.unit.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="!ctrl.isLoadingLinks && !ctrl.unit.hasLinks">No links found for this object.</p>
+    <p ng-if="!ctrl.isLoadingLinks && !ctrl.unit.hasLinks" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
 			<ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.unit.superUnits"></ws-related-links>
 			<ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.unit.subUnits"></ws-related-links>

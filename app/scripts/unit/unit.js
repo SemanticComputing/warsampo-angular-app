@@ -150,7 +150,10 @@
 
         self.fetchRelatedPersons = function(unit) {
             return personRepository.getByUnitId(unit.id, Settings.pageSize).then(function(persons) {
-                unit.relatedPersons = persons;
+                if (persons && persons.length) {
+                    unit.relatedPersons = persons;
+                    unit.hasLinks = true;
+                }
                 return unit;
             });
         };
@@ -159,6 +162,7 @@
             return unitRepository.getUnitArticles(unit.id).then(function(articles) {
                 if (articles && articles.length) {
                     unit.articles = articles;
+                    unit.hasLinks = true;
                 }
             });
         };
@@ -168,6 +172,7 @@
                 if (data && data.length) {
                     unit.wikilink = data;
                     data[0].label = unit.name[0];
+                    unit.hasLinks = true;
                 }
             });
         };
@@ -176,6 +181,7 @@
             return unitRepository.getUnitDiaries(unit.id).then(function(diaries) {
                 if (diaries && diaries.length) {
                     unit.diaries = diaries;
+                    unit.hasLinks = true;
                 }
             });
         };
