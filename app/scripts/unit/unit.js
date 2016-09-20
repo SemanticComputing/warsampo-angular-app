@@ -9,8 +9,8 @@
     .service('unitService', unitService);
 
     /* @ngInject */
-    function unitService($q, _, unitRepository, eventRepository,
-                    personRepository, dateUtilService, Settings) {
+    function unitService($q, _, unitRepository, eventRepository, photoRepository,
+                    personRepository, dateUtilService, Settings, PHOTO_PAGE_SIZE) {
 
         var self = this;
 
@@ -64,6 +64,19 @@
             });
         };
 
+        self.fetchRelatedPhotos = function(unit) {
+            return photoRepository.getByUnitId(unit.id, PHOTO_PAGE_SIZE)
+            .then(function(images) {
+                unit.images = images;
+                return unit.images.getTotalCount();
+            }).then(function(count) {
+                if (count) {
+                    unit.hasLinks = true;
+                }
+                return unit;
+            });
+        };
+
         self.fetchRelated = function(unit, includeSubUnits) {
             var related = [
                 self.fetchRelatedUnits(unit),
@@ -71,6 +84,7 @@
                 self.fetchCommanders(unit),
                 self.fetchWikipediaArticles(unit),
                 self.fetchRelatedArticles(unit),
+                self.fetchRelatedPhotos(unit),
                 self.fetchUnitDiaries(unit)
             ];
             if (includeSubUnits) {

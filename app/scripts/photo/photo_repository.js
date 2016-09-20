@@ -131,6 +131,7 @@
 
         var photosByUnitResultSet =
         ' VALUES ?unit_id { {0} } ' +
+        ' ?id photos:unit ?unit_id . ' +
         ' ?id a photos:Photograph . ';
 
         var photosByPersonResultSet =

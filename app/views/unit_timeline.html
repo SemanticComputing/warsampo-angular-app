@@ -18,12 +18,14 @@
               <!-- Unit details -->
               <h3>{{ ctrl.currentUnit.name[0] }} <span ng-if="ctrl.currentUnit.abbrev.length">({{ ctrl.currentUnit.abbrev | concatList }})</span></h3>
               <p ng-if="ctrl.currentUnit.desc">{{ ctrl.currentUnit.desc }} (Wikipedia)</p>
-              <p ng-if="ctrl.currentUnit.altNames.length">Osasto on tunnettu myös nimillä {{ ctrl.currentUnit.altNames.join('; ') }}</p>
+              <p ng-if="ctrl.currentUnit.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentUnit.altNames.join('; ') }}</p>
               <div ng-show="ctrl.currentUnit.relatedEvents.length === 0" translate>
                 NO_RELATED_EVENTS
               </div>
               <p>{{ ctrl.currentUnit.getDescription() }}</p>
               <p><a ws-page-link="ctrl.currentUnit.id" translate>SHOW_INFO_PAGE</a></p>
+
+              <ws-photo-gallery images="ctrl.currentUnit.images"></ws-photo-gallery>
 
               <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.currentUnit.relatedPersons"></ws-related-links-paged>
               <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.currentUnit.superUnits"></ws-related-links>
