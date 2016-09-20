@@ -1,13 +1,6 @@
 (function() {
     'use strict';
 
-    /**
-    * @ngdoc function
-    * @name eventsApp.controller:PhotoPageCtrl
-    * @description
-    * # PhotoPageCtrl
-    * Controller of the eventsApp
-    */
     angular.module('eventsApp')
     .controller('PhotoPageCtrl', PhotoPageCtrl);
 
@@ -44,8 +37,8 @@
         function fetchRelated(photo) {
             var promises = { related: photoService.fetchRelated(photo) };
             if ((photo.places || []).length) {
-                promises.eventsByPlace = eventService.getEventsByPlaceIdPager(_.map(photo.places,
-                            'id'), Settings.pageSize);
+                promises.eventsByPlace = eventService.getEventsByPlaceIdPager(_.map(photo.places, 'id'),
+                        Settings.pageSize);
             }
             if (photo.created) {
                 promises.eventsByTime = eventService.getEventsLooselyWithinTimeSpanPager(photo.created,

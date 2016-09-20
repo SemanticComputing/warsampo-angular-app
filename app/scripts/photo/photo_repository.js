@@ -42,7 +42,7 @@
 
         var select =
         ' SELECT DISTINCT ?id ?url ?thumbnail ?thumbnail_url ?description ?created ' +
-        '  ?participant_id ?municipality ?place_id ?place_label ?lat ?lon ?place_string ' +
+        '  ?participant_id ?unit_id ?municipality ?place_id ?place_label ?lat ?lon ?place_string ' +
         '  ?source ?creator ?photographer_string ';
 
         var photosByPlaceAndTimeResultSet =
@@ -101,6 +101,7 @@
         '  OPTIONAL { ?id dc:description ?description . } ' +
         '  OPTIONAL { ?id dc:created ?created . } ' +
         '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
+        '  OPTIONAL { ?id photos:unit ?unit_id . } ' +
         '  OPTIONAL { ' +
         '   ?id dc:source ?source_id . ' +
         '   ?source_id skos:prefLabel ?source . ' +
@@ -127,6 +128,10 @@
         '  ?id dc:created ?created . ' +
         ' } ' +
         ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ';
+
+        var photosByUnitResultSet =
+        ' VALUES ?unit_id { {0} } ' +
+        ' ?id a photos:Photograph . ';
 
         var photosByPersonResultSet =
         ' VALUES ?participant_id { {0} } ' +
@@ -176,14 +181,18 @@
         '   ?s a photos:Photograph .' +
         '   BIND(?s AS ?id) ';
 
+        /* Public API */
+
         self.getById = getById;
         self.getByTimeSpan = getByTimeSpan;
         self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
         self.getByPersonId = getByPersonId;
+        self.getByUnitId = getByUnitId;
         self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
         self.getMinimalDataByTimeSpan = getMinimalDataByTimeSpan;
         self.getByFacetSelections = getByFacetSelections;
 
+        /* API function implementations */
 
         function getById(id) {
             var resultSet = singlePhotoQryResultSet.format(id);
@@ -233,6 +242,19 @@
                 return $q.when();
             }
             var resultSet = photosByPersonResultSet.format(id);
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        }
+
+        function getByUnitId(id, pageSize) {
+            if (_.isArray(id)) {
+                id = '<{0}>'.format(id.join('> <'));
+            } else if (id) {
+                id = '<{0}>'.format(id);
+            } else {
+                return $q.when();
+            }
+            var resultSet = photosByUnitResultSet.format(id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }

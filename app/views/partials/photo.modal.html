@@ -21,8 +21,8 @@
     </div>
     <div class="col-md-5">
       <p>
-      {{vm.photo.description}}
-      <span ng-if="vm.photo.place_string">({{vm.photo.place_string}})</span>
+      {{ vm.photo.description }}
+      <span ng-if="vm.photo.place_string">({{ vm.photo.place_string }})</span>
       </p>
       <div class="row">
         <div class="col-md-6">
@@ -45,6 +45,16 @@
               </li>
             </ul>
           </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h5><span translate>UNIT</span>:</h5>
+            <ul class="list-unstyled" ng-if="vm.photo.units">
+              <li ng-repeat="unit in vm.photo.units">
+              <a ng-click="vm.close()" ws-page-link="unit.id">{{ unit.label }}</a>
+              </li>
+            </ul>
         </div>
       </div>
       <hr/>

@@ -22,8 +22,9 @@
         e.thumbnail = photo.thumbnail_url.value;
         e.description = photo.description ? photo.description.value : '';
         e.created = photo.created ? photo.created.value : undefined;
-        e.participant_id = photo.participant_id ? photo.participant_id.value : '';
-        e.municipality_id = photo.municipality ? photo.municipality.value : '';
+        e.participant_id = photo.participant_id ? photo.participant_id.value : undefined;
+        e.unit_id = photo.unit_id ? photo.unit_id.value : undefined;
+        e.municipality_id = photo.municipality ? photo.municipality.value : undefined;
         e.source = photo.source ? photo.source.value : '';
         e.creator_id = photo.creator ? photo.creator.value : undefined;
         e.photographer_string = photo.photographer_string ? photo.photographer_string.value : '';

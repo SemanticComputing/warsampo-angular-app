@@ -10,7 +10,7 @@
 
     /* @ngInject */
     function photoService($q, _, photoRepository, personRepository, eventRepository,
-            dateUtilService, PHOTO_PAGE_SIZE) {
+            unitRepository, dateUtilService, PHOTO_PAGE_SIZE) {
 
         var self = this;
 
@@ -20,6 +20,7 @@
         };
 
         self.fetchPeople = fetchPeople;
+        self.fetchUnits = fetchUnits;
         self.fetchRelated = fetchRelated;
         self.getPhotosByPlaceAndTimeSpan = getPhotosByPlaceAndTimeSpan;
         self.getByTimeSpan = getByTimeSpan;
@@ -30,9 +31,21 @@
 
         function fetchRelated(photo) {
             var related = [
-                self.fetchPeople(photo)
+                self.fetchPeople(photo),
+                self.fetchUnits(photo)
             ];
             return $q.all(related).then(function() {
+                return photo;
+            });
+        }
+
+        function fetchUnits(photo) {
+            return unitRepository.getByIdList(photo.unit_id)
+            .then(function(units) {
+                if (units && units.length) {
+                    photo.units = units;
+                    photo.hasLinks = true;
+                }
                 return photo;
             });
         }
