@@ -49,12 +49,14 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <h5><span translate>UNIT</span>:</h5>
-            <ul class="list-unstyled" ng-if="vm.photo.units">
-              <li ng-repeat="unit in vm.photo.units">
-              <a ng-click="vm.close()" ws-page-link="unit.id">{{ unit.label }}</a>
-              </li>
-            </ul>
+          <div ng-if="vm.photo.units">
+            <h5><span translate>PHOTO_DEMO.RELATED_UNITS</span>:</h5>
+              <ul class="list-unstyled" ng-if="vm.photo.units">
+                <li ng-repeat="unit in vm.photo.units">
+                <a ng-click="vm.close()" ws-page-link="unit.id">{{ unit.label }}</a>
+                </li>
+              </ul>
+            </div>
         </div>
       </div>
       <hr/>
