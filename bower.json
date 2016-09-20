@@ -46,21 +46,15 @@
       "main": [
         "css/blueimp-gallery.css",
         "css/blueimp-gallery-indicator.css",
-        "css/blueimp-gallery-video.css",
         "img/error.png",
         "img/error.svg",
         "img/loading.gif",
         "img/play-pause.png",
         "img/play-pause.svg",
-        "img/video-play.png",
-        "img/video-play.svg",
         "js/blueimp-gallery.js",
         "js/jquery.blueimp-gallery.js",
         "js/blueimp-gallery-fullscreen.js",
-        "js/blueimp-gallery-indicator.js",
-        "js/blueimp-gallery-video.js",
-        "js/blueimp-gallery-vimeo.js",
-        "js/blueimp-gallery-youtube.js"
+        "js/blueimp-gallery-indicator.js"
       ]
     }
   },
