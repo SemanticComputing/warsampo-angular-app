@@ -120,6 +120,18 @@
         '  } LIMIT 300 	' +
         '} ORDER BY ?name 	';
 
+		  var wardiaryQry = prefixes +
+        'SELECT ?label ?id ?time	' +
+        'WHERE {	' +
+        '  GRAPH <http://ldf.fi/warsa/diaries> {	' +
+        '    VALUES ?actor { {0} } .	' +
+        '    ?uri crm:P70_documents ?actor .	' +
+        '    ?uri skos:prefLabel ?label .	' +
+        '    ?uri <http://purl.org/dc/terms/hasFormat> ?id .	' +
+        '    OPTIONAL { ?uri crm:P4_has_time-span ?time . }	' +
+        '    }	' +
+        '} ORDER BY ?time	';
+        
         var byUnitQryResultSet =
         ' SELECT ?id (COUNT(?s) AS ?no) { ' +
         '  ?evt a etypes:PersonJoining ; ' +
@@ -277,6 +289,13 @@
             return $q.when();
         };
 
+		  this.getDiaries = function(person) {
+		  	   var qry = wardiaryQry.format('<{0}>'.format(person));
+            return endpoint.getObjects(qry).then(function(data) {
+            	return data;
+            });
+        };
+        
         this.getItems = function (regx, controller) {
             var qry = selectorQuery.format('{0}'.format(regx));
             controller.items = [ {id:'#', name:'Etsitään ...'} ];
