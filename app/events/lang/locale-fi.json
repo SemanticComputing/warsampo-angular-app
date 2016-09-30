@@ -50,7 +50,15 @@
         "EVENTS_CLOSE": "Tapahtumia samalla alueella",
         "EVENTS_AT_THE_SAME_TIME": "Tapahtumia samaan aikaan",
         "RELATED_PEOPLE": "Henkilöt",
-        "RELATED_UNITS": "Joukko-osastot"
+        "RELATED_UNITS": "Joukko-osastot",
+        "PHOTO_TAKEN_BETWEEN": "@:PHOTO_TAKEN_BETWEEN",
+        "DESCRIPTION": "@:DESCRIPTION",
+        "PLACE": "@:PLACE",
+        "PERSON": "@:PERSON",
+        "PHOTOGRAPHER": "@:PHOTOGRAPHER",
+        "UNIT": "@:UNIT",
+        "THEME_CODE": "Kuva-aihekoodi"
+
     },
     "SETTINGS": {
         "PHOTO_RANGE": "Valokuvien aikahaarukka",

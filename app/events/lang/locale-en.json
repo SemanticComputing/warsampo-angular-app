@@ -50,7 +50,14 @@
         "EVENTS_CLOSE": "Events in the same region",
         "EVENTS_AT_THE_SAME_TIME": "Events at the same time",
         "RELATED_PEOPLE": "Persons",
-        "RELATED_UNITS": "Units"
+        "RELATED_UNITS": "Units",
+        "PHOTO_TAKEN_BETWEEN": "@:PHOTO_TAKEN_BETWEEN",
+        "DESCRIPTION": "@:DESCRIPTION",
+        "PLACE": "@:PLACE",
+        "PERSON": "@:PERSON",
+        "PHOTOGRAPHER": "@:PHOTOGRAPHER",
+        "UNIT": "@:UNIT",
+        "THEME_CODE": "Subject code"
     },
     "SETTINGS": {
         "PHOTO_RANGE": "Photo date range",

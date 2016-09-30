@@ -8,15 +8,19 @@
     /*
      * Photo facet service
      */
-    .service( 'photoFacetService', photoFacetService );
+    .service('photoFacetService', photoFacetService);
 
     /* @ngInject */
     function photoFacetService($q, $translate, _, photoRepository,
             facetSelectionFormatter, SPARQL_ENDPOINT_URL, PHOTO_PAGE_SIZE) {
 
+        this.getResults = getResults;
+        this.getFacets = getFacets;
+        this.getFacetOptions = getFacetOptions;
+
         var facets = {
             '<http://ldf.fi/kuvanottoaika>' : {
-                name: 'PHOTO_TAKEN_BETWEEN',
+                name: 'PHOTO_DEMO.PHOTO_TAKEN_BETWEEN',
                 type: 'timespan',
                 start: '<http://purl.org/dc/terms/created>',
                 end: '<http://purl.org/dc/terms/created>',
@@ -25,20 +29,22 @@
                 enabled: true
             },
             '<http://purl.org/dc/terms/description>': {
-                name: 'DESCRIPTION',
+                name: 'PHOTO_DEMO.DESCRIPTION',
                 type: 'text',
                 enabled: true
             },
             '<http://purl.org/dc/terms/spatial>': {
-                name: 'PLACE',
+                name: 'PHOTO_DEMO.PLACE',
                 service: '<http://ldf.fi/pnr/sparql>',
                 enabled: true
             },
             '<http://purl.org/dc/terms/subject>': {
-                name: 'PERSON',
+                name: 'PHOTO_DEMO.PERSON',
                 enabled: true
             },
-            '<http://purl.org/dc/terms/creator>': { name: 'PHOTOGRAPHER' }
+            '<http://ldf.fi/warsa/photographs/unit>': { name: 'PHOTO_DEMO.UNIT' },
+            '<http://purl.org/dc/terms/creator>': { name: 'PHOTO_DEMO.PHOTOGRAPHER' },
+            '<http://ldf.fi/warsa/photographs/theme>': { name: 'PHOTO_DEMO.THEME_CODE' }
         };
 
         var facetOptions = {
@@ -50,18 +56,13 @@
 
         var fetchOptions = { pageSize: PHOTO_PAGE_SIZE };
 
-        this.getResults = getResults;
-        this.getFacets = getFacets;
-        this.getFacetOptions = getFacetOptions;
-
         function getResults(facetSelections) {
             var selections = facetSelectionFormatter.parseFacetSelections(facets, facetSelections);
             return photoRepository.getByFacetSelections(selections, fetchOptions);
         }
 
         function getFacets() {
-            return $translate(['PHOTO_TAKEN_BETWEEN', 'DESCRIPTION', 'PLACE',
-                    'PERSON', 'PHOTOGRAPHER'])
+            return $translate(_.map(facets, 'name'))
             .then(function(translations) {
                 var facetClone = _.cloneDeep(facets);
                 _.forOwn(facetClone, function(val) {
