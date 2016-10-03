@@ -12,7 +12,7 @@
     /* @ngInject */
     function photoRepository($q, _, AdvancedSparqlService, PLACE_PARTIAL_QUERY,
                 objectMapperService, photoMapperService, QueryBuilderService,
-                SPARQL_ENDPOINT_URL) {
+                SPARQL_ENDPOINT_URL, PNR_SERVICE_URI) {
 
         var self = this;
 
@@ -71,7 +71,7 @@
         '       ?ref_place_id a [] . ' +
         '     } ' +
         '   } ' +
-        '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '   SERVICE ' + PNR_SERVICE_URI + ' { ' +
         '     { ' +
         '       ?place_id crm:P89_falls_within  ?municipality . ' +
         '       { ?municipality a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?municipality a <http://ldf.fi/pnr-schema#place_type_550> } ' +
@@ -156,7 +156,7 @@
         '   ?municipality_id a suo:kunta . ' +
         '  } ' +
         '  OPTIONAL { ' +
-        '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
+        '   SERVICE ' + PNR_SERVICE_URI + ' { ' +
         '    ?place_id crm:P89_falls_within  ?municipality_id . ' +
         '    { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
         '    UNION ' +

@@ -11,8 +11,8 @@
     .service('photoFacetService', photoFacetService);
 
     /* @ngInject */
-    function photoFacetService($q, $translate, _, photoRepository,
-            facetSelectionFormatter, SPARQL_ENDPOINT_URL, PHOTO_PAGE_SIZE) {
+    function photoFacetService($q, $translate, _, photoRepository, facetSelectionFormatter,
+            SPARQL_ENDPOINT_URL, PNR_SERVICE_URI, PHOTO_PAGE_SIZE) {
 
         this.getResults = getResults;
         this.getFacets = getFacets;
@@ -35,7 +35,7 @@
             },
             '<http://purl.org/dc/terms/spatial>': {
                 name: 'PHOTO_DEMO.PLACE',
-                service: '<http://ldf.fi/pnr/sparql>',
+                service: PNR_SERVICE_URI,
                 enabled: true
             },
             '<http://purl.org/dc/terms/subject>': {

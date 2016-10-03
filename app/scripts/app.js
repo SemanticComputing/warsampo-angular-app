@@ -11,6 +11,11 @@
     *
     * Main module of the application.
     */
+
+    var server = 'http://ldf.fi';
+    var PNR_SERVICE_URI = '<' + server + '/pnr/sparql>';
+    var SPARQL_ENDPOINT_URL = server + '/warsa/sparql';
+
     angular
     .module('eventsApp', [
         'ngAnimate',
@@ -88,7 +93,7 @@
     '       ?place_id a ?place_type . ' +
     '     } ' +
     '   } ' +
-    '   SERVICE <http://ldf.fi/pnr/sparql> { ' +
+    '   SERVICE ' + PNR_SERVICE_URI + ' { ' +
     '     ?place_id skos:prefLabel ?place_label . ' +
     '     FILTER(langMatches(lang(?place_label), "FI")) ' +
     '     ?place_id geo:lat ?lat ; ' +
@@ -117,7 +122,8 @@
         DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing',
         MEDAL_ASSIGNMENT: 'http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment'
     })
-    .constant('SPARQL_ENDPOINT_URL', 'http://ldf.fi/warsa/sparql')
+    .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)
+    .constant('PNR_SERVICE_URI', PNR_SERVICE_URI)
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider

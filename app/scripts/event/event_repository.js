@@ -178,8 +178,8 @@
         '  UNION '+
         '  { '+
         '   ?id a articles:Article ; '+
-        '   dcterms:hasFormat ?link ; '+
-        '   <http://purl.org/dc/elements/1.1/title> ?description ; '+
+        '    dcterms:hasFormat ?link ; '+
+        '    dc:title ?description ; '+
         '   { ?id dcterms:subject ?person . }  '+
         '   UNION  '+
         '   { ?id articles:nerperson ?person . }  '+
@@ -194,14 +194,10 @@
         '  OPTIONAL { ' +
         '    ?id crm:P4_has_time-span ?time_id .  ' +
         '    ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
-        '    		crm:P82b_end_of_the_end ?end_time .  ' +
+        '     crm:P82b_end_of_the_end ?end_time .  ' +
         '  } ' +
         '  OPTIONAL { ' +
-        '    ?id crm:P7_took_place_at ?place_id . ' +
-        '    OPTIONAL { ' +
-        '      ?place_id skos:prefLabel ?place_label .  ' +
-        '      ?place_id geo:lat ?lat ;  geo:long ?lon .  ' +
-        '    } ' +
+            placePartial +
         '  } ' +
         ' } ORDER BY ?start_time ?end_time ';
 
@@ -233,11 +229,7 @@
         '   ?time_id crm:P82b_end_of_the_end ?end_time . ' +
         '  } ' +
         '  OPTIONAL {  ' +
-        '   ?id crm:P7_took_place_at ?place_id . ' +
-        '   OPTIONAL { ?place_id skos:prefLabel ?place_label . } ' +
-        '   OPTIONAL {	service <http://ldf.fi/pnr/sparql> { ?place_id skos:prefLabel ?place_label } ' +
-        '   	filter (langmatches(lang(?place_label),"fi")) ' +
-        '   } ' +
+            placePartial +
         '  } ' +
         '  ?id a ?type_id . ' +
         '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
