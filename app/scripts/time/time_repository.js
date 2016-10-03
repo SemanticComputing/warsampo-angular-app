@@ -5,11 +5,11 @@
  * Service that provides an interface for fetching times from the WarSa SPARQL endpoint.
  */
 angular.module('eventsApp')
-.service('timeRepository', function($q, SparqlService, timeMapperService) {
+.service('timeRepository', function($q, SparqlService, timeMapperService, SPARQL_ENDPOINT_URL) {
 
-    var endpoint = new SparqlService('http://ldf.fi/warsa/sparql');
+    var endpoint = new SparqlService(SPARQL_ENDPOINT_URL);
 
-    var prefixes = '' +
+    var prefixes =
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +

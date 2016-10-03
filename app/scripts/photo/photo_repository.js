@@ -11,15 +11,14 @@
 
     /* @ngInject */
     function photoRepository($q, _, AdvancedSparqlService, PLACE_PARTIAL_QUERY,
-                objectMapperService, photoMapperService, QueryBuilderService) {
+                objectMapperService, photoMapperService, QueryBuilderService,
+                SPARQL_ENDPOINT_URL) {
 
         var self = this;
 
-        var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
-            photoMapperService);
+        var endpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, photoMapperService);
 
-        var minimalDataService = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
-            objectMapperService);
+        var minimalDataService = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, objectMapperService);
 
         var prefixes =
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +

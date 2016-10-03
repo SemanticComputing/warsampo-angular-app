@@ -10,7 +10,7 @@
     .service('semanticModelRepository', semanticModelRepository);
 
     function semanticModelRepository($q, AdvancedSparqlService, semanticModelMapperService,
-            objectMapperService, QueryBuilderService) {
+            objectMapperService, QueryBuilderService, SPARQL_ENDPOINT_URL) {
 
         /* Public API */
 
@@ -19,11 +19,9 @@
 
         /* Implementation */
 
-        var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
-                semanticModelMapperService);
+        var endpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, semanticModelMapperService);
 
-        var relatedEndpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
-                objectMapperService);
+        var relatedEndpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, objectMapperService);
 
         var prefixes =
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +

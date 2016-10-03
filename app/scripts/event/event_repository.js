@@ -9,10 +9,9 @@
     .service('eventRepository', eventRepository);
 
     function eventRepository($q, _, AdvancedSparqlService, eventMapperService,
-            QueryBuilderService, PLACE_PARTIAL_QUERY) {
+            QueryBuilderService, PLACE_PARTIAL_QUERY, SPARQL_ENDPOINT_URL) {
 
-        var endpoint = new AdvancedSparqlService('http://ldf.fi/warsa/sparql',
-            eventMapperService);
+        var endpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, eventMapperService);
 
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
