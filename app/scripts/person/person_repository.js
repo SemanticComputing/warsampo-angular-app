@@ -17,23 +17,13 @@
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
-        ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
-        ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
-        ' PREFIX georss: <http://www.georss.org/georss/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -55,13 +45,12 @@
         '  ?id foaf:familyName ?sname .' +
         '  ?id skos:prefLabel ?label .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
-		//' OPTIONAL { ?id dc:description ?desc } ' +
         '  VALUES ?preflang { "{1}" } '+
-        '  OPTIONAL { ?id dc:description ?desc_any  . filter ( lang(?desc_any)!= ?preflang ) }  ' +
-        '  OPTIONAL { ?id dc:description ?desc_pref . filter ( lang(?desc_pref)= ?preflang ) }  ' +
+        '  OPTIONAL { ?id dct:description ?desc_any  . filter ( lang(?desc_any)!= ?preflang ) }  ' +
+        '  OPTIONAL { ?id dct:description ?desc_pref . filter ( lang(?desc_pref)= ?preflang ) }  ' +
         '  BIND ( COALESCE(?desc_pref, ?desc_any, "") AS ?desc ) ' +
 
-        '  OPTIONAL { ?id dc:source ?sid . ' +
+        '  OPTIONAL { ?id dct:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
         '  OPTIONAL { ' +
@@ -111,29 +100,30 @@
         var selectorQuery = prefixes +
         'SELECT DISTINCT ?name ?id WHERE {	' +
         '  SELECT DISTINCT ?name ?id WHERE {	' +
+        '    ?cls a/subClassOf* crm:E21_Person . ' +
         '    GRAPH <http://ldf.fi/warsa/actors> {	' +
-        '      { ?id a crm:E21_Person } UNION { ?id a atypes:PoliticalPerson } UNION { ?id a atypes:MilitaryPerson . } ' +
+        '      ?id a ?cls . ' +
         '      ?id skos:prefLabel ?name .   	    	' +
         '      FILTER (regex(?name, "^{0}$", "i"))	' +
         '    } 	' +
         '  } LIMIT 300 	' +
         '} ORDER BY ?name 	';
 
-		  var wardiaryQry = prefixes +
+        var wardiaryQry = prefixes +
         'SELECT ?label ?id ?time	' +
         'WHERE {	' +
         '  GRAPH <http://ldf.fi/warsa/diaries> {	' +
         '    VALUES ?actor { {0} } .	' +
         '    ?uri crm:P70_documents ?actor .	' +
         '    ?uri skos:prefLabel ?label .	' +
-        '    ?uri <http://purl.org/dc/terms/hasFormat> ?id .	' +
+        '    ?uri dct:hasFormat ?id .	' +
         '    OPTIONAL { ?uri crm:P4_has_time-span ?time . }	' +
         '    }	' +
         '} ORDER BY ?time	';
-        
+
         var byUnitQryResultSet =
         ' SELECT ?id (COUNT(?s) AS ?no) { ' +
-        '  ?evt a etypes:PersonJoining ; ' +
+        '  ?evt a wsc:PersonJoining ; ' +
         '  crm:P143_joined ?id . ' +
         '  ?evt  crm:P144_joined_with {0} .  ' +
         '  ?s ?p ?id . ' +
@@ -145,7 +135,7 @@
         'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end WHERE { ' +
         '   <RESULT_SET> ' +
         ' 	OPTIONAL { ' +
-        ' 	  ?evt a etypes:PersonJoining ; ' +
+        ' 	  ?evt a wsc:PersonJoining ; ' +
         ' 	  crm:P143_joined ?id . ' +
         '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
         '     OPTIONAL { ' +
@@ -161,9 +151,9 @@
 
         var commandersByUnitQry = prefixes +
         'SELECT ?id ?sname ?fname ?label ?role ?join_start ?join_end WHERE { ' +
-        ' ?evt a etypes:PersonJoining ; ' +
+        ' ?evt a wsc:PersonJoining ; ' +
         '   crm:P143_joined ?id . ' +
-        ' ?evt  crm:P144_joined_with {0} .  ' +
+        ' ?evt crm:P144_joined_with {0} .  ' +
         ' ?evt crm:P107_1_kind_of_member ?role . ' +
         ' OPTIONAL { ' +
         '  ?evt crm:P4_has_time-span ?join_time_id . ' +
@@ -179,10 +169,10 @@
         ' { ' +
         '  SELECT ?id (COUNT(?s) AS ?no) WHERE { ' +
         '   VALUES ?rank { {0} } . ' +
-        '   ?evt :hasRank ?rank . ' +
+        '   ?evt wsc:hasRank ?rank . ' +
         '   ?evt crm:P11_had_participant ?id . ' +
-        '   ?evt a etypes:Promotion .	' +
-        '   ?id a atypes:MilitaryPerson .	' +
+        '   ?evt a wsc:Promotion .	' +
+        '   ?id a wsc:MilitaryPerson .	' +
         '   ?s ?p ?id .	' +
         '  } GROUP BY ?id ' +
         ' }	';
@@ -196,10 +186,10 @@
 
         var byMedalQryResultSet =
         ' VALUES ?medal { {0} } .  ' +
-        ' ?evt a  crm:E13_Attribute_Assignment ;	 ' +
+        ' ?evt a wsc:MedalAwarding ;	 ' +
         '   crm:P141_assigned ?medal ; ' +
         '   crm:P11_had_participant ?id .  ' +
-        ' ?id a atypes:MilitaryPerson .	 ' +
+        ' ?id a wsc:MilitaryPerson .	 ' +
         ' ?id foaf:familyName ?sname ; ' +
         '   foaf:firstName ?fname . ';
 
@@ -245,7 +235,7 @@
         };
 
         this.getById = function(id) {
-        	   var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ;
+            var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ;
             var resultSet = personQryResultSet.format('<{0}>'.format(id));
             var qryObj = queryBuilder.buildQuery(personQry.format('{1}',langtag), resultSet);
 
@@ -288,13 +278,13 @@
             return $q.when();
         };
 
-		  this.getDiaries = function(person) {
-		  	   var qry = wardiaryQry.format('<{0}>'.format(person));
+        this.getDiaries = function(person) {
+            var qry = wardiaryQry.format('<{0}>'.format(person));
             return endpoint.getObjects(qry).then(function(data) {
-            	return data;
+                return data;
             });
         };
-        
+
         this.getItems = function (regx, controller) {
             var qry = selectorQuery.format('{0}'.format(regx));
             controller.items = [ {id:'#', name:'Etsitään ...'} ];

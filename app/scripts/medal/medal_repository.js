@@ -11,23 +11,15 @@
         var endpoint = new SparqlService(SPARQL_ENDPOINT_URL);
 
         var prefixes =
-        ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
-        ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
-        ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
-        ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX medal: <http://ldf.fi/warsa/medals/> ';
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wme: <http://ldf.fi/warsa/medals/> ';
 
         var medalQry = prefixes +
         ' SELECT DISTINCT ?id ?label WHERE {  ' +
         '  VALUES ?id { {0} } .   ' +
-        '  ?id a medal:Medal . ' +
+        '  ?id a wsc:Medal . ' +
         '  ?id skos:prefLabel ?label . ' +
         ' } ';
 
@@ -40,12 +32,12 @@
         '     SELECT DISTINCT ?actor { ' +
         '      ?evt crm:P141_assigned {0} ; ' +
         '        crm:P11_had_participant ?actor ; ' +
-        '        a crm:E13_Attribute_Assignment . ' +
+        '        a wsc:MedalAwarding . ' +
         '     } LIMIT 50 ' +
         '    } ' +
         '    ?evt2 crm:P11_had_participant ?actor ; ' +
         '      crm:P141_assigned ?id ; ' +
-        '      a crm:E13_Attribute_Assignment . ' +
+        '      a wsc:MedalAwarding . ' +
         '    FILTER (?medal != ?id) ' +
         '   } GROUP BY ?id ' +
         '  } ' +
@@ -64,7 +56,6 @@
 
         this.getRelatedMedals = function(id) {
             var qry = relatedMedalQry.format('<{0}>'.format(id));
-            // console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
                 return medalMapperService.makeObjectList(data);
             });

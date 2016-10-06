@@ -16,26 +16,34 @@
 
         var self = this;
 
+        /* Public API */
+
+        self.getById = getById;
+        self.getByTimeSpan = getByTimeSpan;
+        self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
+        self.getByPersonId = getByPersonId;
+        self.getByUnitId = getByUnitId;
+        self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
+        self.getMinimalDataByTimeSpan = getMinimalDataByTimeSpan;
+        self.getByFacetSelections = getByFacetSelections;
+
+        /* Implementation */
+
         var endpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, photoMapperService);
 
         var minimalDataService = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, objectMapperService);
 
         var prefixes =
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
-        ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX warsaplaces: <http://ldf.fi/warsa/places/> ' +
-        ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
-        ' PREFIX dctype: <http://purl.org/dc/dcmitype/> ' +
-        ' PREFIX dc: <http://purl.org/dc/terms/> ' +
-        ' PREFIX text: <http://jena.apache.org/text#> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
+        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
+        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wph: <http://ldf.fi/warsa/photographs/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -46,10 +54,10 @@
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?ref_place_id { {0} } ' +
-        ' ?id dc:created ?created . ' +
+        ' ?id dct:created ?created . ' +
         ' FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
-        ' ?id a photos:Photograph . ' +
-        ' { ?id dc:spatial ?place_id  . ' +
+        ' ?id a wsc:Photograph . ' +
+        ' { ?id dct:spatial ?place_id  . ' +
         '   { ' +
         '     ?place_id geosparql:sfWithin ?municipality . ' +
         '     ?municipality a suo:kunta . ' +
@@ -63,9 +71,9 @@
         '     ?ref_place_id a suo:kunta . ' +
         '     ?place_id geosparql:sfWithin ?ref_place_id ' +
         '   } ' +
-        ' } UNION { ?id dc:spatial ?ref_place_id } ' +
+        ' } UNION { ?id dct:spatial ?ref_place_id } ' +
         ' UNION { ' +
-        '   { ?id dc:spatial ?place_id . ' +
+        '   { ?id dct:spatial ?place_id . ' +
         '     FILTER NOT EXISTS { ' +
         '       ?place_id a [] . ' +
         '       ?ref_place_id a [] . ' +
@@ -88,7 +96,7 @@
 
         var placePartial =
         ' OPTIONAL { ' +
-        '   ?id dc:spatial ?place_id . ' +
+        '   ?id dct:spatial ?place_id . ' +
             PLACE_PARTIAL_QUERY +
         ' } ';
 
@@ -97,24 +105,24 @@
         '  <RESULT_SET> ' +
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
-        '  OPTIONAL { ?id dc:description ?description . } ' +
-        '  OPTIONAL { ?id dc:created ?created . } ' +
-        '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
-        '  OPTIONAL { ?id photos:unit ?unit_id . } ' +
+        '  OPTIONAL { ?id dct:description ?description . } ' +
+        '  OPTIONAL { ?id dct:created ?created . } ' +
+        '  OPTIONAL { ?id dct:subject ?participant_id . } ' +
+        '  OPTIONAL { ?id wph:unit ?unit_id . } ' +
         '  OPTIONAL { ' +
-        '   ?id dc:source ?source_id . ' +
+        '   ?id dct:source ?source_id . ' +
         '   ?source_id skos:prefLabel ?source . ' +
         '   FILTER(langMatches(lang(?source), "fi")) ' +
         '  } ' +
-        '  OPTIONAL { ?id dc:creator ?creator . } ' +
-        '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
-        '  OPTIONAL { ?id photos:photographer_string ?photographer_string . } ' +
+        '  OPTIONAL { ?id dct:creator ?creator . } ' +
+        '  OPTIONAL { ?id wph:place_string ?place_string . } ' +
+        '  OPTIONAL { ?id wph:photographer_string ?photographer_string . } ' +
         '  <PLACE> ' +
         ' } ';
 
         var photoQryExtended = photoQry.replace('<PLACE>', placePartial);
         photoQry = photoQry.replace('<PLACE>',
-                'OPTIONAL { ?id dc:spatial ?place_id . }');
+                'OPTIONAL { ?id dct:spatial ?place_id . }');
 
         var singlePhotoQryResultSet =
         ' GRAPH warsa:photographs { ' +
@@ -124,29 +132,29 @@
 
         var photosByTimeResultSet =
         ' GRAPH warsa:photographs { ' +
-        '  ?id dc:created ?created . ' +
+        '  ?id dct:created ?created . ' +
         ' } ' +
         ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ';
 
         var photosByUnitResultSet =
         ' VALUES ?unit_id { {0} } ' +
-        ' ?id photos:unit ?unit_id . ' +
-        ' ?id a photos:Photograph . ';
+        ' ?id wph:unit ?unit_id . ' +
+        ' ?id a wsc:Photograph . ';
 
         var photosByPersonResultSet =
         ' VALUES ?participant_id { {0} } ' +
-        ' { ?id dc:subject ?participant_id . } ' +
+        ' { ?id dct:subject ?participant_id . } ' +
         ' UNION ' +
-        ' { ?id dc:creator ?participant_id . } ' +
-        ' ?id a photos:Photograph . ';
+        ' { ?id dct:creator ?participant_id . } ' +
+        ' ?id a wsc:Photograph . ';
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +
         ' SELECT DISTINCT ?created ?place_id ?municipality_id WHERE { ' +
         '  { ' +
         '   SELECT DISTINCT ?place_id ?created { ' +
         '    GRAPH warsa:photographs { ' +
-        '     ?id dc:spatial ?place_id . ' +
-        '     ?id dc:created ?created . ' +
+        '     ?id dct:spatial ?place_id . ' +
+        '     ?id dct:created ?created . ' +
         '     FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
         '    } ' +
         '   } ' +
@@ -170,7 +178,7 @@
         ' SELECT DISTINCT ?created' +
         ' WHERE { ' +
         '  GRAPH warsa:photographs { ' +
-        '   ?id dc:created ?created . ' +
+        '   ?id dct:created ?created . ' +
         '   FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
         '  } ' +
         ' } ' +
@@ -178,19 +186,8 @@
 
         var facetQryResultSet =
         '   {0} ' +
-        '   ?s a photos:Photograph .' +
+        '   ?s a wsc:Photograph .' +
         '   BIND(?s AS ?id) ';
-
-        /* Public API */
-
-        self.getById = getById;
-        self.getByTimeSpan = getByTimeSpan;
-        self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
-        self.getByPersonId = getByPersonId;
-        self.getByUnitId = getByUnitId;
-        self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
-        self.getMinimalDataByTimeSpan = getMinimalDataByTimeSpan;
-        self.getByFacetSelections = getByFacetSelections;
 
         /* API function implementations */
 

@@ -8,7 +8,7 @@
     function Rank() { }
 
     Rank.prototype.getDescription = function() {
-    		return this.comment ? [this.comment] : [] ;
+        return this.comment ? [this.comment] : [] ;
     };
 
     function RankMapper() {
@@ -20,8 +20,8 @@
             if (rank.wikilink) {
                 rank.wikilink = [{ id:rank.wikilink, label:rank.label}];
             }
-            
-		  		if (_.isArray(rank.label)) {
+
+            if (_.isArray(rank.label)) {
                 rank.label = rank.label[0];
             }
         });
@@ -30,12 +30,12 @@
     };
 
     angular.module('eventsApp')
-    .factory('rankMapperService', function(objectMapperService) {
-        var proto = Object.getPrototypeOf(objectMapperService);
-        RankMapper.prototype = angular.extend({}, proto, RankMapper.prototype);
+        .factory('rankMapperService', function(translateableObjectMapperService) {
+            var proto = Object.getPrototypeOf(translateableObjectMapperService);
+            RankMapper.prototype = angular.extend({}, proto, RankMapper.prototype);
 
-        return new RankMapper();
-    })
+            return new RankMapper();
+        })
     .factory('Rank', function() {
         return Rank;
     });

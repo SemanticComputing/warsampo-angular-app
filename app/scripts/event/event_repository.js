@@ -18,18 +18,16 @@
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
-        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
-        ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
         ' PREFIX sch: <http://schema.org/>' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX actors: <http://ldf.fi/warsa/actors/> ' +
-        ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
+        ' PREFIX wev: <http://ldf.fi/warsa/events/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wac: <http://ldf.fi/warsa/actors/> ' +
+        ' PREFIX war: <http://ldf.fi/schema/warsa/articles/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -41,11 +39,11 @@
         '  ?title ?place_id ?place_label ?polygon ?lat ?lon ?medal ?source ';
 
         var eventTypeFilter =
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Disappearing>) ' +
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Wounding>) ' +
-        ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E67_Birth>) ';
+        ' FILTER(?type_id != wsc:TroopMovement) ' +
+        ' FILTER(?type_id != wsc:Battle) ' +
+        ' FILTER(?type_id != wsc:Disappearing) ' +
+        ' FILTER(?type_id != wsc:Wounding) ' +
+        ' FILTER(?type_id != wsc:Birth) ';
 
         var placePartial =
         ' ?id crm:P7_took_place_at ?place_id .  ' +
@@ -54,7 +52,7 @@
         var singleEventQry = prefixes + select +
         ' { ' +
         '   VALUES ?id { {0} } ' +
-        '   ?type_id rdfs:subClassOf* crm:E5_Event . ' +
+        '   ?type_id rdfs:subClassOf* wsc:E5_Event . ' +
         '   ?id a ?type_id . ' +
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id skos:prefLabel ?description . ' +
@@ -63,7 +61,7 @@
         '     ?id ?part_pred ?participant . ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '    ?id dc:source ?source_id . ' +
+        '    ?id dct:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
         '   } ' +
@@ -100,7 +98,7 @@
         '      crm:P82b_end_of_the_end ?end_time . ' +
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ' +
-        '    ?id dc:source ?source_id . ' +
+        '    ?id dct:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
         '   } ' +
@@ -108,7 +106,7 @@
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         '     ?id ?part_pred ?participant . ' +
         '   } ' +
-        '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
+        '   OPTIONAL { ?id wev:hadCommander ?commander . } ' +
         '   OPTIONAL { ' + placePartial + ' } ' +
         ' } ';
 
@@ -130,10 +128,10 @@
         ' { ' +
         '   VALUES ?participant { {0} } ' +
         '   { ' +
-        '       ?id a crm:E66_Formation ; ' +
+        '       ?id a/rdfs:subClassOf* crm:E66_Formation ; ' +
         '           crm:P95_has_formed ?participant . ' +
         '   } UNION { ' +
-        '       ?id a etypes:TroopMovement ; ' +
+        '       ?id a wsc:TroopMovement ; ' +
         '           crm:P95_has_formed ?participant . ' +
         '   } ' +
         ' } UNION { ' +
@@ -142,16 +140,16 @@
         '     WHERE { ' +
         '       VALUES ?unit { {0} } . ' +
         '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant . ' +
-        '       ?participant a atypes:MilitaryUnit . ' +
+        '       ?participant a wsc:MilitaryUnit . ' +
         '       ?participant skos:altLabel ?abbrev . ' +
         '     } ' +
         '   } UNION { ' +
         '       VALUES ?participant { {0} } . ' +
         '       ?participant skos:altLabel ?abbrev . ' +
         '   } ' +
-        '   ?id a etypes:Battle . ' +
+        '   ?id a wsc:Battle . ' +
         '   { ' +
-        '       ?id events:hadUnit ?abbrev . ' +
+        '       ?id wev:hadUnit ?abbrev . ' +
         '   } UNION { ' +
         '       ?id crm:P11_had_participant ?participant . ' +
         '   } ' +
@@ -167,24 +165,24 @@
         '  VALUES ?person { {0} } . ' +
         '  { ?id crm:P11_had_participant ?person ; ' +
         '    	skos:prefLabel ?description . ' +
-        '    	OPTIONAL { ?id events:hadUnit ?unit . } ' +
+        '    	OPTIONAL { ?id wev:hadUnit ?unit . } ' +
         '  }' +
         '  UNION  ' +
-        '  { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
+        '  { ?id a wsc:PersonJoining ; crm:P143_joined ?person . ' +
         '    ?id crm:P107_1_kind_of_member ?participant_role .  ' +
         '    ?id crm:P144_joined_with ?unit . ' +
         '    ?unit skos:prefLabel ?description . '+
         '  }  '+
         '  UNION '+
         '  { '+
-        '   ?id a articles:Article ; '+
-        '    dcterms:hasFormat ?link ; '+
-        '    dc:title ?description ; '+
-        '   { ?id dcterms:subject ?person . }  '+
+        '   ?id a war:Article ; '+
+        '    dct:hasFormat ?link ; '+
+        '    dct:title ?description ; '+
+        '   { ?id dct:subject ?person . }  '+
         '   UNION  '+
-        '   { ?id articles:nerperson ?person . }  '+
+        '   { ?id war:nerperson ?person . }  '+
         '   UNION  '+
-        '   { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
+        '   { ?author skos:relatedMatch ?person . ?id war:author ?author . } '+
         '  } ' +
         '  ?id a ?type_id . ' +
         '  OPTIONAL { ?id crm:P141_assigned ?medal } ' +
@@ -211,13 +209,13 @@
         '  UNION  ' +
         '  { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . } ' +
         '  UNION  ' +
-        '  { ?id a etypes:Disappearing ; crm:P11_had_participant ?person . } ' +
+        '  { ?id a wsc:Disappearing ; crm:P11_had_participant ?person . } ' +
         '  UNION  ' +
-        '  { ?id a etypes:Wounding ; crm:P11_had_participant ?person . } ' +
+        '  { ?id a wsc:Wounding ; crm:P11_had_participant ?person . } ' +
         '  UNION  ' +
-        '  { ?id a etypes:Promotion ; ' +
+        '  { ?id a wsc:Promotion ; ' +
         '   crm:P11_had_participant ?person ; ' +
-        '   actors:hasRank ?rank_id . ' +
+        '   wac:hasRank ?rank_id . ' +
         '  VALUES ?preflang { "{1}" } ' +
         '  OPTIONAL { ?rank_id skos:prefLabel ?rank_any .  filter ( lang(?rank_any) != ?preflang ) }  '+
         '  OPTIONAL { ?rank_id skos:prefLabel ?rank_pref . filter ( lang(?rank_pref) = ?preflang ) }  '+

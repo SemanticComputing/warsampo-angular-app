@@ -14,19 +14,12 @@
         ' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>	' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
-        ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> 	' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
-        ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
-        ' PREFIX sf: <http://ldf.fi/functions#>'  +
-        ' PREFIX georss: <http://www.georss.org/georss/> ';
+        ' PREFIX sf: <http://ldf.fi/functions#>' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
 
         var casualtyLocationsByTimeQry = prefixes +
         ' SELECT ?id ?lat ?lon ' +
@@ -54,13 +47,12 @@
         ' GROUP BY ?id ?description ';
 
         var casualtyCountsByTimeGroupByUnitAndTypeQry = prefixes +
-        'PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/>	' +
         'SELECT ?id ?description (COUNT(?id) AS ?count)  WHERE {  	' +
         '  { SELECT ?subunit 	' +
         '    	WHERE { 	' +
         '      		VALUES ?unit { <{2}> } .	' +
         '          ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
-        '          ?subunit a atypes:MilitaryUnit . 	' +
+        '          ?subunit a wsc:MilitaryUnit . 	' +
         '    	} 	' +
         '  	} UNION {	' +
         '    	VALUES ?subunit { <{2}> } .	' +
@@ -80,7 +72,7 @@
         '    	WHERE { 	' +
         '      		VALUES ?unit { <{2}> } .	' +
         '          ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
-        '          ?subunit a atypes:MilitaryUnit . 	' +
+        '          ?subunit a wsc:MilitaryUnit . 	' +
         '    	} 	' +
         '  	} UNION {	' +
         '    	VALUES ?subunit { <{2}> } .	' +
