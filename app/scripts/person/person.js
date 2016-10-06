@@ -113,8 +113,8 @@
                 return self.processRelatedEvents(person, events);
             });
         };
-        
-		  self.fetchDiaries = function(person) {
+
+        self.fetchDiaries = function(person) {
             return personRepository.getDiaries(person.id).then(function(diaries) {
                 if (diaries && diaries.length) {
                     person.diaries = diaries;
@@ -122,7 +122,7 @@
                 }
             });
         };
-        
+
         self.fetchDeathRecord = function(person) {
             return casualtyRepository.getPersonDeathRecord(person.id).then(function(deathRecord) {
                 person.deathRecord = deathRecord;

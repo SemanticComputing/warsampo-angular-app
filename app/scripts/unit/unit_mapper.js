@@ -5,12 +5,10 @@
     * Service for transforming event SPARQL results into objects.
     */
 
-    function UnitMapper() {
-        this.objectClass = Unit;
-    }
+    function UnitMapper() { }
 
     UnitMapper.prototype.makeObject = function(obj) {
-        var o = new Unit();
+        var o = new this.objectClass();
 
         _.forIn(obj, function(value, key) {
             o[key] = value.value;

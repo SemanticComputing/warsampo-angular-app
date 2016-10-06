@@ -38,7 +38,7 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?label ?sname ?fname ?desc ?rank ?rank_id ?birth_time ' +
+        ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ?birth_time ' +
         '  ?death_time ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ' +
         '  ?death_place ?death_place_uri ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit ' +
@@ -55,12 +55,7 @@
         '  ?id foaf:familyName ?sname .' +
         '  ?id skos:prefLabel ?label .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
-		//' OPTIONAL { ?id dc:description ?desc } ' +
-        '  VALUES ?preflang { "{1}" } '+
-        '  OPTIONAL { ?id dc:description ?desc_any  . filter ( lang(?desc_any)!= ?preflang ) }  ' +
-        '  OPTIONAL { ?id dc:description ?desc_pref . filter ( lang(?desc_pref)= ?preflang ) }  ' +
-        '  BIND ( COALESCE(?desc_pref, ?desc_any, "") AS ?desc ) ' +
-
+        '  OPTIONAL { ?id dc:description ?description } ' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
@@ -119,7 +114,7 @@
         '  } LIMIT 300 	' +
         '} ORDER BY ?name 	';
 
-		  var wardiaryQry = prefixes +
+        var wardiaryQry = prefixes +
         'SELECT ?label ?id ?time	' +
         'WHERE {	' +
         '  GRAPH <http://ldf.fi/warsa/diaries> {	' +
@@ -130,7 +125,7 @@
         '    OPTIONAL { ?uri crm:P4_has_time-span ?time . }	' +
         '    }	' +
         '} ORDER BY ?time	';
-        
+
         var byUnitQryResultSet =
         ' SELECT ?id (COUNT(?s) AS ?no) { ' +
         '  ?evt a etypes:PersonJoining ; ' +
@@ -245,9 +240,8 @@
         };
 
         this.getById = function(id) {
-        	   var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ;
             var resultSet = personQryResultSet.format('<{0}>'.format(id));
-            var qryObj = queryBuilder.buildQuery(personQry.format('{1}',langtag), resultSet);
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
 
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
@@ -288,13 +282,13 @@
             return $q.when();
         };
 
-		  this.getDiaries = function(person) {
-		  	   var qry = wardiaryQry.format('<{0}>'.format(person));
+        this.getDiaries = function(person) {
+            var qry = wardiaryQry.format('<{0}>'.format(person));
             return endpoint.getObjects(qry).then(function(data) {
-            	return data;
+                return data;
             });
         };
-        
+
         this.getItems = function (regx, controller) {
             var qry = selectorQuery.format('{0}'.format(regx));
             controller.items = [ {id:'#', name:'Etsitään ...'} ];

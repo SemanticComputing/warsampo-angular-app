@@ -1,5 +1,5 @@
-<p ng-if="ctrl.person.desc">
-  {{ ctrl.person.desc }}
+<p ng-if="ctrl.person.getDescription()">
+  {{ ctrl.person.getDescription() }}
 </p>
 <p ng-if="ctrl.person.birth || ctrl.person.death">
   {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
@@ -15,7 +15,7 @@
   {{ ctrl.person.way_to_die | capitalizeFirst }}.
   <span ng-if="ctrl.person.bury_place">{{ 'PERSONS_DEMO.BURIED_IN' | translate }} {{ ctrl.person.bury_place }}</span>
 </p>
-  <p ng-if="ctrl.person.cas_unit">{{ 'PERSONS_DEMO.SERVED_IN_UNIT' | translate }} {{ ctrl.person.cas_unit }}</p>
+<p ng-if="ctrl.person.cas_unit">{{ 'PERSONS_DEMO.SERVED_IN_UNIT' | translate }} {{ ctrl.person.cas_unit }}</p>
 <p ng-if="ctrl.person.rank">{{ ctrl.person.rank }}</p>
 <p ng-repeat="promotion in ctrl.person.promotions">{{ promotion }}</p>
 <p ng-if="ctrl.person.source || ctrl.person.sid">
