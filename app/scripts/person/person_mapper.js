@@ -4,12 +4,11 @@
     function Person() { }
 
     function PersonMapper(dateUtilService) {
-        this.objectClass = Person;
         this.dateUtilService = dateUtilService;
     }
 
     PersonMapper.prototype.makeObject = function(obj) {
-        var o = new Person();
+        var o = new this.objectClass();
 
         _.forIn(obj, function(value, key) {
             o[key] = value.value;
@@ -41,7 +40,7 @@
         }
 
         if (o.wikilink) {
-            o.wikilink = [{ id:o.wikilink, label:o.label}];
+            o.wikilink = [{ id: o.wikilink, label: o.getLabel() }];
         }
 
         return o;
@@ -49,13 +48,15 @@
 
 
     angular.module('eventsApp')
-    .factory('personMapperService', function(objectMapperService, dateUtilService) {
-        var proto = Object.getPrototypeOf(objectMapperService);
+    .factory('personMapperService', function(translateableObjectMapperService, Person, dateUtilService) {
+        var proto = Object.getPrototypeOf(translateableObjectMapperService);
         PersonMapper.prototype = angular.extend({}, proto, PersonMapper.prototype);
+        Person.objectClass = Person;
 
         return new PersonMapper(dateUtilService);
     })
-    .factory('Person', function() {
+    .factory('Person', function(TranslateableObject) {
+        Person.prototype = TranslateableObject.prototype;
         return Person;
     });
 })();

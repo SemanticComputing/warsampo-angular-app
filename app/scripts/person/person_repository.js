@@ -28,7 +28,7 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?label ?sname ?fname ?desc ?rank ?rank_id ?birth_time ' +
+        ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ?birth_time ' +
         '  ?death_time ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ' +
         '  ?death_place ?death_place_uri ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit ' +
@@ -45,13 +45,9 @@
         '  ?id foaf:familyName ?sname .' +
         '  ?id skos:prefLabel ?label .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
-        '  VALUES ?preflang { "{1}" } '+
-        '  OPTIONAL { ?id dct:description ?desc_any  . filter ( lang(?desc_any)!= ?preflang ) }  ' +
-        '  OPTIONAL { ?id dct:description ?desc_pref . filter ( lang(?desc_pref)= ?preflang ) }  ' +
-        '  BIND ( COALESCE(?desc_pref, ?desc_any, "") AS ?desc ) ' +
-
-        '  OPTIONAL { ?id dct:source ?sid . ' +
-        '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+        '  OPTIONAL { ?id dc:description ?description } ' +
+        '  OPTIONAL { ?id dc:source ?sid . ' +
+        '  OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
         '  OPTIONAL { ' +
         '   ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +
@@ -235,9 +231,8 @@
         };
 
         this.getById = function(id) {
-            var langtag = window.location.href.indexOf('/en/')>-1 ? "en" : "fi" ;
             var resultSet = personQryResultSet.format('<{0}>'.format(id));
-            var qryObj = queryBuilder.buildQuery(personQry.format('{1}',langtag), resultSet);
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
 
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {

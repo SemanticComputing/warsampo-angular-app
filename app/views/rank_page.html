@@ -7,12 +7,9 @@
     <p ng-if="!ctrl.rank && !ctrl.isLoadingRank" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.rank">
       <h2>
-        {{ ctrl.rank.label }}
+        {{ ctrl.rank.getLabel() }}
       </h2>
-      <!-- <p ng-repeat="desc in ctrl.rank.getDescription()">
-      {{ desc }}
-      </p> --> 
-      <p ng-if="ctrl.rank.desc">{{ ctrl.rank.desc }} (Wikipedia)</p>
+      <p ng-if="ctrl.rank.getDescription()">{{ ctrl.rank.getDescription() }} (Wikipedia)</p>
     </div>
   </div>
   <!-- Links -->
