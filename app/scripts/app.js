@@ -73,15 +73,15 @@
     )
     .constant('PLACE_PARTIAL_QUERY',
     ' { ' +
-    '   ?place_id skos:prefLabel ?place_label . ' +
-    '   OPTIONAL { ?place_id sch:polygon ?polygon . } ' +
+    '   ?places__id skos:prefLabel ?places__label . ' +
+    '   OPTIONAL { ?places__id sch:polygon ?polygon . } ' +
     '   OPTIONAL { ' +
-    '     ?place_id geo:lat ?lat ; ' +
-    '        geo:long ?lon . ' +
+    '     ?places__id geo:lat ?places__point__lat ; ' +
+    '        geo:long ?places__point__lon . ' +
     '    } ' +
     '    OPTIONAL { ' +
     '      GRAPH <http://ldf.fi/warsa/places/karelian_places> { ' +
-    '        ?place_id geosparql:sfWithin ?municipality_id . ' +
+    '        ?places__id geosparql:sfWithin ?municipality_id . ' +
     '      } ' +
     '      GRAPH <http://ldf.fi/warsa/places/municipalities> { ' +
     '        ?municipality_id a suo:kunta . ' +
@@ -90,16 +90,16 @@
     ' } UNION { ' +
     '   { ' +
     '     FILTER NOT EXISTS { ' +
-    '       ?place_id a ?place_type . ' +
+    '       ?places__id a ?places__type . ' +
     '     } ' +
     '   } ' +
     '   SERVICE ' + PNR_SERVICE_URI + ' { ' +
-    '     ?place_id skos:prefLabel ?place_label . ' +
-    '     FILTER(langMatches(lang(?place_label), "FI")) ' +
-    '     ?place_id geo:lat ?lat ; ' +
-    '       geo:long ?lon . ' +
+    '     ?places__id skos:prefLabel ?places__label . ' +
+    '     FILTER(langMatches(lang(?places__label), "FI")) ' +
+    '     ?places__id geo:lat ?places__point__lat ; ' +
+    '       geo:long ?places__point__lon . ' +
     '     OPTIONAL { ' +
-    '       ?place_id crm:P89_falls_within  ?municipality_id . ' +
+    '       ?places__id crm:P89_falls_within  ?municipality_id . ' +
     '       { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
     '       UNION ' +
     '       { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
