@@ -38,7 +38,7 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ?birth_time ' +
+        ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
         '  ?death_time ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ' +
         '  ?death_place ?death_place_uri ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit ' +
@@ -56,6 +56,18 @@
         '  ?id skos:prefLabel ?label .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
         '  OPTIONAL { ?id dc:description ?description } ' +
+        '  OPTIONAL { ' +
+        '   ?id ^crm:P98_brought_into_life/crm:P4_has_time-span [ ' +
+        '    crm:P82a_begin_of_the_begin ?birth__start ; ' +
+        '    crm:P82b_end_of_the_end ?birth__end ' +
+        '   ] . ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   ?id ^crm:P100_was_death_of/crm:P4_has_time-span [ ' +
+        '    crm:P82a_begin_of_the_begin ?death__start ; ' +
+        '    crm:P82b_end_of_the_end ?death__end ' +
+        '   ] . ' +
+        '  } ' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
