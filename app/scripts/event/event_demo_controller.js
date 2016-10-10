@@ -112,6 +112,7 @@
             return promise.then(function() {
                 self.isLoadingTimemap = false;
             }).catch(function(data) {
+                data = data || 'Unknown error';
                 self.isLoadingTimemap = false;
                 self.err = data.message || data;
             });

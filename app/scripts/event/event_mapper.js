@@ -27,19 +27,8 @@
             if (event.start_time) {
                 event.timeSpanString = dateUtilService.formatExtremeDateRange(event.start_time, event.end_time);
             }
-            if (event.polygon) {
-                // The event's location is represented as a polygon.
-                // Transform the polygon string into a list consisting
-                // of a single lat/lon pair object list.
-                var l = event.polygon.split(' ');
-                l = l.map(function(p) {
-                    var latlon = p.split(',');
-                    return { lat: latlon[1], lon: latlon[0] };
-                });
-                _.set(event, 'place.polygon', l);
-            }
             if (!_.isArray(event.places)) {
-                event.places = [event.places];
+                event.places = event.places ? [event.places] : [];
             }
             return event;
         }

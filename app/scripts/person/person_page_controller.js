@@ -5,7 +5,7 @@
     .controller('PersonPageCtrl', PersonPageController);
 
     /* @ngInject */
-    function PersonPageController($routeParams, $q, $rootScope, eventService, personService) {
+    function PersonPageController($routeParams, $q, $rootScope, personService) {
         var self = this;
 
         if ($routeParams.uri) {

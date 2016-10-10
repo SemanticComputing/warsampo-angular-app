@@ -313,7 +313,7 @@
                 }
             } else if (polygons.length) {
                 // What if there are multiple polygons?
-                entry.polygon = e.polygons[0];
+                entry.polygon = polygons[0];
             } else {
                 entry.options.noPlacemarkLoad = true;
             }

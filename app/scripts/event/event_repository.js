@@ -38,7 +38,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?rank_id ?rank ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant ?participant_role ' +
-        '  ?title ?place__id ?place__label ?polygon ?lat ?lon ?medal ?source ';
+        '  ?title ?places__id ?places__label ?places__point__lat ?places__point__lon ?medal ?source ';
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -48,7 +48,7 @@
         ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E67_Birth>) ';
 
         var placePartial =
-        ' ?id crm:P7_took_place_at ?place__id .  ' +
+        ' ?id crm:P7_took_place_at ?places__id .  ' +
         PLACE_PARTIAL_QUERY;
 
         var singleEventQry = prefixes + select +
@@ -113,9 +113,9 @@
         ' } ';
 
         var eventsByPlaceQryResultSet =
-        '   VALUES ?place__id { {0} } ' +
+        '   VALUES ?places__id { {0} } ' +
         '   {1} ' + // Placeholder for id filter
-        '   ?id crm:P7_took_place_at ?place__id .  ' +
+        '   ?id crm:P7_took_place_at ?places__id .  ' +
         '   ?id crm:P4_has_time-span ?time_id . ' +
         '   ?id a ?type_id . ' +
             eventTypeFilter;
@@ -204,7 +204,7 @@
         // TODO: harmonize
         var personLifeEventsQry = prefixes +
         ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description (?description AS ?label) ' +
-        '  ?start_time ?end_time ?rank ?rank_id ?place__id ?place__label ' +
+        '  ?start_time ?end_time ?rank ?rank_id ?places__id ?places__label ' +
         ' WHERE { ' +
         '  VALUES ?person { {0} } ' +
         '  { ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +

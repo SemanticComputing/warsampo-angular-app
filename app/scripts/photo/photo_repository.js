@@ -16,6 +16,19 @@
 
         var self = this;
 
+        /* Public API */
+
+        self.getById = getById;
+        self.getByTimeSpan = getByTimeSpan;
+        self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
+        self.getByPersonId = getByPersonId;
+        self.getByUnitId = getByUnitId;
+        self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
+        self.getMinimalDataByTimeSpan = getMinimalDataByTimeSpan;
+        self.getByFacetSelections = getByFacetSelections;
+
+        /* Implementation */
+
         var endpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, photoMapperService);
 
         var minimalDataService = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, objectMapperService);
@@ -29,7 +42,6 @@
         ' PREFIX sch: <http://schema.org/> ' +
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX warsaplaces: <http://ldf.fi/warsa/places/> ' +
         ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
         ' PREFIX dctype: <http://purl.org/dc/dcmitype/> ' +
         ' PREFIX dc: <http://purl.org/dc/terms/> ' +
@@ -40,55 +52,55 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?url ?thumbnail ?thumbnail_url ?description ?created ' +
-        '  ?participant_id ?unit_id ?municipality_id ?place_id ?place__id ?place__label ?place__point__lat ?place__point__lon ?place_string ' +
+        ' SELECT DISTINCT ?id ?url ?thumbnail_url ?description ?created ' +
+        '  ?participant_id ?unit_id ?municipality_id ?places__id ?places__label ?places__point__lat ?places__point__lon ?places_string ' +
         '  ?source ?creator_id ?photographer_string ';
 
         var photosByPlaceAndTimeResultSet =
-        ' VALUES ?ref_place__id { {0} } ' +
+        ' VALUES ?ref_place_id { {0} } ' +
         ' ?id dc:created ?created . ' +
         ' FILTER(?created >= "{1}"^^xsd:date && ?created <= "{2}"^^xsd:date) ' +
         ' ?id a photos:Photograph . ' +
-        ' { ?id dc:spatial ?place__id  . ' +
+        ' { ?id dc:spatial ?places__id  . ' +
         '   { ' +
-        '     ?place__id geosparql:sfWithin ?municipality_id . ' +
+        '     ?places__id geosparql:sfWithin ?municipality_id . ' +
         '     ?municipality_id a suo:kunta . ' +
-        '     ?ref_place__id geosparql:sfWithin ?municipality_id . ' +
+        '     ?ref_place_id geosparql:sfWithin ?municipality_id . ' +
         '   } UNION ' +
         '   { ' +
-        '     ?place__id a suo:kunta . ' +
-        '     ?ref_place__id geosparql:sfWithin ?place__id ' +
+        '     ?places__id a suo:kunta . ' +
+        '     ?ref_place_id geosparql:sfWithin ?places__id ' +
         '   } UNION ' +
         '   { ' +
-        '     ?ref_place__id a suo:kunta . ' +
-        '     ?place__id geosparql:sfWithin ?ref_place__id ' +
+        '     ?ref_place_id a suo:kunta . ' +
+        '     ?places__id geosparql:sfWithin ?ref_place_id ' +
         '   } ' +
-        ' } UNION { ?id dc:spatial ?ref_place__id } ' +
+        ' } UNION { ?id dc:spatial ?ref_place_id } ' +
         ' UNION { ' +
-        '   { ?id dc:spatial ?place__id . ' +
+        '   { ?id dc:spatial ?places__id . ' +
         '     FILTER NOT EXISTS { ' +
-        '       ?place__id a [] . ' +
-        '       ?ref_place__id a [] . ' +
+        '       ?places__id a [] . ' +
+        '       ?ref_place_id a [] . ' +
         '     } ' +
         '   } ' +
         '   SERVICE ' + PNR_SERVICE_URI + ' { ' +
         '     { ' +
-        '       ?place__id crm:P89_falls_within  ?municipality_id . ' +
+        '       ?places__id crm:P89_falls_within  ?municipality_id . ' +
         '       { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
-        '       ?ref_place__id crm:P89_falls_within  ?municipality_id . ' +
+        '       ?ref_place_id crm:P89_falls_within  ?municipality_id . ' +
         '     } UNION { ' +
-        '       { ?place__id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?place__id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
-        '       ?ref_place__id crm:P89_falls_within ?place__id ' +
+        '       { ?places__id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?places__id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+        '       ?ref_place_id crm:P89_falls_within ?places__id ' +
         '     } UNION { ' +
-        '       { ?ref_place__id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?ref_place__id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
-        '       ?place__id crm:P89_falls_within ?ref_place__id ' +
+        '       { ?ref_place_id a <http://ldf.fi/pnr-schema#place_type_540> } UNION { ?ref_place_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+        '       ?places__id crm:P89_falls_within ?ref_place_id ' +
         '     } ' +
         '   } ' +
         ' } ';
 
         var placePartial =
         ' OPTIONAL { ' +
-        '   ?id dc:spatial ?place_id . ' +
+        '   ?id dc:spatial ?places__id . ' +
             PLACE_PARTIAL_QUERY +
         ' } ';
 
@@ -106,7 +118,7 @@
         '   ?source_id skos:prefLabel ?source . ' +
         '   FILTER(langMatches(lang(?source), "fi")) ' +
         '  } ' +
-        '  OPTIONAL { ?id dc:creator_id ?creator_id . } ' +
+        '  OPTIONAL { ?id dc:creator ?creator_id . } ' +
         '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
         '  OPTIONAL { ?id photos:photographer_string ?photographer_string . } ' +
         '  <PLACE> ' +
@@ -114,7 +126,7 @@
 
         var photoQryExtended = photoQry.replace('<PLACE>', placePartial);
         photoQry = photoQry.replace('<PLACE>',
-                'OPTIONAL { ?id dc:spatial ?place__id . }');
+                'OPTIONAL { ?id dc:spatial ?places__id . }');
 
         var singlePhotoQryResultSet =
         ' GRAPH warsa:photographs { ' +
@@ -137,7 +149,7 @@
         ' VALUES ?participant_id { {0} } ' +
         ' { ?id dc:subject ?participant_id . } ' +
         ' UNION ' +
-        ' { ?id dc:creator_id ?participant_id . } ' +
+        ' { ?id dc:creator ?participant_id . } ' +
         ' ?id a photos:Photograph . ';
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +
@@ -180,17 +192,6 @@
         '   {0} ' +
         '   ?s a photos:Photograph .' +
         '   BIND(?s AS ?id) ';
-
-        /* Public API */
-
-        self.getById = getById;
-        self.getByTimeSpan = getByTimeSpan;
-        self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
-        self.getByPersonId = getByPersonId;
-        self.getByUnitId = getByUnitId;
-        self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
-        self.getMinimalDataByTimeSpan = getMinimalDataByTimeSpan;
-        self.getByFacetSelections = getByFacetSelections;
 
         /* API function implementations */
 
