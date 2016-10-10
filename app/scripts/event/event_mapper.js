@@ -24,6 +24,7 @@
         function EventMapper() { }
 
         function reviseObject(event) {
+            event = translateableObjectMapperService.reviseObject(event);
             if (event.start_time) {
                 event.timeSpanString = dateUtilService.formatExtremeDateRange(event.start_time, event.end_time);
             }

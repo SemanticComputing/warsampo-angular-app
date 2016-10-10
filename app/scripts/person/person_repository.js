@@ -53,8 +53,9 @@
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id foaf:familyName ?sname .' +
-        '  ?id skos:prefLabel ?label .' +
+        '  ?id skos:prefLabel ?prefLabel .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
+        '  BIND(COALESCE(CONCAT(?fname, " ", ?sname), ?prefLabel) AS ?label) ' +
         '  OPTIONAL { ?id dc:description ?description } ' +
         '  OPTIONAL { ' +
         '   ?id ^crm:P98_brought_into_life/crm:P4_has_time-span [ ' +
