@@ -23,8 +23,8 @@
 
         function EventMapper() { }
 
-        function reviseObject(event) {
-            event = translateableObjectMapperService.reviseObject(event);
+        function reviseObject(event, orig) {
+            event = translateableObjectMapperService.reviseObject(event, orig);
             if (event.start_time) {
                 event.timeSpanString = dateUtilService.formatExtremeDateRange(event.start_time, event.end_time);
             }

@@ -16,9 +16,6 @@
         self.processLifeEvents = function(person, events) {
             person.promotions=[];
             person.ranks=[];
-            if (person.rank_id) {
-                person.ranks.push({id:person.rank_id, label:person.rank});
-            }
 
             var places = [];
             for (var i=0; i<events.length; i++) {
@@ -52,8 +49,8 @@
                     person.disapp = edate;
                     if (eplace) person.disapp_place = eplace;
                 } else if (etype.indexOf('Promotion')>-1) {
-                    if (edate) person.promotions.push(e.rank + ' ' + edate);
-                    person.ranks.unshift({id:e.rank_id, label:e.rank});
+                    if (edate) person.promotions.push(e.rank.label + ' ' + edate);
+                    person.ranks.unshift(e.rank);
                 }
             }
             person.places = _.uniq(places, 'id');

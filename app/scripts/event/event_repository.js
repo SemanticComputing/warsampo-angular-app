@@ -36,8 +36,8 @@
         var orderBy = ' ?start_time ?end_time ';
 
         var select =
-        ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?rank_id ?rank ?time_id ' +
-        '  ?start_time ?end_time ?municipality_id ?participant ?participant_role ' +
+        ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?time_id ' +
+        '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
         '  ?title ?places__id ?places__label ?places__point__lat ?places__point__lon ?medal ?source ';
 
         var eventTypeFilter =
@@ -49,7 +49,9 @@
 
         var placePartial =
         ' ?id crm:P7_took_place_at ?places__id .  ' +
-        PLACE_PARTIAL_QUERY;
+        PLACE_PARTIAL_QUERY
+            .replace(/<PLACE_VAR>/g, 'places')
+            .replace(/<MUNICIPALITY_VAR>/g, 'municipality');
 
         var singleEventQry = prefixes + select +
         ' { ' +
@@ -60,7 +62,7 @@
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
-        '     ?id ?part_pred ?participant . ' +
+        '     ?id ?part_pred ?participant_id . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '    ?id dc:source ?source_id . ' +
@@ -106,7 +108,7 @@
         '   } ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
-        '     ?id ?part_pred ?participant . ' +
+        '     ?id ?part_pred ?participant_id . ' +
         '   } ' +
         '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
         '   OPTIONAL { ' + placePartial + ' } ' +
@@ -121,39 +123,39 @@
             eventTypeFilter;
 
         var eventsByActorQryResultSet =
-        '   VALUES ?participant { {0} }  ' +
+        '   VALUES ?participant_id { {0} }  ' +
         '   ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
-        '   ?id ?part_pred ?participant . ' +
+        '   ?id ?part_pred ?participant_id . ' +
         '   ?id crm:P4_has_time-span ?time_id ;  ';
 
         var eventsAndSubUnitEventsByUnitQryResultSet =
         ' { ' +
-        '   VALUES ?participant { {0} } ' +
+        '   VALUES ?participant_id { {0} } ' +
         '   { ' +
         '       ?id a crm:E66_Formation ; ' +
-        '           crm:P95_has_formed ?participant . ' +
+        '           crm:P95_has_formed ?participant_id . ' +
         '   } UNION { ' +
         '       ?id a etypes:TroopMovement ; ' +
-        '           crm:P95_has_formed ?participant . ' +
+        '           crm:P95_has_formed ?participant_id . ' +
         '   } ' +
         ' } UNION { ' +
         '   { ' +
-        '     SELECT ?participant ?abbrev ' +
+        '     SELECT ?participant_id ?abbrev ' +
         '     WHERE { ' +
         '       VALUES ?unit { {0} } . ' +
-        '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant . ' +
-        '       ?participant a atypes:MilitaryUnit . ' +
-        '       ?participant skos:altLabel ?abbrev . ' +
+        '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant_id . ' +
+        '       ?participant_id a atypes:MilitaryUnit . ' +
+        '       ?participant_id skos:altLabel ?abbrev . ' +
         '     } ' +
         '   } UNION { ' +
-        '       VALUES ?participant { {0} } . ' +
-        '       ?participant skos:altLabel ?abbrev . ' +
+        '       VALUES ?participant_id { {0} } . ' +
+        '       ?participant_id skos:altLabel ?abbrev . ' +
         '   } ' +
         '   ?id a etypes:Battle . ' +
         '   { ' +
         '       ?id events:hadUnit ?abbrev . ' +
         '   } UNION { ' +
-        '       ?id crm:P11_had_participant ?participant . ' +
+        '       ?id crm:P11_had_participant ?participant_id . ' +
         '   } ' +
         ' } ' +
         ' ?id crm:P4_has_time-span ?time_id . ' +
@@ -204,7 +206,7 @@
         // TODO: harmonize
         var personLifeEventsQry = prefixes +
         ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description (?description AS ?label) ' +
-        '  ?start_time ?end_time ?rank ?rank_id ?places__id ?places__label ' +
+        '  ?start_time ?end_time ?rank__label ?rank__id ?places__id ?places__label ' +
         ' WHERE { ' +
         '  VALUES ?person { {0} } ' +
         '  { ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
@@ -217,11 +219,8 @@
         '  UNION  ' +
         '  { ?id a etypes:Promotion ; ' +
         '   crm:P11_had_participant ?person ; ' +
-        '   actors:hasRank ?rank_id . ' +
-        '  VALUES ?preflang { "{1}" } ' +
-        '  OPTIONAL { ?rank_id skos:prefLabel ?rank_any .  filter ( lang(?rank_any) != ?preflang ) }  '+
-        '  OPTIONAL { ?rank_id skos:prefLabel ?rank_pref . filter ( lang(?rank_pref) = ?preflang ) }  '+
-        '  BIND ( COALESCE(?rank_pref, ?rank_any, "") AS ?rank ) '+
+        '   actors:hasRank ?rank__id . ' +
+        '   ?rank__id skos:prefLabel ?rank__label . ' +
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P4_has_time-span ?time_id .  ' +

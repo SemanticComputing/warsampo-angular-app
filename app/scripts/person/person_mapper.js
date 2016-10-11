@@ -13,8 +13,8 @@
 
         function PersonMapper() { }
 
-        function reviseObject(obj) {
-            obj = translateableObjectMapperService.reviseObject(obj);
+        function reviseObject(obj, orig) {
+            obj = translateableObjectMapperService.reviseObject(obj, orig);
 
             if (obj.num_children) {
                 var n = parseInt(obj.num_children, 10);
@@ -31,6 +31,7 @@
     })
     .factory('Person', function(TranslateableObject) {
         Person.prototype = TranslateableObject.prototype;
+
         return Person;
 
         function Person() { }

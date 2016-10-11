@@ -73,36 +73,32 @@
     )
     .constant('PLACE_PARTIAL_QUERY',
     ' { ' +
-    '   ?places__id skos:prefLabel ?places__label . ' +
-    '   OPTIONAL { ?places__id sch:polygon ?polygon . } ' +
+    '   ?<PLACE_VAR>__id skos:prefLabel ?<PLACE_VAR>__label . ' +
+    '   OPTIONAL { ?<PLACE_VAR>__id sch:polygon ?polygon . } ' +
     '   OPTIONAL { ' +
-    '     ?places__id geo:lat ?places__point__lat ; ' +
-    '        geo:long ?places__point__lon . ' +
-    '    } ' +
-    '    OPTIONAL { ' +
-    '      GRAPH <http://ldf.fi/warsa/places/karelian_places> { ' +
-    '        ?places__id geosparql:sfWithin ?municipality_id . ' +
-    '      } ' +
-    '      GRAPH <http://ldf.fi/warsa/places/municipalities> { ' +
-    '        ?municipality_id a suo:kunta . ' +
-    '      } ' +
-    '    } ' +
+    '     ?<PLACE_VAR>__id geo:lat ?<PLACE_VAR>__point__lat ; ' +
+    '        geo:long ?<PLACE_VAR>__point__lon . ' +
+    '   } ' +
+    '   OPTIONAL { ' +
+    '     ?<PLACE_VAR>__id geosparql:sfWithin ?<MUNICIPALITY_VAR>_id . ' +
+    '     ?<MUNICIPALITY_VAR>_id a suo:kunta . ' +
+    '   } ' +
     ' } UNION { ' +
     '   { ' +
     '     FILTER NOT EXISTS { ' +
-    '       ?places__id a ?places__type . ' +
+    '       ?<PLACE_VAR>__id a ?<PLACE_VAR>__type . ' +
     '     } ' +
     '   } ' +
     '   SERVICE ' + PNR_SERVICE_URI + ' { ' +
-    '     ?places__id skos:prefLabel ?places__label . ' +
-    '     FILTER(langMatches(lang(?places__label), "FI")) ' +
-    '     ?places__id geo:lat ?places__point__lat ; ' +
-    '       geo:long ?places__point__lon . ' +
+    '     ?<PLACE_VAR>__id skos:prefLabel ?<PLACE_VAR>__label . ' +
+    '     FILTER(langMatches(lang(?<PLACE_VAR>__label), "FI")) ' +
+    '     ?<PLACE_VAR>__id geo:lat ?<PLACE_VAR>__point__lat ; ' +
+    '       geo:long ?<PLACE_VAR>__point__lon . ' +
     '     OPTIONAL { ' +
-    '       ?places__id crm:P89_falls_within  ?municipality_id . ' +
-    '       { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
+    '       ?<PLACE_VAR>__id crm:P89_falls_within ?<MUNICIPALITY_VAR>_id . ' +
+    '       { ?<MUNICIPALITY_VAR>_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
     '       UNION ' +
-    '       { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+    '       { ?<MUNICIPALITY_VAR>_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
     '     } ' +
     '   } ' +
     ' } ')

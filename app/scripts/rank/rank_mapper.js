@@ -23,7 +23,7 @@
                     rank.wikilink = [{
                         id: rank.wikilink,
                         label: rank.getLabel(),
-                        getLabel: rank.getLabel
+                        getLabel: function() { rank.getLabel(); }
                     }];
                 }
             });

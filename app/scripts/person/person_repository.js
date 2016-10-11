@@ -39,8 +39,7 @@
 
         var select =
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
-        '  ?death_time ?natiobib ?wikilink ?casualty ?birth_place ?birth_place_uri ' +
-        '  ?death_place ?death_place_uri ?bury_place ?bury_place_uri ?living_place ' +
+        '  ?natiobib ?wikilink ?casualty ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit ' +
         '  ?sid ?source ';
 
@@ -53,22 +52,10 @@
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id foaf:familyName ?sname .' +
-        '  ?id skos:prefLabel ?prefLabel .' +
+        '  ?id skos:prefLabel ?lbl .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
-        '  BIND(COALESCE(CONCAT(?fname, " ", ?sname), ?prefLabel) AS ?label) ' +
+        '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
         '  OPTIONAL { ?id dc:description ?description } ' +
-        '  OPTIONAL { ' +
-        '   ?id ^crm:P98_brought_into_life/crm:P4_has_time-span [ ' +
-        '    crm:P82a_begin_of_the_begin ?birth__start ; ' +
-        '    crm:P82b_end_of_the_end ?birth__end ' +
-        '   ] . ' +
-        '  } ' +
-        '  OPTIONAL { ' +
-        '   ?id ^crm:P100_was_death_of/crm:P4_has_time-span [ ' +
-        '    crm:P82a_begin_of_the_begin ?death__start ; ' +
-        '    crm:P82b_end_of_the_end ?death__end ' +
-        '   ] . ' +
-        '  } ' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
@@ -85,7 +72,7 @@
         '    ?bury_place_uri skos:prefLabel ?bury_place . ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '    ?casualty casualties:asuinkunta ?living_place_uri . '+
+        '    ?casualty casualties:asuinkunta ?living_place_uri . ' +
         '    ?living_place_uri skos:prefLabel ?living_place . }' +
         '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
         '   OPTIONAL { ' +
@@ -185,7 +172,7 @@
 
         var byRankQryResultSet =
         ' { ' +
-        '  SELECT ?id (COUNT(?s) AS ?no) WHERE { ' +
+        '  SELECT DISTINCT ?id (COUNT(?s) AS ?no) WHERE { ' +
         '   VALUES ?rank { {0} } . ' +
         '   ?evt :hasRank ?rank . ' +
         '   ?evt crm:P11_had_participant ?id . ' +
@@ -199,7 +186,8 @@
         ' {	' +
         '  <RESULT_SET> ' +
         '  ?id foaf:familyName ?sname .	' +
-        '  ?id foaf:firstName ?fname . ' +
+        '  OPTIONAL { ?id foaf:firstName ?fname . } ' +
+        '  ?id skos:prefLabel ?label . ' +
         ' } ORDER BY ?sname ?fname ';
 
         var byMedalQryResultSet =

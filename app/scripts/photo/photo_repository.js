@@ -101,7 +101,9 @@
         var placePartial =
         ' OPTIONAL { ' +
         '   ?id dc:spatial ?places__id . ' +
-            PLACE_PARTIAL_QUERY +
+            PLACE_PARTIAL_QUERY
+                .replace(/<PLACE_VAR>/g, 'places')
+                .replace(/<MUNICIPALITY_VAR>/g, 'municipality') +
         ' } ';
 
         var photoQry = select +

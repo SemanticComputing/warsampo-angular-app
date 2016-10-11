@@ -2,24 +2,14 @@
     'use strict';
 
     angular.module('eventsApp')
-    .factory('translateableObjectMapperService', function(objectMapperService, defaultLocale, TranslateableObject) {
+    .factory('translateableObjectMapperService', function(_, objectMapperService, defaultLocale, TranslateableObject) {
         function TranslateableObjectMapper() { }
 
         function reviseObject(obj, orig) {
-            setLangAttr(obj, 'label', orig);
-            setLangAttr(obj, 'description', orig);
-            setLangAttr(obj, 'type', orig);
+            obj.setLangAttr('label', orig);
+            obj.setLangAttr('description', orig);
+            obj.setLangAttr('type', orig);
             return obj;
-        }
-
-        function setLangAttr(obj, attr, orig) {
-            var val = orig[attr];
-            if (val) {
-                var lang = val['xml:lang'];
-                if (lang) {
-                    obj['trans_' + attr + '_' + lang] = val.value;
-                }
-            }
         }
 
         var proto = Object.getPrototypeOf(objectMapperService);
@@ -33,6 +23,7 @@
         function TranslateableObject() { }
 
         TranslateableObject.prototype.getLangAttr = getLangAttr;
+        TranslateableObject.prototype.setLangAttr = setLangAttr;
 
         TranslateableObject.prototype.getLabel = function() {
             return this.getLangAttr('label');
@@ -44,14 +35,25 @@
             return this.getLangAttr('type');
         };
 
+        return TranslateableObject;
+
         function getLangAttr(attr) {
-            var val = this['trans_' + attr + '_' + $translate.use()] || this[attr];
+            var val = _.get(this, attr + '_trans_' + $translate.use()) || this[attr];
             if (_.isArray(val)) {
                 return val[0];
             }
             return val;
         }
-        return TranslateableObject;
+
+        function setLangAttr(attr, orig) {
+            var val = orig[attr.replace('.', '__')];
+            if (val) {
+                var lang = val['xml:lang'];
+                if (lang) {
+                    _.set(this, attr + '_trans_' + lang, val.value);
+                }
+            }
+        }
     });
 
 })();
