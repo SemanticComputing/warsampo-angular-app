@@ -14,6 +14,7 @@
 
     var server = 'http://ldf.fi';
     var PNR_SERVICE_URI = '<' + server + '/pnr/sparql>';
+    var PNR_ENDPOINT_URL = server + '/pnr/sparql';
     var SPARQL_ENDPOINT_URL = server + '/warsa/sparql';
 
     angular
@@ -120,6 +121,7 @@
     })
     .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)
     .constant('PNR_SERVICE_URI', PNR_SERVICE_URI)
+    .constant('PNR_ENDPOINT_URL', PNR_ENDPOINT_URL)
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider

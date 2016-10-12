@@ -9,8 +9,30 @@
     .service('eventService', eventService);
 
     /* @ngInject */
-    function eventService($q, eventRepository, personRepository, unitRepository) {
+    function eventService($q, _, eventRepository, personRepository, unitRepository, placeRepository) {
         var self = this;
+
+        self.fetchPlaces = function(event) {
+            var wrap = _(event).castArray();
+            var placeUris = wrap.map('place_id').flatten().uniq.value();
+
+            return placeRepository.getById(placeUris).then(function(places) {
+                var placeHash = _.keyBy(places, 'id');
+                wrap.forEach(function(e) {
+                    e.places = [];
+                    if (e.place_id) {
+                        var placeIds = _.castArray(e.place_id);
+                        placeIds.forEach(function(p) {
+                            var place = placeHash[p];
+                            if (place) {
+                                e.places.push(place);
+                            }
+                        });
+                    }
+                });
+                return event;
+            });
+        };
 
         self.fetchPeople = function(event) {
             return personRepository.getByIdList(event.participant_id).then(function(people) {
