@@ -6,7 +6,7 @@
     .service('placeRepository', placeRepository);
 
     function placeRepository($q, _, baseRepository, AdvancedSparqlService, translateableObjectMapperService,
-            QueryBuilderService, SPARQL_ENDPOINT_URL, PNR_ENDPOINT_URL) {
+            QueryBuilderService, ENDPOINT_CONFIG, PNR_ENDPOINT_CONFIG) {
 
         var self = this;
 
@@ -20,8 +20,8 @@
 
         /* Implementation */
 
-        var warsaEndpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, translateableObjectMapperService);
-        var pnrEndpoint = new AdvancedSparqlService(PNR_ENDPOINT_URL, translateableObjectMapperService);
+        var warsaEndpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
+        var pnrEndpoint = new AdvancedSparqlService(PNR_ENDPOINT_CONFIG, translateableObjectMapperService);
 
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +

@@ -6,9 +6,9 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('unitRepository', function($q, _, SparqlService, unitMapperService, SPARQL_ENDPOINT_URL) {
+    .service('unitRepository', function($q, _, SparqlService, unitMapperService, ENDPOINT_CONFIG) {
 
-        var endpoint = new SparqlService(SPARQL_ENDPOINT_URL);
+        var endpoint = new SparqlService(ENDPOINT_CONFIG);
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +

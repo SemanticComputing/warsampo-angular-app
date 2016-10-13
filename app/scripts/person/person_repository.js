@@ -8,9 +8,9 @@
     */
     angular.module('eventsApp')
     .service('personRepository', function($q, _, AdvancedSparqlService, SparqlService,
-                personMapperService, QueryBuilderService, SPARQL_ENDPOINT_URL) {
+                personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
 
-        var endpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, personMapperService);
+        var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, personMapperService);
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +

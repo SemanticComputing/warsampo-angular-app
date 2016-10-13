@@ -8,7 +8,7 @@
     angular.module('eventsApp')
     .service('timeService', timeService);
 
-    function timeService($q, SparqlService, timeRepository, eventRepository,
+    function timeService($q, timeRepository, eventRepository,
             photoRepository, personRepository, Settings, PHOTO_PAGE_SIZE) {
 
         var self = this;

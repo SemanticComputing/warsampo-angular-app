@@ -10,7 +10,7 @@
     .service('semanticModelService', semanticModelService);
 
     /* @ngInject */
-    function semanticModelService(_, $q, SparqlService, semanticModelRepository) {
+    function semanticModelService(_, $q, semanticModelRepository) {
 
         this.fetchRelated = function(obj) {
             var links;

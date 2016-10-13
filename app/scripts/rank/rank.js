@@ -6,8 +6,7 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('rankService', function($q, SparqlService, rankRepository,
-                personRepository, Settings) {
+    .service('rankService', function($q, rankRepository, personRepository, Settings) {
 
         var self = this;
 

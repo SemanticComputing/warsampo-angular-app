@@ -7,14 +7,14 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('rankRepository', function($q, SparqlService, rankMapperService, SPARQL_ENDPOINT_URL) {
+    .service('rankRepository', function($q, SparqlService, rankMapperService, ENDPOINT_CONFIG) {
 
         var self = this;
 
         self.getById = getById;
         self.getRelatedRanks = getRelatedRanks;
 
-        var endpoint = new SparqlService(SPARQL_ENDPOINT_URL);
+        var endpoint = new SparqlService(ENDPOINT_CONFIG);
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +

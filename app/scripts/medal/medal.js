@@ -9,8 +9,7 @@
     .service('medalService', medalService);
 
     /* @ngInject */
-    function medalService($q, SparqlService, medalRepository,
-                    personRepository, Settings) {
+    function medalService($q, medalRepository, personRepository, Settings) {
 
         var self = this;
 

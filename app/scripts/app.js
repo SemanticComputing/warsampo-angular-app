@@ -91,6 +91,8 @@
     .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)
     .constant('PNR_SERVICE_URI', PNR_SERVICE_URI)
     .constant('PNR_ENDPOINT_URL', PNR_ENDPOINT_URL)
+    .constant('ENDPOINT_CONFIG', { endpointUrl: SPARQL_ENDPOINT_URL, usePost: true })
+    .constant('PNR_ENDPOINT_CONFIG', { endpointUrl: PNR_ENDPOINT_URL, usePost: true })
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';
         $routeProvider

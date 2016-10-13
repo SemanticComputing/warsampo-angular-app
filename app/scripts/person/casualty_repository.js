@@ -7,8 +7,8 @@
     */
     angular.module('eventsApp')
     .service('casualtyRepository', function($q, _, SparqlService, objectMapperService,
-            SPARQL_ENDPOINT_URL) {
-        var endpoint = new SparqlService(SPARQL_ENDPOINT_URL);
+            ENDPOINT_CONFIG) {
+        var endpoint = new SparqlService(ENDPOINT_CONFIG);
 
         var prefixes =
         ' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
