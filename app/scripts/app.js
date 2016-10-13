@@ -72,37 +72,6 @@
             }
         }
     )
-    .constant('PLACE_PARTIAL_QUERY',
-    ' { ' +
-    '   ?<PLACE_VAR>__id skos:prefLabel ?<PLACE_VAR>__label . ' +
-    '   OPTIONAL { ?<PLACE_VAR>__id sch:polygon ?polygon . } ' +
-    '   OPTIONAL { ' +
-    '     ?<PLACE_VAR>__id geo:lat ?<PLACE_VAR>__point__lat ; ' +
-    '        geo:long ?<PLACE_VAR>__point__lon . ' +
-    '   } ' +
-    '   OPTIONAL { ' +
-    '     ?<PLACE_VAR>__id geosparql:sfWithin ?<MUNICIPALITY_VAR>_id . ' +
-    '     ?<MUNICIPALITY_VAR>_id a suo:kunta . ' +
-    '   } ' +
-    ' } UNION { ' +
-    '   { ' +
-    '     FILTER NOT EXISTS { ' +
-    '       ?<PLACE_VAR>__id a ?<PLACE_VAR>__type . ' +
-    '     } ' +
-    '   } ' +
-    '   SERVICE ' + PNR_SERVICE_URI + ' { ' +
-    '     ?<PLACE_VAR>__id skos:prefLabel ?<PLACE_VAR>__label . ' +
-    '     FILTER(langMatches(lang(?<PLACE_VAR>__label), "FI")) ' +
-    '     ?<PLACE_VAR>__id geo:lat ?<PLACE_VAR>__point__lat ; ' +
-    '       geo:long ?<PLACE_VAR>__point__lon . ' +
-    '     OPTIONAL { ' +
-    '       ?<PLACE_VAR>__id crm:P89_falls_within ?<MUNICIPALITY_VAR>_id . ' +
-    '       { ?<MUNICIPALITY_VAR>_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
-    '       UNION ' +
-    '       { ?<MUNICIPALITY_VAR>_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
-    '     } ' +
-    '   } ' +
-    ' } ')
     .constant('PHOTO_PAGE_SIZE', 50)
     .constant('EVENT_TYPES', {
         BATTLE: 'http://ldf.fi/warsa/events/event_types/Battle',

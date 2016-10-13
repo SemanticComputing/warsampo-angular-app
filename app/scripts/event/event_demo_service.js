@@ -166,7 +166,7 @@
             googleMapsService.normalizeMapZoom(self.map);
 
             self.setOnMouseUpListener(function() { self.onMouseUpListener(); });
-            self.addOnScrollListener(function() { self.clearHeatmap(); });
+            self.addOnScrollListener(_.throttle(_.bind(self.clearHeatmap, self), 500));
         }
 
         function getMinVisibleDate() {

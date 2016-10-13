@@ -8,8 +8,8 @@
     angular.module('eventsApp')
     .service('eventRepository', eventRepository);
 
-    function eventRepository($q, _, AdvancedSparqlService, eventMapperService,
-            QueryBuilderService, PLACE_PARTIAL_QUERY, SPARQL_ENDPOINT_URL) {
+    function eventRepository($q, _, baseRepository, AdvancedSparqlService, eventMapperService,
+            QueryBuilderService, SPARQL_ENDPOINT_URL) {
 
         var endpoint = new AdvancedSparqlService(SPARQL_ENDPOINT_URL, eventMapperService);
 
@@ -38,7 +38,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
-        '  ?title ?places__id ?places__label ?places__point__lat ?places__point__lon ?medal ?source ';
+        '  ?title ?place_id ?medal ?source ';
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -46,12 +46,6 @@
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Disappearing>) ' +
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Wounding>) ' +
         ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E67_Birth>) ';
-
-        var placePartial =
-        ' ?id crm:P7_took_place_at ?places__id .  ' +
-        PLACE_PARTIAL_QUERY
-            .replace(/<PLACE_VAR>/g, 'places')
-            .replace(/<MUNICIPALITY_VAR>/g, 'municipality');
 
         var singleEventQry = prefixes + select +
         ' { ' +
@@ -70,7 +64,7 @@
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
         '   } ' +
         '   OPTIONAL { ' +
-                placePartial +
+        '    ?id crm:P7_took_place_at ?place_id .  ' +
         '   } ' +
         '   OPTIONAL { ?id crm:P4_has_time-span ?time_id . ' +
         '     GRAPH <http://ldf.fi/warsa/events/times> { ' +
@@ -111,16 +105,18 @@
         '     ?id ?part_pred ?participant_id . ' +
         '   } ' +
         '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
-        '   OPTIONAL { ' + placePartial + ' } ' +
+        '   OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         ' } ';
 
         var eventsByPlaceQryResultSet =
-        '   VALUES ?places__id { {0} } ' +
+        ' GRAPH <http://ldf.fi/warsa/events> { ' +
+        '   VALUES ?place_id { {0} } ' +
         '   {1} ' + // Placeholder for id filter
-        '   ?id crm:P7_took_place_at ?places__id .  ' +
+        '   ?id crm:P7_took_place_at ?place_id .  ' +
         '   ?id crm:P4_has_time-span ?time_id . ' +
         '   ?id a ?type_id . ' +
-            eventTypeFilter;
+        ' } ' +
+          eventTypeFilter;
 
         var eventsByActorQryResultSet =
         '   VALUES ?participant_id { {0} }  ' +
@@ -198,15 +194,13 @@
         '    ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
         '     crm:P82b_end_of_the_end ?end_time .  ' +
         '  } ' +
-        '  OPTIONAL { ' +
-            placePartial +
-        '  } ' +
+        '  OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         ' } ORDER BY ?start_time ?end_time ';
 
         // TODO: harmonize
         var personLifeEventsQry = prefixes +
         ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description (?description AS ?label) ' +
-        '  ?start_time ?end_time ?rank__label ?rank__id ?places__id ?places__label ' +
+        '  ?start_time ?end_time ?rank__label ?rank__id ?place_id ' +
         ' WHERE { ' +
         '  VALUES ?person { {0} } ' +
         '  { ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
@@ -227,9 +221,7 @@
         '   ?time_id crm:P82a_begin_of_the_begin ?start_time . ' +
         '   ?time_id crm:P82b_end_of_the_end ?end_time . ' +
         '  } ' +
-        '  OPTIONAL {  ' +
-            placePartial +
-        '  } ' +
+        '  OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         '  ?id a ?type_id . ' +
         '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
         '  OPTIONAL { ' +
@@ -293,28 +285,23 @@
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
-        this.getByPlaceId = function(ids, pageSize) {
-            if (_.isArray(ids)) {
-                ids = '<{0}>'.format(ids.join('> <'));
-            } else if (ids) {
-                ids = '<{0}>'.format(ids);
-            } else {
+        this.getByPlaceId = function(id, pageSize) {
+            id = baseRepository.uriFy(id);
+            if (!id) {
                 return $q.when();
             }
-            var resultSet = eventsByPlaceQryResultSet.format(ids, '');
+            var resultSet = eventsByPlaceQryResultSet.format(id, '');
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
         this.getByPlaceIdFilterById = function(placeIds, id, pageSize) {
-            if (_.isArray(placeIds)) {
-                placeIds = '<{0}>'.format(placeIds.join('> <'));
-            } else if (placeIds) {
-                placeIds = '<{0}>'.format(placeIds);
-            } else {
+            placeIds = baseRepository.uriFy(placeIds);
+            id = baseRepository.uriFy(id);
+            if (!(id && placeIds)) {
                 return $q.when();
             }
-            var filter = 'FILTER(?id != {0})'.format('<' + id + '>');
+            var filter = 'FILTER(?id != {0})'.format(id);
             var resultSet = eventsByPlaceQryResultSet.format(placeIds, filter);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
@@ -322,11 +309,8 @@
 
         this.getByPersonId = function(id) {
             // No paging support
-            if (_.isArray(id)) {
-                id = '<{0}>'.format(id.join('> <'));
-            } else if (id) {
-                id = '<{0}>'.format(id);
-            } else {
+            id = baseRepository.uriFy(id);
+            if (!id) {
                 return $q.when();
             }
             var qry = byPersonQry.format(id);
@@ -334,11 +318,8 @@
         };
 
         this.getByUnitId = function(id, pageSize) {
-            if (_.isArray(id)) {
-                id = '<{0}>'.format(id.join('> <'));
-            } else if (id) {
-                id = '<{0}>'.format(id);
-            } else {
+            id = baseRepository.uriFy(id);
+            if (!id) {
                 return $q.when();
             }
             var resultSet = eventsByActorQryResultSet.format(id);
@@ -347,11 +328,8 @@
         };
 
         this.getUnitAndSubUnitEventsByUnitId = function(id, pageSize) {
-            if (_.isArray(id)) {
-                id = '<{0}>'.format(id.join('> <'));
-            } else if (id) {
-                id = '<{0}>'.format(id);
-            } else {
+            id = baseRepository.uriFy(id);
+            if (!id) {
                 return $q.when();
             }
             var resultSet = eventsAndSubUnitEventsByUnitQryResultSet.format(id);
@@ -361,15 +339,11 @@
 
         this.getPersonLifeEvents = function(id) {
             // No paging support
-            var qry;
-            if (_.isArray(id)) {
-                id = '<{0}>'.format(id.join('> <'));
-            } else if (id) {
-                id = '<{0}>'.format(id);
-            } else {
+            id = baseRepository.uriFy(id);
+            if (!id) {
                 return $q.when();
             }
-            qry = personLifeEventsQry.format(id);
+            var qry = personLifeEventsQry.format(id);
             return endpoint.getObjects(qry);
         };
     }

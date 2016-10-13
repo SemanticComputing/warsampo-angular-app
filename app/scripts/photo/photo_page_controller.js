@@ -5,7 +5,7 @@
     .controller('PhotoPageCtrl', PhotoPageCtrl);
 
     function PhotoPageCtrl($routeParams, $q, $rootScope, _, photoService, eventService,
-            Settings) {
+            placeRepository, Settings) {
 
         $rootScope.showSettings = null;
         $rootScope.showHelp = null;
@@ -36,15 +36,24 @@
 
         function fetchRelated(photo) {
             var promises = { related: photoService.fetchRelated(photo) };
-            if ((photo.places || []).length) {
-                promises.eventsByPlace = eventService.getEventsByPlaceIdPager(_.map(photo.places, 'id'),
-                        Settings.pageSize);
-            }
             if (photo.created) {
                 promises.eventsByTime = eventService.getEventsLooselyWithinTimeSpanPager(photo.created,
                             photo.created, Settings.pageSize);
             }
             return $q.all(promises)
+            .then(function(related) {
+                if ((photo.places || []).length) {
+                    return placeRepository.getNearbyPlaceIds(_.map(photo.places, 'id'))
+                    .then(function(ids) {
+                        return eventService.getEventsByPlaceIdPager(ids, Settings.pageSize);
+                    })
+                    .then(function(events) {
+                        related.eventsByPlace = events;
+                        return related;
+                    });
+                }
+                return related;
+            })
             .then(function(related) {
                 var eventCounts = [];
                 if (related.eventsByPlace) {

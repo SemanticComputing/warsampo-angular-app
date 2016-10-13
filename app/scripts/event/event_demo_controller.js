@@ -82,7 +82,7 @@
             if (event_uri) {
                 // Single event given as parameter
                 promise = eventService.getEventById(event_uri).then(function(e) {
-                    if (e) {
+                    if (e && e.start_time) {
                         return createTimeMapForEvent(e);
                     } else {
                         // Event not found, redirect to Winter War
@@ -141,9 +141,6 @@
         }
 
         function createTimeMapForEvent(e) {
-            if (!e.start_time) {
-                return showWinterWar();
-            }
             var show = getCreateFunction(e.start_time);
             return show().then(function() {
                 return eventDemoService.navigateToEvent(e);

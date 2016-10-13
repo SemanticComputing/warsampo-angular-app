@@ -9,8 +9,8 @@
     .service('photoService', photoService);
 
     /* @ngInject */
-    function photoService($q, _, photoRepository, personRepository, eventRepository,
-            unitRepository, dateUtilService, PHOTO_PAGE_SIZE) {
+    function photoService($q, _, baseService, photoRepository, personRepository,
+            eventRepository, unitRepository, placeRepository, dateUtilService, PHOTO_PAGE_SIZE) {
 
         var self = this;
 
@@ -21,6 +21,7 @@
 
         self.fetchPeople = fetchPeople;
         self.fetchUnits = fetchUnits;
+        self.fetchPlaces = fetchPlaces;
         self.fetchRelated = fetchRelated;
         self.getPhotosByPlaceAndTimeSpan = getPhotosByPlaceAndTimeSpan;
         self.getByTimeSpan = getByTimeSpan;
@@ -32,10 +33,19 @@
         function fetchRelated(photo) {
             var related = [
                 self.fetchPeople(photo),
-                self.fetchUnits(photo)
+                self.fetchUnits(photo),
+                self.fetchPlaces(photo)
             ];
             return $q.all(related).then(function() {
                 return photo;
+            });
+        }
+
+        function fetchPlaces(photo) {
+            var placeUris = _(photo).castArray().map('place_id').flatten().compact().uniq().value();
+
+            return placeRepository.getById(placeUris).then(function(places) {
+                return baseService.combineRelated(photo, places, 'place_id', 'places');
             });
         }
 
@@ -90,7 +100,10 @@
         function getDistinctPhotoData(start, end, getPlace) {
             // start and end as strings
             if (getPlace) {
-                return photoRepository.getMinimalDataWithPlaceByTimeSpan(start, end);
+                return photoRepository.getMinimalDataWithPlaceByTimeSpan(start, end)
+                .then(function(photos) {
+                    return self.fetchPlaces(photos);
+                });
             }
             return photoRepository.getMinimalDataByTimeSpan(start, end);
         }
@@ -108,7 +121,9 @@
                 if (!place_ids) {
                     return $q.when();
                 }
-                promise = self.getPhotosByPlaceAndTimeSpan(place_ids, start, end, opts);
+                promise = placeRepository.getNearbyPlaceIds(place_ids).then(function(ids) {
+                    return self.getPhotosByPlaceAndTimeSpan(ids, start, end, opts);
+                });
             } else {
                 promise = self.getByTimeSpan(start, end, opts);
             }

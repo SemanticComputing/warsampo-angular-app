@@ -357,10 +357,10 @@
                 return false;
             }
 
-            var ap = _.map(event.places, 'id');
-            var am = arrayfy(event, 'municipality_id');
+            var ap = _(event.places).map('id').compact().value();
+            var am = _(event.places).map('municipality_id').compact().value();
             var bp = arrayfy(photo, 'place_id');
-            var bm = arrayfy(photo, 'municipality_id');
+            var bm = _(photo.places).map('municipality_id').compact().value();
 
             var eventPlaces = ap.concat(am);
             var photoPlaces = bp.concat(bm);

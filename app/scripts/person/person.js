@@ -9,7 +9,7 @@
     .service('personService', personService);
 
     /* @ngInject */
-    function personService($q, _, personRepository, eventRepository,
+    function personService($q, _, baseService, personRepository, eventRepository, placeRepository,
                     unitRepository, photoRepository, casualtyRepository, dateUtilService) {
         var self = this;
 
@@ -207,8 +207,18 @@
         };
 
         self.getLifeEvents = function(id) {
-            return eventRepository.getPersonLifeEvents(id);
+            return eventRepository.getPersonLifeEvents(id).then(function(events) {
+                return fetchPlaces(events);
+            });
         };
+
+        function fetchPlaces(event) {
+            var placeUris = _(event).castArray().map('place_id').flatten().compact().uniq().value();
+
+            return placeRepository.getById(placeUris).then(function(places) {
+                return baseService.combineRelated(event, places, 'place_id', 'places');
+            });
+        }
 
         self.getNationalBibliography = function(person) {
             return personRepository.getNationalBibliographyByName(person);

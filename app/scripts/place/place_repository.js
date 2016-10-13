@@ -5,14 +5,18 @@
     angular.module('eventsApp')
     .service('placeRepository', placeRepository);
 
-    function placeRepository($q, _, AdvancedSparqlService, translateableObjectMapperService,
+    function placeRepository($q, _, baseRepository, AdvancedSparqlService, translateableObjectMapperService,
             QueryBuilderService, SPARQL_ENDPOINT_URL, PNR_ENDPOINT_URL) {
 
         var self = this;
 
         /* Public API */
 
+        // Paging is not supported
+        // TODO: Use a union query to support paging
+
         self.getById = getById;
+        self.getNearbyPlaceIds = getNearbyPlaceIds;
 
         /* Implementation */
 
@@ -37,10 +41,13 @@
         ' PREFIX actors: <http://ldf.fi/warsa/actors/> ' +
         ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
 
-        var queryBuilder = new QueryBuilderService(prefixes);
+        var select =
+            ' SELECT DISTINCT ?id ?label ?municipality_id ?municipality__id ' +
+            ' ?municipality__label ?point__lat ?point__lon ';
 
         var warsaPlaceQry =
-        ' <RESULT_SET> ' +
+        '{ ' +
+        ' VALUES ?id { <ID> } ' +
         ' ?id skos:prefLabel ?label . ' +
         ' OPTIONAL { ?id sch:polygon ?polygon . } ' +
         ' OPTIONAL { ' +
@@ -52,13 +59,12 @@
         '   ?municipality_id a suo:kunta . ' +
         '   ?municipality_id skos:prefLabel ?municipality__label . ' +
         '   BIND(?municipality_id AS ?municipality__id) ' +
-        ' } ';
-
-        var resultSet =
-        '  BIND(<ID> AS ?id) ';
+        ' } ' +
+        '} ';
 
         var pnrPlaceQry =
-        '  <RESULT_SET> ' +
+        '{ ' +
+        ' VALUES ?id { <ID> } ' +
         ' ?id skos:prefLabel ?label . ' +
         ' FILTER(langMatches(lang(?label), "FI")) ' +
         ' OPTIONAL { ' +
@@ -70,12 +76,46 @@
         '   { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
         '   UNION ' +
         '   { ?municipality_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
-        '   ?municipality_id skos:prefLabel municipality__label . ' +
+        '   ?municipality_id skos:prefLabel ?municipality__label . ' +
         '   BIND(?municipality_id AS ?municipality__id) ' +
-        ' } ';
+        ' } ' +
+        '} ';
 
-        function getById(id, pageSize) {
-            var warsaId = [], pnrId = [];
+        var warsaNearByPlaceQry =
+        '{ ' +
+        ' VALUES ?ref_place_id { <ID> } ' +
+        ' ?ref_place_id geosparql:sfWithin? [ ' +
+        '  a suo:kunta ; ^geosparql:sfWithin? ?id ' +
+        ' ] . ' +
+        '} ';
+
+        var pnrNearByPlaceQry =
+        '{ ' +
+        ' VALUES ?ref_place_id { <ID> } ' +
+        ' ?ref_place_id crm:P89_falls_within? ?mun_id ' +
+        ' { ?mun_id a <http://ldf.fi/pnr-schema#place_type_540> } ' +
+        ' UNION ' +
+        ' { ?mun_id a <http://ldf.fi/pnr-schema#place_type_550> } ' +
+        ' ?mun_id ^crm:P89_falls_within? ?id . ' +
+        '} ';
+
+        function getById(id) {
+            return baseGet(warsaPlaceQry, pnrPlaceQry, id);
+        }
+
+        function getNearbyPlaceIds(id) {
+            return baseGet(warsaNearByPlaceQry, pnrNearByPlaceQry, id).then(function(places) {
+                return _.map(places, 'id');
+            });
+        }
+
+        function baseGet(warsaQ, pnrQ, id) {
+            if (!id) {
+                return $q.when();
+            }
+
+            var warsaId = [];
+            var pnrId = [];
 
             function pushUri(uri) {
                 if (isPnrPlace(uri)) {
@@ -85,24 +125,17 @@
                 }
             }
 
-            if (_.isArray(id)) {
-                id.forEach(function(uri) {
-                    pushUri(uri);
-                });
-            } else if (id) {
-                pushUri(id);
-            } else {
-                return $q.when();
-            }
+            id = _.castArray(id);
+            id.forEach(function(uri) {
+                pushUri(uri);
+            });
 
-            var warsaResultSet = resultSet.replace('<ID>', '<' + warsaId.join('> <') + '>');
-            var pnrResultSet = resultSet.replace('<ID>', '<' + pnrId.join('> <') + '>');
-            var warsaQryObj = queryBuilder.buildQuery(warsaPlaceQry, warsaResultSet);
-            var pnrQryObj = queryBuilder.buildQuery(pnrPlaceQry, pnrResultSet);
+            warsaQ = prefixes + select + warsaQ.replace('<ID>', baseRepository.uriFy(warsaId));
+            pnrQ = prefixes + select + pnrQ.replace('<ID>', baseRepository.uriFy(pnrId));
 
             return $q.all([
-                warsaEndpoint.getObjects(warsaQryObj.query, pageSize, warsaQryObj.resultSetQuery),
-                pnrEndpoint.getObjects(pnrQryObj.query, pageSize, pnrQryObj.resultSetQuery)
+                warsaEndpoint.getObjects(warsaQ),
+                pnrEndpoint.getObjects(pnrQ)
             ]).then(function(places) {
                 return _.flatten(places);
             });
@@ -111,6 +144,5 @@
         function isPnrPlace(uri) {
             return _.includes(uri, 'ldf.fi/pnr/');
         }
-
     }
 })();

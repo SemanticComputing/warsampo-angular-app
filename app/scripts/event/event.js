@@ -9,28 +9,14 @@
     .service('eventService', eventService);
 
     /* @ngInject */
-    function eventService($q, _, eventRepository, personRepository, unitRepository, placeRepository) {
+    function eventService($q, _, baseService, eventRepository, personRepository, unitRepository, placeRepository) {
         var self = this;
 
         self.fetchPlaces = function(event) {
-            var wrap = _(event).castArray();
-            var placeUris = wrap.map('place_id').flatten().uniq.value();
+            var placeUris = _(event).castArray().map('place_id').flatten().compact().uniq().value();
 
             return placeRepository.getById(placeUris).then(function(places) {
-                var placeHash = _.keyBy(places, 'id');
-                wrap.forEach(function(e) {
-                    e.places = [];
-                    if (e.place_id) {
-                        var placeIds = _.castArray(e.place_id);
-                        placeIds.forEach(function(p) {
-                            var place = placeHash[p];
-                            if (place) {
-                                e.places.push(place);
-                            }
-                        });
-                    }
-                });
-                return event;
+                return baseService.combineRelated(event, places, 'place_id', 'places');
             });
         };
 
@@ -67,11 +53,15 @@
         self.getEventsByTimeSpan = function(start, end) {
             // Get events that occured between the dates start and end (inclusive).
             // Returns a promise.
-            return eventRepository.getByTimeSpan(start, end);
+            return eventRepository.getByTimeSpan(start, end).then(function(events) {
+                return self.fetchPlaces(events);
+            });
         };
 
         self.getEventById = function(id) {
-            return eventRepository.getById(id);
+            return eventRepository.getById(id).then(function(events) {
+                return self.fetchPlaces(events);
+            });
         };
 
         self.getEventsLooselyWithinTimeSpan = function(start, end) {
