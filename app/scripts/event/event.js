@@ -91,7 +91,9 @@
         };
 
         self.getUnitAndSubUnitEventsByUnitId = function(id) {
-            return eventRepository.getUnitAndSubUnitEventsByUnitId(id);
+            return eventRepository.getUnitAndSubUnitEventsByUnitId(id).then(function(events) {
+                return self.fetchPlaces(events);
+            });
         };
     }
 })();
