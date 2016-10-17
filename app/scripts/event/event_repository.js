@@ -8,6 +8,7 @@
     angular.module('eventsApp')
     .service('eventRepository', eventRepository);
 
+    /* @ngInject */
     function eventRepository($q, _, baseRepository, AdvancedSparqlService, eventMapperService,
             QueryBuilderService, ENDPOINT_CONFIG) {
 

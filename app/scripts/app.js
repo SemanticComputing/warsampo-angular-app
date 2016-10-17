@@ -12,7 +12,7 @@
     * Main module of the application.
     */
 
-    var server = 'http://ldf.fi';
+    var server = 'http://localhost:3030';
     var PNR_SERVICE_URI = '<' + server + '/pnr/sparql>';
     var PNR_ENDPOINT_URL = server + '/pnr/sparql';
     var SPARQL_ENDPOINT_URL = server + '/warsa/sparql';
@@ -206,6 +206,12 @@
             templateUrl: 'views/semantic_page.html',
             controller: 'SemanticPageCtrl',
             controllerAs: 'ctrl',
+            resolve: getResolve()
+        })
+        .when(lang + '/cemeteries/page', {
+            templateUrl: 'views/cemetery_page.html',
+            controller: 'CemeteryPageController',
+            controllerAs: 'vm',
             resolve: getResolve()
         })
         .when(lang + '/page', {

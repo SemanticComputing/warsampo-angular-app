@@ -40,6 +40,9 @@
     "MEDAL_DEMO": {
         "RELATED_MEDALS": "Muita kunniamerkkejä"
     },
+    "CEMETERY_DEMO": {
+        "OTHER_CEMETERIES_CLOSE": "Muita hautausmaita samalla alueella"
+    },
     "TIME_DEMO": {
         "RELATED_EVENTS": "Tapahtumia tähän aikaan",
         "RELATED_CASUALTIES": "Tähän aikaan menehtyneitä"
@@ -122,5 +125,6 @@
     "CURRENTLY_SELECTED_EVENT": "Tällä hetkellä valittu tapahtuma",
     "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla",
     "DEATH_RECORD": "Kuolinasiakirja",
+    "CEMETERY": "Hautausmaa",
     "NOTE": "Muistiinpano"
 }
