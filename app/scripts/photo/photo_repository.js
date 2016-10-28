@@ -34,6 +34,7 @@
         var minimalDataService = new AdvancedSparqlService(ENDPOINT_CONFIG, objectMapperService);
 
         var prefixes =
+        ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
@@ -42,7 +43,8 @@
         ' PREFIX sch: <http://schema.org/> ' +
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
+        ' PREFIX wph: <http://ldf.fi/warsa/photographs/> ' +
+        ' PREFIX wat: <http://ldf.fi/warsa/actors/actor_types/> ' +
         ' PREFIX dctype: <http://purl.org/dc/dcmitype/> ' +
         ' PREFIX dc: <http://purl.org/dc/terms/> ' +
         ' PREFIX text: <http://jena.apache.org/text#> ' +
@@ -53,14 +55,16 @@
 
         var select =
         ' SELECT DISTINCT ?id ?url ?thumbnail_url ?description ?created ' +
-        '  ?participant_id ?unit_id ?municipality_id ?place_id ?places__label ?places__point__lat ?places__point__lon ?places_string ' +
+        '  ?participant_id ?unit_id ?place_id ?place_string ' +
         '  ?source ?creator_id ?photographer_string ';
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?place_id { <ID> } ' +
-        ' ?id dc:spatial ?place_id  . ' +
-        ' ?id dc:created ?created . ' +
-        ' ?id a photos:Photograph . ' +
+        ' ?id ^crm:P94_has_created [ ' +
+        '  crm:P7_took_place_at ?place_id ; ' +
+        '  crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
+        ' ] . ' +
+        ' ?id a wph:Photograph . ' +
         ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ';
 
         var photoQry = select +
@@ -69,71 +73,69 @@
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
         '  OPTIONAL { ?id dc:description ?description . } ' +
-        '  OPTIONAL { ?id dc:created ?created . } ' +
-        '  OPTIONAL { ?id dc:subject ?participant_id . } ' +
-        '  OPTIONAL { ?id photos:unit ?unit_id . } ' +
+        '  OPTIONAL { ' +
+        '   ?id ^crm:P94_has_created ?event_id . ' +
+        '   OPTIONAL { ?event_id crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . } ' +
+        '   OPTIONAL { ?event_id crm:P14_carried_out_by ?creator_id . } ' +
+        '   OPTIONAL { ?event_id crm:P7_took_place_at ?place_id . } ' +
+        '   OPTIONAL { ' +
+        '    ?event_id crm:P11_had_participant ?unit_id . ' +
+        '    ?unit a wat:MilitaryUnit . ' +
+        '   } ' +
+        '   OPTIONAL { ' +
+        '    ?event_id crm:P11_had_participant ?participant_id . ' +
+        '    ?participant_id a/rdfs:subClassOf* crm:E21_Person . ' +
+        '   } ' +
+        '  } ' +
         '  OPTIONAL { ' +
         '   ?id dc:source ?source_id . ' +
         '   ?source_id skos:prefLabel ?source . ' +
         '   FILTER(langMatches(lang(?source), "fi")) ' +
         '  } ' +
-        '  OPTIONAL { ?id dc:creator ?creator_id . } ' +
-        '  OPTIONAL { ?id photos:place_string ?place_string . } ' +
-        '  OPTIONAL { ?id photos:photographer_string ?photographer_string . } ' +
-        '  OPTIONAL { ?id dc:spatial ?place_id . } ' +
+        '  OPTIONAL { ?id wph:place_string ?place_string . } ' +
+        '  OPTIONAL { ?id wph:photographer_string ?photographer_string . } ' +
         ' } ';
-
-        photoQry = photoQry.replace('<PLACE>',
-                'OPTIONAL { ?id dc:spatial ?place_id . }');
 
         var singlePhotoQryResultSet =
-        ' GRAPH warsa:photographs { ' +
         '  BIND(<{0}> AS ?id) ' +
-        '  ?id sch:contentUrl ?url . ' +
-        ' } ';
+        '  ?id sch:contentUrl ?url . ';
 
         var photosByTimeResultSet =
-        ' GRAPH warsa:photographs { ' +
-        '  ?id dc:created ?created . ' +
-        ' } ' +
-        ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ';
+        ' ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
+        ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        ' ?id a wph:Photograph . ';
 
         var photosByUnitResultSet =
         ' VALUES ?unit_id { {0} } ' +
-        ' ?id photos:unit ?unit_id . ' +
-        ' ?id a photos:Photograph . ';
+        ' ?id ^crm:P94_has_created/crm:P11_had_participant ?unit_id . ' +
+        ' ?id a wph:Photograph . ';
 
         var photosByPersonResultSet =
         ' VALUES ?participant_id { {0} } ' +
-        ' { ?id dc:subject ?participant_id . } ' +
+        ' { ?id ^crm:P94_has_created/crm:P11_had_participant ?participant_id . } ' +
         ' UNION ' +
-        ' { ?id dc:creator ?participant_id . } ' +
-        ' ?id a photos:Photograph . ';
+        ' { ?id ^crm:P94_has_created/crm:P14_carried_out_by ?participant_id . } ' +
+        ' ?id a wph:Photograph . ';
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +
         ' SELECT DISTINCT ?created ?place_id WHERE { ' +
-        '  GRAPH warsa:photographs { ' +
-        '   ?id dc:spatial ?place_id . ' +
-        '   ?id dc:created ?created . ' +
+        '   ?id ^crm:P94_has_created [ ' +
+        '    crm:P7_took_place_at ?place_id ; ' +
+        '    crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
+        '   ] . ' +
+        '   ?id a wph:Photograph . ' +
         '   FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-        '  } ' +
         ' } ' +
         ' ORDER BY ?created ';
 
         var minimalPhotosByTimeQry = prefixes +
         ' SELECT DISTINCT ?created' +
         ' WHERE { ' +
-        '  GRAPH warsa:photographs { ' +
-        '   ?id dc:created ?created . ' +
-        '   FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
-        '  } ' +
+        '  ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
+        '  FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '  ?id a wph:Photograph . ' +
         ' } ' +
         ' ORDER BY ?created ';
-
-        var facetQryResultSet =
-        '   {0} ' +
-        '   ?s a photos:Photograph .' +
-        '   BIND(?s AS ?id) ';
 
         /* API function implementations */
 
@@ -149,7 +151,7 @@
         }
 
         function getByFacetSelections(facetSelections, options) {
-            var resultSet = facetQryResultSet.format(facetSelections);
+            var resultSet = facetSelections.join(' ');
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, options.pageSize,
                     qryObj.resultSetQuery);
