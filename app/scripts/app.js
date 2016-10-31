@@ -12,7 +12,7 @@
     * Main module of the application.
     */
 
-    var server = 'http://localhost:3030';
+    var server = 'http://ldf.fi'
     var PNR_SERVICE_URI = '<' + server + '/pnr/sparql>';
     var PNR_ENDPOINT_URL = server + '/pnr/sparql';
     var SPARQL_ENDPOINT_URL = server + '/warsa/sparql';

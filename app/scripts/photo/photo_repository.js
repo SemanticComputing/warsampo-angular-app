@@ -80,7 +80,7 @@
         '   OPTIONAL { ?event_id crm:P7_took_place_at ?place_id . } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?unit_id . ' +
-        '    ?unit a wat:MilitaryUnit . ' +
+        '    ?unit_id a wat:MilitaryUnit . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?participant_id . ' +
