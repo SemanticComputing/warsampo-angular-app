@@ -163,9 +163,12 @@
         var byPersonQry = prefixes + select +
         ' { ' +
         '  VALUES ?person { {0} } . ' +
-        '  { ?id crm:P11_had_participant ?person ; ' +
+        '  { ' +
+        '   GRAPH <http://ldf.fi/warsa/events> { ' +
+        '    ?id crm:P11_had_participant ?person ; ' +
         '    	skos:prefLabel ?description . ' +
         '    	OPTIONAL { ?id events:hadUnit ?unit . } ' +
+        '   }' +
         '  }' +
         '  UNION  ' +
         '  { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
