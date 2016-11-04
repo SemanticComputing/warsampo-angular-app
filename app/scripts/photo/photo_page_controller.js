@@ -35,7 +35,10 @@
         }
 
         function fetchRelated(photo) {
-            var promises = { related: photoService.fetchRelated(photo) };
+            var promises = {
+                related: photoService.fetchRelated(photo),
+                photos: photoService.fetchRelatedPhotos(photo)
+            };
             if (photo.created) {
                 promises.eventsByTime = eventService.getEventsLooselyWithinTimeSpanPager(photo.created,
                             photo.created, Settings.pageSize);

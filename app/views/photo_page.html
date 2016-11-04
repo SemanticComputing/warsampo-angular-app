@@ -27,6 +27,7 @@
       </p>
       <p><img ng-src="{{ vm.photo.url }}" /></p>
       <p ng-if="vm.photo.source">{{ 'SOURCE' | translate }}: {{ vm.photo.source }}</p>
+      <ws-photo-gallery data-images="vm.photo.relatedPhotos"></ws-photo-gallery>
     </div>
   </div>
   <!-- Links -->

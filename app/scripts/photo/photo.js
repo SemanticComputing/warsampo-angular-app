@@ -22,7 +22,7 @@
         self.fetchPeople = fetchPeople;
         self.fetchUnits = fetchUnits;
         self.fetchPlaces = fetchPlaces;
-        self.fetchPhotos = fetchPhotos;
+        self.fetchRelatedPhotos = fetchRelatedPhotos;
         self.fetchRelated = fetchRelated;
         self.getPhotosByPlaceAndTimeSpan = getPhotosByPlaceAndTimeSpan;
         self.getByTimeSpan = getByTimeSpan;
@@ -42,7 +42,12 @@
             });
         }
 
-        function fetchPhotos(photo) {
+        function fetchRelatedPhotos(photo) {
+            return photoRepository.getByThemeId(photo.theme, PHOTO_PAGE_SIZE)
+            .then(function(photos) {
+                photo.relatedPhotos = photos;
+                return photo;
+            });
         }
 
         function fetchPlaces(photo) {

@@ -23,6 +23,7 @@
         self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
         self.getByPersonId = getByPersonId;
         self.getByUnitId = getByUnitId;
+        self.getByThemeId = getByThemeId;
         self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
         self.getMinimalDataByTimeSpan = getMinimalDataByTimeSpan;
         self.getByFacetSelections = getByFacetSelections;
@@ -56,7 +57,7 @@
         var select =
         ' SELECT DISTINCT ?id ?url ?thumbnail_url ?description ?created ' +
         '  ?participant_id ?unit_id ?place_id ?place_string ' +
-        '  ?source ?creator_id ?photographer_string ';
+        '  ?source ?creator_id ?photographer_string ?theme ';
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?place_id { <ID> } ' +
@@ -73,6 +74,7 @@
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
         '  OPTIONAL { ?id dc:description ?description . } ' +
+        '  OPTIONAL { ?id wph:theme ?theme . } ' +
         '  OPTIONAL { ' +
         '   ?id ^crm:P94_has_created ?event_id . ' +
         '   OPTIONAL { ?event_id crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . } ' +
@@ -99,6 +101,10 @@
         var singlePhotoQryResultSet =
         '  BIND(<{0}> AS ?id) ' +
         '  ?id sch:contentUrl ?url . ';
+
+        var photosByThemeResultSet =
+        '  BIND("<VAL>" AS ?theme) ' +
+        '  ?id wph:theme ?theme . ';
 
         var photosByTimeResultSet =
         ' ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
@@ -194,6 +200,12 @@
                 return $q.when();
             }
             var resultSet = photosByUnitResultSet.format(id);
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        }
+
+        function getByThemeId(id, pageSize) {
+            var resultSet = photosByThemeResultSet.replace(/<VAL>/g, id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
