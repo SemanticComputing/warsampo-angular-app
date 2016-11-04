@@ -22,6 +22,7 @@
         self.fetchPeople = fetchPeople;
         self.fetchUnits = fetchUnits;
         self.fetchPlaces = fetchPlaces;
+        self.fetchPhotos = fetchPhotos;
         self.fetchRelated = fetchRelated;
         self.getPhotosByPlaceAndTimeSpan = getPhotosByPlaceAndTimeSpan;
         self.getByTimeSpan = getByTimeSpan;
@@ -39,6 +40,9 @@
             return $q.all(related).then(function() {
                 return photo;
             });
+        }
+
+        function fetchPhotos(photo) {
         }
 
         function fetchPlaces(photo) {

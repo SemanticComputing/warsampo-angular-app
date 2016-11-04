@@ -22,11 +22,10 @@
             taken: {
                 facetId: 'taken',
                 name: 'PHOTO_DEMO.PHOTO_TAKEN_BETWEEN',
-                predicate: '<http://ldf.fi/kuvanottoaika>',
-                start: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span>/<http://www.cidoc-crm.org/cidoc-crm/P82a_begin_of_the_begin>',
-                end: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span>/<http://www.cidoc-crm.org/cidoc-crm/P82b_end_of_the_end>',
-                min: '1939-10-01',
-                max: '1945-12-31',
+                startPredicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span>/<http://www.cidoc-crm.org/cidoc-crm/P82a_begin_of_the_begin>',
+                endPredicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span>/<http://www.cidoc-crm.org/cidoc-crm/P82b_end_of_the_end>',
+                min: new Date(1939,9,1),
+                max: new Date(1945,11,31),
                 enabled: true
             },
             description: {
