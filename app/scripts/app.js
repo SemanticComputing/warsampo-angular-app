@@ -82,10 +82,12 @@
         UNIT_JOINING: 'http://ldf.fi/warsa/events/event_types/UnitJoining',
         UNIT_FORMATION: 'http://www.cidoc-crm.org/cidoc-crm/E66_Formation',
         UNIT_NAMING: 'http://ldf.fi/warsa/events/event_types/UnitNaming',
+        PERSON_JOINING: 'http://ldf.fi/warsa/events/event_types/PersonJoining',
         PROMOTION: 'http://ldf.fi/warsa/events/event_types/Promotion',
         BIRTH: 'http://www.cidoc-crm.org/cidoc-crm/E67_Birth',
         DEATH: 'http://www.cidoc-crm.org/cidoc-crm/E69_Death',
         DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing',
+        WOUNDING: 'http://ldf.fi/warsa/events/event_types/Wounding',
         MEDAL_ASSIGNMENT: 'http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment'
     })
     .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)

@@ -9,8 +9,9 @@
     .service('personService', personService);
 
     /* @ngInject */
-    function personService($q, _, baseService, personRepository, eventRepository, placeRepository,
-                    unitRepository, photoRepository, casualtyRepository, dateUtilService) {
+    function personService($q, _, baseService, personRepository, eventRepository,
+                    placeRepository, unitRepository, photoRepository, casualtyRepository,
+                    dateUtilService, EVENT_TYPES) {
         var self = this;
 
         self.processLifeEvents = function(person, events) {
@@ -36,20 +37,26 @@
                         places.push({ id: e.places[j].id, label: e.places[j].label });
                     }
                 }
-                if (etype.indexOf('Death')>-1) {
+                if (etype === EVENT_TYPES.DEATH) {
                     person.death = edate;
                     if (eplace) person.death_place = eplace;
-                } else if (etype.indexOf('Birth')>-1) {
+                } else if (etype === EVENT_TYPES.BIRTH) {
                     person.birth = edate;
                     if (eplace) person.birth_place = eplace;
-                } else if (etype.indexOf('Wounding')>-1) {
+                } else if (etype === EVENT_TYPES.WOUNDING) {
                     person.wound = edate;
-                    if (eplace) person.wound_place = eplace;
-                } else if (etype.indexOf('Disappearing')>-1) {
+                    if (eplace) {
+                        person.wound_place = eplace;
+                    }
+                } else if (etype === EVENT_TYPES.DISSAPEARING) {
                     person.disapp = edate;
-                    if (eplace) person.disapp_place = eplace;
-                } else if (etype.indexOf('Promotion')>-1) {
-                    if (edate) person.promotions.push(e.rank.label + ' ' + edate);
+                    if (eplace) {
+                        person.disapp_place = eplace;
+                    }
+                } else if (etype === EVENT_TYPES.PROMOTION) {
+                    if (edate) {
+                        person.promotions.push(e.rank.label + ' ' + edate);
+                    }
                     person.ranks.unshift(e.rank);
                 }
             }
@@ -67,15 +74,13 @@
             for (var i=0; i<events.length; i++) {
                 var e = events[i],
                     etype = e.type_id;
-
-                if (etype.indexOf('Battle')>-1) {
+                if (etype === EVENT_TYPES.BATTLE) {
                     battles.push(e);
                 } else if (etype.indexOf('Article')>-1 ) {
                     articles.push(e); //
-                } else if (etype.indexOf('E13_Attribute_Assignment')>-1 ) {
-                    e.id = e.medal;
-                    medals.push(e);
-                } else if (etype.indexOf('PersonJoining') === -1) {
+                } else if (_.get(e, 'medal.id')) {
+                    medals.push(e.medal);
+                } else if (etype !== EVENT_TYPES.PERSON_JOINING) {
                     eventlist.push(e);
                 }
             }

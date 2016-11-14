@@ -38,7 +38,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
-        '  ?title ?place_id ?medal ?source ';
+        '  ?title ?place_id ?medal__id ?medal__label ?source ';
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -187,8 +187,13 @@
         '   UNION  '+
         '   { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
         '  } ' +
+        '  UNION  '+
+        '  { ' +
+        '    ?id crm:P11_had_participant ?person ; ' +
+        '     crm:P141_assigned ?medal__id . ' +
+        '    ?medal__id skos:prefLabel ?medal__label . ' +
+        '  } ' +
         '  ?id a ?type_id . ' +
-        '  OPTIONAL { ?id crm:P141_assigned ?medal } ' +
         '  OPTIONAL { ' +
         '    ?type_id skos:prefLabel ?type . ' +
         '  } ' +
