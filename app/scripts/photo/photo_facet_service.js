@@ -31,7 +31,8 @@
             description: {
                 facetId: 'description',
                 name: 'PHOTO_DEMO.DESCRIPTION',
-                predicate: '<http://purl.org/dc/terms/description>',
+                limit: 100000,
+                graph: '<http://ldf.fi/warsa/photographs>',
                 enabled: true
             },
             place: {
