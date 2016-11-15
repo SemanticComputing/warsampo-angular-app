@@ -4,16 +4,7 @@
       <div class="col-md-12">
       </div>
     </div>
-    <div class="row" ng-if="vm.error">
-      <div class="col-xs-12">
-        <uib-alert type="danger" ng-if="vm.error">
-          <p>{{ 'ERROR_OCCURED' | translate }}:</p>
-          <p>{{ vm.error }}</p>
-          <p translate>REFRESH_TO_RETRY</p>
-        </uib-alert>
-      </div>
-    </div>
-    <div class="row" ng-if="!vm.error">
+    <div class="row">
       <div class="col-sm-4 col-md-3 facet-container">
         <seco-timespan-facet data-options="vm.facets.taken"></seco-timespan-facet>
         <seco-jena-text-facet data-options="vm.facets.description"></seco-jena-text-facet>
@@ -25,6 +16,10 @@
       </div>
 
       <div class="col-sm-8 col-md-9">
+        <div uib-alert class="alert-danger" ng-if="vm.error">
+          <p>{{ 'ERROR_OCCURED' | translate }}:</p>
+          <p>{{ vm.error | translate }}</p>
+        </div>
         <div ng-include="'views/partials/photo_list_partial.html'"></div>
       </div>
     </div>

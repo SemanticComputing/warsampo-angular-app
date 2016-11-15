@@ -17,6 +17,7 @@
         this.getResults = getResults;
         this.getFacets = getFacets;
         this.getFacetOptions = getFacetOptions;
+        this.getErrorMessage = getErrorMessage;
 
         var facets = {
             taken: {
@@ -97,6 +98,17 @@
 
         function getFacetOptions() {
             return facetOptions;
+        }
+
+        function getErrorMessage(error) {
+            var errorMsg = error.message || error;
+            if (errorMsg) {
+                if (_.includes(errorMsg, 'TextIndexParseException')) {
+                    return 'PHOTO_DEMO.TEXT_SEARCH_EXCEPTION';
+                }
+                return errorMsg;
+            }
+            return 'UNKNOWN_ERROR';
         }
     }
 })();

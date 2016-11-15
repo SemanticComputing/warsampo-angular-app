@@ -45,6 +45,7 @@
         "RELATED_CASUALTIES": "Tähän aikaan menehtyneitä"
     },
     "PHOTO_DEMO": {
+        "TEXT_SEARCH_EXCEPTION": "Virheelliset tekstihakuehdot. Muuta hakuehtoja ja yritä uudelleen.",
         "HELP_TEXT_TITLE": "Sodanajan valokuvat",
         "HELP_TEXT": "<h4>Katsele valokuvia talvi- ja jatkosodan ajalta.</h4><p>Kuvia latautuu lisää, kun sivua vieritetään alaspäin.</p><p>Tuloksia voi rajata käyttämällä vasemmalla olevia suodattimia. Valitse arvo valikosta (esim. paikka paikkasuodattimesta) tai hae kuvauksista kirjoittamalla tekstiä käyttäen kuvaussuodatinta.</p><p>Oletusarvoisesti tekstihaku hakee kokonaisia sanoa. *-merkkiä voidaan käyttää sanan osien avulla hakuun. Esimerkiksi hakusana <code>sotamie*</code> löytää kaikki sanan \"sotamies\" taivutusmuodot.</p><p>Suodattimen voi avata plus-merkistä ja sulkea punaisesta rastista. Suodattimet rajoittavat toisiaan, joten jos suodattimessa on valittuna arvo, muissa valikkosuodattimissa näkyvät vain arvot, jotka tuottavat tuloksia.</p><p>Paikat ja henkilöt on linkitetty kuviin automaattisesti, joten niissä saatta esiintyä virheitä. Mahdollisista virheistä voi raportoida <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">lähettämällä palautetta</a>.</p><p>Valokuviin voi tutustua myös muissa Sotasammon näkymissä, kuten <a target=\"_self\" href=\"/fi/places/\">Paikat</a> tai <a target=\"_self\" href=\"/fi/events/\">Tapahtumat</a>.</p>",
         "EVENTS_CLOSE": "Tapahtumia samalla alueella",
@@ -67,6 +68,7 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.",
         "SHOW_HEATMAP": "Näytä lämpökartta menehtyneistä."
     },
+    "UNKNOWN_ERROR": "Tuntematon virhe",
     "PHOTO_TAKEN_BETWEEN": "Kuva otettu välillä",
     "DESCRIPTION": "Kuvaus",
     "PLACE": "Paikka",

@@ -142,7 +142,7 @@
 
         function handleError(error) {
             vm.isLoadingResults = false;
-            vm.error = error ? (error.message || error) : 'Error';
+            vm.error = photoFacetService.getErrorMessage(error);
         }
     }
 })();
