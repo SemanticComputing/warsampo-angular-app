@@ -16,7 +16,9 @@
         </span>{{ ctrl.event.getTypeLabel() }}
       </h2>
       <p>{{ ctrl.event.getDescription() }}</p>
-      <p ng-if="ctrl.event.source"><small>{{ 'SOURCE' | translate }}: {{ ctrl.event.source }}</small></p>
+      <p ng-if="ctrl.event.source">
+        <small>{{ 'SOURCE' | translate }}: {{ ctrl.event.source | concatList }}</small>
+      </p>
       <p><a ng-href="{{ ctrl.demoLink }}" translate>SHOW_IN_DEMO</a></p>
       <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>
     </div>
