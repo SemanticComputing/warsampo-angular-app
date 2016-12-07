@@ -11,6 +11,7 @@
         UnitDemoServiceConstructor.prototype.createTimemap = createTimemapByActor;
         UnitDemoServiceConstructor.prototype.calculateCasualties = calculateCasualties;
         UnitDemoServiceConstructor.prototype.getCasualtyLocations = getCasualtyLocations;
+        UnitDemoServiceConstructor.prototype.infoWindowCallback = infoWindowCallback;
 
         UnitDemoServiceConstructor.prototype = angular.extend({}, EventDemoService.prototype,
             UnitDemoServiceConstructor.prototype);
@@ -30,16 +31,16 @@
             self.current;
             self.currentUnitId;
 
-            self.infoWindowCallback = infoWindowCallback;
+            self.infoWindowCallback = self.infoWindowCallback.bind(self);
 
-            function infoWindowCallback(item) {
-                // Change the URL but don't reload the page
-                $location.search('event', item.opts.event.id);
-                self.current = item;
-                eventService.fetchRelated(item.opts.event);
-                self.fetchImages(item);
-            }
+        }
 
+        function infoWindowCallback(item) {
+            // Change the URL but don't reload the page
+            $location.search('event', item.opts.event.id);
+            this.current = item;
+            eventService.fetchRelated(item.opts.event);
+            this.fetchImages(item);
         }
 
         function createTimemapByActor(id, start, end, highlights) {
@@ -48,7 +49,7 @@
             self.currentUnitId = id;
             self.highlights = highlights;
             var photoConfig = Settings.getPhotoConfig();
-            return timemapService.createTimemapByActor(id, start, end, highlights,
+            return timemapService.createTimemapByUnit(id, start, end, highlights,
                 self.infoWindowCallback, photoConfig, self.tm)
             .then(function(timemap) {
                 var isNew = !self.tm;

@@ -90,19 +90,7 @@
           <a ng-href="{{ ctrl.getDefaultUrl() }}" target="_self" translate>UNIT_DEMO.GO_HOME</a>
           </p>
         </div>
-        <div id="timemap-container">
-          <div id="loading-overlay" ng-if="ctrl.isLoadingTimeline">
-            <h2>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h2>
-          </div>
-          <div id="timemap">
-            <div id="mapcontainer">
-              <div id="map"></div>
-            </div>
-            <div id="timelinecontainer">
-              <div id="timeline"></div>
-            </div>
-          </div>
-        </div>
+        <div ng-include="'views/partials/timemap_partial.html'"></div>
       </div>
     </div>
   </div>

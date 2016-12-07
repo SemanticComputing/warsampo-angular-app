@@ -9,18 +9,29 @@
     .service('eventService', eventService);
 
     /* @ngInject */
-    function eventService($q, _, baseService, eventRepository, personRepository, unitRepository, placeRepository) {
+    function eventService($q, _, baseService, eventRepository, personRepository,
+            unitRepository, placeRepository) {
         var self = this;
 
-        self.fetchPlaces = function(event) {
-            var placeUris = _(event).castArray().map('place_id').flatten().compact().uniq().value();
+        self.fetchPlaces = fetchPlaces;
+        self.fetchPeople = fetchPeople;
+        self.fetchUnits = fetchUnits;
+        self.fetchRelated = fetchRelated;
 
-            return placeRepository.getById(placeUris).then(function(places) {
-                return baseService.combineRelated(event, places, 'place_id', 'places');
-            });
-        };
+        self.getEventById = getEventById;
+        self.getEventsByTimeSpan = getEventsByTimeSpan;
+        self.getEventsLooselyWithinTimeSpan = getEventsLooselyWithinTimeSpan;
+        self.getEventsLooselyWithinTimeSpanPager = getEventsLooselyWithinTimeSpanPager;
+        self.getEventsByPlaceId = getEventsByPlaceId;
+        self.getEventsByPlaceIdPager = getEventsByPlaceIdPager;
+        self.getUnitAndSubUnitEventsByUnitId = getUnitAndSubUnitEventsByUnitId;
+        self.getEventsByActorId = getEventsByActorId;
 
-        self.fetchPeople = function(event) {
+        function fetchPlaces(event) {
+            return baseService.getRelated(event, 'place_id', 'places', placeRepository);
+        }
+
+        function fetchPeople(event) {
             return personRepository.getByIdList(event.participant_id).then(function(people) {
                 if (people && people.length) {
                     event.people = people;
@@ -28,9 +39,9 @@
                 }
                 return event;
             });
-        };
+        }
 
-        self.fetchUnits = function(event) {
+        function fetchUnits(event) {
             return unitRepository.getByIdList(event.participant_id).then(function(units) {
                 if (units && units.length) {
                     event.units = units;
@@ -38,9 +49,9 @@
                 }
                 return event;
             });
-        };
+        }
 
-        self.fetchRelated = function(event) {
+        function fetchRelated(event) {
             var related = [
                 self.fetchPeople(event),
                 self.fetchUnits(event)
@@ -48,52 +59,56 @@
             return $q.all(related).then(function() {
                 return event;
             });
-        };
+        }
 
-        self.getEventsByTimeSpan = function(start, end) {
+        function getEventsByTimeSpan(start, end) {
             // Get events that occured between the dates start and end (inclusive).
             // Returns a promise.
             return eventRepository.getByTimeSpan(start, end).then(function(events) {
                 return self.fetchPlaces(events);
             });
-        };
+        }
 
-        self.getEventById = function(id) {
+        function getEventById(id) {
             return eventRepository.getById(id).then(function(events) {
                 return self.fetchPlaces(events);
             });
-        };
+        }
 
-        self.getEventsLooselyWithinTimeSpan = function(start, end) {
+        function getEventsLooselyWithinTimeSpan(start, end) {
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
             return eventRepository.getLooselyWithinTimeSpan(start, end);
-        };
+        }
 
-        self.getEventsLooselyWithinTimeSpanPager = function(start, end, pageSize, idFilter) {
+        function getEventsLooselyWithinTimeSpanPager(start, end, pageSize, idFilter) {
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
             if (idFilter) {
                 return eventRepository.getLooselyWithinTimeSpanFilterById(start, end, idFilter, pageSize);
             }
             return eventRepository.getLooselyWithinTimeSpan(start, end, pageSize);
-        };
+        }
 
-        self.getEventsByPlaceId = function(ids) {
+        function getEventsByActorId(id) {
+            return eventRepository.getByActorId(id);
+        }
+
+        function getEventsByPlaceId(ids) {
             return eventRepository.getByPlaceId(ids);
-        };
+        }
 
-        self.getEventsByPlaceIdPager = function(ids, pageSize, idFilter) {
+        function getEventsByPlaceIdPager(ids, pageSize, idFilter) {
             if (idFilter) {
                 return eventRepository.getByPlaceIdFilterById(ids, idFilter, pageSize);
             }
             return eventRepository.getByPlaceId(ids, pageSize);
-        };
+        }
 
-        self.getUnitAndSubUnitEventsByUnitId = function(id) {
+        function getUnitAndSubUnitEventsByUnitId(id) {
             return eventRepository.getUnitAndSubUnitEventsByUnitId(id).then(function(events) {
                 return self.fetchPlaces(events);
             });
-        };
+        }
     }
 })();

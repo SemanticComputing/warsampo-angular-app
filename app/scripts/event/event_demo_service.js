@@ -23,7 +23,6 @@
         EventDemoServiceConstructor.prototype.calculateCasualties = calculateCasualties;
         EventDemoServiceConstructor.prototype.getCasualtyLocations = getCasualtyLocations;
         EventDemoServiceConstructor.prototype.updateHeatmap = updateHeatmap;
-        EventDemoServiceConstructor.prototype.onMouseUpListener = onMouseUpListener;
         EventDemoServiceConstructor.prototype.clearHeatmap = clearHeatmap;
         EventDemoServiceConstructor.prototype.getMinVisibleDate = getMinVisibleDate;
         EventDemoServiceConstructor.prototype.getMaxVisibleDate = getMaxVisibleDate;
@@ -33,8 +32,10 @@
         EventDemoServiceConstructor.prototype.navigateToEarliestEvent = navigateToEarliestEvent;
         EventDemoServiceConstructor.prototype.setCenterVisibleDate = setCenterVisibleDate;
         EventDemoServiceConstructor.prototype.addOnScrollListener = addOnScrollListener;
+        EventDemoServiceConstructor.prototype.onMouseUpListener = onMouseUpListener;
         EventDemoServiceConstructor.prototype.setOnMouseUpListener = setOnMouseUpListener;
         EventDemoServiceConstructor.prototype.fetchImages = fetchImages;
+        EventDemoServiceConstructor.prototype.infoWindowCallback = infoWindowCallback;
 
         EventDemoServiceConstructor.prototype.cleanUp = cleanUp;
 
@@ -51,19 +52,19 @@
             self.current;
             self.images;
 
-            self.infoWindowCallback = infoWindowCallback;
+            self.infoWindowCallback = self.infoWindowCallback.bind(self);
 
-            function infoWindowCallback(item) {
-                // Change the URL but don't reload the page
-                if ($location.search().uri !== item.opts.event.id) {
-                    $location.search('uri', item.opts.event.id);
-                }
+        }
 
-                self.current = item;
-                eventService.fetchRelated(item.opts.event);
-                self.fetchImages(item);
+        function infoWindowCallback(item) {
+            // Change the URL but don't reload the page
+            if ($location.search().uri !== item.opts.event.id) {
+                $location.search('uri', item.opts.event.id);
             }
 
+            this.current = item;
+            eventService.fetchRelated(item.opts.event);
+            this.fetchImages(item);
         }
 
         function cleanUp() {

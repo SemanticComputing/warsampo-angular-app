@@ -19,6 +19,10 @@
 
         // The title for the info view
         self.title;
+        self.helpTextTitle = 'EVENT_DEMO.HELP_TEXT_TITLE';
+        self.helpText = 'EVENT_DEMO.HELP_TEXT';
+
+        self.isLoadingTimeline;
 
         self.showCasualtyStats = false;
 
@@ -75,7 +79,7 @@
 
         function visualize() {
             self.err = undefined;
-            self.isLoadingTimemap = true;
+            self.isLoadingTimeline = true;
             var era = $routeParams.era;
             var event_uri = $routeParams.uri;
             var promise;
@@ -110,10 +114,10 @@
             }
 
             return promise.then(function() {
-                self.isLoadingTimemap = false;
+                self.isLoadingTimeline = false;
             }).catch(function(data) {
                 data = data || 'Unknown error';
-                self.isLoadingTimemap = false;
+                self.isLoadingTimeline = false;
                 self.err = data.message || data;
             });
         }

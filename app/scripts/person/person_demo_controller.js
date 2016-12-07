@@ -5,8 +5,11 @@
     .controller('PersonDemoCtrl', PersonDemoController);
 
     /* @ngInject */
-    function PersonDemoController($routeParams, $location, personService) {
+    function PersonDemoController($scope, $routeParams, $location, personService,
+            PersonDemoService, Settings, WAR_INFO) {
+
         var self = this;
+        var demoService = new PersonDemoService();
 
         self.items = [];
         self.queryregex = '';
@@ -15,32 +18,92 @@
         self.updateActor = updateActor;
         self.getItems = getItems;
 
+        self.getCasualtyCount = getCasualtyCount;
+        self.getCasualtyStats = getCasualtyStats;
+        self.getMinVisibleDate = getMinVisibleDate;
+        self.getMaxVisibleDate = getMaxVisibleDate;
+        self.getCurrent = getCurrent;
+        self.getImages = getImages;
+
         init();
 
         function init() {
+            Settings.enableSettings();
+            Settings.setApplyFunction(self.updateActor);
+            Settings.setHeatmapUpdater(demoService.updateHeatmap);
+            $scope.$on('$destroy', function() {
+                Settings.clearEventSettings();
+                demoService.cleanUp();
+            });
+
             self.getItems();
 
             if ($routeParams.uri) {
                 self.updateByUri($routeParams.uri);
             } else {
-                self.selectedItem = { name: 'Talvela, Paavo Juho', id: 'http://ldf.fi/warsa/actors/person_50' };
+                self.selectedItem = {
+                    name: 'Talvela, Paavo Juho',
+                    id: 'http://ldf.fi/warsa/actors/person_50'
+                };
                 self.updateActor();
             }
         }
 
+        function createTimeMap(id) {
+            return demoService.createTimemap(id, WAR_INFO.winterWarTimeSpan.start,
+                    WAR_INFO.continuationWarTimeSpan.end,
+                    WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights));
+        }
+
+        function getCasualtyCount() {
+            return demoService.getCasualtyCount();
+        }
+
+        function getCasualtyStats() {
+            return demoService.getCasualtyStats();
+        }
+
+        function getMinVisibleDate() {
+            return demoService.getMinVisibleDate();
+        }
+
+        function getMaxVisibleDate() {
+            return demoService.getMaxVisibleDate();
+        }
+
+        function getCurrent() {
+            return demoService.getCurrent();
+        }
+
+        function getImages() {
+            return demoService.getImages();
+        }
+
         function updateByUri(uri) {
-            self.isLoadingEvent = true;
-            self.isLoadingLinks = false;
+            self.isLoadingObject = true;
             personService.getById(uri)
             .then(function(person) {
                 self.person = person;
-                self.isLoadingEvent = false;
+                self.isLoadingObject = false;
 
-                return personService.fetchRelated2(person);
+                return personService.fetchRelatedForDemo(person);
+            }).then(function(person) {
+                return createTimeMap(person.id);
             }).catch(function() {
-                self.isLoadingEvent = false;
-                self.isLoadingLinks = false;
+                self.isLoadingObject = false;
             });
+        }
+
+        function updateActor() {
+            if (self.selectedItem && self.selectedItem.id) {
+                var uri = self.selectedItem.id;
+
+                if ($location.search().uri != uri) {
+                    $location.search('uri', uri);
+                }
+
+                self.updateByUri(uri);
+            }
         }
 
         function getItems() {
@@ -61,18 +124,6 @@
                 rx= '(^|^.* )'+rx+'.*$';
             }
             personService.getItems(rx,self);
-        }
-
-        function updateActor() {
-            if (self.selectedItem && self.selectedItem.id) {
-                var uri = self.selectedItem.id;
-
-                if ($location.search().uri != uri) {
-                    $location.search('uri', uri);
-                }
-
-                self.updateByUri(uri);
-            }
         }
     }
 })();

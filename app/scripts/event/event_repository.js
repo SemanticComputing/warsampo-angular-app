@@ -11,6 +11,16 @@
     function eventRepository($q, _, baseRepository, AdvancedSparqlService, eventMapperService,
             QueryBuilderService, ENDPOINT_CONFIG) {
 
+        this.getById = getById;
+        this.getByTimeSpan = getByTimeSpan;
+        this.getByPlaceId = getByPlaceId;
+        this.getByPlaceIdFilterById = getByPlaceIdFilterById;
+        this.getByPersonId = getByPersonId;
+        this.getByUnitId = getByUnitId;
+        this.getUnitAndSubUnitEventsByUnitId = getUnitAndSubUnitEventsByUnitId;
+        this.getPersonLifeEvents = getPersonLifeEvents;
+        this.getByActorId = getByUnitId;
+
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, eventMapperService);
 
         var prefixes =
@@ -38,7 +48,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
-        '  ?title ?place_id ?medal__id ?medal__label ?source ';
+        '  ?title ?place_id ?medal__id ?medal__label ?source ?photo__id ?photo__url';
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -66,11 +76,14 @@
         '   OPTIONAL { ' +
         '    ?id crm:P7_took_place_at ?place_id .  ' +
         '   } ' +
-        '   OPTIONAL { ?id crm:P4_has_time-span ?time_id . ' +
-        '     GRAPH <http://ldf.fi/warsa/events/times> { ' +
-        '       ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '                crm:P82b_end_of_the_end ?end_time . ' +
-        '     } ' +
+        '   OPTIONAL { ' +
+        '    ?id crm:P94_has_created ?photo__id .  ' +
+        '    ?photo__id crm:P94_has_created ?photo__id .  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
+        '     ?id crm:P4_has_time-span ?time_id . ' +
+        '     ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '       crm:P82b_end_of_the_end ?end_time . ' +
         '   } ' +
         ' } ' +
         ' ORDER BY ?start_time ?end_time ';
@@ -252,18 +265,18 @@
         ')';
 
         var eventsWithinRelaxedTimeSpanResultSet = eventQryResultSet.format(eventTypeFilter,
-                eventFilterWithinTimeSpanRelaxed);
+            eventFilterWithinTimeSpanRelaxed);
 
-        this.getByTimeSpan = function(start, end, pageSize) {
+        function getByTimeSpan(start, end, pageSize) {
             // Get events that occured between the dates start and end (inclusive).
             // Returns a promise.
             var resultSet = eventsWithinTimeSpanResultSet.format(start, end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query,
                 pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getById = function(id) {
+        function getById(id) {
             var qry = singleEventQry.format('<' + id + '>');
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
@@ -271,29 +284,31 @@
                 }
                 return $q.reject('Does not exist');
             });
-        };
+        }
 
-        this.getLooselyWithinTimeSpan = function(start, end, pageSize) {
+        this.getLooselyWithinTimeSpan = getLooselyWithinTimeSpan;
+        function getLooselyWithinTimeSpan(start, end, pageSize) {
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
             var resultSet = eventsWithinRelaxedTimeSpanResultSet.format(start, end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getLooselyWithinTimeSpanFilterById = function(start, end, id, pageSize) {
+        this.getLooselyWithinTimeSpanFilterById = getLooselyWithinTimeSpanFilterById;
+        function getLooselyWithinTimeSpanFilterById(start, end, id, pageSize) {
             // Get events that at least partially occured between the dates start and end.
             // Filter out the given id.
             // Returns a promise.
             var resultSet = eventQryResultSet
                 .format(eventTypeFilter + 'FILTER(?id != {0})'
-                        .format('<' + id + '>'), eventFilterWithinTimeSpanRelaxed)
-                        .format(start, end);
+                    .format('<' + id + '>'), eventFilterWithinTimeSpanRelaxed)
+                .format(start, end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getByPlaceId = function(id, pageSize) {
+        function getByPlaceId(id, pageSize) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
@@ -301,9 +316,9 @@
             var resultSet = eventsByPlaceQryResultSet.format(id, '');
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getByPlaceIdFilterById = function(placeIds, id, pageSize) {
+        function getByPlaceIdFilterById(placeIds, id, pageSize) {
             placeIds = baseRepository.uriFy(placeIds);
             id = baseRepository.uriFy(id);
             if (!(id && placeIds)) {
@@ -313,9 +328,9 @@
             var resultSet = eventsByPlaceQryResultSet.format(placeIds, filter);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getByPersonId = function(id) {
+        function getByPersonId(id) {
             // No paging support
             id = baseRepository.uriFy(id);
             if (!id) {
@@ -323,9 +338,9 @@
             }
             var qry = byPersonQry.format(id);
             return endpoint.getObjects(qry);
-        };
+        }
 
-        this.getByUnitId = function(id, pageSize) {
+        function getByUnitId(id, pageSize) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
@@ -333,9 +348,9 @@
             var resultSet = eventsByActorQryResultSet.format(id);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getUnitAndSubUnitEventsByUnitId = function(id, pageSize) {
+        function getUnitAndSubUnitEventsByUnitId(id, pageSize) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
@@ -343,9 +358,9 @@
             var resultSet = eventsAndSubUnitEventsByUnitQryResultSet.format(id);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };
+        }
 
-        this.getPersonLifeEvents = function(id) {
+        function getPersonLifeEvents(id) {
             // No paging support
             id = baseRepository.uriFy(id);
             if (!id) {
@@ -353,6 +368,6 @@
             }
             var qry = personLifeEventsQry.format(id);
             return endpoint.getObjects(qry);
-        };
+        }
     }
 })();

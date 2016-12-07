@@ -150,7 +150,7 @@
         .when(lang + '/events/:era?', {
             templateUrl: 'views/event_timeline.html',
             controller: 'EventDemoCtrl',
-            controllerAs: 'timemapCtrl',
+            controllerAs: 'ctrl',
             reloadOnSearch: false,
             resolve: getResolve()
         })
