@@ -7,8 +7,8 @@
 
     /* @ngInject */
     function EventDemoController($routeParams, $location, $scope, $q, $translate,
-                $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
-                googleMapsService, EventDemoService) {
+            $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
+            googleMapsService, EventDemoService) {
 
         /* Private vars */
 
@@ -19,8 +19,10 @@
 
         // The title for the info view
         self.title;
+
         self.helpTextTitle = 'EVENT_DEMO.HELP_TEXT_TITLE';
         self.helpText = 'EVENT_DEMO.HELP_TEXT';
+        self.casualtyDescription = 'CASUALTIES_DURING_TIMESPAN';
 
         self.isLoadingTimeline;
 

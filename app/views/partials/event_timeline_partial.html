@@ -14,11 +14,11 @@
           <p ng-if="ctrl.getCurrent().source">
             <small>{{ 'SOURCE' | translate }}: {{ ctrl.getCurrent().source | concatList }}</small>
           </p>
-          <p ng-repeat="person in ctrl.getCurrent().people" style="text-transform: capitalize">
-          <a ws-page-link="person.id">{{ person.label }}</a>
+          <p ng-repeat="person in ctrl.getCurrent().people">
+            <a ws-page-link="person.id">{{ person.label }}</a>
           </p>
-          <p ng-repeat="unit in ctrl.getCurrent().units" style="text-transform: capitalize">
-          <a ws-page-link="unit.id">{{ unit.label }}</a>
+          <p ng-repeat="unit in ctrl.getCurrent().units">
+            <a ws-page-link="unit.id">{{ unit.label }}</a>
           </p>
           <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
           <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
@@ -34,7 +34,7 @@
           <hr/>
           <!-- Casualty statistics -->
           <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
-            <p>{{ 'CASUALTIES_DURING_TIMESPAN' | translate }} {{ ctrl.getMinVisibleDate() | date : 'd.M.yyyy' }} - {{ ctrl.getMaxVisibleDate() | date : 'd.M.yyyy' }}: {{ ctrl.getCasualtyCount() }}
+            <p>{{ ctrl.casualtyDescription | translate }} {{ ctrl.getMinVisibleDate() | date : 'd.M.yyyy' }} - {{ ctrl.getMaxVisibleDate() | date : 'd.M.yyyy' }}: {{ ctrl.getCasualtyCount() }}
             | <a>{{ ctrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
             </p>
           </div>
