@@ -20,6 +20,8 @@
         self.updateUnit = updateUnit;
         self.currentUnit;
 
+        self.casualtyDescription = 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN';
+
         self.getDefaultUrl = getDefaultUrl;
 
         self.getCasualtyCount = getCasualtyCount;

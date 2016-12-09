@@ -1,0 +1,17 @@
+<div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
+  <p>{{ (ctrl.casualtyDescription || 'CASUALTIES_DURING_TIMESPAN') | translate }} {{ ctrl.getMinVisibleDate() | date : 'd.M.yyyy' }} - {{ ctrl.getMaxVisibleDate() | date : 'd.M.yyyy' }}: {{ ctrl.getCasualtyCount() }}
+  | <a>{{ ctrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
+  </p>
+</div>
+<div uib-collapse="!ctrl.showCasualtyStats">
+  <div class="row" ng-repeat="casualtyClass in ctrl.getCasualtyStats()">
+    <div ng-if="casualtyClass.id">
+      <div class="col-xs-10 casualtyCount">
+        {{ casualtyClass.description }}
+      </div>
+      <div class="col-xs-2 casualtyCount">
+        {{ casualtyClass.count }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -62,23 +62,7 @@
               <div ng-include="'views/partials/event_colors.html'"></div>
             </div>
             <hr/>
-            <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
-              <p>{{ 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN' | translate }} {{ ctrl.getMinVisibleDate() | date : 'd.M.yyyy' }} - {{ ctrl.getMaxVisibleDate() | date : 'd.M.yyyy' }}: {{ ctrl.getCasualtyCount() }}
-              | <a>{{ ctrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
-              </p>
-            </div>
-            <div uib-collapse="!ctrl.showCasualtyStats">
-              <div class="row" ng-repeat="casualtyClass in ctrl.getCasualtyStats()">
-                <div ng-if="casualtyClass.id">
-                  <div class="col-xs-10 casualtyCount">
-                    {{ casualtyClass.description }}
-                  </div>
-                  <div class="col-xs-2 casualtyCount">
-                    {{ casualtyClass.count }}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div ng-include="'views/partials/casualty_stats_partial.html'"></div>
           </div>
         </div>
       </div>
