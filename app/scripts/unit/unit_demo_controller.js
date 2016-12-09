@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('UnitDemoCtrl', UnitDemoController);
+    .controller('UnitDemoController', UnitDemoController);
 
     /* @ngInject */
     function UnitDemoController($routeParams, $location, $scope, $q, $uibModal,

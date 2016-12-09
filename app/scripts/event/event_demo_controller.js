@@ -3,7 +3,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('EventDemoCtrl', EventDemoController);
+    .controller('EventDemoController', EventDemoController);
 
     /* @ngInject */
     function EventDemoController($routeParams, $location, $scope, $q, $translate,

@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('PersonDemoCtrl', PersonDemoController);
+    .controller('PersonDemoController', PersonDemoController);
 
     /* @ngInject */
     function PersonDemoController($scope, $routeParams, $location, personService,

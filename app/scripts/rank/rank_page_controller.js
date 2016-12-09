@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('RankPageCtrl', function($routeParams, $q, $rootScope, eventService, rankService) {
+    .controller('RankPageController', function($routeParams, $q, $rootScope, eventService, rankService) {
         $rootScope.showSettings = null;
         $rootScope.showHelp = null;
 
