@@ -18,7 +18,7 @@
 
         self.getItems = getItems;
         self.updateUnit = updateUnit;
-        self.currentUnit;
+        self.currentObject;
 
         self.casualtyDescription = 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN';
 
@@ -30,6 +30,8 @@
         self.getMaxVisibleDate = getMaxVisibleDate;
         self.getCurrent = getCurrent;
         self.getImages = getImages;
+
+        self.showUnitDetails = showUnitDetails;
 
         init();
 
@@ -116,39 +118,44 @@
         }
 
         function updateUnit() {
-            if (self.currentUnit) {
+            if (self.currentObject) {
                 $location.search('event', null);
-                return updateByUri(self.currentUnit.id);
+                return updateByUri(self.currentObject.id);
             }
+        }
+
+        function showUnitDetails() {
+            return !(self.isLoadingEvent || !self.currentObject || self.getCurrent());
         }
 
         function updateByUri(uri) {
             self.err = undefined;
             self.isLoadingTimeline = true;
-            self.isLoadingEvent = true;
-            self.isLoadingLinks = false;
+            var eventId = $location.search().event;
+            if (angular.isString(eventId)) {
+                self.isLoadingEvent = true;
+            }
             if ($location.search().uri != uri) {
                 $location.search('uri', uri);
             }
             return unitService.getById(uri).then(function(unit) {
-                self.currentUnit = unit;
-                self.isLoadingEvent = false;
+                self.currentObject = unit;
                 self.isLoadingTimeline = true;
                 unitService.fetchRelated(unit, true);
                 return createTimeMap(uri);
             }).then(function() {
                 self.isLoadingTimeline = false;
-                var eventId = $location.search().event;
-                if (angular.isString(eventId)) {
+                if (self.isLoadingEvent) {
                     return eventService.getEventById(eventId).then(function(event) {
                         return unitDemoService.navigateToEvent(event);
                     });
                 }
                 return unitDemoService.refresh();
+            }).then(function() {
+                self.isLoadingEvent = false;
             }).catch(function(data) {
                 self.err = data.message || data;
                 self.isLoadingEvent = false;
-                self.isLoadingLinks = false;
                 self.isLoadingTimeline = false;
             });
         }

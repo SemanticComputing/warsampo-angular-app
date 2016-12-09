@@ -1,0 +1,19 @@
+<!-- Event details -->
+<div>
+  <h3>
+    <span ng-repeat="place in $ctrl.event.places">
+      <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+    </span>
+    {{ $ctrl.event.timeSpanString }} - {{ $ctrl.event.getTypeLabel() }}
+  </h3>
+  <p>{{ $ctrl.event.getDescription() }}</p>
+  <p ng-if="$ctrl.event.source">
+  <small>{{ 'SOURCE' | translate }}: {{ $ctrl.event.source | concatList }}</small>
+  </p>
+  <p ng-repeat="person in $ctrl.event.people">
+  <a ws-page-link="person.id">{{ person.label }}</a>
+  </p>
+  <p ng-repeat="unit in $ctrl.event.units">
+  <a ws-page-link="unit.id">{{ unit.label }}</a>
+  </p>
+</div>

@@ -6,7 +6,7 @@
     <input type="text"
       placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
       class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
-    <select ng-model="ctrl.currentUnit" ng-change="ctrl.updateUnit()"
+    <select ng-model="ctrl.currentObject" ng-change="ctrl.updateUnit()"
       size="32" class="form-control" id="unitselect"
       ng-options="item as item.name for item in ctrl.items">
     </select>
@@ -17,31 +17,45 @@
       <div class="col-lg-5 col-lg-push-7 col-md-12">
         <div class="row">
           <div class="col-md-12">
-            <div ng-if="ctrl.currentUnit && !ctrl.getCurrent()">
-              <!-- Unit details -->
-              <h3>{{ ctrl.currentUnit.name[0] }} <span ng-if="ctrl.currentUnit.abbrev.length">({{ ctrl.currentUnit.abbrev | concatList }})</span></h3>
-              <p ng-if="ctrl.currentUnit.desc">{{ ctrl.currentUnit.desc }} (Wikipedia)</p>
-              <p ng-if="ctrl.currentUnit.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentUnit.altNames.join('; ') }}</p>
-              <div ng-show="ctrl.currentUnit.relatedEvents.length === 0" translate>
-                NO_RELATED_EVENTS
+            <div ng-switch="ctrl.showUnitDetails()">
+              <div ng-switch-when="true">
+                <!-- Unit details -->
+                <h3>{{ ctrl.currentObject.getLabel() }} <span ng-if="ctrl.currentObject.abbrev.length">({{ ctrl.currentObject.abbrev | concatList }})</span></h3>
+                <p ng-if="ctrl.currentObject.desc">{{ ctrl.currentObject.desc }} (Wikipedia)</p>
+                <p ng-if="ctrl.currentObject.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentObject.altNames.join('; ') }}</p>
+                <div ng-show="ctrl.currentObject.relatedEvents.length === 0" translate>
+                  NO_RELATED_EVENTS
+                </div>
+                <p>{{ ctrl.currentObject.getDescription() }}</p>
+                <p><a ws-page-link="ctrl.currentObject.id" translate>SHOW_INFO_PAGE</a></p>
+
+                <ws-photo-gallery images="ctrl.currentObject.images"></ws-photo-gallery>
+
+                <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.currentObject.relatedPersons"></ws-related-links-paged>
+                <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.currentObject.superUnits"></ws-related-links>
+                <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.currentObject.subUnits"></ws-related-links>
+                <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.currentObject.relatedUnits"></ws-related-links>
+                <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.currentObject.battles"></ws-related-links>
+                <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.currentObject.places"></ws-related-links>
+                <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.currentObject.articles"></ws-related-links>
+                <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.currentObject.wikilink"></ws-related-links>
+                <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentObject.diaries"></ws-related-links>
+
               </div>
-              <p>{{ ctrl.currentUnit.getDescription() }}</p>
-              <p><a ws-page-link="ctrl.currentUnit.id" translate>SHOW_INFO_PAGE</a></p>
-
-              <ws-photo-gallery images="ctrl.currentUnit.images"></ws-photo-gallery>
-
-              <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.currentUnit.relatedPersons"></ws-related-links-paged>
-              <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.currentUnit.superUnits"></ws-related-links>
-              <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.currentUnit.subUnits"></ws-related-links>
-              <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.currentUnit.relatedUnits"></ws-related-links>
-              <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.currentUnit.battles"></ws-related-links>
-              <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.currentUnit.places"></ws-related-links>
-              <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.currentUnit.articles"></ws-related-links>
-              <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.currentUnit.wikilink"></ws-related-links>
-              <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentUnit.diaries"></ws-related-links>
-
+              <div ng-switch-default>
+                <div ng-if="ctrl.isLoadingEvent">
+                  <h3>{{ 'LOADING' | translate}} <img src="images/loading.gif" /></h3>
+                </div>
+                <div ng-show="!ctrl.isLoadingEvent">
+                  <event-details data-event=ctrl.getCurrent()></event-details>
+                  <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
+                  <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
+                </div>
+              </div>
             </div>
-            <div ng-include="'views/partials/event_display_partial.html'"></div>
+            <hr/>
+            <!-- Casualty statistics -->
+            <div ng-include="'views/partials/casualty_stats_partial.html'"></div>
           </div>
         </div>
       </div>

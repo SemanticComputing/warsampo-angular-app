@@ -7,18 +7,7 @@
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.event && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.event">
-      <h2>
-        <span ng-repeat="place in ctrl.event.places">
-          <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
-        </span>
-        <span ng-if="ctrl.event.timeSpanString">
-          <a ws-page-link="ctrl.event.time_id">{{ ctrl.event.timeSpanString }}</a> -
-        </span>{{ ctrl.event.getTypeLabel() }}
-      </h2>
-      <p>{{ ctrl.event.getDescription() }}</p>
-      <p ng-if="ctrl.event.source">
-        <small>{{ 'SOURCE' | translate }}: {{ ctrl.event.source | concatList }}</small>
-      </p>
+      <event-details data-event="ctrl.event"></event-details>
       <p><a ng-href="{{ ctrl.demoLink }}" translate>SHOW_IN_DEMO</a></p>
       <ws-photo-gallery data-images="ctrl.images"></ws-photo-gallery>
     </div>

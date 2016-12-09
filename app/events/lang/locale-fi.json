@@ -124,5 +124,6 @@
     "CURRENTLY_SELECTED_EVENT": "Tällä hetkellä valittu tapahtuma",
     "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla",
     "DEATH_RECORD": "Kuolinasiakirja",
+    "LOADING": "Ladataan...",
     "NOTE": "Muistiinpano"
 }
