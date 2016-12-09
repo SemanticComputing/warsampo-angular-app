@@ -16,6 +16,7 @@
     <div id="dataContent" ng-if="ctrl.person">
       <h2>{{ ctrl.person.label }}</h2>
       <div ng-include="'views/partials/person_description_partial.html'"></div>
+      <div ng-include="'views/partials/event_timeline_partial.html'"></div>
       <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
     </div>
     <!-- Links -->

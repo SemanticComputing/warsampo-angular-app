@@ -23,9 +23,6 @@
                 <h3>{{ ctrl.currentObject.getLabel() }} <span ng-if="ctrl.currentObject.abbrev.length">({{ ctrl.currentObject.abbrev | concatList }})</span></h3>
                 <p ng-if="ctrl.currentObject.desc">{{ ctrl.currentObject.desc }} (Wikipedia)</p>
                 <p ng-if="ctrl.currentObject.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentObject.altNames.join('; ') }}</p>
-                <div ng-show="ctrl.currentObject.relatedEvents.length === 0" translate>
-                  NO_RELATED_EVENTS
-                </div>
                 <p>{{ ctrl.currentObject.getDescription() }}</p>
                 <p><a ws-page-link="ctrl.currentObject.id" translate>SHOW_INFO_PAGE</a></p>
 
@@ -47,6 +44,7 @@
                   <h3>{{ 'LOADING' | translate}} <img src="images/loading.gif" /></h3>
                 </div>
                 <div ng-show="!ctrl.isLoadingEvent">
+                  <h3><a href="" ng-click="ctrl.clearEvent()">{{ ctrl.currentObject.getLabel() }}</a></h3>
                   <event-details data-event=ctrl.getCurrent()></event-details>
                   <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
                   <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>

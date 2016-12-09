@@ -15,6 +15,7 @@
         EventDemoServiceConstructor.prototype.getCasualtyCount = getCasualtyCount;
         EventDemoServiceConstructor.prototype.getCasualtyStats = getCasualtyStats;
         EventDemoServiceConstructor.prototype.getCurrent = getCurrent;
+        EventDemoServiceConstructor.prototype.clearCurrent = clearCurrent;
         EventDemoServiceConstructor.prototype.getImages = getImages;
 
         EventDemoServiceConstructor.prototype.createTimemap = createTimemapByTimeSpan;
@@ -54,6 +55,10 @@
 
             self.infoWindowCallback = self.infoWindowCallback.bind(self);
 
+        }
+
+        function clearCurrent() {
+            this.current = undefined;
         }
 
         function infoWindowCallback(item) {

@@ -13,6 +13,8 @@
         UnitDemoServiceConstructor.prototype.getCasualtyLocations = getCasualtyLocations;
         UnitDemoServiceConstructor.prototype.infoWindowCallback = infoWindowCallback;
 
+        UnitDemoServiceConstructor.prototype.hasEvents = hasEvents;
+
         UnitDemoServiceConstructor.prototype = angular.extend({}, EventDemoService.prototype,
             UnitDemoServiceConstructor.prototype);
 
@@ -33,6 +35,10 @@
 
             self.infoWindowCallback = self.infoWindowCallback.bind(self);
 
+        }
+
+        function hasEvents() {
+            return !!this.tm.getItems().length;
         }
 
         function infoWindowCallback(item) {

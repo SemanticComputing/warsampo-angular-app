@@ -29,13 +29,19 @@
         self.getMinVisibleDate = getMinVisibleDate;
         self.getMaxVisibleDate = getMaxVisibleDate;
         self.getCurrent = getCurrent;
+        self.clearEvent = clearEvent;
         self.getImages = getImages;
+        self.hasEvents = hasEvents;
 
         self.showUnitDetails = showUnitDetails;
 
         init();
 
         /* Implementation */
+
+        function hasEvents() {
+            return !self.isLoadingTimeline && unitDemoService.hasEvents();
+        }
 
         function getCasualtyCount() {
             return unitDemoService.getCasualtyCount();
@@ -55,6 +61,10 @@
 
         function getCurrent() {
             return unitDemoService.getCurrent();
+        }
+
+        function clearEvent() {
+            return unitDemoService.clearCurrent();
         }
 
         function getImages() {

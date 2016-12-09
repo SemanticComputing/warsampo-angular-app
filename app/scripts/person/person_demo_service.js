@@ -48,7 +48,7 @@
             self.highlights = highlights;
             var photoConfig = Settings.getPhotoConfig();
 
-            return eventService.getByActorId(id)
+            return eventService.getEventsByActorId(id)
             .then(function(data) {
                 return timemapService.createTimemapWithPhotoHighlight(
                     start, end, data, highlights, self.infoWindowCallback,
