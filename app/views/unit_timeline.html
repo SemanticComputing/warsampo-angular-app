@@ -3,10 +3,13 @@
   <div class="col-sm-3">
   	<h2 translate>UNIT_DEMO.TITLE</h2>
     <translate>UNIT_DEMO.DESCRIPTION</translate>
-    <input type="text" placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
-      class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
-    <select ng-model="ctrl.currentUnit" ng-change="ctrl.updateUnit()" size="32" class="form-control" id="unitselect"
-            ng-options="item as item.name for item in ctrl.items"></select>
+    <input type="text"
+      placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
+      class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
+    <select ng-model="ctrl.currentUnit" ng-change="ctrl.updateUnit()"
+      size="32" class="form-control" id="unitselect"
+      ng-options="item as item.name for item in ctrl.items">
+    </select>
 	</div>
 
   <div class="col-sm-9">
@@ -38,31 +41,7 @@
               <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentUnit.diaries"></ws-related-links>
 
             </div>
-            <div ng-if="ctrl.getCurrent()">
-              <!-- Event details -->
-              <h3>
-                <span ng-repeat="place in ctrl.getCurrent().places">
-                  <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
-                </span>
-                {{ ctrl.getCurrent().timeSpanString }} - {{ ctrl.getCurrent().getTypeLabel() }}
-              </h3>
-              <p>{{ ctrl.getCurrent().getDescription() }}</p>
-              <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
-              <p ng-if="ctrl.getCurrent().source"><small>{{ 'SOURCE' | translate }}: {{ ctrl.getCurrent().source }}</small></p>
-              <p ng-repeat="unit in ctrl.getCurrent().units" style="text-transform: capitalize">
-                {{ unit.label.join(' / ') }}
-              </p>
-
-              <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
-            </div>
-            <div ng-if="!(ctrl.getCurrent() || ctrl.currentUnit)">
-              <!-- Help text -->
-              <h3 translate>UNIT_DEMO.HELP_TEXT_TITLE</h3>
-              <translate>UNIT_DEMO.HELP_TEXT</translate>
-              <div ng-include="'views/partials/event_colors.html'"></div>
-            </div>
-            <hr/>
-            <div ng-include="'views/partials/casualty_stats_partial.html'"></div>
+            <div ng-include="'views/partials/event_display_partial.html'"></div>
           </div>
         </div>
       </div>
