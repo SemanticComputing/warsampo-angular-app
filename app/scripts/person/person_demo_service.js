@@ -50,6 +50,9 @@
 
             return eventService.getEventsByActorId(id)
             .then(function(data) {
+                return eventService.fetchPlaces(data);
+            })
+            .then(function(data) {
                 return timemapService.createTimemapWithPhotoHighlight(
                     start, end, data, highlights, self.infoWindowCallback,
                     photoConfig, undefined, self.tm);
@@ -60,9 +63,11 @@
                 self.map = timemap.getNativeMap();
 
                 if (isNew) {
-                    return self.setupTimemap();
+                    self.setupTimemap();
+                    self.navigateToDate('1939-11-30');
+                    return self.tm.timeline.setAutoWidth();
                 }
-                return self.navigateToDate('1939-11-30');
+                self.navigateToDate('1939-11-30');
             }).catch(function(data) {
                 return $q.reject(data);
             });
