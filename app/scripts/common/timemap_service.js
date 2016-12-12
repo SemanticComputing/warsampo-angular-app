@@ -24,6 +24,7 @@
         this.setOnMouseUpListener = setOnMouseUpListener;
         this.addOnScrollListener = addOnScrollListener;
         this.setCenterVisibleDate = setCenterVisibleDate;
+        this.getDefaultBandInfo = getDefaultBandInfo;
 
         this.cleanUp = cleanUp;
 

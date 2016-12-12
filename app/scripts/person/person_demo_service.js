@@ -53,9 +53,13 @@
                 return eventService.fetchPlaces(data);
             })
             .then(function(data) {
+                var bandInfo = timemapService.getDefaultBandInfo(start, end, highlights);
+                bandInfo[0].intervalPixels = 50;
+                bandInfo[1].intervalPixels = 50;
+
                 return timemapService.createTimemapWithPhotoHighlight(
                     start, end, data, highlights, self.infoWindowCallback,
-                    photoConfig, undefined, self.tm);
+                    photoConfig, bandInfo, self.tm);
             })
             .then(function(timemap) {
                 var isNew = !self.tm;
