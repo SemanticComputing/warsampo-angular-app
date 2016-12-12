@@ -22,11 +22,16 @@
         }
 
         function clearHeatmap(heatmap) {
-            heatmap.setMap(null);
+            if (heatmap) {
+                heatmap.setMap(null);
+            }
             return heatmap;
         }
 
         function updateHeatmap(heatmap, locations, map) {
+            if (!heatmap) {
+                return;
+            }
             var data = [];
             locations.forEach(function(loc) {
                 data.push(new google.maps.LatLng(parseFloat(loc.lat), parseFloat(loc.lon)));
