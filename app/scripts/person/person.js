@@ -89,7 +89,8 @@
                     }
                 } else if (etype === EVENT_TYPES.PROMOTION) {
                     if (edate) {
-                        person.promotions.push(e.rank.label + ' ' + edate);
+                        e.rank.label = e.rank.label + ' ' + edate;
+                        person.promotions.push(e.rank.label);
                     }
                     person.ranks.unshift(e.rank);
                 }

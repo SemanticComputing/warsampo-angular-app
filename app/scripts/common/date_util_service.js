@@ -1,8 +1,16 @@
 'use strict';
 
 angular.module('eventsApp')
-.service('dateUtilService', function(_) {
-    this.getExtremeDate = function(dates, min) {
+.service('dateUtilService', function($filter, _) {
+
+    this.formatDate = formatDate;
+    this.isFullYear = isFullYear;
+    this.getExtremeDate = getExtremeDate;
+    this.formatDateRange = formatDateRange;
+    this.formatExtremeDateRange = formatExtremeDateRange;
+    this.changeDateAndFormat = changeDateAndFormat;
+
+    function getExtremeDate(dates, min) {
         if (_.isArray(dates)) {
             var fun;
             if (min) {
@@ -18,36 +26,41 @@ angular.module('eventsApp')
             return undefined;
         }
         return new Date(dates);
-    };
+    }
 
-    this.isFullYear = function(start, end) {
+    function isFullYear(start, end) {
         return start.getDate() === 1 && start.getMonth() === 0 && end.getDate() === 31 &&
             end.getMonth() === 11;
-    };
+    }
 
-    this.formatDateRange = function(start, end) {
+    function formatDateRange(start, end) {
         if (this.isFullYear(start, end)) {
             var start_year = start.getFullYear();
             var end_year = end.getFullYear();
             return start_year === end_year ? start_year : start_year + '-' + end_year;
         }
         if (end - start) {
-            return start.toLocaleDateString() + '-' + end.toLocaleDateString();
+            return this.formatDate(start) + '-' + this.formatDate(end);
         }
-        return start.toLocaleDateString();
-    };
+        return this.formatDate(start);
+    }
 
-    this.formatExtremeDateRange = function(start, end) {
+    function formatExtremeDateRange(start, end) {
         var s = this.getExtremeDate(start, true);
         var e = this.getExtremeDate(end, false);
         var time = this.formatDateRange(s, e);
 
         return time;
-    };
+    }
 
-    this.changeDateAndFormat = function(date, days) {
+    function changeDateAndFormat(date, days) {
         var d = new Date(date);
         d.setDate(d.getDate() + days);
         return d.toISODateString();
-    };
+    }
+
+    function formatDate(date) {
+        return $filter('date')(date, 'dd.MM.yyyy');
+    }
+
 });
