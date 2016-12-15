@@ -48,37 +48,50 @@
         '  } ';
 
         var relatedUnitQry = prefixes +
-        'SELECT DISTINCT ?id (SAMPLE(?name) AS ?label) ?level WHERE {  ' +
-        '{ SELECT DISTINCT ?id ?level WHERE { ' +
-        '                  ?ejoin a etypes:UnitJoining ; ' +
-        '                    crm:P143_joined ?unit ; ' +
-        '                    crm:P144_joined_with ?id . ' +
-        '                BIND (2 AS ?level) ' +
-        '      			VALUES ?unit  { {0} } ' +
-        '  	} GROUP BY ?id ?level LIMIT 5 ' +
-        '} UNION { ' +
-        '	SELECT ?id (COUNT(?s) AS ?no) ?level WHERE { ' +
-        '					{?ejoin a etypes:UnitJoining ; ' +
-        '			                crm:P143_joined ?id ; ' +
-        '			                crm:P144_joined_with ?unit . ' +
-        '                    BIND (0 AS ?level) ' +
-        '			      } UNION { ?ejoin a etypes:UnitJoining ; ' +
-        '			                crm:P143_joined ?unit ; ' +
-        '			                crm:P144_joined_with ?superunit . ' +
-        '			           ?ejoin2 a etypes:UnitJoining ; ' +
-        '			                crm:P143_joined ?id ; ' +
-        '			                crm:P144_joined_with ?superunit . ' +
-        '                BIND (1 AS ?level) ' +
-        '	                    FILTER ( ?unit != ?id ) ' +
-        '			      } ' +
-        '                ?s ?p ?id . ' +
-        '                VALUES ?unit  { {0} } ' +
-        '    } GROUP BY ?id ?no ?level ORDER BY DESC(?no) LIMIT 50 } ' +
-        ' FILTER ( BOUND(?level) ) ' +
-        '	?ename a etypes:UnitNaming ; ' +
-        '		skos:prefLabel ?name ; ' +
-        '		crm:P95_has_formed ?id . ' +
-        '} GROUP BY ?id ?label ?level ORDER BY ?name ';
+   		'SELECT DISTINCT  ?id ?level (SAMPLE(?name) AS ?label) WHERE { ' + 
+			'{ SELECT DISTINCT ?id ?level WHERE { ' + 
+			'      VALUES ?unit  { {0} } ' + 
+			'        { ?unit (^crm:P143_joined/crm:P144_joined_with) ?id .  ' + 
+			'        BIND (2 AS ?level)  ' + 
+			'		} UNION {  ' + 
+			'        ?unit (^crm:P143_joined/crm:P144_joined_with){2} ?id .  ' + 
+			'        BIND (3 AS ?level)  ' + 
+			'        } UNION {  ' + 
+			'        ?unit (^crm:P143_joined/crm:P144_joined_with){3} ?id .  ' + 
+			'        BIND (4 AS ?level)  ' + 
+			'        } UNION {  ' + 
+			'        ?unit (^crm:P143_joined/crm:P144_joined_with){4} ?id .  ' + 
+			'        BIND (5 AS ?level)  ' + 
+			'        } UNION {  ' + 
+			'        ?unit (^crm:P143_joined/crm:P144_joined_with){5} ?id .  ' + 
+			'        BIND (6 AS ?level)  ' + 
+			'        } UNION {  ' + 
+			'        ?unit (^crm:P143_joined/crm:P144_joined_with){6} ?id .  ' + 
+			'        BIND (7 AS ?level)  ' + 
+			'        } UNION {  ' + 
+			'        ?unit (^crm:P143_joined/crm:P144_joined_with){7} ?id .  ' + 
+			'        BIND (8 AS ?level)  ' + 
+			'        } ' + 
+			'       ' + 
+			'  	} GROUP BY ?id ?level LIMIT 10  ' + 
+			'} UNION {  ' + 
+			'	SELECT ?id (COUNT(?s) AS ?no) ?level  WHERE {  ' + 
+			'      			VALUES ?unit  { {0} }  ' + 
+			'                {	?unit ^crm:P144_joined_with/crm:P143_joined ?id .  ' + 
+			'                    BIND (0 AS ?level)  ' + 
+			'			    } UNION {  ' + 
+			'        			?unit ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' + 
+			'               		BIND (1 AS ?level) ' + 
+			'	                FILTER ( ?unit != ?id ) ' + 
+			'			  	} ' + 
+			'      			?id a atypes:MilitaryUnit . ' + 
+			'                ?s ?p ?id . ' + 
+			'      FILTER ( BOUND(?level) )  ' + 
+			'    } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 }  ' + 
+			'  	?ename a etypes:UnitNaming ; ' + 
+			'         skos:prefLabel ?name ; ' + 
+			'         crm:P95_has_formed ?id . ' + 
+			'} GROUP BY ?id ?level ORDER BY ?level '; 
 
         var byPersonIdQry = prefixes +
         ' SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE { 	' +

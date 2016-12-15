@@ -113,7 +113,7 @@
                             } case 1: {
                                 unit.relatedUnits.push(relatedUnit);
                                 break;
-                            } case 2: {
+                            } default: {
                                 unit.superUnits.push(relatedUnit);
                                 break;
                             }
