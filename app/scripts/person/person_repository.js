@@ -192,7 +192,7 @@
 
         var byMedalQryResultSet =
         ' VALUES ?medal { {0} } .  ' +
-        ' ?evt a  crm:E13_Attribute_Assignment ;	 ' +
+        ' ?evt a crm:E13_Attribute_Assignment ;	 ' +
         '   crm:P141_assigned ?medal ; ' +
         '   crm:P11_had_participant ?id .  ' +
         ' ?id a atypes:MilitaryPerson .	 ' +
@@ -213,6 +213,36 @@
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
         '   ?casualty casualties:kuolinaika ?death_time . ' +
         ' } ';
+        
+        var relatedPersonQry = prefixes +
+        'SELECT DISTINCT (?person2 AS ?id) (?name2 AS ?label) '+
+      '  WHERE {' +
+		'  VALUES ?person1 { {0} } ' +
+		'  ?pclass rdfs:subClassOf* crm:E21_Person . ' +
+		' ' +
+		'  { ' +
+		'    ?person1 (^crm:P11_had_participant)/crm:P11_had_participant ?person2 . ' +
+		'    BIND (20 AS ?score) ' +
+		'  } UNION { ' +
+		'    ?person1 ^crm:P11_had_participant/:hasRank ?rank . ' +
+		'    ?rank ^:hasRank/crm:P11_had_participant ?person2 ; ' +
+		'    	:level ?score . ' +
+		'  } UNION { ' +
+		'    ?person1 ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?person2 . ' +
+		'    BIND (30 AS ?score) ' +
+		'  } UNION { ' +
+		'    ?person1 ^crm:P11_had_participant/crm:P141_assigned/^crm:P141_assigned/crm:P11_had_participant ?person2 . ' +
+		'    BIND (30 AS ?score) ' +
+		'  } ' +
+		' ' +
+		'  filter (?person1 != ?person2) ' +
+		' ' +
+		'  ?person2 a ?pclass ; ' +
+		'           skos:prefLabel ?name2 . ' +
+		'  ?person1 skos:prefLabel ?name1 . ' +
+		'} 	GROUP BY ?person1 ?name1 ?person2 ?name2 ' +
+		'		ORDER BY DESC(sum(?score)) ' +
+		'		LIMIT 50 ';
 
         this.getByUnitId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
@@ -302,5 +332,13 @@
                 return arr;
             });
         };
+        
+        this.getRelatedPersons = function (id) {        	
+				var qry = relatedPersonQry.format('<{0}>'.format(id));
+				console.log(qry);
+				return endpoint.getObjects(qry).then(function(data) {
+					 return data; 
+            }); 
+        }
     });
 })();

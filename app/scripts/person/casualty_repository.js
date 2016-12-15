@@ -127,6 +127,7 @@
             // Expects a single unit
             start = formatDate(start);
             end = formatDate(end);
+        console.log(start,end);
             var qry = casualtyCountsByTimeGroupByUnitAndTypeQry.format(start, end, unit);
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectList(data);

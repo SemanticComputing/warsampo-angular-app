@@ -141,7 +141,8 @@
                 self.fetchNationalBib(person),
                 self.fetchDeathRecord(person),
                 self.fetchRelatedPhotos(person),
-                self.fetchDiaries(person)
+                self.fetchDiaries(person),
+                self.fetchRelatedPersons(person)
             ];
 
             return $q.all(related).then(function() {
@@ -190,6 +191,16 @@
             return personRepository.getNationalBibliography(person).then(function(nb) {
                 if (nb && nb.length && nb[0].id) {
                     person.nationals = nb[0];
+                    person.hasLinks = true;
+                }
+            });
+        };
+		
+		  self.fetchRelatedPersons = function(person) {
+            return personRepository.getRelatedPersons(person.id).then(function(r) {
+                if (r) {
+                	  //console.log(r);
+                    person.relatedPersons = r;
                     person.hasLinks = true;
                 }
             });
