@@ -28,8 +28,11 @@
         EventDemoServiceConstructor.prototype.getMinVisibleDate = getMinVisibleDate;
         EventDemoServiceConstructor.prototype.getMaxVisibleDate = getMaxVisibleDate;
         EventDemoServiceConstructor.prototype.getVisibleDateRange = getVisibleDateRange;
+        EventDemoServiceConstructor.prototype.navigateTo = navigateTo;
         EventDemoServiceConstructor.prototype.navigateToEvent = navigateToEvent;
         EventDemoServiceConstructor.prototype.navigateToDate = navigateToDate;
+        EventDemoServiceConstructor.prototype.navigateToNextEvent = navigateToNextEvent;
+        EventDemoServiceConstructor.prototype.navigateToPreviousEvent = navigateToPreviousEvent;
         EventDemoServiceConstructor.prototype.navigateToEarliestEvent = navigateToEarliestEvent;
         EventDemoServiceConstructor.prototype.setCenterVisibleDate = setCenterVisibleDate;
         EventDemoServiceConstructor.prototype.addOnScrollListener = addOnScrollListener;
@@ -144,17 +147,24 @@
             });
         }
 
-        function navigateToEvent(e) {
-            var item = _.find(this.tm.getItems(), function(item) {
-                return _.isEqual(item.opts.event.id, e.id);
-            });
-            this.navigateToDate(new Date(e.start_time));
+        function navigateTo(item) {
             if (item) {
+                this.navigateToDate(item.getStart());
                 this.tm.setSelected(item);
                 item.openInfoWindow();
                 return this.refresh();
             }
             return $q.reject('Event not found on timeline');
+        }
+
+        function navigateToEvent(e) {
+            var item = _.find(this.tm.getItems(), function(item) {
+                return _.isEqual(item.opts.event.id, e.id);
+            });
+            if (item) {
+                return this.navigateTo(item);
+            }
+            return this.navigateToDate(new Date(e.start_time));
         }
 
         function navigateToDate(date) {
@@ -164,6 +174,22 @@
 
         function navigateToEarliestEvent() {
             this.navigateToDate('earliest');
+        }
+
+        function navigateToNextEvent() {
+            var e = this.current.getNext();
+            if (e) {
+                return this.navigateTo(e);
+            }
+            return $q.reject('No next event');
+        }
+
+        function navigateToPreviousEvent() {
+            var e = this.tm.getPrev();
+            if (e) {
+                return this.navigateTo(e);
+            }
+            return $q.reject('No previous event');
         }
 
         function setupTimemap() {
