@@ -2,7 +2,7 @@
 <div>
   <h3>
     <span ng-repeat="place in $ctrl.event.places">
-      <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
+      <a ws-page-link="place.id">{{ place.label | concatList }}</a>{{ $last ? ' ' : ', ' }}
     </span>
     {{ $ctrl.event.timeSpanString }} - {{ $ctrl.event.getTypeLabel() }}
   </h3>

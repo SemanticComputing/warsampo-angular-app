@@ -72,6 +72,7 @@
         var facetOptions = {
             endpointUrl: SPARQL_ENDPOINT_URL,
             rdfClass: '<http://ldf.fi/warsa/photographs/Photograph>',
+            constraint: '?id <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?order .',
             preferredLang : 'fi'
         };
 
