@@ -5,12 +5,12 @@
 </div>
 <div uib-collapse="!ctrl.showCasualtyStats">
   <div class="row" ng-repeat="casualtyClass in ctrl.getCasualtyStats()">
-    <div ng-if="casualtyClass.id">
+    <div ng-if="::casualtyClass.id">
       <div class="col-xs-10 casualtyCount">
-        {{ casualtyClass.description }}
+        {{ ::casualtyClass.description }}
       </div>
       <div class="col-xs-2 casualtyCount">
-        {{ casualtyClass.count }}
+        {{ ::casualtyClass.count }}
       </div>
     </div>
   </div>
