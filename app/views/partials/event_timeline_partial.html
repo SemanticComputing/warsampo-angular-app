@@ -2,19 +2,21 @@
   <div class="col-lg-5 col-lg-push-7 col-md-12">
     <div class="row">
       <div class="col-md-12">
-        <div ng-if="ctrl.getCurrent()">
-          <event-details data-event=ctrl.getCurrent()></event-details>
-          <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
-          <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
-        </div>
-        <div>
-          <div ng-if="!ctrl.getCurrent()">
+        <div ng-switch="!!ctrl.getCurrent()">
+          <div ng-switch-when="true">
+            <event-details data-event=ctrl.getCurrent()></event-details>
+            <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
+            <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
+          </div>
+          <div ng-switch-default>
             <!-- Help text -->
             <h1 translate>{{ ctrl.title }}</h1>
             <h3 translate>{{ ctrl.helpTextTitle }}</h3>
             <translate>{{ ctrl.helpText }}</translate>
             <div ng-include="'views/partials/event_colors.html'"></div>
           </div>
+        </div>
+        <div>
           <hr/>
           <!-- Casualty statistics -->
           <div ng-include="'views/partials/casualty_stats_partial.html'"></div>

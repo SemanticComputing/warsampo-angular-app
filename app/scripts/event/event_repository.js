@@ -13,6 +13,8 @@
 
         this.getById = getById;
         this.getByTimeSpan = getByTimeSpan;
+        this.getLooselyWithinTimeSpan = getLooselyWithinTimeSpan;
+        this.getLooselyWithinTimeSpanFilterById = getLooselyWithinTimeSpanFilterById;
         this.getByPlaceId = getByPlaceId;
         this.getByPlaceIdFilterById = getByPlaceIdFilterById;
         this.getByPersonId = getByPersonId;
@@ -29,7 +31,7 @@
         ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
         ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
-        ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
         ' PREFIX sch: <http://schema.org/>' +
@@ -48,7 +50,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
-        '  ?title ?place_id ?medal__id ?medal__label ?source ?photo__id ?photo__url';
+        '  ?title ?place_id ?medal__id ?medal__label ?source ?photo__id ?photo__url ?photo__thumbnail_url';
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -69,7 +71,7 @@
         '     ?id ?part_pred ?participant_id . ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '    ?id dc:source ?source_id . ' +
+        '    ?id dc:source|dct:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
         '   } ' +
@@ -78,7 +80,8 @@
         '   } ' +
         '   OPTIONAL { ' +
         '    ?id crm:P94_has_created ?photo__id .  ' +
-        '    ?photo__id crm:P94_has_created ?photo__id .  ' +
+        '    ?photo__id sch:contentUrl ?photo__url ; ' +
+        '      sch:thumbnailUrl ?photo__thumbnail_url . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id crm:P4_has_time-span ?time_id . ' +
@@ -109,9 +112,14 @@
         '      crm:P82b_end_of_the_end ?end_time . ' +
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ' +
-        '    ?id dc:source ?source_id . ' +
+        '    ?id dc:source|dct:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
+        '    ?id crm:P94_has_created ?photo__id .  ' +
+        '    ?photo__id sch:contentUrl ?photo__url ; ' +
+        '      sch:thumbnailUrl ?photo__thumbnail_url . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
@@ -195,9 +203,9 @@
         '  UNION '+
         '  { '+
         '   ?id a articles:Article ; '+
-        '    dcterms:hasFormat ?link ; '+
+        '    dct:hasFormat ?link ; '+
         '    dc:title ?description ; '+
-        '   { ?id dcterms:subject ?person . }  '+
+        '   { ?id dct:subject ?person . }  '+
         '   UNION  '+
         '   { ?id articles:nerperson ?person . }  '+
         '   UNION  '+
@@ -287,7 +295,6 @@
             });
         }
 
-        this.getLooselyWithinTimeSpan = getLooselyWithinTimeSpan;
         function getLooselyWithinTimeSpan(start, end, pageSize) {
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
@@ -296,7 +303,6 @@
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 
-        this.getLooselyWithinTimeSpanFilterById = getLooselyWithinTimeSpanFilterById;
         function getLooselyWithinTimeSpanFilterById(start, end, id, pageSize) {
             // Get events that at least partially occured between the dates start and end.
             // Filter out the given id.

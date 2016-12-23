@@ -352,7 +352,9 @@
             var end = new Date(entry.options.event.end_time);
             end.setDate(end.getDate() + photoSettings.afterOffset);
 
-            if (_.some(distinctPhotoData, function(photo) {
+            var e = entry.options.event;
+
+            if (e.photo || _.some(distinctPhotoData, function(photo) {
                 var d = new Date(photo.created);
 
                 if (d >= start && d <= end && (!photoSettings.inProximity ||
