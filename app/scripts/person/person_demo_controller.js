@@ -6,7 +6,7 @@
 
     /* @ngInject */
     function PersonDemoController($scope, $routeParams, $location, personService,
-            PersonDemoService, Settings, WAR_INFO) {
+            PersonDemoService, eventService, Settings, WAR_INFO) {
 
         var self = this;
         var demoService = new PersonDemoService();
@@ -81,7 +81,14 @@
 
         function updateByUri(uri) {
             self.isLoadingObject = true;
-            personService.getById(uri)
+            if ($location.search().uri != uri) {
+                $location.search('uri', uri);
+            }
+            var eventId = $location.search().event;
+            if (angular.isString(eventId)) {
+                self.isLoadingEvent = true;
+            }
+            return personService.getById(uri)
             .then(function(person) {
                 self.person = person;
                 self.isLoadingObject = false;
@@ -89,18 +96,25 @@
                 return personService.fetchRelatedForDemo(person);
             }).then(function(person) {
                 return createTimeMap(person.id);
+            }).then(function() {
+                if (self.isLoadingEvent) {
+                    return eventService.getEventById(eventId).then(function(event) {
+                        return demoService.navigateToEvent(event);
+                    });
+                }
+                return demoService.refresh();
+            }).then(function() {
+                self.isLoadingEvent = false;
             }).catch(function() {
                 self.isLoadingObject = false;
+                self.isLoadingEvent = false;
             });
         }
 
         function updateActor() {
             if (self.selectedItem && self.selectedItem.id) {
                 var uri = self.selectedItem.id;
-
-                if ($location.search().uri != uri) {
-                    $location.search('uri', uri);
-                }
+                $location.search('event', null);
 
                 self.updateByUri(uri);
             }

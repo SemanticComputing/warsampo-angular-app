@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div ng-if="ctrl.getCurrent()">
           <event-details data-event=ctrl.getCurrent()></event-details>
-          <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a> | <a ng-click="ctrl.goToNext()" translate>GO_TO_NEXT_EVENT</a></p>
+          <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
           <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
         </div>
         <div>

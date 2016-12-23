@@ -33,8 +33,6 @@
         self.getMinVisibleDate = getMinVisibleDate;
         self.getMaxVisibleDate = getMaxVisibleDate;
         self.getCurrent = getCurrent;
-        self.goToNext = goToNext;
-        self.goToPrevious = goToPrevious;
         self.getImages = getImages;
 
         /* Activate */
@@ -57,14 +55,6 @@
 
         function getMaxVisibleDate() {
             return eventDemoService.getMaxVisibleDate();
-        }
-
-        function goToNext() {
-            return eventDemoService.navigateToNextEvent();
-        }
-
-        function goToPrevious() {
-            return eventDemoService.navigateToPreviousEvent();
         }
 
         function getCurrent() {

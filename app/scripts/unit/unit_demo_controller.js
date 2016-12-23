@@ -11,7 +11,7 @@
         var self = this;
 
         var defaultUnit = 'http://ldf.fi/warsa/actors/actor_940';
-        var unitDemoService = new UnitDemoService();
+        var demoService = new UnitDemoService();
 
         // User search input
         self.queryregex = '';
@@ -40,45 +40,45 @@
         /* Implementation */
 
         function hasEvents() {
-            return !self.isLoadingTimeline && unitDemoService.hasEvents();
+            return !self.isLoadingTimeline && demoService.hasEvents();
         }
 
         function getCasualtyCount() {
-            return unitDemoService.getCasualtyCount();
+            return demoService.getCasualtyCount();
         }
 
         function getCasualtyStats() {
-            return unitDemoService.getCasualtyStats();
+            return demoService.getCasualtyStats();
         }
 
         function getMinVisibleDate() {
-            return unitDemoService.getMinVisibleDate();
+            return demoService.getMinVisibleDate();
         }
 
         function getMaxVisibleDate() {
-            return unitDemoService.getMaxVisibleDate();
+            return demoService.getMaxVisibleDate();
         }
 
         function getCurrent() {
-            return unitDemoService.getCurrent();
+            return demoService.getCurrent();
         }
 
         function clearEvent() {
-            return unitDemoService.clearCurrent();
+            return demoService.clearCurrent();
         }
 
         function getImages() {
-            return unitDemoService.getImages();
+            return demoService.getImages();
         }
 
         function init() {
             Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
             Settings.setApplyFunction(update);
-            Settings.setHeatmapUpdater(unitDemoService.updateHeatmap);
+            Settings.setHeatmapUpdater(demoService.updateHeatmap);
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
-                unitDemoService.cleanUp();
+                demoService.cleanUp();
             });
 
             getItems();
@@ -96,7 +96,7 @@
         }
 
         function createTimeMap(id) {
-            return unitDemoService.createTimemap(id, WAR_INFO.winterWarTimeSpan.start,
+            return demoService.createTimemap(id, WAR_INFO.winterWarTimeSpan.start,
                     WAR_INFO.continuationWarTimeSpan.end,
                     WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights));
         }
@@ -150,17 +150,16 @@
             }
             return unitService.getById(uri).then(function(unit) {
                 self.currentObject = unit;
-                self.isLoadingTimeline = true;
                 unitService.fetchRelated(unit, true);
                 return createTimeMap(uri);
             }).then(function() {
                 self.isLoadingTimeline = false;
                 if (self.isLoadingEvent) {
                     return eventService.getEventById(eventId).then(function(event) {
-                        return unitDemoService.navigateToEvent(event);
+                        return demoService.navigateToEvent(event);
                     });
                 }
-                return unitDemoService.refresh();
+                return demoService.refresh();
             }).then(function() {
                 self.isLoadingEvent = false;
             }).catch(function(data) {

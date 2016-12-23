@@ -7,7 +7,7 @@
 
     /* @ngInject */
     function PersonDemoService($q, $location, EventDemoService, eventService,
-            timemapService, Settings) {
+            timemapService, Settings, WAR_INFO) {
 
         PersonDemoServiceConstructor.prototype.createTimemap = createTimemapByActor;
 
@@ -48,8 +48,12 @@
             self.highlights = highlights;
             var photoConfig = Settings.getPhotoConfig();
 
-            return eventService.getEventsByActorId(id)
+            return eventService.getEventsByActorId(id,
+                WAR_INFO.winterWarTimeSpan.start, WAR_INFO.continuationWarTimeSpan.end)
             .then(function(data) {
+                if (data.length === 0) {
+                    return $q.reject('No events');
+                }
                 return eventService.fetchPlaces(data);
             })
             .then(function(data) {
@@ -68,10 +72,8 @@
 
                 if (isNew) {
                     self.setupTimemap();
-                    self.navigateToDate('1939-11-30');
-                    return self.tm.timeline.setAutoWidth();
                 }
-                self.navigateToDate('1939-11-30');
+                return self.navigateToEarliestEvent();
             }).catch(function(data) {
                 return $q.reject(data);
             });

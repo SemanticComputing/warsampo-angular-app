@@ -90,8 +90,8 @@
             return eventRepository.getLooselyWithinTimeSpan(start, end, pageSize);
         }
 
-        function getEventsByActorId(id) {
-            return eventRepository.getByActorId(id);
+        function getEventsByActorId(id, start, end, pageSize) {
+            return eventRepository.getByActorId(id, start, end, pageSize);
         }
 
         function getEventsByPlaceId(ids) {

@@ -9,17 +9,17 @@
     .service('eventRepository', eventRepository);
 
     function eventRepository($q, _, baseRepository, AdvancedSparqlService, eventMapperService,
-            QueryBuilderService, ENDPOINT_CONFIG) {
+            QueryBuilderService, dateUtilService, ENDPOINT_CONFIG) {
 
         this.getById = getById;
         this.getByTimeSpan = getByTimeSpan;
         this.getByPlaceId = getByPlaceId;
         this.getByPlaceIdFilterById = getByPlaceIdFilterById;
         this.getByPersonId = getByPersonId;
-        this.getByUnitId = getByUnitId;
+        this.getByUnitId = getByActorId;
         this.getUnitAndSubUnitEventsByUnitId = getUnitAndSubUnitEventsByUnitId;
         this.getPersonLifeEvents = getPersonLifeEvents;
-        this.getByActorId = getByUnitId;
+        this.getByActorId = getByActorId;
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, eventMapperService);
 
@@ -132,10 +132,13 @@
           eventTypeFilter;
 
         var eventsByActorQryResultSet =
-        '   VALUES ?participant_id { {0} }  ' +
-        '   ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
-        '   ?id ?part_pred ?participant_id . ' +
-        '   ?id crm:P4_has_time-span ?time_id ;  ';
+        ' VALUES ?participant_id { {0} }  ' +
+        ' ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
+        ' ?id ?part_pred ?participant_id . ' +
+        ' ?id crm:P4_has_time-span [ ' +
+        '   crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '   crm:P82b_end_of_the_end ?end_time ' +
+        ' ] . ';
 
         var eventsAndSubUnitEventsByUnitQryResultSet =
         ' { ' +
@@ -258,10 +261,8 @@
 
         var eventFilterWithinTimeSpanRelaxed =
         'FILTER( ' +
-        '   (?start_time >= "{0}"^^xsd:date && ' +
-        '   ?start_time <= "{1}"^^xsd:date) || ' +
-        '   (?end_time >= "{0}"^^xsd:date && ' +
-        '   ?end_time <= "{1}"^^xsd:date) ' +
+        '   ?start_time <= "{1}"^^xsd:date && ' +
+        '   ?end_time >= "{0}"^^xsd:date ' +
         ')';
 
         var eventsWithinRelaxedTimeSpanResultSet = eventQryResultSet.format(eventTypeFilter,
@@ -340,14 +341,28 @@
             return endpoint.getObjects(qry);
         }
 
-        function getByUnitId(id, pageSize) {
+        function getByActorId(id, start, end, pageSize) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
             }
             var resultSet = eventsByActorQryResultSet.format(id);
+            resultSet = addDateFilters(resultSet, start, end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        }
+
+        function addDateFilters(qry, start, end) {
+            var format = 'yyyy-MM-dd';
+            if (start) {
+                start = dateUtilService.formatDate(start, format);
+                qry += ' FILTER(?start_time <= "' + end + '"^^xsd:date)';
+            }
+            if (end) {
+                end = dateUtilService.formatDate(end, format);
+                qry += ' FILTER(?end_time >= "' + start + '"^^xsd:date)';
+            }
+            return qry;
         }
 
         function getUnitAndSubUnitEventsByUnitId(id, pageSize) {

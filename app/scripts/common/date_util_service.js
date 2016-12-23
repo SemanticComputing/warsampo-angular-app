@@ -59,8 +59,9 @@ angular.module('eventsApp')
         return d.toISODateString();
     }
 
-    function formatDate(date) {
-        return $filter('date')(date, 'dd.MM.yyyy');
+    function formatDate(date, format) {
+        format = format || 'dd.MM.yyyy';
+        return $filter('date')(date, format);
     }
 
 });

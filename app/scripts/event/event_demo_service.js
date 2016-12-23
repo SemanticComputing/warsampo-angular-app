@@ -28,11 +28,10 @@
         EventDemoServiceConstructor.prototype.getMinVisibleDate = getMinVisibleDate;
         EventDemoServiceConstructor.prototype.getMaxVisibleDate = getMaxVisibleDate;
         EventDemoServiceConstructor.prototype.getVisibleDateRange = getVisibleDateRange;
+        EventDemoServiceConstructor.prototype.scrollToDate = scrollToDate;
         EventDemoServiceConstructor.prototype.navigateTo = navigateTo;
         EventDemoServiceConstructor.prototype.navigateToEvent = navigateToEvent;
         EventDemoServiceConstructor.prototype.navigateToDate = navigateToDate;
-        EventDemoServiceConstructor.prototype.navigateToNextEvent = navigateToNextEvent;
-        EventDemoServiceConstructor.prototype.navigateToPreviousEvent = navigateToPreviousEvent;
         EventDemoServiceConstructor.prototype.navigateToEarliestEvent = navigateToEarliestEvent;
         EventDemoServiceConstructor.prototype.setCenterVisibleDate = setCenterVisibleDate;
         EventDemoServiceConstructor.prototype.addOnScrollListener = addOnScrollListener;
@@ -149,7 +148,7 @@
 
         function navigateTo(item) {
             if (item) {
-                this.navigateToDate(item.getStart());
+                this.scrollToDate(item.getStart());
                 this.tm.setSelected(item);
                 item.openInfoWindow();
                 return this.refresh();
@@ -167,29 +166,18 @@
             return this.navigateToDate(new Date(e.start_time));
         }
 
-        function navigateToDate(date) {
+        function scrollToDate(date) {
             this.tm.scrollToDate(date);
             googleMapsService.normalizeMapZoom(this.map);
         }
 
+        function navigateToDate(date) {
+            this.scrollToDate(date);
+            return this.refresh();
+        }
+
         function navigateToEarliestEvent() {
             this.navigateToDate('earliest');
-        }
-
-        function navigateToNextEvent() {
-            var e = this.current.getNext();
-            if (e) {
-                return this.navigateTo(e);
-            }
-            return $q.reject('No next event');
-        }
-
-        function navigateToPreviousEvent() {
-            var e = this.tm.getPrev();
-            if (e) {
-                return this.navigateTo(e);
-            }
-            return $q.reject('No previous event');
         }
 
         function setupTimemap() {

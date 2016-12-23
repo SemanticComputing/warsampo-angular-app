@@ -184,6 +184,30 @@
                 return $q.when(existingTimemap);
             }
 
+            bandInfo = bandInfo || getDefaultBandInfo(start, end, highlights);
+            bandInfo[0].zones = [
+                {
+                    start: '1939-07-01',
+                    end: '1940-04-30',
+                    magnify: 10,
+                    unit: Timeline.DateTime.MONTH
+                },
+                {
+                    start: '1941-05-01',
+                    end: '1945-12-31',
+                    magnify: 10,
+                    unit: Timeline.DateTime.MONTH
+                }
+            ];
+
+            var bands = [];
+
+            bands[1] = Timeline.createBandInfo(bandInfo[1]);
+            bands[0] = Timeline.createHotZoneBandInfo(bandInfo[0]);
+
+            bands[0].eventSource = true;
+            bands[1].eventSource = true;
+
             // Use timeout to let the template (or more specifically the map div)
             // render before creating the timemap.
             return $timeout(function() {
@@ -205,7 +229,7 @@
                             items: res
                         }
                     }],
-                    bandInfo: bandInfo || getDefaultBandInfo(start, end, highlights)
+                    bands: bands
                 });
             }, 0).then(function(tm) {
                 // Add listeners for touch events for mobile support
@@ -246,7 +270,7 @@
                     overview: true,
                     width: '40',
                     intervalPixels: 100,
-                    intervalUnit: Timeline.DateTime.MONTH,
+                    intervalUnit: Timeline.DateTime.YEAR,
                     decorators: bandDecorators1
                 },
                 {
