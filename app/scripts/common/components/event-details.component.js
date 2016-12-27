@@ -1,4 +1,7 @@
 (function() {
+
+    'use strict';
+
     function EventDetailsController() { }
 
     angular.module('eventsApp').component('eventDetails', {
