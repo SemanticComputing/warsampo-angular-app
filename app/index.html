@@ -9,12 +9,9 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css({.,app}) styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery.css" />
     <link rel="stylesheet" href="bower_components/sparql-faceter/dist/semantic-faceted-search.css" />
     <!-- endbower -->
-    <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery.css" />
-    <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery-indicator.css" />
-    <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery-video.css" />
-    <link rel="stylesheet" href="bower_components/blueimp-bootstrap-image-gallery/css/bootstrap-image-gallery.css" />
     <!-- endbuild -->
     <!-- build:css({app,.tmp}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
@@ -28,8 +25,6 @@
 
   <!-- Add your site or application content here -->
   <ws-navbar></ws-navbar>
-
-  <div ng-include="'views/partials/photo_gallery_partial.html'"></div>
 
   <div class="container-fluid">
     <div ng-view=""></div>
@@ -71,7 +66,6 @@
   <script src="bower_components/blueimp-gallery/js/blueimp-gallery.js"></script>
   <script src="bower_components/blueimp-gallery/js/jquery.blueimp-gallery.js"></script>
   <script src="bower_components/blueimp-gallery/js/blueimp-gallery-fullscreen.js"></script>
-  <script src="bower_components/blueimp-gallery/js/blueimp-gallery-indicator.js"></script>
   <script src="bower_components/spin.js/spin.js"></script>
   <script src="bower_components/angular-spinner/angular-spinner.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>

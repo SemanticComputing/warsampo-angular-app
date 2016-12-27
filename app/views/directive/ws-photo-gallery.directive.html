@@ -1,3 +1,13 @@
+<div id="blueimp-gallery-{{ ctrl.galleryId }}" class="blueimp-gallery blueimp-gallery-controls">
+  <!-- The container for the modal slides -->
+  <div class="slides"></div>
+  <!-- Controls for the borderless lightbox -->
+  <h3 class="title"></h3>
+  <a class="description" target="_self" translate>SHOW_INFO_PAGE</a>
+  <a class="prev">‹</a>
+  <a class="next">›</a>
+  <a class="close">×</a>
+</div>
 <div ng-if="ctrl.imagePager">
   <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">
     {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
@@ -13,12 +23,13 @@
     </span>
     <img ng-show="ctrl.isLoadingImages" src="images/loading.gif" />
     </p>
-    <div class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed" id="photo-thumbs">
-      <div id="photo-container">
-        <a ng-repeat="img in ctrl.photos" data-gallery
+    <div id="photo-thumbs-{{ ctrl.galleryId }}" class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed">
+      <div id="photo-container-{{ ctrl.galleryId }}">
+        <a ng-repeat="img in ctrl.photos"
+          data-gallery="#blueimp-gallery-{{ ctrl.galleryId }}"
           title="{{ ::img.description }} ({{ ::img.created }} {{ ::img.source }})"
           data-id="{{ ::img.id }}"
-          href="{{ ::img.url }}">
+          ng-href="{{ ::img.url }}">
           <div class="gallery-thumbnail-container">
             <img ws-fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ ::img.thumbnail_url }}" />
           </div>

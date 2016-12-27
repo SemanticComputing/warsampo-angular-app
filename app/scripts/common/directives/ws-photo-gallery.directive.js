@@ -22,6 +22,7 @@
         self.imageCount;
         self.isLoadingImages;
         self.photos = [];
+        self.galleryId = _.uniqueId();
 
         self.toggleCollapse = toggleCollapse;
 
@@ -31,12 +32,6 @@
 
         $scope.$on('$destroy', function() {
             win.unbind('resize', checkOverflow);
-        });
-
-        angular.element('#blueimp-gallery').on('slide', function (event, index) {
-            var elem = angular.element('#photo-container a').eq(index);
-            var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
-            angular.element(this).children('.description').attr('href', url);
         });
 
         $scope.$watch('images', function(val) {
@@ -62,11 +57,20 @@
                 $timeout(function() {
                     checkOverflow();
                 }, 0);
+                setSlideListener();
                 self.isLoadingImages = false;
             }).catch(function() {
                 self.isLoadingImages = false;
             });
         });
+
+        function setSlideListener() {
+            angular.element('#blueimp-gallery-' + self.galleryId).on('slide', function (event, index) {
+                var elem = angular.element('#photo-container-' + self.galleryId + ' a').eq(index);
+                var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
+                angular.element(this).children('.description').attr('href', url);
+            });
+        }
 
         function toggleCollapse() {
             if (self.imageCount !== self.photos.length) {
@@ -83,7 +87,7 @@
                 self.isLoadingImages = false;
                 return;
             }
-            var elem = angular.element('#photo-thumbs');
+            var elem = angular.element('#photo-thumbs-' + self.galleryId);
             if (elem && elem[0]) {
                 var fullHeight = elem[0].scrollHeight;
                 var visibleHeight = elem[0].clientHeight;
