@@ -1,5 +1,7 @@
 <div ng-if="ctrl.imagePager">
-  <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">{{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" /></div>
+  <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">
+    {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
+  </div>
   <div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount" translate>NO_RELATED_PHOTOS</div>
   <div ng-if="ctrl.imageCount">
     <p>{{ ctrl.imageCount }} {{ 'N_PHOTOS' | translate }}

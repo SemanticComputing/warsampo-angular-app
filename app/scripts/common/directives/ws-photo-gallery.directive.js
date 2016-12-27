@@ -6,7 +6,7 @@
         return {
             restrict:'E',
             scope: {
-                images: '='
+                images: '<'
             },
             controller: PhotoGalleryContoller,
             controllerAs: 'ctrl',
