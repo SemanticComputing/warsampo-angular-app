@@ -1,4 +1,4 @@
-<div id="blueimp-gallery-{{ ctrl.galleryId }}" class="blueimp-gallery blueimp-gallery-controls">
+<div id="blueimp-gallery-{{ ::ctrl.galleryId }}" class="blueimp-gallery blueimp-gallery-controls">
   <!-- The container for the modal slides -->
   <div class="slides"></div>
   <!-- Controls for the borderless lightbox -->
@@ -26,7 +26,7 @@
     <div id="photo-thumbs-{{ ctrl.galleryId }}" class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed">
       <div id="photo-container-{{ ctrl.galleryId }}">
         <a ng-repeat="img in ctrl.photos"
-          data-gallery="#blueimp-gallery-{{ ctrl.galleryId }}"
+          data-gallery="#blueimp-gallery-{{ ::ctrl.galleryId }}"
           title="{{ ::img.description }} ({{ ::img.created }} {{ ::img.source }})"
           data-id="{{ ::img.id }}"
           ng-href="{{ ::img.url }}">
