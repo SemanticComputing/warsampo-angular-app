@@ -11,7 +11,7 @@
     /* @ngInject */
     function personService($q, _, baseService, personRepository, eventRepository,
                     placeRepository, unitRepository, photoRepository, casualtyRepository,
-                    dateUtilService, EVENT_TYPES) {
+                    dateUtilService, EVENT_TYPES, WAR_INFO) {
         var self = this;
 
         self.processLifeEvents = processLifeEvents;
@@ -37,7 +37,8 @@
 
 
         function fetchTimelineEvents(person) {
-            return eventRepository.getByActorId(person.id)
+            return eventRepository.getByActorId(person.id,
+                WAR_INFO.winterWarTimeSpan.start, WAR_INFO.continuationWarTimeSpan.end)
             .then(function(data) {
                 return baseService.getRelated(data, 'place_id', 'places', placeRepository);
             }).then(function(data) {

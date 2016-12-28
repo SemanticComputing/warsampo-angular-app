@@ -7,7 +7,7 @@
 
     /* @ngInject */
     function PersonDemoService($q, $location, EventDemoService, eventService,
-            timemapService, Settings, WAR_INFO) {
+            timemapService, Settings) {
 
         PersonDemoServiceConstructor.prototype.createTimemap = createTimemapByActor;
 
@@ -41,30 +41,20 @@
             this.fetchImages(item);
         }
 
-        function createTimemapByActor(id, start, end, highlights) {
+        function createTimemapByActor(person, start, end, highlights) {
             var self = this;
             self.current = undefined;
-            self.currentPersonId = id;
+            self.currentPersonId = person.id;
             self.highlights = highlights;
             var photoConfig = Settings.getPhotoConfig();
 
-            return eventService.getEventsByActorId(id,
-                WAR_INFO.winterWarTimeSpan.start, WAR_INFO.continuationWarTimeSpan.end)
-            .then(function(data) {
-                if (data.length === 0) {
-                    return $q.reject('No events');
-                }
-                return eventService.fetchPlaces(data);
-            })
-            .then(function(data) {
-                var bandInfo = timemapService.getDefaultBandInfo(start, end, highlights);
-                bandInfo[0].intervalPixels = 50;
-                bandInfo[1].intervalPixels = 50;
+            var bandInfo = timemapService.getDefaultBandInfo(start, end, highlights);
+            bandInfo[0].intervalPixels = 50;
+            bandInfo[1].intervalPixels = 50;
 
-                return timemapService.createTimemapWithPhotoHighlight(
-                    start, end, data, highlights, self.infoWindowCallback,
-                    photoConfig, bandInfo, self.tm);
-            })
+            return timemapService.createTimemapWithPhotoHighlight(
+                start, end, person.timelineEvents, highlights, self.infoWindowCallback,
+                photoConfig, bandInfo, self.tm)
             .then(function(timemap) {
                 var isNew = !self.tm;
                 self.tm = timemap;

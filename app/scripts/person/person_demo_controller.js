@@ -49,8 +49,8 @@
             }
         }
 
-        function createTimeMap(id) {
-            return demoService.createTimemap(id, WAR_INFO.winterWarTimeSpan.start,
+        function createTimeMap(person) {
+            return demoService.createTimemap(person, WAR_INFO.winterWarTimeSpan.start,
                     WAR_INFO.continuationWarTimeSpan.end,
                     WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights));
         }
@@ -81,6 +81,7 @@
 
         function updateByUri(uri) {
             self.isLoadingObject = true;
+            self.isLoadingTimeline = true;
             if ($location.search().uri != uri) {
                 $location.search('uri', uri);
             }
@@ -95,8 +96,9 @@
 
                 return personService.fetchRelatedForDemo(person);
             }).then(function(person) {
-                return createTimeMap(person.id);
+                return createTimeMap(person);
             }).then(function() {
+                self.isLoadingTimeline = false;
                 if (self.isLoadingEvent) {
                     return eventService.getEventById(eventId).then(function(event) {
                         return demoService.navigateToEvent(event);
@@ -108,6 +110,7 @@
             }).catch(function() {
                 self.isLoadingObject = false;
                 self.isLoadingEvent = false;
+                self.isLoadingTimeline = false;
             });
         }
 
