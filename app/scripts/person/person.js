@@ -37,7 +37,12 @@
 
 
         function fetchTimelineEvents(person) {
-            return eventRepository.getByActorId(person.id,
+            var id = [];
+            if (person.units) {
+                id = _.map(person.units, 'id');
+            }
+            id.push(person.id);
+            return eventRepository.getByActorId(id,
                 WAR_INFO.winterWarTimeSpan.start, WAR_INFO.continuationWarTimeSpan.end)
             .then(function(data) {
                 return baseService.getRelated(data, 'place_id', 'places', placeRepository);
@@ -187,14 +192,19 @@
 
         // for demo page:
         function fetchRelatedForDemo(person) {
+            var fetchTimeline = function() {
+                return self.fetchRelatedUnits(person).then(function(person) {
+                    return self.fetchTimelineEvents(person);
+                });
+            };
+
             var related = [
                 self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
-                self.fetchRelatedUnits(person),
+                fetchTimeline(),
                 self.fetchNationalBib(person),
                 self.fetchRelatedPhotos(person),
-                self.fetchDiaries(person),
-                self.fetchTimelineEvents(person)
+                self.fetchDiaries(person)
             ];
 
             return $q.all(related).then(function() {
@@ -208,6 +218,7 @@
                     person.units = units;
                     person.hasLinks = true;
                 }
+                return person;
             });
         }
 
@@ -266,8 +277,8 @@
             return personRepository.getNationalBibliographyByName(person);
         }
 
-        function getItems (regx, controller) {
-            return personRepository.getItems(regx, controller);
+        function getItems(regx) {
+            return personRepository.getItems(regx);
         }
     }
 })();

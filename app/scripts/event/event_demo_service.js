@@ -16,6 +16,7 @@
         EventDemoServiceConstructor.prototype.getCasualtyStats = getCasualtyStats;
         EventDemoServiceConstructor.prototype.getCurrent = getCurrent;
         EventDemoServiceConstructor.prototype.clearCurrent = clearCurrent;
+        EventDemoServiceConstructor.prototype.clear = clear;
         EventDemoServiceConstructor.prototype.getImages = getImages;
 
         EventDemoServiceConstructor.prototype.createTimemap = createTimemapByTimeSpan;
@@ -59,7 +60,12 @@
 
         }
 
+        function clear() {
+            return timemapService.clear(this.tm);
+        }
+
         function clearCurrent() {
+            timemapService.clearSelection(this.current);
             this.current = undefined;
         }
 
@@ -139,11 +145,14 @@
 
         function refresh() {
             var self = this;
-            var promises = [self.calculateCasualties(), self.updateHeatmap()];
-            return $q.all(promises).then(function(res) {
-                self.tm.timeline.setAutoWidth();
-                return res;
-            });
+            if (self.tm) {
+                var promises = [self.calculateCasualties(), self.updateHeatmap()];
+                return $q.all(promises).then(function(res) {
+                    self.tm.timeline.setAutoWidth();
+                    return res;
+                });
+            }
+            return $q.when();
         }
 
         function navigateTo(item) {
@@ -157,11 +166,16 @@
         }
 
         function navigateToEvent(e) {
+            var id = angular.isString(e) ? e : e.id;
+
             var item = _.find(this.tm.getItems(), function(item) {
-                return _.isEqual(item.opts.event.id, e.id);
+                return _.isEqual(item.opts.event.id, id);
             });
             if (item) {
                 return this.navigateTo(item);
+            }
+            if (!e.start_time) {
+                return $q.reject('Cannot navigate to event');
             }
             return this.navigateToDate(new Date(e.start_time));
         }

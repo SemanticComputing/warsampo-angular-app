@@ -25,6 +25,8 @@
         this.addOnScrollListener = addOnScrollListener;
         this.setCenterVisibleDate = setCenterVisibleDate;
         this.getDefaultBandInfo = getDefaultBandInfo;
+        this.clearSelection = clearSelection;
+        this.clear = clear;
 
         this.cleanUp = cleanUp;
 
@@ -36,21 +38,26 @@
         eventTypeThemes[EVENT_TYPES.BATTLE] = 'red';
         eventTypeThemes[EVENT_TYPES.POLITICAL_ACTIVITY] = 'purple';
 
-        var photoSettings = {
-            beforeOffset: 0,
-            afterOffset: 0,
-            inProximity: true
-        };
-
         // TODO: this should be a stateless service or a service constructor
         var oldTheme;
         var oldEvent;
+        var photoSettings;
 
         function cleanUp() {
             // Remove the onresize function set by Timemap...
             $window.onresize = undefined;
             oldTheme = undefined;
             oldEvent = undefined;
+            photoSettings = undefined;
+        }
+
+        function getDefaultPhotoSettings() {
+            return {
+                beforeOffset: 0,
+                afterOffset: 0,
+                inProximity: true
+            };
+
         }
 
         /* Public API functions */
@@ -169,7 +176,10 @@
         */
         function createTimemap(start, end, events, highlights,
                 infoWindowCallback, photoData, photoConfig, bandInfo, existingTimemap) {
+
             var distinctPhotoData = photoData || [];
+
+            photoSettings = getDefaultPhotoSettings();
             angular.extend(photoSettings, photoConfig);
 
             var res = [];
@@ -297,6 +307,18 @@
                 callback(event);
             }
             band.setMinVisibleDate(start);
+        }
+
+        function clearSelection(event) {
+            if (event) {
+                event.changeTheme(oldTheme);
+            }
+            oldTheme = undefined;
+            oldEvent = undefined;
+        }
+
+        function clear(tm) {
+            _.invoke(tm, 'datasets.warsa.clear');
         }
 
         function createEventObject(e, distinctPhotoData) {

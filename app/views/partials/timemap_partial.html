@@ -1,6 +1,9 @@
 <div id="timemap-container">
-  <div id="loading-overlay" ng-if="ctrl.isLoadingTimeline">
+  <div id="loading-overlay" class="timemap-overlay" ng-if="ctrl.isLoadingTimeline">
     <h2>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h2>
+  </div>
+  <div id="no-events-overlay" class="timemap-overlay" ng-if="ctrl.noEvents">
+    <h2 translate>NO_EVENTS</h2>
   </div>
   <div id="timemap">
     <div id="mapcontainer">

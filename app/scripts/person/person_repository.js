@@ -290,15 +290,13 @@
             });
         };
 
-        this.getItems = function (regx, controller) {
+        this.getItems = function(regx) {
             var qry = selectorQuery.format('{0}'.format(regx));
-            controller.items = [ {id:'#', name:'Etsitään ...'} ];
             return endpoint.getObjects(qry).then(function(data) {
                 var arr = data;
                 if (!arr.length) {
                     arr = [ {id:'#', name:'Ei hakutuloksia.'} ];
                 }
-                controller.items = arr;
                 return arr;
             });
         };

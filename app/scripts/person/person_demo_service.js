@@ -43,6 +43,9 @@
 
         function createTimemapByActor(person, start, end, highlights) {
             var self = this;
+            if (self.currentPersonId === person.id) {
+                return $q.when();
+            }
             self.current = undefined;
             self.currentPersonId = person.id;
             self.highlights = highlights;
