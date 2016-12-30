@@ -17,7 +17,12 @@
   </div>
   <div class="col-sm-9">
     <img ng-show="ctrl.isLoadingObject" src="images/loading.gif" />
-    {{ ctrl.err }}
+    <div ng-if="ctrl.err">
+      <p class="error-msg bg-danger">
+      {{ 'ERROR_OCCURED' | translate }} <br /><br />
+      <b>{{ ctrl.err }}</b> <br /><br />
+      </p>
+    </div>
     <p ng-if="!ctrl.person && !ctrl.isLoadingObject" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">
       <h2>{{ ctrl.person.label }}</h2>
