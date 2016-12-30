@@ -6,7 +6,8 @@
         return {
             restrict:'E',
             scope: {
-                images: '<'
+                images: '<',
+                config: '<'
             },
             controller: PhotoGalleryContoller,
             controllerAs: 'ctrl',
@@ -24,8 +25,6 @@
         self.photos = [];
         self.galleryId = _.uniqueId();
 
-        self.toggleCollapse = toggleCollapse;
-
         var win = angular.element($window);
 
         win.bind('resize', checkOverflow);
@@ -35,14 +34,27 @@
         });
 
         $scope.$watch('images', function(val) {
-            if (!val || _.isArray(val)) {
+            if (!val || _.isArray(val) && !val.length) {
                 return;
             }
+
+            self.noRelatedPhotosText = _.get($scope, 'config.noRelatedPhotosText') || 'NO_RELATED_PHOTOS';
+            self.nPhotosText = _.get($scope, 'config.nPhotosText') || 'N_PHOTOS';
+
+            if (_.isArray(val)) {
+                return handleArray(val);
+            }
+            return handlePager(val);
+        });
+
+        function handlePager(images) {
+            self.toggleCollapse = toggleCollapse;
+
             self.imageCount = 0;
             self.photos = [];
             self.hasMore = false;
             self.isCollapsed = true;
-            self.imagePager = val;
+            self.imagePager = images;
             self.isLoadingImages = true;
             self.imagePager.getTotalCount().then(function(count) {
                 self.imageCount = count;
@@ -62,14 +74,23 @@
             }).catch(function() {
                 self.isLoadingImages = false;
             });
-        });
+        }
 
-        function setSlideListener() {
-            angular.element('#blueimp-gallery-' + self.galleryId).on('slide', function (event, index) {
-                var elem = angular.element('#photo-container-' + self.galleryId + ' a').eq(index);
-                var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
-                angular.element(this).children('.description').attr('href', url);
-            });
+        function handleArray(images) {
+            self.toggleCollapse = toggleCollapseSimple;
+
+            self.imageCount = images.length;
+            self.photos = images;
+            self.hasMore = false;
+            self.isCollapsed = true;
+            $timeout(function() {
+                checkOverflow();
+            }, 0);
+            setSlideListener();
+        }
+
+        function toggleCollapseSimple() {
+            self.isCollapsed = !self.isCollapsed;
         }
 
         function toggleCollapse() {
@@ -80,6 +101,14 @@
             } else {
                 self.isCollapsed = !self.isCollapsed;
             }
+        }
+
+        function setSlideListener() {
+            angular.element('#blueimp-gallery-' + self.galleryId).on('slide', function (event, index) {
+                var elem = angular.element('#photo-container-' + self.galleryId + ' a').eq(index);
+                var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
+                angular.element(this).children('.description').attr('href', url);
+            });
         }
 
         function checkOverflow() {

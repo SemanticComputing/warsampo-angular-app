@@ -8,13 +8,13 @@
   <a class="next">›</a>
   <a class="close">×</a>
 </div>
-<div ng-if="ctrl.imagePager">
+<div>
   <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">
     {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
   </div>
-  <div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount" translate>NO_RELATED_PHOTOS</div>
+  <div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount" translate>{{ ctrl.noRelatedPhotosText }}</div>
   <div ng-if="ctrl.imageCount">
-    <p>{{ ctrl.imageCount }} {{ 'N_PHOTOS' | translate }}
+    <p>{{ ctrl.imageCount }} {{ ctrl.nPhotosText | translate }}
     <span ng-show="ctrl.hasMore || !ctrl.isCollapsed"> |
       <a href="" ng-click="ctrl.toggleCollapse()">
         <span ng-show="ctrl.isCollapsed" translate>SHOW_ALL_PHOTOS</span>
