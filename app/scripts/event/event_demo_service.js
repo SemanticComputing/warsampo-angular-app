@@ -191,7 +191,7 @@
         }
 
         function navigateToEarliestEvent() {
-            this.navigateToDate('earliest');
+            return this.navigateToDate('earliest');
         }
 
         function setupTimemap() {
@@ -201,6 +201,8 @@
 
             self.setOnMouseUpListener(function() { self.onMouseUpListener(); });
             self.addOnScrollListener(_.throttle(_.bind(self.clearHeatmap, self), 500));
+
+            return true;
         }
 
         function getMinVisibleDate() {

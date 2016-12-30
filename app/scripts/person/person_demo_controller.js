@@ -126,7 +126,7 @@
                 demoService.clear();
                 self.isLoadingTimeline = false;
                 self.noEvents = true;
-                return $q.when();
+                return $q.when(false);
             }
             self.noEvents = false;
             self.isLoadingTimeline = true;
@@ -158,10 +158,10 @@
                 self.isTimemapInit = false;
                 return $q.when(false);
             }).then(function(refresh) {
-                if (refresh && eventId) {
+                if (refresh !== false && eventId) {
                     return demoService.navigateToEvent(eventId);
                 }
-                if (refresh) {
+                if (refresh !== false) {
                     return demoService.refresh();
                 }
             }).then(function() {
