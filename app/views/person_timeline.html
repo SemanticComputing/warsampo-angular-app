@@ -30,7 +30,7 @@
       <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
     </div>
     <uib-tabset active="ctrl.activeTab">
-      <uib-tab select="ctrl.selectTab(1)" index="1" heading="PERSONS_DEMO.INFO">
+      <uib-tab select="ctrl.selectTab(1)" index="1" heading="{{ 'PERSONS_DEMO.INFO_TAB' | translate }}">
         <!-- Links -->
         <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>
         <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
@@ -50,7 +50,7 @@
           <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
         </div>
       </uib-tab>
-      <uib-tab index="2" heading="TIMELINE" select="ctrl.selectTab(2)">
+      <uib-tab index="2" heading="{{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}" select="ctrl.selectTab(2)">
         <div ng-include="'views/partials/event_timeline_partial.html'"></div>
       </uib-tab>
     </uib-tabset>

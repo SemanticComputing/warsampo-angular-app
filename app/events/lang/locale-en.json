@@ -9,6 +9,8 @@
         "OTHER_EVENTS_CLOSE": "Other events in the same region"
     },
     "PERSONS_DEMO": {
+        "INFO_TAB": "Information",
+        "TIMELINE_TAB": "Timeline",
         "TITLE": "Persons",
         "HELP_TEXT": "<p>Search for known persons from the past Finnish wars by writing their name in the text input below and/or selecting a person from the list below.  Information regarding the person and recommended links will appear on the right.</p>",
         "SEARCH_BOX_PLACEHOLDER": "Search by person name",
@@ -67,6 +69,7 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Limit photos to those taken in the same municipality as the events.",
         "SHOW_HEATMAP": "Show a heatmap of casualties."
     },
+    "NO_EVENTS": "No events found",
     "UNKNOWN_ERROR": "Unknown error",
     "PHOTO_TAKEN_BETWEEN": "Photo taken between",
     "DESCRIPTION": "Description",

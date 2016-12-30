@@ -9,6 +9,8 @@
         "OTHER_EVENTS_CLOSE": "Muita tapahtumia samalla alueella"
     },
     "PERSONS_DEMO": {
+        "INFO_TAB": "Henkilön tiedot",
+        "TIMELINE_TAB": "Aikajana",
         "TITLE": "Henkilöt",
         "HELP_TEXT": "<p>Hae tunnettuja viime sotien henkilöitä kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse henkilö kentän alla olevasta listasta. Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy oikealle.</p>",
         "SEARCH_BOX_PLACEHOLDER": "Hae henkilön nimellä",
@@ -68,6 +70,7 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.",
         "SHOW_HEATMAP": "Näytä lämpökartta menehtyneistä."
     },
+    "NO_EVENTS": "Tapahtumia ei löytynyt",
     "UNKNOWN_ERROR": "Tuntematon virhe",
     "PHOTO_TAKEN_BETWEEN": "Kuva otettu välillä",
     "DESCRIPTION": "Kuvaus",
