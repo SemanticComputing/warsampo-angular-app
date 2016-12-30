@@ -32,9 +32,13 @@
         init();
 
         $scope.$on('$routeUpdate', function() {
+            return navigate();
+        });
+
+        function navigate() {
             var uri = $routeParams.uri;
             if (!uri) {
-                return $location.search('uri', 'http://ldf.fi/warsa/actors/person_50');
+                return;
             }
             var tab = parseInt($routeParams.tab);
             var eventId = $routeParams.event;
@@ -43,19 +47,23 @@
             }
             self.activeTab = tab || 1;
             if (uri !== self.personId || (self.activeTab === 2 && !self.isTimemapInit)) {
-                self.promise = self.promise.then(function() { return updateByUri(uri, eventId); });
+                self.promise = self.promise.then(function() {
+                    return updateByUri(uri, eventId);
+                });
                 return self.promise;
             }
             if (eventId) {
                 if (self.activeTab === 2 && eventId !== (demoService.getCurrent() || {}).id) {
-                    self.promise = self.promise.then(function() { return demoService.navigateToEvent(eventId); });
+                    self.promise = self.promise.then(function() {
+                        return demoService.navigateToEvent(eventId);
+                    });
                     return self.promise;
                 }
             } else {
                 self.promise = self.promise.then(function() { return demoService.clearCurrent(); });
                 return self.promise;
             }
-        });
+        }
 
         function init() {
             Settings.enableSettings();
@@ -72,9 +80,10 @@
             }
 
             self.getItems();
-            var uri = $routeParams.uri || 'http://ldf.fi/warsa/actors/person_50';
-            var eventId = $routeParams.event;
-            updateByUri(uri, eventId);
+            if (!$routeParams.uri) {
+                return $location.search('uri', 'http://ldf.fi/warsa/actors/person_50');
+            }
+            return navigate();
         }
 
         function selectTab(index) {
@@ -97,30 +106,6 @@
                 self.isLoadingTimeline = false;
                 return data;
             });
-        }
-
-        function getCasualtyCount() {
-            return demoService.getCasualtyCount();
-        }
-
-        function getCasualtyStats() {
-            return demoService.getCasualtyStats();
-        }
-
-        function getMinVisibleDate() {
-            return demoService.getMinVisibleDate();
-        }
-
-        function getMaxVisibleDate() {
-            return demoService.getMaxVisibleDate();
-        }
-
-        function getCurrent() {
-            return demoService.getCurrent();
-        }
-
-        function getImages() {
-            return demoService.getImages();
         }
 
         function updateByUri(uri, eventId) {
@@ -161,9 +146,34 @@
 
         function updateSelection() {
             if (self.selectedItem && self.selectedItem.id) {
+                demoService.clear();
                 $location.search('event', null);
                 $location.search('uri', self.selectedItem.id);
             }
+        }
+
+        function getCasualtyCount() {
+            return demoService.getCasualtyCount();
+        }
+
+        function getCasualtyStats() {
+            return demoService.getCasualtyStats();
+        }
+
+        function getMinVisibleDate() {
+            return demoService.getMinVisibleDate();
+        }
+
+        function getMaxVisibleDate() {
+            return demoService.getMaxVisibleDate();
+        }
+
+        function getCurrent() {
+            return demoService.getCurrent();
+        }
+
+        function getImages() {
+            return demoService.getImages();
         }
 
         function getItems() {
