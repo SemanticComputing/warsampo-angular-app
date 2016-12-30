@@ -19,8 +19,11 @@
         /* Public API */
 
         self.getById = getById;
+        self.getByIdList = getByIdList;
         self.getByTimeSpan = getByTimeSpan;
         self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
+        self.getByIdUnionTimeSpan = getByIdUnionTimeSpan;
+        self.getByIdUnionPlaceAndTimeSpan = getByIdUnionPlaceAndTimeSpan;
         self.getByPersonId = getByPersonId;
         self.getByUnitId = getByUnitId;
         self.getByThemeId = getByThemeId;
@@ -59,15 +62,6 @@
         '  ?participant_id ?unit_id ?place_id ?place_string ' +
         '  ?source ?creator_id ?photographer_string ?theme ';
 
-        var photosByPlaceAndTimeResultSet =
-        ' VALUES ?place_id { <ID> } ' +
-        ' ?id ^crm:P94_has_created [ ' +
-        '  crm:P7_took_place_at ?place_id ; ' +
-        '  crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
-        ' ] . ' +
-        ' ?id a wph:Photograph . ' +
-        ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ';
-
         var photoQry = select +
         ' { ' +
         '  <RESULT_SET> ' +
@@ -98,8 +92,8 @@
         '  OPTIONAL { ?id wph:photographer_string ?photographer_string . } ' +
         ' } ';
 
-        var singlePhotoQryResultSet =
-        '  BIND(<{0}> AS ?id) ' +
+        var photoByIdResultSet =
+        '  VALUES ?id { <ID> } ' +
         '  ?id sch:contentUrl ?url . ';
 
         var photosByThemeResultSet =
@@ -108,8 +102,17 @@
 
         var photosByTimeResultSet =
         ' ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
-        ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ' +
         ' ?id a wph:Photograph . ';
+
+        var photosByPlaceAndTimeResultSet =
+        ' VALUES ?place_id { <PLACE> } ' +
+        ' ?id ^crm:P94_has_created [ ' +
+        '  crm:P7_took_place_at ?place_id ; ' +
+        '  crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
+        ' ] . ' +
+        ' ?id a wph:Photograph . ' +
+        ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ';
 
         var photosByUnitResultSet =
         ' VALUES ?unit_id { {0} } ' +
@@ -146,7 +149,11 @@
         /* API function implementations */
 
         function getById(id) {
-            var resultSet = singlePhotoQryResultSet.format(id);
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var resultSet = photoByIdResultSet.replace('<ID>', id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
@@ -154,6 +161,19 @@
                 }
                 return $q.reject('Does not exist');
             });
+        }
+
+        function getByIdList(id, pageSize) {
+            if (!id) {
+                return $q.when();
+            }
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var resultSet = photoByIdResultSet.replace('<ID>', id);
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 
         function getByFacetSelections(facetSelections, options) {
@@ -164,7 +184,9 @@
         }
 
         function getByTimeSpan(start, end, options) {
-            var resultSet = photosByTimeResultSet.format(start, end);
+            var resultSet = photosByTimeResultSet
+                .replace('<START>', start)
+                .replace('<END>', end);
             var query =  options.extended ? photoQry : photoQry;
             var qryObj = queryBuilder.buildQuery(query, resultSet);
             return endpoint.getObjects(qryObj.query, options.pageSize,
@@ -176,10 +198,50 @@
             if (!placeId) {
                 return $q.when();
             }
+
             var resultSet = photosByPlaceAndTimeResultSet
-                .replace('<ID>', placeId)
+                .replace('<PLACE>', placeId)
                 .replace('<START>', start)
                 .replace('<END>' , end);
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
+        }
+
+        function getByIdUnionPlaceAndTimeSpan(id, placeId, start, end, options) {
+            placeId = baseRepository.uriFy(placeId);
+            if (!placeId) {
+                return $q.when();
+            }
+            var resultSet = photosByPlaceAndTimeResultSet
+                .replace('<PLACE>', placeId)
+                .replace('<START>', start)
+                .replace('<END>' , end);
+            id = baseRepository.uriFy(id);
+            if (id) {
+                resultSet =
+                ' { ' +
+                    photoByIdResultSet.replace('<ID>', id) +
+                ' } UNION { '
+                    + resultSet +
+                ' } ';
+            }
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
+        }
+
+        function getByIdUnionTimeSpan(id, start, end, options) {
+            var resultSet = photosByTimeResultSet
+                .replace('<START>', start)
+                .replace('<END>' , end);
+            id = baseRepository.uriFy(id);
+            if (id) {
+                resultSet =
+                ' { ' +
+                    photoByIdResultSet.replace('<ID>', id) +
+                ' } UNION { '
+                    + resultSet +
+                ' } ';
+            }
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }

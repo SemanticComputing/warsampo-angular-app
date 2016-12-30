@@ -10,12 +10,13 @@
 
     /* @ngInject */
     function eventService($q, _, baseService, eventRepository, personRepository,
-            unitRepository, placeRepository) {
+            unitRepository, placeRepository, photoRepository) {
         var self = this;
 
         self.fetchPlaces = fetchPlaces;
         self.fetchPeople = fetchPeople;
         self.fetchUnits = fetchUnits;
+        self.fetchPhotos = fetchPhotos;
         self.fetchRelated = fetchRelated;
 
         self.getEventById = getEventById;
@@ -51,10 +52,21 @@
             });
         }
 
+        function fetchPhotos(event) {
+            return photoRepository.getByIdList(event.photo_id).then(function(photos) {
+                if (photos && photos.length) {
+                    event.photos = photos;
+                    event.hasLinks = true;
+                }
+                return event;
+            });
+        }
+
         function fetchRelated(event) {
             var related = [
                 self.fetchPeople(event),
-                self.fetchUnits(event)
+                self.fetchUnits(event),
+                self.fetchPhotos(event)
             ];
             return $q.all(related).then(function() {
                 return event;
