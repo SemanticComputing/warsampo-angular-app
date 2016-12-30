@@ -11,6 +11,7 @@
                 personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, personMapperService);
+        var historyEndpoint = new SparqlService('http://ldf.fi/history/sparql');
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
@@ -272,11 +273,10 @@
         };
 
         this.getNationalBibliography = function(person) {
-            if ('natiobib' in person ) {
+            if (person.natiobib) {
                 // Direct link by owl:sameAs
                 var qry = nationalBibliographyQry.format(person.natiobib);
-                var end2 = new SparqlService('http://ldf.fi/history/sparql');
-                return end2.getObjects(qry).then(function(data) {
+                return historyEndpoint.getObjects(qry).then(function(data) {
                     return personMapperService.makeObjectList(data);
                 });
             }
