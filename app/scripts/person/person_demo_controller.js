@@ -15,7 +15,6 @@
         self.queryregex = '';
 
         self.updateByUri = updateByUri;
-        self.updateActor = updateActor;
         self.updateSelection = updateSelection;
         self.getItems = getItems;
 
@@ -25,57 +24,56 @@
         self.getMaxVisibleDate = getMaxVisibleDate;
         self.getCurrent = getCurrent;
         self.getImages = getImages;
-        self.createTimeMap = createTimeMap;
         self.selectTab = selectTab;
+
+        self.promise = $q.when();
+        self.personId;
 
         init();
 
         $scope.$on('$routeUpdate', function() {
-            console.log('routeUpdate', self.activeTab)
             var uri = $routeParams.uri;
             if (!uri) {
                 return $location.search('uri', 'http://ldf.fi/warsa/actors/person_50');
             }
-            var tab = parseInt($location.search().tab);
-            var eventId = $location.search().event;
+            var tab = parseInt($routeParams.tab);
+            var eventId = $routeParams.event;
             if (!tab && eventId) {
-                console.log('tabbing', uri)
                 return $location.search('tab', 2);
             }
             self.activeTab = tab || 1;
-            if (uri !== demoService.currentPersonId) {
-                console.log('remove event', uri)
-                $location.search('event', null);
-                return updateByUri(uri);
+            if (uri !== self.personId || (self.activeTab === 2 && !self.isTimemapInit)) {
+                self.promise = self.promise.then(function() { return updateByUri(uri, eventId); });
+                return self.promise;
             }
             if (eventId) {
-                if (eventId !== (demoService.getCurrent() || {}).id) {
-                    console.log('event', eventId);
-                    return demoService.navigateToEvent(eventId);
+                if (self.activeTab === 2 && eventId !== (demoService.getCurrent() || {}).id) {
+                    self.promise = self.promise.then(function() { return demoService.navigateToEvent(eventId); });
+                    return self.promise;
                 }
             } else {
-                console.log('clear')
-                return demoService.clearCurrent();
+                self.promise = self.promise.then(function() { return demoService.clearCurrent(); });
+                return self.promise;
             }
         });
 
         function init() {
             Settings.enableSettings();
-            Settings.setApplyFunction(self.updateActor);
-            Settings.setHeatmapUpdater(demoService.updateHeatmap);
+            Settings.setApplyFunction(createTimeMap);
+            Settings.setHeatmapUpdater(demoService.updateHeatmap.bind(demoService));
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
                 demoService.cleanUp();
             });
 
-            var tab = parseInt($location.search().tab);
+            var tab = parseInt($routeParams.tab);
             if (tab) {
                 self.activeTab = tab;
             }
 
             self.getItems();
             var uri = $routeParams.uri || 'http://ldf.fi/warsa/actors/person_50';
-            var eventId = $location.search().event;
+            var eventId = $routeParams.event;
             updateByUri(uri, eventId);
         }
 
@@ -126,9 +124,9 @@
         }
 
         function updateByUri(uri, eventId) {
-            console.log('updateByUri', self.activeTab);
             self.isLoadingObject = true;
             self.isLoadingTimeline = true;
+            self.personId = uri;
             return personService.getById(uri)
             .then(function(person) {
                 self.person = person;
@@ -137,40 +135,34 @@
                 return personService.fetchRelatedForDemo(person);
             }).then(function() {
                 if (self.activeTab === 2) {
+                    self.isTimemapInit = true;
                     return createTimeMap();
                 }
+                self.isTimemapInit = false;
                 return $q.when(false);
             }).then(function(refresh) {
-                if (eventId) {
+                if (refresh && eventId) {
                     return demoService.navigateToEvent(eventId);
                 }
                 if (refresh) {
                     return demoService.refresh();
                 }
             }).then(function() {
+                self.err = undefined;
+                self.isLoadingTimeline = false;
+                return uri;
+            }).catch(function(err) {
+                self.err = err;
+                self.isLoadingObject = false;
+                self.isLoadingEvent = false;
                 self.isLoadingTimeline = false;
             });
-                //.catch(function(err) {
-                //self.err = err;
-                //self.isLoadingObject = false;
-                //self.isLoadingEvent = false;
-                //self.isLoadingTimeline = false;
-            //});
         }
 
         function updateSelection() {
             if (self.selectedItem && self.selectedItem.id) {
-                $location.search('uri', self.selectedItem.id);
-            }
-        }
-
-        function updateActor() {
-            console.log('updateActor')
-            if (self.selectedItem && self.selectedItem.id) {
-                var uri = self.selectedItem.id;
                 $location.search('event', null);
-
-                self.updateByUri(uri);
+                $location.search('uri', self.selectedItem.id);
             }
         }
 

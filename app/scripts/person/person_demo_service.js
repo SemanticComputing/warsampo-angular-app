@@ -34,18 +34,14 @@
         }
 
         function infoWindowCallback(item) {
-            // Change the URL but don't reload the page
-            $location.search('event', item.opts.event.id);
             this.current = item;
+            $location.search('event', item.opts.event.id);
             eventService.fetchRelated(item.opts.event);
             this.fetchImages(item);
         }
 
         function createTimemapByActor(person, start, end, highlights) {
             var self = this;
-            if (self.currentPersonId === person.id) {
-                return $q.when();
-            }
             self.current = undefined;
             self.currentPersonId = person.id;
             self.highlights = highlights;
