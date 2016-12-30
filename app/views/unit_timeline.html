@@ -4,11 +4,12 @@
   	<h2 translate>UNIT_DEMO.TITLE</h2>
     <translate>UNIT_DEMO.DESCRIPTION</translate>
     <input type="text"
+      ng-model-options="{ debounce: 500 }"
       placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
       class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
-    <select ng-model="ctrl.currentObject" ng-change="ctrl.updateUnit()"
+    <select ng-model="ctrl.currentSelection" ng-change="ctrl.updateUnit()"
       size="32" class="form-control" id="unitselect"
-      ng-options="item as item.name for item in ctrl.items">
+      ng-options="item.id as item.name for item in ctrl.items">
     </select>
 	</div>
 

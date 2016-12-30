@@ -55,9 +55,20 @@
             self.currentUnitId = id;
             self.highlights = highlights;
             var photoConfig = Settings.getPhotoConfig();
-            return timemapService.createTimemapByUnit(id, start, end, highlights,
-                self.infoWindowCallback, photoConfig, self.tm)
-            .then(function(timemap) {
+
+            var bandInfo = timemapService.getDefaultBandInfo(start, end, highlights);
+            bandInfo[1].intervalPixels = 50;
+
+            return eventService.getUnitAndSubUnitEventsByUnitId(id)
+            .then(function(data) {
+                if (!data.length) {
+                    self.clear();
+                    return $q.reject('NO_EVENTS');
+                }
+                return timemapService.createTimemapWithPhotoHighlight(
+                    start, end, data, highlights, self.infoWindowCallback,
+                    photoConfig, bandInfo, self.tm);
+            }).then(function(timemap) {
                 var isNew = !self.tm;
                 self.tm = timemap;
                 self.map = timemap.getNativeMap();

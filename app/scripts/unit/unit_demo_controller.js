@@ -10,7 +10,7 @@
 
         var self = this;
 
-        var defaultUnit = 'http://ldf.fi/warsa/actors/actor_940';
+        var DEFAULT_UNIT = 'http://ldf.fi/warsa/actors/actor_940';
         var demoService = new UnitDemoService();
 
         // User search input
@@ -34,6 +34,11 @@
         self.hasEvents = hasEvents;
 
         self.showUnitDetails = showUnitDetails;
+
+        // A promise chain for state changes
+        self.promise = $q.when();
+        // The id of the currently displayed unit
+        self.unitId;
 
         init();
 
@@ -72,9 +77,14 @@
         }
 
         function init() {
+            // Update state when url changes.
+            $scope.$on('$routeUpdate', function() {
+                return updateState();
+            });
+
             Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
-            Settings.setApplyFunction(update);
+            Settings.setApplyFunction(createTimeMap);
             Settings.setHeatmapUpdater(demoService.updateHeatmap);
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
@@ -83,16 +93,11 @@
 
             getItems();
 
-            return update();
-
-        }
-
-        function update() {
-            if ($routeParams.uri) {
-                return updateByUri($routeParams.uri);
-            } else {
-                return updateByUri(defaultUnit);
+            if (!$routeParams.uri) {
+                // Redirect to default unit.
+                return $location.search('uri', DEFAULT_UNIT).replace();
             }
+            return updateState();
         }
 
         function createTimeMap(id) {
@@ -114,23 +119,23 @@
                 rx = '^.*'+rx+'.*$';
             }
 
-            self.items = [ {id:'#', name:'Etsitään ...'} ];
+            self.items = [{ id:'#', name: 'Etsitään ...' }];
 
             return unitService.getItems(rx).then(function(data) {
                 if (data.length) {
                     self.items = data;
-                }
-                else {
-                    self.items = [ {id:'#', name:'Ei hakutuloksia.'} ];
+                } else {
+                    self.items = [{ id:'#', name:'Ei hakutuloksia.' }];
                 }
                 return self.items;
             });
         }
 
         function updateUnit() {
-            if (self.currentObject) {
+            if (self.currentSelection) {
+                demoService.clear();
                 $location.search('event', null);
-                return updateByUri(self.currentObject.id);
+                $location.search('uri', self.currentSelection);
             }
         }
 
@@ -138,15 +143,47 @@
             return !(self.isLoadingEvent || !self.currentObject || self.getCurrent());
         }
 
+        // Update state based on url
+        function updateState() {
+            var uri = $routeParams.uri;
+            if (!uri) {
+                // This shouldn't happen.
+                return;
+            }
+            var eventId = $routeParams.event;
+            if (uri !== self.unitId) {
+                // Unit selection has changed.
+                self.promise = self.promise.then(function() {
+                    return updateByUri(uri, eventId);
+                });
+                return self.promise;
+            }
+            // Unit has not changed.
+            if (eventId) {
+                // Event in url.
+                if (eventId !== (demoService.getCurrent() || {}).id) {
+                    // Event has changed due to back/forward action, navigate to the event.
+                    self.promise = self.promise.then(function() {
+                        return demoService.navigateToEvent(eventId);
+                    });
+                    return self.promise;
+                }
+                // Event was selected by the user, the callback has handled everything, so fall through.
+            } else {
+                // Unit has not changed, and there is no event in url: clear selected event on timeline.
+                self.promise = self.promise.then(function() { return demoService.clearCurrent(); });
+                return self.promise;
+            }
+        }
+
         function updateByUri(uri) {
+            self.noEvents = false;
             self.err = undefined;
             self.isLoadingTimeline = true;
-            var eventId = $location.search().event;
+            self.unitId = uri;
+            var eventId = $routeParams.event;
             if (angular.isString(eventId)) {
                 self.isLoadingEvent = true;
-            }
-            if ($location.search().uri != uri) {
-                $location.search('uri', uri);
             }
             return unitService.getById(uri).then(function(unit) {
                 self.currentObject = unit;
@@ -155,15 +192,17 @@
             }).then(function() {
                 self.isLoadingTimeline = false;
                 if (self.isLoadingEvent) {
-                    return eventService.getEventById(eventId).then(function(event) {
-                        return demoService.navigateToEvent(event);
-                    });
+                    return demoService.navigateToEvent(eventId);
                 }
                 return demoService.refresh();
             }).then(function() {
                 self.isLoadingEvent = false;
             }).catch(function(data) {
-                self.err = data.message || data;
+                if (data === 'NO_EVENTS') {
+                    self.noEvents = true;
+                } else {
+                    self.err = data ? data.message || data : 'UNKNOWN_ERROR';
+                }
                 self.isLoadingEvent = false;
                 self.isLoadingTimeline = false;
             });
