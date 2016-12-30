@@ -11,10 +11,15 @@
         var self = this;
         var demoService = new PersonDemoService();
 
+        var INFO_TAB = 1;
+        var TIMELINE_TAB = 2;
+        var DEFAULT_PERSON = 'http://ldf.fi/warsa/actors/person_50';
+
+        // Person selection list
         self.items = [];
+        // User search input
         self.queryregex = '';
 
-        self.updateByUri = updateByUri;
         self.updateSelection = updateSelection;
         self.getItems = getItems;
 
@@ -26,49 +31,25 @@
         self.getImages = getImages;
         self.selectTab = selectTab;
 
+        // A promise chain for state changes
         self.promise = $q.when();
+        // The id of the currently displayed person
         self.personId;
 
         init();
 
-        $scope.$on('$routeUpdate', function() {
-            return navigate();
-        });
-
-        function navigate() {
-            var uri = $routeParams.uri;
-            if (!uri) {
-                return;
-            }
-            var tab = parseInt($routeParams.tab);
-            var eventId = $routeParams.event;
-            if (!tab && eventId) {
-                return $location.search('tab', 2);
-            }
-            self.activeTab = tab || 1;
-            if (uri !== self.personId || (self.activeTab === 2 && !self.isTimemapInit)) {
-                self.promise = self.promise.then(function() {
-                    return updateByUri(uri, eventId);
-                });
-                return self.promise;
-            }
-            if (eventId) {
-                if (self.activeTab === 2 && eventId !== (demoService.getCurrent() || {}).id) {
-                    self.promise = self.promise.then(function() {
-                        return demoService.navigateToEvent(eventId);
-                    });
-                    return self.promise;
-                }
-            } else {
-                self.promise = self.promise.then(function() { return demoService.clearCurrent(); });
-                return self.promise;
-            }
-        }
-
         function init() {
+            // Update state when url changes.
+            $scope.$on('$routeUpdate', function() {
+                return updateState();
+            });
+
+            // Timeline settings
             Settings.enableSettings();
-            Settings.setApplyFunction(createTimeMap);
+            Settings.setApplyFunction(applySettings);
             Settings.setHeatmapUpdater(demoService.updateHeatmap.bind(demoService));
+
+            // Cleanup
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
                 demoService.cleanUp();
@@ -80,10 +61,60 @@
             }
 
             self.getItems();
+
             if (!$routeParams.uri) {
-                return $location.search('uri', 'http://ldf.fi/warsa/actors/person_50');
+                // Redirect to default person.
+                return $location.search('uri', DEFAULT_PERSON).replace();
             }
-            return navigate();
+            return updateState();
+        }
+
+        // Update state based on url
+        function updateState() {
+            var uri = $routeParams.uri;
+            if (!uri) {
+                // This shouldn't happen.
+                return;
+            }
+            var tab = parseInt($routeParams.tab);
+            var eventId = $routeParams.event;
+            // Default to timeline if url has event but no tab.
+            if (!tab && eventId) {
+                return $location.search('tab', TIMELINE_TAB);
+            }
+            // Otherwise default to info tab.
+            self.activeTab = tab || INFO_TAB;
+            if (uri !== self.personId || (self.activeTab === TIMELINE_TAB && !self.isTimemapInit)) {
+                // Person selection has changed, or timeline tab is selected for the first time.
+                self.promise = self.promise.then(function() {
+                    return updateByUri(uri, eventId);
+                });
+                return self.promise;
+            }
+            // Person has not changed.
+            if (eventId) {
+                // Event in url.
+                if (self.activeTab === TIMELINE_TAB && eventId !== (demoService.getCurrent() || {}).id) {
+                    // Event has changed due to back/forward action (and timeline is selected),
+                    // navigate to the event.
+                    self.promise = self.promise.then(function() {
+                        return demoService.navigateToEvent(eventId);
+                    });
+                    return self.promise;
+                }
+                // Event was selected by the user, the callback has handled everything, so fall through.
+            } else {
+                // Person has not changed, and there is no event in url: clear selected event on timeline.
+                self.promise = self.promise.then(function() { return demoService.clearCurrent(); });
+                return self.promise;
+            }
+        }
+
+        function applySettings() {
+            if (self.activeTab === TIMELINE_TAB) {
+                return createTimeMap();
+            }
+            return $q.when();
         }
 
         function selectTab(index) {
@@ -108,6 +139,7 @@
             });
         }
 
+        // Get person details, and update timemap if needed.
         function updateByUri(uri, eventId) {
             self.isLoadingObject = true;
             self.isLoadingTimeline = true;
@@ -119,7 +151,7 @@
 
                 return personService.fetchRelatedForDemo(person);
             }).then(function() {
-                if (self.activeTab === 2) {
+                if (self.activeTab === TIMELINE_TAB) {
                     self.isTimemapInit = true;
                     return createTimeMap();
                 }
@@ -144,6 +176,7 @@
             });
         }
 
+        // Person selection change
         function updateSelection() {
             if (self.selectedItem && self.selectedItem.id) {
                 demoService.clear();
