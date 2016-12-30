@@ -14,9 +14,6 @@
         // Function(start, end, highlights, infoWindowCallback,
         //      photoConfig, existingTimemap) -> promise (timemap instance)
         this.createTimemapByTimeSpan = createTimemapByTimeSpan;
-        // Function(unitId, start, end, highlights, infoWindowCallback,
-        //      photoConfig, existingTimemap) -> promise (timemap instance)
-        this.createTimemapByUnit = createTimemapByUnit;
         // Function(start, end, events, highlights, infoWindowCallback,
         //      photoData, photoConfig, bandInfo, existingTimemap) -> promise (timemap instance)
         this.createTimemap = createTimemap;
@@ -134,30 +131,6 @@
             return eventService.getEventsByTimeSpan(start, end).then(function(data) {
                 return self.createTimemapWithPhotoHighlight(start, end, data, highlights,
                     infoWindowCallback, photoConfig, existingTimemap);
-            }).catch(function(data) {
-                return $q.reject(data);
-            });
-        }
-
-        /*
-        * Create a Timemap where all events in which the given unit has participated in.
-        *
-        * If existingTimemap is given, the events of that timemap instance are
-        * replaced with new ones instead of creating a new timemap instance.
-        *
-        * Return a promise of the Timemap.
-        */
-        function createTimemapByUnit(unitId, start, end, highlights, infoWindowCallback,
-                photoConfig, existingTimemap) {
-
-            var bandInfo = getDefaultBandInfo(start, end, highlights);
-            bandInfo[1].intervalPixels = 50;
-
-            var self = this;
-            return eventService.getUnitAndSubUnitEventsByUnitId(unitId)
-            .then(function(data) {
-                return self.createTimemapWithPhotoHighlight(start, end, data,
-                    highlights, infoWindowCallback, photoConfig, bandInfo, existingTimemap);
             }).catch(function(data) {
                 return $q.reject(data);
             });
