@@ -349,7 +349,7 @@
 
             var e = entry.options.event;
 
-            if (e.photo || _.some(distinctPhotoData, function(photo) {
+            if (e.photo_id || _.some(distinctPhotoData, function(photo) {
                 var d = new Date(photo.created);
 
                 if (d >= start && d <= end && (!photoSettings.inProximity ||
