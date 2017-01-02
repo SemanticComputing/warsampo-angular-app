@@ -9,20 +9,23 @@
   <a class="close">×</a>
 </div>
 <div>
-  <div ng-show="ctrl.isLoadingImages && !ctrl.imageCount">
+  <div ng-show="ctrl.isLoadingImages">
     {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
   </div>
-  <div ng-show="!ctrl.isLoadingImages && !ctrl.imageCount" translate>{{ ctrl.noRelatedPhotosText }}</div>
-  <div ng-if="ctrl.imageCount">
-    <p>{{ ctrl.imageCount }} {{ ctrl.nPhotosText | translate }}
+  <p ng-show="!ctrl.isLoadingImages">
+    <span translate="{{ ctrl.nPhotosText || 'N_PHOTOS'}}"
+        translate-value-for-resource="{{ (ctrl.resourceType || 'FOR_THIS_RESOURCE') | translate }}"
+        translate-values="{ NUM: ctrl.imageCount }"
+        translate-interpolation="messageformat"></span>
     <span ng-show="ctrl.hasMore || !ctrl.isCollapsed"> |
       <a href="" ng-click="ctrl.toggleCollapse()">
         <span ng-show="ctrl.isCollapsed" translate>SHOW_ALL_PHOTOS</span>
         <span ng-show="!ctrl.isCollapsed" translate>SHOW_LESS_PHOTOS</span>
       </a>
     </span>
-    <img ng-show="ctrl.isLoadingImages" src="images/loading.gif" />
-    </p>
+    <img ng-show="ctrl.isLoadingMoreImages" src="images/loading.gif" />
+  </p>
+  <div ng-if="ctrl.imageCount">
     <div id="photo-thumbs-{{ ctrl.galleryId }}" class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed">
       <div id="photo-container-{{ ctrl.galleryId }}">
         <a ng-repeat="img in ctrl.photos"

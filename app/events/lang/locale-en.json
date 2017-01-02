@@ -1,5 +1,6 @@
 {
     "EVENT_DEMO": {
+        "N_PHOTOGRAPHY_PHOTOS": "{NUM, plural, =0{No photographs} one{One photograph taken} other{# photographs taken}}",
         "GO_TO_WINTER_WAR": "Go to Winter War",
         "WINTER_WAR_EVENT_TITLE": "Winter War Events",
         "CONTINUATION_WAR_EVENT_TITLE": "Continuation War Events",
@@ -69,6 +70,7 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Limit photos to those taken in the same municipality as the events.",
         "SHOW_HEATMAP": "Show a heatmap of casualties."
     },
+    "FOR_THIS_RESOURCE": "for this resource",
     "NO_EVENTS": "No events found",
     "UNKNOWN_ERROR": "Unknown error",
     "PHOTO_TAKEN_BETWEEN": "Photo taken between",
@@ -92,7 +94,7 @@
     "TIME": "Time",
     "PHOTO": "Photo",
     "MEDAL": "Medal",
-    "N_PHOTOS": "related photos",
+    "N_PHOTOS": "{NUM, plural, =0{No related photos found {forResource}} one{Found one related photo {forResource}} other{# related photos {forResource}}}",
     "BUILDING_TIMELINE": "Building the timeline",
     "NO_RELATED_EVENTS": "No related events",
     "RELATED_PEOPLE": "Persons",

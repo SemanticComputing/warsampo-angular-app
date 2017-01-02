@@ -38,7 +38,6 @@
                 return;
             }
 
-            self.noRelatedPhotosText = _.get($scope, 'config.noRelatedPhotosText') || 'NO_RELATED_PHOTOS';
             self.nPhotosText = _.get($scope, 'config.nPhotosText') || 'N_PHOTOS';
 
             if (_.isArray(val)) {
@@ -126,12 +125,12 @@
         }
 
         function getAllPhotos() {
-            self.isLoadingImages = true;
+            self.isLoadingMoreImages = true;
             return self.imagePager.getAllSequentially(100).then(function(page) {
-                self.isLoadingImages = false;
+                self.isLoadingMoreImages = false;
                 self.photos = page;
             }, function() {
-                self.isLoadingImages = false;
+                self.isLoadingMoreImages = false;
             }, function(partial) {
                 self.photos = partial;
             });
