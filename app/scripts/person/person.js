@@ -11,7 +11,7 @@
     /* @ngInject */
     function personService($q, _, baseService, personRepository, eventRepository,
                     placeRepository, unitRepository, photoRepository, casualtyRepository,
-                    dateUtilService, EVENT_TYPES, WAR_INFO) {
+                    dateUtilService, Settings, EVENT_TYPES, WAR_INFO) {
         var self = this;
 
         self.processLifeEvents = processLifeEvents;
@@ -24,6 +24,7 @@
         self.fetchRelatedForDemo = fetchRelatedForDemo;
         self.fetchRelatedUnits = fetchRelatedUnits;
         self.fetchRelatedPhotos = fetchRelatedPhotos;
+        self.fetchRelatedPersons = fetchRelatedPersons;
         self.fetchNationalBib = fetchNationalBib;
         self.fetchTimelineEvents = fetchTimelineEvents;
 
@@ -197,7 +198,7 @@
         }
 
         // for demo page:
-        function fetchRelatedForDemo(person, options) {
+        function fetchRelatedForDemo(person) {
             var related = [
                 self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
@@ -243,15 +244,15 @@
             });
         }
 
-        self.fetchRelatedPersons = function(person) {
-            return personRepository.getRelatedPersons(person.id).then(function(r) {
-                if (r) {
-                	  //console.log(r);
-                    person.relatedPersons = r;
+        function fetchRelatedPersons(person) {
+            return personRepository.getRelatedPersons(person.id, Settings.pageSize)
+            .then(function(data) {
+                if (data) {
+                    person.relatedPersons = data;
                     person.hasLinks = true;
                 }
             });
-        };
+        }
 
         function getByUnit(id) {
             return personRepository.getByUnitId(id);

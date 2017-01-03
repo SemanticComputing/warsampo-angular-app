@@ -8,7 +8,7 @@
     */
     angular.module('eventsApp')
     .service('personRepository', function($q, _, AdvancedSparqlService, SparqlService,
-                personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
+                baseRepository, personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, personMapperService);
         var historyEndpoint = new SparqlService('http://ldf.fi/history/sparql');
@@ -214,36 +214,32 @@
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
         '   ?casualty casualties:kuolinaika ?death_time . ' +
         ' } ';
-        
-        var relatedPersonQry = prefixes +
-        'SELECT DISTINCT (?person2 AS ?id) (?name2 AS ?label) '+
-      '  WHERE {' +
-		'  VALUES ?person1 { {0} } ' +
-		'  ?pclass rdfs:subClassOf* crm:E21_Person . ' +
-		' ' +
-		'  { ' +
-		'    ?person1 (^crm:P11_had_participant)/crm:P11_had_participant ?person2 . ' +
-		'    BIND (20 AS ?score) ' +
-		'  } UNION { ' +
-		'    ?person1 ^crm:P11_had_participant/:hasRank ?rank . ' +
-		'    ?rank ^:hasRank/crm:P11_had_participant ?person2 ; ' +
-		'    	:level ?score . ' +
-		'  } UNION { ' +
-		'    ?person1 ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?person2 . ' +
-		'    BIND (30 AS ?score) ' +
-		'  } UNION { ' +
-		'    ?person1 ^crm:P11_had_participant/crm:P141_assigned/^crm:P141_assigned/crm:P11_had_participant ?person2 . ' +
-		'    BIND (30 AS ?score) ' +
-		'  } ' +
-		' ' +
-		'  filter (?person1 != ?person2) ' +
-		' ' +
-		'  ?person2 a ?pclass ; ' +
-		'           skos:prefLabel ?name2 . ' +
-		'  ?person1 skos:prefLabel ?name1 . ' +
-		'} 	GROUP BY ?person1 ?name1 ?person2 ?name2 ' +
-		'		ORDER BY DESC(sum(?score)) ' +
-		'		LIMIT 50 ';
+
+        var relatedPersonQryResultSet =
+        ' SELECT DISTINCT ?id { ' +
+        '  ?pclass rdfs:subClassOf* crm:E21_Person . ' +
+        '  { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person (^crm:P11_had_participant)/crm:P11_had_participant ?id . ' +
+        '    BIND (20 AS ?score) ' +
+        '  } UNION { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person ^crm:P11_had_participant/:hasRank ?rank . ' +
+        '    ?rank ^:hasRank/crm:P11_had_participant ?id ; ' +
+        '     :level ?score . ' +
+        '  } UNION { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' +
+        '    BIND (30 AS ?score) ' +
+        '  } UNION { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person ^crm:P11_had_participant/crm:P141_assigned/^crm:P141_assigned/crm:P11_had_participant ?id . ' +
+        '    BIND (30 AS ?score) ' +
+        '  } ' +
+        '  FILTER(?person != ?id) ' +
+        '  ?id a ?pclass . ' +
+        ' } GROUP BY ?id ' +
+        ' ORDER BY DESC(sum(?score)) ';
 
         this.getByUnitId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
@@ -315,9 +311,7 @@
 
         this.getDiaries = function(person) {
             var qry = wardiaryQry.format('<{0}>'.format(person));
-            return endpoint.getObjects(qry).then(function(data) {
-                return data;
-            });
+            return endpoint.getObjects(qry);
         };
 
         this.getItems = function(regx) {
@@ -330,13 +324,12 @@
                 return arr;
             });
         };
-        
-        this.getRelatedPersons = function (id) {        	
-				var qry = relatedPersonQry.format('<{0}>'.format(id));
-				console.log(qry);
-				return endpoint.getObjects(qry).then(function(data) {
-					 return data; 
-            }); 
-        }
+
+        this.getRelatedPersons = function(id, pageSize) {
+            id = baseRepository.uriFy(id);
+            var resultSet = relatedPersonQryResultSet.replace(/<ACTOR>/g, id);
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        };
     });
 })();
