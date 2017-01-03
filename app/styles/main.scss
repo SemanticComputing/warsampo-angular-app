@@ -136,3 +136,12 @@ table.death-record tr:nth-child(even) {
         display: block;
     }
 }
+
+.event-type-selection {
+    .checkbox {
+        margin-right: 5px;
+        margin-top: 2px;
+        padding: 5px;
+        border-radius: 5px;
+    }
+}

@@ -281,7 +281,14 @@
         }
 
         function getEventTypes(person, options) {
-            return eventRepository.getTypesByActorId(person.id, options);
+            var id;
+            if (options.includeUnitEvents && person.units) {
+                id = [person.id].concat(_.map(person.units, 'id'));
+            } else {
+                id = person.id;
+            }
+
+            return eventRepository.getTypesByActorId(id, options);
         }
     }
 })();

@@ -87,15 +87,17 @@
             });
         }
 
-        function getEventTypes(person, oldTypes) {
+        function getEventTypes(person, options) {
+            options = options || {};
             var opts = {
                 start: WAR_INFO.winterWarTimeSpan.start,
-                end: WAR_INFO.continuationWarTimeSpan.end
+                end: WAR_INFO.continuationWarTimeSpan.end,
+                includeUnitEvents: options.includeUnitEvents
             };
             return personService.getEventTypes(person, opts)
             .then(function(types) {
                 types.forEach(function(t) {
-                    var old = _.find(oldTypes, ['id', t.id]) || {};
+                    var old = _.find(options.types, ['id', t.id]) || {};
                     t.selected = old.selected === false ? false : true;
                 });
                 return types;

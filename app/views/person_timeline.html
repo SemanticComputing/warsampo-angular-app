@@ -51,12 +51,25 @@
         </div>
       </uib-tab>
       <uib-tab index="2" heading="{{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}" select="ctrl.selectTab(2)">
-        <label ng-show="ctrl.person.units">{{ 'PERSONS_DEMO.INCLUDE_UNIT_EVENTS' | translate }}
-          <input type="checkbox" ng-model="ctrl.options.includeUnitEvents" ng-change="ctrl.createTimemap()" />
-        </label>
-        <label ng-repeat="typ in ctrl.options.types">{{ typ.getLabel() }}
-          <input type="checkbox" ng-model="typ.selected" ng-change="ctrl.createTimemap()" />
-        </label>
+        <div class="event-type-selection form-inline">
+          <div ng-show="ctrl.person.units" class="checkbox" ng-class="{ 'bg-success': ctrl.options.includeUnitEvents }">
+            <label>
+              <input type="checkbox"
+                ng-model="ctrl.options.includeUnitEvents"
+                ng-change="ctrl.changeIncludeUnits()" />
+              {{ 'PERSONS_DEMO.INCLUDE_UNIT_EVENTS' | translate }}
+            </label>
+          </div>
+          <div
+            ng-repeat="typ in ctrl.options.types"
+            ng-class="{ 'bg-success': typ.selected }"
+            class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="typ.selected" ng-change="ctrl.createTimemap()" />
+              {{ typ.getLabel() }}
+            </label>
+          </div>
+        </div>
         <div ng-include="'views/partials/event_timeline_partial.html'"></div>
       </uib-tab>
     </uib-tabset>

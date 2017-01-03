@@ -23,6 +23,7 @@
         self.updateSelection = updateSelection;
         self.getItems = getItems;
         self.createTimemap = createTimemap;
+        self.changeIncludeUnits = changeIncludeUnits;
 
         self.getCasualtyCount = getCasualtyCount;
         self.getCasualtyStats = getCasualtyStats;
@@ -142,6 +143,14 @@
                     self.isLoadingTimeline = false;
                     return data;
                 });
+            });
+        }
+
+        function changeIncludeUnits() {
+            return demoService.getEventTypes(self.person, self.options)
+            .then(function(types) {
+                self.options.types = types;
+                return createTimemap();
             });
         }
 
