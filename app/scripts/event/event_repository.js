@@ -9,7 +9,7 @@
     .service('eventRepository', eventRepository);
 
     function eventRepository($q, _, baseRepository, AdvancedSparqlService, eventMapperService,
-            QueryBuilderService, dateUtilService, ENDPOINT_CONFIG) {
+            translateableObjectMapperService, QueryBuilderService, dateUtilService, ENDPOINT_CONFIG) {
 
         this.getById = getById;
         this.getByTimeSpan = getByTimeSpan;
@@ -22,8 +22,10 @@
         this.getUnitAndSubUnitEventsByUnitId = getUnitAndSubUnitEventsByUnitId;
         this.getPersonLifeEvents = getPersonLifeEvents;
         this.getByActorId = getByActorId;
+        this.getTypesByActorId = getTypesByActorId;
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, eventMapperService);
+        var typeEndpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
 
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
@@ -125,6 +127,28 @@
         '   OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         ' } ';
 
+        /* Special case for retrieving all event types for an actor */
+
+        var typesByActorQryResultSet =
+        ' VALUES ?person { <ACTOR> } ' +
+        ' ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
+        ' ?event ?part_pred ?person . ' +
+        ' ?event a ?id . ' +
+        ' ?event crm:P4_has_time-span [ ' +
+        '   crm:P82a_begin_of_the_begin ?start_time ; ' +
+        '   crm:P82b_end_of_the_end ?end_time ' +
+        ' ] . ' +
+        ' ?id skos:prefLabel ?label  . ';
+
+        var typesByActorQry =
+        ' SELECT DISTINCT ?id ?label ' +
+        ' { ' +
+        '   <RESULT_SET> ' +
+        '   ?id skos:prefLabel ?label . ' +
+        ' } ';
+
+        /* ---- */
+
         var eventsByPlaceQryResultSet =
         ' GRAPH <http://ldf.fi/warsa/events> { ' +
         '   VALUES ?place_id { {0} } ' +
@@ -136,9 +160,10 @@
           eventTypeFilter;
 
         var eventsByActorQryResultSet =
-        ' VALUES ?participant_id { {0} }  ' +
+        ' VALUES ?participant_id { <ACTOR> }  ' +
         ' ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         ' ?id ?part_pred ?participant_id . ' +
+        ' ?id a ?type_id . ' +
         ' ?id crm:P4_has_time-span [ ' +
         '   crm:P82a_begin_of_the_begin ?start_time ; ' +
         '   crm:P82b_end_of_the_end ?end_time ' +
@@ -343,15 +368,24 @@
             return endpoint.getObjects(qry);
         }
 
-        function getByActorId(id, start, end, pageSize) {
+        function getByActorId(id, options) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
             }
-            var resultSet = eventsByActorQryResultSet.format(id);
-            resultSet = addDateFilters(resultSet, start, end);
+            var resultSet = eventsByActorQryResultSet.replace('<ACTOR>', id);
+            resultSet = addTypeFilters(resultSet, options.types);
+            resultSet = addDateFilters(resultSet, options.start, options.end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
+        }
+
+        function addTypeFilters(qry, types) {
+            types = baseRepository.uriFy(types);
+            if (types) {
+                qry += ' VALUES ?type_id { ' + types + ' } ';
+            }
+            return qry;
         }
 
         function addDateFilters(qry, start, end) {
@@ -385,6 +419,18 @@
             }
             var qry = personLifeEventsQry.format(id);
             return endpoint.getObjects(qry);
+        }
+
+        function getTypesByActorId(id, options) {
+            options = options || {};
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var resultSet = typesByActorQryResultSet.replace('<ACTOR>', id);
+            resultSet = addDateFilters(resultSet, options.start, options.end);
+            var qryObj = queryBuilder.buildQuery(typesByActorQry, resultSet, options.orderBy);
+            return typeEndpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
     }
 })();

@@ -51,6 +51,9 @@
         </div>
       </uib-tab>
       <uib-tab index="2" heading="{{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}" select="ctrl.selectTab(2)">
+        <label ng-repeat="typ in ctrl.options.types">{{ typ.getLabel() }}
+          <input type="checkbox" ng-model="typ.selected" ng-change="ctrl.createTimemap()" />
+        </label>
         <div ng-include="'views/partials/event_timeline_partial.html'"></div>
       </uib-tab>
     </uib-tabset>

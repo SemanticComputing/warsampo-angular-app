@@ -34,16 +34,20 @@
         self.getNationalBibliography = getNationalBibliography;
         self.getItems = getItems;
         self.getCasualtiesByTimeSpan = getCasualtiesByTimeSpan;
+        self.getEventTypes = getEventTypes;
 
 
-        function fetchTimelineEvents(person) {
+        function fetchTimelineEvents(person, types) {
             var id = [];
             if (person.units) {
                 id = _.map(person.units, 'id');
             }
             id.push(person.id);
-            return eventRepository.getByActorId(id,
-                WAR_INFO.winterWarTimeSpan.start, WAR_INFO.continuationWarTimeSpan.end)
+            return eventRepository.getByActorId(id, {
+                start: WAR_INFO.winterWarTimeSpan.start,
+                end: WAR_INFO.continuationWarTimeSpan.end,
+                types: _.map(types, 'id')
+            })
             .then(function(data) {
                 return baseService.getRelated(data, 'place_id', 'places', placeRepository);
             }).then(function(data) {
@@ -191,10 +195,11 @@
         }
 
         // for demo page:
-        function fetchRelatedForDemo(person) {
+        function fetchRelatedForDemo(person, options) {
+            options = options || {};
             var fetchTimeline = function() {
                 return self.fetchRelatedUnits(person).then(function(person) {
-                    return self.fetchTimelineEvents(person);
+                    return self.fetchTimelineEvents(person, _.map(options.types, 'id'));
                 });
             };
 
@@ -279,6 +284,10 @@
 
         function getItems(regx) {
             return personRepository.getItems(regx);
+        }
+
+        function getEventTypes(person, options) {
+            return eventRepository.getTypesByActorId(person.id, options);
         }
     }
 })();

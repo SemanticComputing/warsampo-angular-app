@@ -125,7 +125,7 @@
         };
 
         self.fetchUnitEvents = function(unit) {
-            return eventRepository.getByUnitId(unit.id).then(function(events) {
+            return eventRepository.getByActorId(unit.id).then(function(events) {
                 if (events && events.length) {
                     self.processUnitEvents(unit, events);
                     unit.hasLinks = true;

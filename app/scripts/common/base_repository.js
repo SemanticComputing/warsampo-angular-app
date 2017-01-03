@@ -17,9 +17,9 @@
 
         function uriFy(id) {
             if (_.isArray(id)) {
-                return '<{0}>'.format(id.join('> <'));
+                return '<' + id.join('> <') + '>';
             } else if (id) {
-                return '<{0}>'.format(id);
+                return '<' + id + '>';
             }
             return;
         }

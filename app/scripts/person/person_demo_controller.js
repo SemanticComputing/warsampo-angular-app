@@ -5,8 +5,8 @@
     .controller('PersonDemoController', PersonDemoController);
 
     /* @ngInject */
-    function PersonDemoController($q, $scope, $routeParams, $location, personService,
-            PersonDemoService, eventService, Settings, WAR_INFO) {
+    function PersonDemoController($q, $scope, $routeParams, $location, _, personService,
+            PersonDemoService, eventService, Settings) {
 
         var self = this;
         var demoService = new PersonDemoService();
@@ -22,6 +22,7 @@
 
         self.updateSelection = updateSelection;
         self.getItems = getItems;
+        self.createTimemap = createTimemap;
 
         self.getCasualtyCount = getCasualtyCount;
         self.getCasualtyStats = getCasualtyStats;
@@ -35,6 +36,8 @@
         self.promise = $q.when();
         // The id of the currently displayed person
         self.personId;
+
+        self.options = {};
 
         init();
 
@@ -112,7 +115,7 @@
 
         function applySettings() {
             if (self.activeTab === TIMELINE_TAB) {
-                return createTimeMap();
+                return createTimemap();
             }
             return $q.when();
         }
@@ -121,21 +124,23 @@
             $location.search('tab', index);
         }
 
-        function createTimeMap() {
-            if (!self.person.timelineEvents) {
-                demoService.clear();
-                self.isLoadingTimeline = false;
-                self.noEvents = true;
-                return $q.when(false);
-            }
-            self.noEvents = false;
-            self.isLoadingTimeline = true;
-            return demoService.createTimemap(self.person, WAR_INFO.winterWarTimeSpan.start,
-                    WAR_INFO.continuationWarTimeSpan.end,
-                    WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights))
-            .then(function(data) {
-                self.isLoadingTimeline = false;
-                return data;
+        function createTimemap() {
+            return personService.fetchTimelineEvents(self.person,
+                _.filter(self.options.types, 'selected'))
+            .then(function() {
+                if (!self.person.timelineEvents) {
+                    demoService.clear();
+                    self.isLoadingTimeline = false;
+                    self.noEvents = true;
+                    return $q.when(false);
+                }
+                self.noEvents = false;
+                self.isLoadingTimeline = true;
+                return demoService.createTimemap(self.person)
+                .then(function(data) {
+                    self.isLoadingTimeline = false;
+                    return data;
+                });
             });
         }
 
@@ -148,12 +153,19 @@
             .then(function(person) {
                 self.person = person;
                 self.isLoadingObject = false;
-
-                return personService.fetchRelatedForDemo(person);
+                return person;
+            }).then(function(person) {
+                return demoService.getEventTypes(person);
+            }).then(function(types) {
+                types.forEach(function(t) {
+                    t.selected = true;
+                });
+                self.options.types = types;
+                return types;
             }).then(function() {
                 if (self.activeTab === TIMELINE_TAB) {
                     self.isTimemapInit = true;
-                    return createTimeMap();
+                    return createTimemap();
                 }
                 self.isTimemapInit = false;
                 return $q.when(false);

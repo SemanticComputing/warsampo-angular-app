@@ -7,9 +7,10 @@
 
     /* @ngInject */
     function PersonDemoService($q, $location, EventDemoService, eventService,
-            timemapService, Settings) {
+            timemapService, personService, Settings, WAR_INFO) {
 
         PersonDemoServiceConstructor.prototype.createTimemap = createTimemapByActor;
+        PersonDemoServiceConstructor.prototype.getEventTypes = getEventTypes;
 
         PersonDemoServiceConstructor.prototype = angular.extend({}, EventDemoService.prototype,
             PersonDemoServiceConstructor.prototype);
@@ -40,19 +41,23 @@
             this.fetchImages(item);
         }
 
-        function createTimemapByActor(person, start, end, highlights) {
+        function createTimemapByActor(person) {
             var self = this;
+
+            var photoConfig = Settings.getPhotoConfig();
+            var start = WAR_INFO.winterWarTimeSpan.start;
+            var end = WAR_INFO.continuationWarTimeSpan.end;
+
             self.current = undefined;
             self.currentPersonId = person.id;
-            self.highlights = highlights;
-            var photoConfig = Settings.getPhotoConfig();
+            self.highlights = WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights);
 
-            var bandInfo = timemapService.getDefaultBandInfo(start, end, highlights);
+            var bandInfo = timemapService.getDefaultBandInfo(start, end, self.highlights);
             bandInfo[0].intervalPixels = 50;
             bandInfo[1].intervalPixels = 50;
 
             return timemapService.createTimemapWithPhotoHighlight(
-                start, end, person.timelineEvents, highlights, self.infoWindowCallback,
+                start, end, person.timelineEvents, self.highlights, self.infoWindowCallback,
                 photoConfig, bandInfo, self.tm)
             .then(function(timemap) {
                 var isNew = !self.tm;
@@ -66,6 +71,14 @@
             }).catch(function(data) {
                 return $q.reject(data);
             });
+        }
+
+        function getEventTypes(person) {
+            var opts = {
+                start: WAR_INFO.winterWarTimeSpan.start,
+                end: WAR_INFO.continuationWarTimeSpan.end
+            };
+            return personService.getEventTypes(person, opts);
         }
     }
 })();
