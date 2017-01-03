@@ -6,7 +6,8 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('unitRepository', function($q, _, SparqlService, unitMapperService, ENDPOINT_CONFIG) {
+    .service('unitRepository', function($q, _, SparqlService, baseRepository,
+            unitMapperService, ENDPOINT_CONFIG) {
 
         var endpoint = new SparqlService(ENDPOINT_CONFIG);
 
@@ -38,63 +39,66 @@
         '    ?ename skos:prefLabel ?name . ' +
         '    BIND(?name AS ?label) ' +
         '    OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-        ' 	 OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
+        '   OPTIONAL { ?id <http://purl.org/dc/elements/1.1/source> ?sid . ' +
         '      OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '    } ' +
         '    ?ename crm:P95_has_formed ?id . ' +
         '    OPTIONAL { ?id crm:P3_has_note ?note . } ' +
         '    VALUES ?id  { {0} } ' +
-        '    OPTIONAL { ?id dc:description ?description . }	 '+
+        '    OPTIONAL { ?id dc:description ?description . }  '+
         '  } ';
 
         var relatedUnitQry = prefixes +
-   		'SELECT DISTINCT  ?id ?level (SAMPLE(?name) AS ?label) WHERE { ' + 
-			'{ SELECT DISTINCT ?id ?level WHERE { ' + 
-			'      VALUES ?unit  { {0} } ' + 
-			'        { ?unit (^crm:P143_joined/crm:P144_joined_with) ?id .  ' + 
-			'        BIND (2 AS ?level)  ' + 
-			'		} UNION {  ' + 
-			'        ?unit (^crm:P143_joined/crm:P144_joined_with){2} ?id .  ' + 
-			'        BIND (3 AS ?level)  ' + 
-			'        } UNION {  ' + 
-			'        ?unit (^crm:P143_joined/crm:P144_joined_with){3} ?id .  ' + 
-			'        BIND (4 AS ?level)  ' + 
-			'        } UNION {  ' + 
-			'        ?unit (^crm:P143_joined/crm:P144_joined_with){4} ?id .  ' + 
-			'        BIND (5 AS ?level)  ' + 
-			'        } UNION {  ' + 
-			'        ?unit (^crm:P143_joined/crm:P144_joined_with){5} ?id .  ' + 
-			'        BIND (6 AS ?level)  ' + 
-			'        } UNION {  ' + 
-			'        ?unit (^crm:P143_joined/crm:P144_joined_with){6} ?id .  ' + 
-			'        BIND (7 AS ?level)  ' + 
-			'        } UNION {  ' + 
-			'        ?unit (^crm:P143_joined/crm:P144_joined_with){7} ?id .  ' + 
-			'        BIND (8 AS ?level)  ' + 
-			'        } ' + 
-			'       ' + 
-			'  	} GROUP BY ?id ?level LIMIT 10  ' + 
-			'} UNION {  ' + 
-			'	SELECT ?id (COUNT(?s) AS ?no) ?level  WHERE {  ' + 
-			'      			VALUES ?unit  { {0} }  ' + 
-			'                {	?unit ^crm:P144_joined_with/crm:P143_joined ?id .  ' + 
-			'                    BIND (0 AS ?level)  ' + 
-			'			    } UNION {  ' + 
-			'        			?unit ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' + 
-			'               		BIND (1 AS ?level) ' + 
-			'	                FILTER ( ?unit != ?id ) ' + 
-			'			  	} ' + 
-			'      			?id a atypes:MilitaryUnit . ' + 
-			'                ?s ?p ?id . ' + 
-			'      FILTER ( BOUND(?level) )  ' + 
-			'    } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 }  ' + 
-			'  	?ename a etypes:UnitNaming ; ' + 
-			'         skos:prefLabel ?name ; ' + 
-			'         crm:P95_has_formed ?id . ' + 
-			'} GROUP BY ?id ?level ORDER BY ?level '; 
+        ' SELECT DISTINCT  ?id ?level (SAMPLE(?name) AS ?label) WHERE { ' +
+        ' { ' +
+        '  SELECT DISTINCT ?id ?level WHERE { ' +
+        '  VALUES ?unit  { <ACTOR> } ' +
+        '    { ' +
+        '      ?unit (^crm:P143_joined/crm:P144_joined_with) ?id .  ' +
+        '      BIND (2 AS ?level)  ' +
+        '    } UNION {  ' +
+        '      ?unit (^crm:P143_joined/crm:P144_joined_with){2} ?id .  ' +
+        '      BIND (3 AS ?level)  ' +
+        '    } UNION {  ' +
+        '      ?unit (^crm:P143_joined/crm:P144_joined_with){3} ?id .  ' +
+        '      BIND (4 AS ?level)  ' +
+        '    } UNION {  ' +
+        '      ?unit (^crm:P143_joined/crm:P144_joined_with){4} ?id .  ' +
+        '      BIND (5 AS ?level)  ' +
+        '    } UNION {  ' +
+        '      ?unit (^crm:P143_joined/crm:P144_joined_with){5} ?id .  ' +
+        '      BIND (6 AS ?level)  ' +
+        '    } UNION {  ' +
+        '      ?unit (^crm:P143_joined/crm:P144_joined_with){6} ?id .  ' +
+        '      BIND (7 AS ?level)  ' +
+        '    } UNION {  ' +
+        '      ?unit (^crm:P143_joined/crm:P144_joined_with){7} ?id .  ' +
+        '      BIND (8 AS ?level)  ' +
+        '    } ' +
+        '  } GROUP BY ?id ?level LIMIT 10  ' +
+        ' } UNION {  ' +
+        '   SELECT ?id (COUNT(?s) AS ?no) ?level  WHERE {  ' +
+        '     VALUES ?unit  { <ACTOR> }  ' +
+        '     { ' +
+        '       ?unit ^crm:P144_joined_with/crm:P143_joined ?id .  ' +
+        '       BIND (0 AS ?level)  ' +
+        '     } UNION {  ' +
+        '       ?unit ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' +
+        '       BIND (1 AS ?level) ' +
+        '       FILTER ( ?unit != ?id ) ' +
+        '     } ' +
+        '     ?id a atypes:MilitaryUnit . ' +
+        '     ?s ?p ?id . ' +
+        '     FILTER ( BOUND(?level) )  ' +
+        '   } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 ' +
+        ' }  ' +
+        ' ?ename a etypes:UnitNaming ; ' +
+        '   skos:prefLabel ?name ; ' +
+        '   crm:P95_has_formed ?id . ' +
+        ' } GROUP BY ?id ?level ORDER BY ?level ';
 
         var byPersonIdQry = prefixes +
-        ' SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE { 	' +
+        ' SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE {  ' +
         ' VALUES ?person { {0} } . ' +
         '   { ?evt a etypes:PersonJoining ; ' +
         '         crm:P143_joined ?person . ' +
@@ -108,24 +112,24 @@
         ' } GROUP BY ?id ?label ';
 
         var subUnitQry = prefixes +
-        'SELECT DISTINCT ?id	'+
-        'WHERE { 	'+
-        '	VALUES ?unit { {0} } 	'+
-        '	?unit (^crm:P144_joined_with/crm:P143_joined)+ ?id .	'+
-        '	?id a atypes:MilitaryUnit .	'+
+        'SELECT DISTINCT ?id '+
+        'WHERE {  '+
+        ' VALUES ?unit { {0} }  '+
+        ' ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?id . '+
+        ' ?id a atypes:MilitaryUnit . '+
         '} GROUP BY ?id ';
 
         var selectorQuery = prefixes +
         'SELECT DISTINCT ?name ?id  ' +
         'WHERE { ' +
-        ' 	{ SELECT DISTINCT ?ename ' +
-        ' 	   WHERE { ' +
-        ' 	      ?ename a etypes:UnitNaming . ' +
-        ' 	      ?ename skos:prefLabel|skos:altLabel|skos:hiddenLabel ?name . ' +
-        ' 	      FILTER ( regex(?name, "{0}", "i") ) ' +
-        ' 	   } ' +
-        ' 	   LIMIT 300 ' +
-        ' 	} ?ename skos:prefLabel ?name ; crm:P95_has_formed ?id . ' +
+        '  { SELECT DISTINCT ?ename ' +
+        '     WHERE { ' +
+        '        ?ename a etypes:UnitNaming . ' +
+        '        ?ename skos:prefLabel|skos:altLabel|skos:hiddenLabel ?name . ' +
+        '        FILTER ( regex(?name, "{0}", "i") ) ' +
+        '     } ' +
+        '     LIMIT 300 ' +
+        '  } ?ename skos:prefLabel ?name ; crm:P95_has_formed ?id . ' +
         '} ORDER BY lcase(?name) ' ;
 
         var actorInfoQry = prefixes +
@@ -145,22 +149,22 @@
         ' } ';
 
         var wardiaryQry = prefixes +
-        'SELECT ?label ?id ?time	' +
-        'WHERE {	' +
-        '  GRAPH <http://ldf.fi/warsa/diaries> {	' +
-        '    VALUES ?unit { {0} } .	' +
-        '    ?uri crm:P70_documents ?unit .	' +
-        '    ?uri skos:prefLabel ?label .	' +
-        '    ?uri <http://purl.org/dc/terms/hasFormat> ?id .	' +
-        '    OPTIONAL { ?uri crm:P4_has_time-span ?time . }	' +
-        '    }	' +
-        '} ORDER BY ?time	';
+        'SELECT ?label ?id ?time ' +
+        'WHERE { ' +
+        '  GRAPH <http://ldf.fi/warsa/diaries> { ' +
+        '    VALUES ?unit { {0} } . ' +
+        '    ?uri crm:P70_documents ?unit . ' +
+        '    ?uri skos:prefLabel ?label . ' +
+        '    ?uri <http://purl.org/dc/terms/hasFormat> ?id . ' +
+        '    OPTIONAL { ?uri crm:P4_has_time-span ?time . } ' +
+        '    } ' +
+        '} ORDER BY ?time ';
 
         var wikipediaQry = prefixes +
-        'SELECT ?id	' +
-        'WHERE {	' +
-        '    VALUES ?unit { {0} } .	' +
-        '    ?unit foaf:page ?id .	' +
+        'SELECT ?id ' +
+        'WHERE { ' +
+        '    VALUES ?unit { {0} } . ' +
+        '    ?unit foaf:page ?id . ' +
         '} ';
 
         var articleQry = prefixes +
@@ -213,7 +217,8 @@
         };
 
         this.getRelatedUnits = function(unit) {
-            var qry = relatedUnitQry.format('<{0}>'.format(unit));
+            unit = baseRepository.uriFy(unit);
+            var qry = relatedUnitQry.replace(/<ACTOR>/g, unit);
             return endpoint.getObjects(qry).then(function(data) {
                 return unitMapperService.makeObjectList(data);
             });
