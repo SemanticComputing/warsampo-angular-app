@@ -3,15 +3,15 @@
 
     /**
     * @ngdoc function
-    * @name eventsApp.controller:EventPageCtrl
+    * @name eventsApp.controller:EventPageController
     * @description
-    * # EventPageCtrl
+    * # EventPageController
     * Controller of the eventsApp
     */
     angular.module('eventsApp')
-    .controller('EventPageCtrl', EventPageCtrl);
+    .controller('EventPageController', EventPageController);
 
-    function EventPageCtrl($routeParams, $q, $rootScope, $translate,
+    function EventPageController($routeParams, $q, $rootScope, $translate,
             _, eventService, photoService, Settings, EVENT_TYPES) {
 
         $rootScope.showHelp = null;

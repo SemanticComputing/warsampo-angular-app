@@ -6,8 +6,8 @@
         return {
             restrict:'E',
             scope: {
-                title: '=',
-                pager: '=paginator'
+                title: '<',
+                pager: '<paginator'
             },
             link: function(scope, element, attrs) {
                 if ('external' in attrs) {

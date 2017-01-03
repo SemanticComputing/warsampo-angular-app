@@ -43,7 +43,6 @@ module.exports = function(config) {
       'bower_components/blueimp-gallery/js/blueimp-gallery.js',
       'bower_components/blueimp-gallery/js/jquery.blueimp-gallery.js',
       'bower_components/blueimp-gallery/js/blueimp-gallery-fullscreen.js',
-      'bower_components/blueimp-gallery/js/blueimp-gallery-indicator.js',
       'bower_components/spin.js/spin.js',
       'bower_components/angular-spinner/angular-spinner.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',

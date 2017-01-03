@@ -1,80 +1,16 @@
-<div class="row">
-  <div class="col-lg-5 col-lg-push-7 col-md-12">
-    <div class="row">
-      <div class="col-md-12">
-        <div ng-if="timemapCtrl.getCurrent()">
-          <!-- Event details -->
-          <h3>
-            <span ng-repeat="place in timemapCtrl.getCurrent().places">
-              <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
-            </span>
-            {{ timemapCtrl.getCurrent().timeSpanString }} - {{ timemapCtrl.getCurrent().getTypeLabel() }}
-          </h3>
-          <p>{{ timemapCtrl.getCurrent().getDescription() }}</p>
-          <p ng-if="timemapCtrl.getCurrent().source">
-            <small>{{ 'SOURCE' | translate }}: {{ timemapCtrl.getCurrent().source | concatList }}</small>
-          </p>
-          <p ng-repeat="person in timemapCtrl.getCurrent().people" style="text-transform: capitalize">
-          <a ws-page-link="person.id">{{ person.label }}</a>
-          </p>
-          <p ng-repeat="unit in timemapCtrl.getCurrent().units" style="text-transform: capitalize">
-          <a ws-page-link="unit.id">{{ unit.label }}</a>
-          </p>
-          <p><a ws-page-link="timemapCtrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
-          <div ng-show="timemapCtrl.getImages().length === 0">
-            <p ng-if="!timemapCtrl.isLoadingImages" translate>
-            NO_RELATED_PHOTOS
-            </p>
-            <p ng-if="timemapCtrl.isLoadingImages">
-            {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
-            </p>
-          </div>
-          <ws-photo-gallery data-images="timemapCtrl.getImages()"></ws-photo-gallery>
-        </div>
-        <div ng-if="timemapCtrl.isLoadingTimemap">
-          <h3>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h3>
-        </div>
-        <div ng-show="!timemapCtrl.isLoadingTimemap">
-          <div ng-if="!timemapCtrl.getCurrent()">
-            <!-- Help text -->
-            <h1 translate>{{ timemapCtrl.title }}</h1>
-            <h3 translate>EVENT_DEMO.HELP_TEXT_TITLE</h3>
-            <translate>EVENT_DEMO.HELP_TEXT</translate>
-            <div ng-include="'views/partials/event_colors.html'"></div>
-          </div>
-          <hr/>
-          <!-- Casualty statistics -->
-          <div id="casualtyCount" ng-click="timemapCtrl.showCasualtyStats = !timemapCtrl.showCasualtyStats">
-            <p>{{ 'CASUALTIES_DURING_TIMESPAN' | translate }} {{ timemapCtrl.getMinVisibleDate() | date : 'd.M.yyyy' }} - {{ timemapCtrl.getMaxVisibleDate() | date : 'd.M.yyyy' }}: {{ timemapCtrl.getCasualtyCount() }}
-            | <a>{{ timemapCtrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
-            </p>
-          </div>
-          <div uib-collapse="!timemapCtrl.showCasualtyStats">
-            <div class="row" ng-repeat="casualtyClass in timemapCtrl.getCasualtyStats()">
-              <div ng-if="casualtyClass.id">
-                <div class="col-xs-10 casualtyCount">
-                  {{ casualtyClass.description }}
-                </div>
-                <div class="col-xs-2 casualtyCount">
-                  {{ casualtyClass.count }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div id="timemap-container">
+  <div id="loading-overlay" class="timemap-overlay" ng-if="ctrl.isLoadingTimeline">
+    <h2>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h2>
   </div>
-  <div class="col-lg-7 col-lg-pull-5 col-md-12">
-    <div id="timemap-container">
-      <div id="timemap" class="animate-right">
-        <div id="mapcontainer">
-          <div id="map"></div>
-        </div>
-        <div id="timelinecontainer">
-          <div id="timeline"></div>
-        </div>
-      </div>
+  <div id="no-events-overlay" class="timemap-overlay" ng-if="ctrl.noEvents">
+    <h2 translate>NO_EVENTS</h2>
+  </div>
+  <div id="timemap">
+    <div id="mapcontainer">
+      <div id="map"></div>
+    </div>
+    <div id="timelinecontainer">
+      <div id="timeline"></div>
     </div>
   </div>
 </div>

@@ -3,22 +3,28 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('EventDemoCtrl', EventDemoController);
+    .controller('EventDemoController', EventDemoController);
 
     /* @ngInject */
     function EventDemoController($routeParams, $location, $scope, $q, $translate,
-                $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
-                googleMapsService, EventDemoService) {
+            $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
+            googleMapsService, EventDemoService) {
 
         /* Private vars */
 
         var self = this;
-        var eventDemoService = new EventDemoService();
+        var demoService = new EventDemoService();
 
         /* Public vars */
 
         // The title for the info view
         self.title;
+
+        self.helpTextTitle = 'EVENT_DEMO.HELP_TEXT_TITLE';
+        self.helpText = 'EVENT_DEMO.HELP_TEXT';
+        self.casualtyDescription = 'CASUALTIES_DURING_TIMESPAN';
+
+        self.isLoadingTimeline;
 
         self.showCasualtyStats = false;
 
@@ -35,47 +41,72 @@
 
         /* Implementation */
 
+        // A promise chain for state changes
+        self.promise = $q.when();
+
         function getCasualtyCount() {
-            return eventDemoService.getCasualtyCount();
+            return demoService.getCasualtyCount();
         }
 
         function getCasualtyStats() {
-            return eventDemoService.getCasualtyStats();
+            return demoService.getCasualtyStats();
         }
 
         function getMinVisibleDate() {
-            return eventDemoService.getMinVisibleDate();
+            return demoService.getMinVisibleDate();
         }
 
         function getMaxVisibleDate() {
-            return eventDemoService.getMaxVisibleDate();
+            return demoService.getMaxVisibleDate();
         }
 
         function getCurrent() {
-            return eventDemoService.getCurrent();
+            return demoService.getCurrent();
         }
 
         function getImages() {
-            return eventDemoService.getImages();
+            return demoService.getImages();
         }
 
         function init() {
+            // Update state when url changes.
+            $scope.$on('$routeUpdate', function() {
+                return updateState();
+            });
+
             Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
             Settings.setApplyFunction(visualize);
-            Settings.setHeatmapUpdater(eventDemoService.updateHeatmap);
+            Settings.setHeatmapUpdater(demoService.updateHeatmap);
 
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
-                eventDemoService.cleanUp();
+                demoService.cleanUp();
             });
 
             return visualize();
         }
 
+        // Update state based on url
+        function updateState() {
+            var uri = $routeParams.uri;
+            if (!uri) {
+                self.promise = self.promise.then(function() {
+                    return demoService.clearCurrent();
+                });
+                return self.promise;
+            }
+            if (uri !== (demoService.getCurrent() || {}).id) {
+                self.promise = self.promise.then(function() {
+                    return demoService.navigateToEvent(uri);
+                });
+                return self.promise;
+            }
+        }
+
         function visualize() {
             self.err = undefined;
-            self.isLoadingTimemap = true;
+            self.isLoadingTimeline = true;
             var era = $routeParams.era;
             var event_uri = $routeParams.uri;
             var promise;
@@ -95,11 +126,11 @@
                 // Only war given
                 switch(era.toLowerCase()) {
                     case 'winterwar': {
-                        promise = showWinterWar().then(function() { return eventDemoService.refresh(); });
+                        promise = showWinterWar().then(function() { return demoService.refresh(); });
                         break;
                     }
                     case 'continuationwar': {
-                        promise = showContinuationWar().then(function() { return eventDemoService.refresh(); });
+                        promise = showContinuationWar().then(function() { return demoService.refresh(); });
                         break;
                     }
                 }
@@ -110,24 +141,24 @@
             }
 
             return promise.then(function() {
-                self.isLoadingTimemap = false;
+                self.isLoadingTimeline = false;
             }).catch(function(data) {
                 data = data || 'Unknown error';
-                self.isLoadingTimemap = false;
+                self.isLoadingTimeline = false;
                 self.err = data.message || data;
             });
         }
 
         function showWinterWar() {
             self.title = 'EVENT_DEMO.WINTER_WAR_EVENT_TITLE';
-            return eventDemoService.createTimemap(WAR_INFO.winterWarTimeSpan.start,
+            return demoService.createTimemap(WAR_INFO.winterWarTimeSpan.start,
                     WAR_INFO.winterWarTimeSpan.end,
                     WAR_INFO.winterWarHighlights);
         }
 
         function showContinuationWar() {
             self.title = 'EVENT_DEMO.CONTINUATION_WAR_EVENT_TITLE';
-            return eventDemoService.createTimemap(WAR_INFO.continuationWarTimeSpan.start,
+            return demoService.createTimemap(WAR_INFO.continuationWarTimeSpan.start,
                     WAR_INFO.continuationWarTimeSpan.end,
                     WAR_INFO.continuationWarHighlights);
         }
@@ -143,7 +174,7 @@
         function createTimeMapForEvent(e) {
             var show = getCreateFunction(e.start_time);
             return show().then(function() {
-                return eventDemoService.navigateToEvent(e);
+                return demoService.navigateToEvent(e);
             });
         }
 

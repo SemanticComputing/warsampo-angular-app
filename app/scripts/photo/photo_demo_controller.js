@@ -62,9 +62,7 @@
 
         function openModal(photo) {
             $uibModal.open({
-                templateUrl: 'views/partials/photo.modal.html',
-                controller: 'PhotoModalController',
-                controllerAs: 'vm',
+                component: 'photoModal',
                 size: 'lg',
                 resolve: {
                     photo: function() { return photo; }

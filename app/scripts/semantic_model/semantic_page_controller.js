@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:SemanticPageCtrl
+ * @name eventsApp.controller:SemanticPageController
  * @description
- * # SemanticPageCtrl
+ * # SemanticPageController
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-.controller('SemanticPageCtrl', function($routeParams, $q, $rootScope, _, semanticModelService) {
+.controller('SemanticPageController', function($routeParams, $q, $rootScope, _, semanticModelService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;

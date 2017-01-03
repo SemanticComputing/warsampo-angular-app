@@ -1,5 +1,6 @@
 {
     "EVENT_DEMO": {
+        "N_PHOTOGRAPHY_PHOTOS": "{NUM, plural, =0{Ei valokuvia} one{Yksi otettu valokuva} other{# otettua valokuvaa}}",
         "GO_TO_WINTER_WAR": "Siirry talvisotaan",
         "WINTER_WAR_EVENT_TITLE": "Talvisodan tapahtumat",
         "CONTINUATION_WAR_EVENT_TITLE": "Jatkosodan tapahtumat",
@@ -9,6 +10,9 @@
         "OTHER_EVENTS_CLOSE": "Muita tapahtumia samalla alueella"
     },
     "PERSONS_DEMO": {
+        "INCLUDE_UNIT_EVENTS": "Näytä henkilön joukko-osastojen tapahtumat",
+        "INFO_TAB": "Henkilön tiedot",
+        "TIMELINE_TAB": "Aikajana",
         "TITLE": "Henkilöt",
         "HELP_TEXT": "<p>Hae tunnettuja viime sotien henkilöitä kirjoittamalla tekstiä alla olevaan täydennyskenttään ja/tai valitse henkilö kentän alla olevasta listasta. Henkilön tiedot ja suosituslinkkejä muihin tietoihin ilmestyy oikealle.</p>",
         "SEARCH_BOX_PLACEHOLDER": "Hae henkilön nimellä",
@@ -60,7 +64,6 @@
         "PHOTOGRAPHER": "@:PHOTOGRAPHER",
         "UNIT": "@:UNIT",
         "THEME_CODE": "Kuva-aihekoodi"
-
     },
     "SETTINGS": {
         "PHOTO_RANGE": "Valokuvien aikahaarukka",
@@ -69,6 +72,8 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.",
         "SHOW_HEATMAP": "Näytä lämpökartta menehtyneistä."
     },
+    "FOR_THIS_RESOURCE": "resurssiin",
+    "NO_EVENTS": "Tapahtumia ei löytynyt",
     "UNKNOWN_ERROR": "Tuntematon virhe",
     "PHOTO_TAKEN_BETWEEN": "Kuva otettu välillä",
     "DESCRIPTION": "Kuvaus",
@@ -91,7 +96,7 @@
     "TIME": "Aika",
     "PHOTO": "Kuva",
     "MEDAL": "Kunniamerkki",
-    "N_PHOTOS": "resurssiin liittyvää kuvaa",
+    "N_PHOTOS": "{NUM, plural, =0{Ei {forResource} liittyviä kuvia} one{Yksi {forResource} liittyvä kuva} other{# {forResource} liittyvää kuvaa}}",
     "BUILDING_TIMELINE": "Rakennetaan aikajanaa",
     "NO_RELATED_EVENTS": "No related events",
     "RELATED_PEOPLE": "Henkilöt",
@@ -125,5 +130,6 @@
     "CURRENTLY_SELECTED_EVENT": "Tällä hetkellä valittu tapahtuma",
     "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla",
     "DEATH_RECORD": "Kuolinasiakirja",
+    "LOADING": "Ladataan...",
     "NOTE": "Muistiinpano"
 }

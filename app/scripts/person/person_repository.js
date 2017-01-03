@@ -11,6 +11,7 @@
                 personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, personMapperService);
+        var historyEndpoint = new SparqlService('http://ldf.fi/history/sparql');
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
@@ -302,11 +303,10 @@
         };
 
         this.getNationalBibliography = function(person) {
-            if ('natiobib' in person ) {
+            if (person.natiobib) {
                 // Direct link by owl:sameAs
                 var qry = nationalBibliographyQry.format(person.natiobib);
-                var end2 = new SparqlService('http://ldf.fi/history/sparql');
-                return end2.getObjects(qry).then(function(data) {
+                return historyEndpoint.getObjects(qry).then(function(data) {
                     return personMapperService.makeObjectList(data);
                 });
             }
@@ -320,15 +320,13 @@
             });
         };
 
-        this.getItems = function (regx, controller) {
+        this.getItems = function(regx) {
             var qry = selectorQuery.format('{0}'.format(regx));
-            controller.items = [ {id:'#', name:'Etsitään ...'} ];
             return endpoint.getObjects(qry).then(function(data) {
                 var arr = data;
                 if (!arr.length) {
                     arr = [ {id:'#', name:'Ei hakutuloksia.'} ];
                 }
-                controller.items = arr;
                 return arr;
             });
         };

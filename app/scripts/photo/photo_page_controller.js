@@ -2,9 +2,9 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('PhotoPageCtrl', PhotoPageCtrl);
+    .controller('PhotoPageController', PhotoPageController);
 
-    function PhotoPageCtrl($routeParams, $q, $rootScope, _, photoService, eventService,
+    function PhotoPageController($routeParams, $q, $rootScope, _, photoService, eventService,
             placeRepository, Settings) {
 
         $rootScope.showSettings = null;

@@ -14,9 +14,6 @@
         // Function(start, end, highlights, infoWindowCallback,
         //      photoConfig, existingTimemap) -> promise (timemap instance)
         this.createTimemapByTimeSpan = createTimemapByTimeSpan;
-        // Function(actorId, start, end, highlights, infoWindowCallback,
-        //      photoConfig, existingTimemap) -> promise (timemap instance)
-        this.createTimemapByActor = createTimemapByActor;
         // Function(start, end, events, highlights, infoWindowCallback,
         //      photoData, photoConfig, bandInfo, existingTimemap) -> promise (timemap instance)
         this.createTimemap = createTimemap;
@@ -24,6 +21,9 @@
         this.setOnMouseUpListener = setOnMouseUpListener;
         this.addOnScrollListener = addOnScrollListener;
         this.setCenterVisibleDate = setCenterVisibleDate;
+        this.getDefaultBandInfo = getDefaultBandInfo;
+        this.clearSelection = clearSelection;
+        this.clear = clear;
 
         this.cleanUp = cleanUp;
 
@@ -35,21 +35,26 @@
         eventTypeThemes[EVENT_TYPES.BATTLE] = 'red';
         eventTypeThemes[EVENT_TYPES.POLITICAL_ACTIVITY] = 'purple';
 
-        var photoSettings = {
-            beforeOffset: 0,
-            afterOffset: 0,
-            inProximity: true
-        };
-
         // TODO: this should be a stateless service or a service constructor
         var oldTheme;
         var oldEvent;
+        var photoSettings;
 
         function cleanUp() {
             // Remove the onresize function set by Timemap...
             $window.onresize = undefined;
             oldTheme = undefined;
             oldEvent = undefined;
+            photoSettings = undefined;
+        }
+
+        function getDefaultPhotoSettings() {
+            return {
+                beforeOffset: 0,
+                afterOffset: 0,
+                inProximity: true
+            };
+
         }
 
         /* Public API functions */
@@ -132,30 +137,6 @@
         }
 
         /*
-        * Create a Timemap where all events in which the given actor has participated in.
-        *
-        * If existingTimemap is given, the events of that timemap instance are
-        * replaced with new ones instead of creating a new timemap instance.
-        *
-        * Return a promise of the Timemap.
-        */
-        function createTimemapByActor(actorId, start, end, highlights, infoWindowCallback,
-                photoConfig, existingTimemap) {
-
-            var bandInfo = getDefaultBandInfo(start, end, highlights);
-            bandInfo[1].intervalPixels = 50;
-
-            var self = this;
-            return eventService.getUnitAndSubUnitEventsByUnitId(actorId)
-            .then(function(data) {
-                return self.createTimemapWithPhotoHighlight(start, end, data,
-                    highlights, infoWindowCallback, photoConfig, bandInfo, existingTimemap);
-            }).catch(function(data) {
-                return $q.reject(data);
-            });
-        }
-
-        /*
         * Create a Timemap.
         *
         * This function is used by all the other create functions to actually
@@ -168,7 +149,10 @@
         */
         function createTimemap(start, end, events, highlights,
                 infoWindowCallback, photoData, photoConfig, bandInfo, existingTimemap) {
+
             var distinctPhotoData = photoData || [];
+
+            photoSettings = getDefaultPhotoSettings();
             angular.extend(photoSettings, photoConfig);
 
             var res = [];
@@ -182,6 +166,30 @@
                 dataset.loadItems(res);
                 return $q.when(existingTimemap);
             }
+
+            bandInfo = bandInfo || getDefaultBandInfo(start, end, highlights);
+            bandInfo[0].zones = [
+                {
+                    start: '1939-07-01',
+                    end: '1940-04-30',
+                    magnify: 10,
+                    unit: Timeline.DateTime.MONTH
+                },
+                {
+                    start: '1941-05-01',
+                    end: '1945-12-31',
+                    magnify: 10,
+                    unit: Timeline.DateTime.MONTH
+                }
+            ];
+
+            var bands = [];
+
+            bands[1] = Timeline.createBandInfo(bandInfo[1]);
+            bands[0] = Timeline.createHotZoneBandInfo(bandInfo[0]);
+
+            bands[0].eventSource = true;
+            bands[1].eventSource = true;
 
             // Use timeout to let the template (or more specifically the map div)
             // render before creating the timemap.
@@ -204,7 +212,7 @@
                             items: res
                         }
                     }],
-                    bandInfo: bandInfo || getDefaultBandInfo(start, end, highlights)
+                    bands: bands
                 });
             }, 0).then(function(tm) {
                 // Add listeners for touch events for mobile support
@@ -215,7 +223,7 @@
                 });
 
                 // Add zoom controls to the map.
-                tm.getNativeMap().setOptions({ zoomControl: true });
+                tm.getNativeMap().setOptions({ zoomControl: true, mapTypeId: 'satellite' });
 
                 return tm;
             });
@@ -245,7 +253,7 @@
                     overview: true,
                     width: '40',
                     intervalPixels: 100,
-                    intervalUnit: Timeline.DateTime.MONTH,
+                    intervalUnit: Timeline.DateTime.YEAR,
                     decorators: bandDecorators1
                 },
                 {
@@ -272,7 +280,18 @@
                 callback(event);
             }
             band.setMinVisibleDate(start);
+        }
 
+        function clearSelection(event) {
+            if (event) {
+                event.changeTheme(oldTheme);
+            }
+            oldTheme = undefined;
+            oldEvent = undefined;
+        }
+
+        function clear(tm) {
+            _.invoke(tm, 'datasets.warsa.clear');
         }
 
         function createEventObject(e, distinctPhotoData) {
@@ -328,7 +347,9 @@
             var end = new Date(entry.options.event.end_time);
             end.setDate(end.getDate() + photoSettings.afterOffset);
 
-            if (_.some(distinctPhotoData, function(photo) {
+            var e = entry.options.event;
+
+            if (e.photo_id || _.some(distinctPhotoData, function(photo) {
                 var d = new Date(photo.created);
 
                 if (d >= start && d <= end && (!photoSettings.inProximity ||

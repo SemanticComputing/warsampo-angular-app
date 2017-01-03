@@ -3,16 +3,16 @@
 
     /**
     * @ngdoc function
-    * @name eventsApp.controller:MedalPageCtrl
+    * @name eventsApp.controller:MedalPageController
     * @description
-    * # MedalPageCtrl
+    * # MedalPageController
     * Controller of the eventsApp
     */
     angular.module('eventsApp')
-    .controller('MedalPageCtrl', MedalPageCtrl);
+    .controller('MedalPageController', MedalPageController);
 
     /* @ngInject */
-    function MedalPageCtrl($routeParams, $q, $rootScope, eventService, medalService) {
+    function MedalPageController($routeParams, $q, $rootScope, eventService, medalService) {
         $rootScope.showSettings = null;
         $rootScope.showHelp = null;
 

@@ -19,8 +19,11 @@
         /* Public API */
 
         self.getById = getById;
+        self.getByIdList = getByIdList;
         self.getByTimeSpan = getByTimeSpan;
         self.getByPlaceAndTimeSpan = getByPlaceAndTimeSpan;
+        self.getByIdUnionTimeSpan = getByIdUnionTimeSpan;
+        self.getByIdUnionPlaceAndTimeSpan = getByIdUnionPlaceAndTimeSpan;
         self.getByPersonId = getByPersonId;
         self.getByUnitId = getByUnitId;
         self.getByThemeId = getByThemeId;
@@ -59,15 +62,6 @@
         '  ?participant_id ?unit_id ?place_id ?place_string ' +
         '  ?source ?creator_id ?photographer_string ?theme ';
 
-        var photosByPlaceAndTimeResultSet =
-        ' VALUES ?place_id { <ID> } ' +
-        ' ?id ^crm:P94_has_created [ ' +
-        '  crm:P7_took_place_at ?place_id ; ' +
-        '  crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
-        ' ] . ' +
-        ' ?id a wph:Photograph . ' +
-        ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ';
-
         var photoQry = select +
         ' { ' +
         '  <RESULT_SET> ' +
@@ -98,8 +92,8 @@
         '  OPTIONAL { ?id wph:photographer_string ?photographer_string . } ' +
         ' } ';
 
-        var singlePhotoQryResultSet =
-        '  BIND(<{0}> AS ?id) ' +
+        var photoByIdResultSet =
+        '  VALUES ?id { <ID> } ' +
         '  ?id sch:contentUrl ?url . ';
 
         var photosByThemeResultSet =
@@ -108,16 +102,25 @@
 
         var photosByTimeResultSet =
         ' ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
-        ' FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ' +
         ' ?id a wph:Photograph . ';
 
+        var photosByPlaceAndTimeResultSet =
+        ' VALUES ?place_id { <PLACE> } ' +
+        ' ?id ^crm:P94_has_created [ ' +
+        '  crm:P7_took_place_at ?place_id ; ' +
+        '  crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
+        ' ] . ' +
+        ' ?id a wph:Photograph . ' +
+        ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ';
+
         var photosByUnitResultSet =
-        ' VALUES ?unit_id { {0} } ' +
+        ' VALUES ?unit_id { <ID> } ' +
         ' ?id ^crm:P94_has_created/crm:P11_had_participant ?unit_id . ' +
         ' ?id a wph:Photograph . ';
 
         var photosByPersonResultSet =
-        ' VALUES ?participant_id { {0} } ' +
+        ' VALUES ?participant_id { <ID> } ' +
         ' { ?id ^crm:P94_has_created/crm:P11_had_participant ?participant_id . } ' +
         ' UNION ' +
         ' { ?id ^crm:P94_has_created/crm:P14_carried_out_by ?participant_id . } ' +
@@ -130,7 +133,7 @@
         '    crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
         '   ] . ' +
         '   ?id a wph:Photograph . ' +
-        '   FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '   FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ' +
         ' } ' +
         ' ORDER BY ?created ';
 
@@ -138,7 +141,7 @@
         ' SELECT DISTINCT ?created' +
         ' WHERE { ' +
         '  ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
-        '  FILTER(?created >= "{0}"^^xsd:date && ?created <= "{1}"^^xsd:date) ' +
+        '  FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ' +
         '  ?id a wph:Photograph . ' +
         ' } ' +
         ' ORDER BY ?created ';
@@ -146,7 +149,11 @@
         /* API function implementations */
 
         function getById(id) {
-            var resultSet = singlePhotoQryResultSet.format(id);
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var resultSet = photoByIdResultSet.replace('<ID>', id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
@@ -156,15 +163,30 @@
             });
         }
 
+        function getByIdList(id, pageSize) {
+            if (!id) {
+                return $q.when();
+            }
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var resultSet = photoByIdResultSet.replace('<ID>', id);
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        }
+
         function getByFacetSelections(facetSelections, options) {
             var resultSet = facetSelections.join(' ');
-            var qryObj = queryBuilder.buildQuery(photoQry, resultSet, 'DESC(?score) ?id');
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet, 'DESC(?score) ?order');
             return endpoint.getObjects(qryObj.query, options.pageSize,
                     qryObj.resultSetQuery);
         }
 
         function getByTimeSpan(start, end, options) {
-            var resultSet = photosByTimeResultSet.format(start, end);
+            var resultSet = photosByTimeResultSet
+                .replace('<START>', start)
+                .replace('<END>', end);
             var query =  options.extended ? photoQry : photoQry;
             var qryObj = queryBuilder.buildQuery(query, resultSet);
             return endpoint.getObjects(qryObj.query, options.pageSize,
@@ -176,10 +198,50 @@
             if (!placeId) {
                 return $q.when();
             }
+
             var resultSet = photosByPlaceAndTimeResultSet
-                .replace('<ID>', placeId)
+                .replace('<PLACE>', placeId)
                 .replace('<START>', start)
                 .replace('<END>' , end);
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
+        }
+
+        function getByIdUnionPlaceAndTimeSpan(id, placeId, start, end, options) {
+            placeId = baseRepository.uriFy(placeId);
+            if (!placeId) {
+                return $q.when();
+            }
+            var resultSet = photosByPlaceAndTimeResultSet
+                .replace('<PLACE>', placeId)
+                .replace('<START>', start)
+                .replace('<END>' , end);
+            id = baseRepository.uriFy(id);
+            if (id) {
+                resultSet =
+                ' { ' +
+                    photoByIdResultSet.replace('<ID>', id) +
+                ' } UNION { '
+                    + resultSet +
+                ' } ';
+            }
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
+        }
+
+        function getByIdUnionTimeSpan(id, start, end, options) {
+            var resultSet = photosByTimeResultSet
+                .replace('<START>', start)
+                .replace('<END>' , end);
+            id = baseRepository.uriFy(id);
+            if (id) {
+                resultSet =
+                ' { ' +
+                    photoByIdResultSet.replace('<ID>', id) +
+                ' } UNION { '
+                    + resultSet +
+                ' } ';
+            }
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
@@ -189,7 +251,7 @@
             if (!id) {
                 return $q.when();
             }
-            var resultSet = photosByPersonResultSet.format(id);
+            var resultSet = photosByPersonResultSet.replace('<ID>', id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
@@ -199,7 +261,7 @@
             if (!id) {
                 return $q.when();
             }
-            var resultSet = photosByUnitResultSet.format(id);
+            var resultSet = photosByUnitResultSet.replace('<ID>', id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
@@ -212,13 +274,17 @@
 
         function getMinimalDataWithPlaceByTimeSpan(start, end) {
             // start and end as strings
-            var qry = minimalPhotosWithPlaceByTimeQry.format(start, end);
+            var qry = minimalPhotosWithPlaceByTimeQry
+                .replace('<START>', start)
+                .replace('<END>' , end);
             return minimalDataService.getObjectsNoGrouping(qry);
         }
 
         function getMinimalDataByTimeSpan(start, end) {
             // start and end as strings
-            var qry = minimalPhotosByTimeQry.format(start, end);
+            var qry = minimalPhotosByTimeQry
+                .replace('<START>', start)
+                .replace('<END>' , end);
             return minimalDataService.getObjectsNoGrouping(qry);
         }
     }
