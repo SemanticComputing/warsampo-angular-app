@@ -63,6 +63,8 @@
                 self.activeTab = tab;
             }
 
+            self.options.includeUnitEvents = true;
+
             self.getItems();
 
             if (!$routeParams.uri) {
@@ -125,10 +127,9 @@
         }
 
         function createTimemap() {
-            return personService.fetchTimelineEvents(self.person,
-                _.filter(self.options.types, 'selected'))
-            .then(function() {
-                if (!self.person.timelineEvents) {
+            return demoService.getTimelineEvents(self.person, self.options)
+            .then(function(person) {
+                if (!person.timelineEvents) {
                     demoService.clear();
                     self.isLoadingTimeline = false;
                     self.noEvents = true;
@@ -136,7 +137,7 @@
                 }
                 self.noEvents = false;
                 self.isLoadingTimeline = true;
-                return demoService.createTimemap(self.person)
+                return demoService.createTimemap(person)
                 .then(function(data) {
                     self.isLoadingTimeline = false;
                     return data;
@@ -153,13 +154,10 @@
             .then(function(person) {
                 self.person = person;
                 self.isLoadingObject = false;
-                return person;
+                return personService.fetchRelatedForDemo(person);
             }).then(function(person) {
                 return demoService.getEventTypes(person);
             }).then(function(types) {
-                types.forEach(function(t) {
-                    t.selected = true;
-                });
                 self.options.types = types;
                 return types;
             }).then(function() {
@@ -181,7 +179,11 @@
                 self.isLoadingTimeline = false;
                 return uri;
             }).catch(function(err) {
-                self.err = err;
+                if (err === 'NO_EVENTS') {
+                    self.noEvents = true;
+                } else {
+                    self.err = err;
+                }
                 self.isLoadingObject = false;
                 self.isLoadingEvent = false;
                 self.isLoadingTimeline = false;

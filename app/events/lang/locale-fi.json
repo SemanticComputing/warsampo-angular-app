@@ -10,6 +10,7 @@
         "OTHER_EVENTS_CLOSE": "Muita tapahtumia samalla alueella"
     },
     "PERSONS_DEMO": {
+        "INCLUDE_UNIT_EVENTS": "Näytä henkilön joukko-osastojen tapahtumat",
         "INFO_TAB": "Henkilön tiedot",
         "TIMELINE_TAB": "Aikajana",
         "TITLE": "Henkilöt",

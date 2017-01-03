@@ -37,16 +37,17 @@
         self.getEventTypes = getEventTypes;
 
 
-        function fetchTimelineEvents(person, types) {
+        function fetchTimelineEvents(person, options) {
+            options = options || {};
             var id = [];
-            if (person.units) {
+            if (options.includeUnitEvents && person.units) {
                 id = _.map(person.units, 'id');
             }
             id.push(person.id);
             return eventRepository.getByActorId(id, {
                 start: WAR_INFO.winterWarTimeSpan.start,
                 end: WAR_INFO.continuationWarTimeSpan.end,
-                types: _.map(types, 'id')
+                types: _.map(options.types, 'id')
             })
             .then(function(data) {
                 return baseService.getRelated(data, 'place_id', 'places', placeRepository);
@@ -196,17 +197,10 @@
 
         // for demo page:
         function fetchRelatedForDemo(person, options) {
-            options = options || {};
-            var fetchTimeline = function() {
-                return self.fetchRelatedUnits(person).then(function(person) {
-                    return self.fetchTimelineEvents(person, _.map(options.types, 'id'));
-                });
-            };
-
             var related = [
                 self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
-                fetchTimeline(),
+                self.fetchRelatedUnits(person),
                 self.fetchNationalBib(person),
                 self.fetchRelatedPhotos(person),
                 self.fetchDiaries(person)

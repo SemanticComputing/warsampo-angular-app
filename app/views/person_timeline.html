@@ -51,6 +51,9 @@
         </div>
       </uib-tab>
       <uib-tab index="2" heading="{{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}" select="ctrl.selectTab(2)">
+        <label ng-show="ctrl.person.units">{{ 'PERSONS_DEMO.INCLUDE_UNIT_EVENTS' | translate }}
+          <input type="checkbox" ng-model="ctrl.options.includeUnitEvents" ng-change="ctrl.createTimemap()" />
+        </label>
         <label ng-repeat="typ in ctrl.options.types">{{ typ.getLabel() }}
           <input type="checkbox" ng-model="typ.selected" ng-change="ctrl.createTimemap()" />
         </label>

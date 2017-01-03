@@ -6,11 +6,12 @@
     .factory('PersonDemoService', PersonDemoService);
 
     /* @ngInject */
-    function PersonDemoService($q, $location, EventDemoService, eventService,
+    function PersonDemoService($q, $location, _, EventDemoService, eventService,
             timemapService, personService, Settings, WAR_INFO) {
 
         PersonDemoServiceConstructor.prototype.createTimemap = createTimemapByActor;
         PersonDemoServiceConstructor.prototype.getEventTypes = getEventTypes;
+        PersonDemoServiceConstructor.prototype.getTimelineEvents = getTimelineEvents;
 
         PersonDemoServiceConstructor.prototype = angular.extend({}, EventDemoService.prototype,
             PersonDemoServiceConstructor.prototype);
@@ -39,6 +40,19 @@
             $location.search('event', item.opts.event.id);
             eventService.fetchRelated(item.opts.event);
             this.fetchImages(item);
+        }
+
+        function getTimelineEvents(person, options) {
+            options = options || {};
+            var types = _.filter(options.types, 'selected');
+            if (types.length === 0) {
+                return $q.reject('NO_EVENTS');
+            }
+            var opts = {
+                types: types,
+                includeUnitEvents: options.includeUnitEvents
+            };
+            return personService.fetchTimelineEvents(person, opts);
         }
 
         function createTimemapByActor(person) {
@@ -73,12 +87,19 @@
             });
         }
 
-        function getEventTypes(person) {
+        function getEventTypes(person, oldTypes) {
             var opts = {
                 start: WAR_INFO.winterWarTimeSpan.start,
                 end: WAR_INFO.continuationWarTimeSpan.end
             };
-            return personService.getEventTypes(person, opts);
+            return personService.getEventTypes(person, opts)
+            .then(function(types) {
+                types.forEach(function(t) {
+                    var old = _.find(oldTypes, ['id', t.id]) || {};
+                    t.selected = old.selected === false ? false : true;
+                });
+                return types;
+            });
         }
     }
 })();
