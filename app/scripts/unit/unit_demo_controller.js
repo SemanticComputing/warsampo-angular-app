@@ -210,8 +210,12 @@
 
         function showHelp() {
             $uibModal.open({
-                templateUrl: 'views/partials/unit.help.html',
-                size: 'lg'
+                component: 'helpModal',
+                size: 'lg',
+                resolve: {
+                    title: $translate('UNIT_DEMO.HELP_TEXT_TITLE'),
+                    content: $translate('UNIT_DEMO.HELP_TEXT')
+                }
             });
         }
 

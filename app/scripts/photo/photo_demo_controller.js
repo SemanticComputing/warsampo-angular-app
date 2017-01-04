@@ -15,7 +15,7 @@
     .controller('PhotoDemoController', PhotoDemoController);
 
     /* @ngInject */
-    function PhotoDemoController($scope, $uibModal, _, photoFacetService,
+    function PhotoDemoController($scope, $translate, $uibModal, _, photoFacetService,
             FacetHandler, facetUrlStateHandlerService, Settings) {
         var vm = this;
 
@@ -55,8 +55,13 @@
 
         function showHelp() {
             $uibModal.open({
-                templateUrl: 'views/partials/photo.help.html',
-                size: 'lg'
+                component: 'helpModal',
+                size: 'lg',
+                resolve: {
+                    title: $translate('PHOTO_DEMO.HELP_TEXT_TITLE'),
+                    content: $translate('PHOTO_DEMO.HELP_TEXT'),
+                    options: function() { return { showEventLegend: false }; }
+                }
             });
         }
 

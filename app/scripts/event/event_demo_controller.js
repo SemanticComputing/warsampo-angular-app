@@ -184,8 +184,12 @@
 
         function showHelp() {
             $uibModal.open({
-                templateUrl: 'views/partials/event.help.html',
-                size: 'lg'
+                component: 'helpModal',
+                size: 'lg',
+                resolve: {
+                    title: $translate('EVENT_DEMO.HELP_TEXT_TITLE'),
+                    content: $translate('EVENT_DEMO.HELP_TEXT')
+                }
             });
         }
     }

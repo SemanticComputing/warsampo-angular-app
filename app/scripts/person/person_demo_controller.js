@@ -5,8 +5,8 @@
     .controller('PersonDemoController', PersonDemoController);
 
     /* @ngInject */
-    function PersonDemoController($q, $scope, $routeParams, $location, _, personService,
-            PersonDemoService, eventService, Settings) {
+    function PersonDemoController($q, $scope, $routeParams, $location, $uibModal,
+            $translate, _, personService, PersonDemoService, eventService, Settings) {
 
         var self = this;
         var demoService = new PersonDemoService();
@@ -49,6 +49,7 @@
             });
 
             // Timeline settings
+            Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
             Settings.setApplyFunction(applySettings);
             Settings.setHeatmapUpdater(demoService.updateHeatmap.bind(demoService));
@@ -73,6 +74,17 @@
                 return $location.search('uri', DEFAULT_PERSON).replace();
             }
             return updateState();
+        }
+
+        function showHelp() {
+            $uibModal.open({
+                component: 'helpModal',
+                size: 'lg',
+                resolve: {
+                    title: $translate('PERSONS_DEMO.HELP_TEXT_TITLE'),
+                    content: $translate('PERSONS_DEMO.HELP_TEXT')
+                }
+            });
         }
 
         // Update state based on url
