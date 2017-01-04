@@ -93,19 +93,20 @@
         '   crm:P95_has_formed ?id . ' +
         ' } GROUP BY ?id ?level ORDER BY ?level ';
 
-        var byPersonIdQry = prefixes +
-        ' SELECT DISTINCT ?id (GROUP_CONCAT(?name; separator = "; ") AS ?label) WHERE {  ' +
-        ' VALUES ?person { <PERSON> } . ' +
-        '   { ?evt a etypes:PersonJoining ; ' +
-        '         crm:P143_joined ?person . ' +
-        '         ?evt  crm:P144_joined_with ?id .  ' +
-        '    } UNION {  ' +
-        '         ?person owl:sameAs ?mennytmies . ' +
-        '         ?mennytmies a foaf:Person . ' +
-        '         ?mennytmies casualties:osasto ?id .  ' +
+        var byPersonIdQry = prefixes + select +
+        ' { ' +
+        '   VALUES ?person { <PERSON> } . ' +
+        '   { ' +
+        '     ?evt a etypes:PersonJoining ; ' +
+        '        crm:P143_joined ?person . ' +
+        '        ?evt  crm:P144_joined_with ?id .  ' +
+        '   } UNION {  ' +
+        '     ?person owl:sameAs ?mennytmies . ' +
+        '     ?mennytmies a foaf:Person . ' +
+        '     ?mennytmies casualties:osasto ?id .  ' +
         '   } ' +
-        '  ?id skos:prefLabel ?name . ' +
-        ' } GROUP BY ?id ?label ';
+        '   ?id skos:prefLabel ?label . ' +
+        ' } ';
 
         var selectorQuery = prefixes +
         'SELECT DISTINCT ?name ?id  ' +
