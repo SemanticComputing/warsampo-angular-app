@@ -146,3 +146,34 @@ table.death-record tr:nth-child(even) {
         border-radius: 5px;
     }
 }
+
+.tabset-container {
+    $border: 1px solid rgb(221, 221, 221);
+
+    padding-top: 10px;
+
+    .tab-content {
+        padding: 5px;
+        border-left: $border;
+        border-bottom: $border;
+        border-right: $border;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .nav-tabs {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+    .nav-link {
+        font-weight: bold;
+        background-color: #FFE0E8;
+        border-bottom: $border;
+    }
+}
+
+.infobox-heading {
+    h3 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+}

@@ -9,11 +9,13 @@
     <div uib-collapse="!show">
       <ul class="list-group">
         <li class="list-group-item" ng-repeat="thing in related">
-        <span ng-if="!external">
-          <a ws-page-link="thing.id">{{ thing.getLabel() || thing.label | words:10 }}</a>
-        </span>
-        <span ng-if="external">
-          <a ng-href="{{ thing.id }}">{{ thing.getLabel() || thing.label | words:10 }}</a>
+        <span ng-switch="!!external">
+          <span ng-switch-when="false">
+            <a ws-page-link="thing.id">{{ thing.getLabel() || thing.label | words:10 }}</a>
+          </span>
+          <span ng-switch-when="true">
+            <a ng-href="{{ thing.id }}">{{ thing.getLabel() || thing.label | words:10 }}</a>
+          </span>
         </span>
         </li>
       </ul>
