@@ -1,7 +1,8 @@
-<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>PERSON</h1></a></div>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
+    <h1 id="pageType"><a id="pageTypeURL" href="persons/" translate>PERSON</a></h1>
+    <p class="uri">{{ ctrl.person.id }}</p>
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.person && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">

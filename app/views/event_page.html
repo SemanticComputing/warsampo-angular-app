@@ -1,9 +1,9 @@
 <ws-settings></ws-settings>
-<div><h1 id="pageType"><a id="pageTypeURL" href="events/" translate>EVENT</a></h1></div>
-<!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
+    <h1 id="pageType"><a id="pageTypeURL" href="events/" translate>EVENT</a></h1>
+    <p class="uri">{{ ctrl.event.id }}</p>
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.event && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.event">

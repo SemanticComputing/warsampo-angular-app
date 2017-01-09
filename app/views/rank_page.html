@@ -1,8 +1,8 @@
-<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>RANK</h1></a></div>
-<!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
+    <h1 id="pageType"><a id="pageTypeURL" href="persons/" translate>RANK</a></h1>
+    <p class="uri">{{ ctrl.rank.id }}</p>
     <img ng-show="ctrl.isLoadingRank" src="images/loading.gif" />
     <p ng-if="!ctrl.rank && !ctrl.isLoadingRank" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.rank">
@@ -22,6 +22,5 @@
     <ws-related-links data-title="'RANK_DEMO.SUPER_RANKS' | translate" data-related="ctrl.rank.upperRanks"></ws-related-links>
     <ws-related-links data-title="'RANK_DEMO.SUB_RANKS' | translate" data-related="ctrl.rank.lowerRanks"></ws-related-links>
     <ws-related-links data-title="'RANK_DEMO.OTHER_RANKS' | translate" data-related="ctrl.rank.relatedRanks"></ws-related-links>
-    
   </div>
 </div>
