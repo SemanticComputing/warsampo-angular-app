@@ -180,7 +180,7 @@
                 self.isLoadingObject = false;
                 return personService.fetchRelatedForDemo(person);
             }).then(function(person) {
-                return demoService.getEventTypes(person);
+                return demoService.getEventTypes(person, self.options);
             }).then(function(types) {
                 self.options.types = types;
                 return types;
