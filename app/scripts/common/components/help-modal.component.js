@@ -10,7 +10,6 @@
             vm.options = vm.resolve.options || { showEventLegend: true };
             vm.content = vm.resolve.content;
             vm.title = vm.resolve.title;
-            console.log(vm.options);
             vm.showEventLegend = vm.options.showEventLegend;
         };
 
