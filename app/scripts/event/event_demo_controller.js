@@ -34,6 +34,7 @@
         self.getMaxVisibleDate = getMaxVisibleDate;
         self.getCurrent = getCurrent;
         self.getImages = getImages;
+        self.getWinterWarUrl = getWinterWarUrl;
 
         /* Activate */
 

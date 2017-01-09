@@ -54,6 +54,9 @@
             Settings.setApplyFunction(applySettings);
             Settings.setHeatmapUpdater(demoService.updateHeatmap.bind(demoService));
 
+            self.helpTextTitle = 'PERSONS_DEMO.TIMELINE_HELP_TEXT_TITLE';
+            self.helpText = 'PERSONS_DEMO.TIMELINE_HELP_TEXT';
+
             // Cleanup
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
