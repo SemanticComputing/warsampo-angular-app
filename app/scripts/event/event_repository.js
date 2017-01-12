@@ -181,23 +181,21 @@
         '   } ' +
         ' } UNION { ' +
         '   { ' +
-        '     SELECT ?participant_id ?abbrev ' +
-        '     WHERE { ' +
+        '     SELECT DISTINCT ?participant_id { ' +
         '       VALUES ?unit { {0} } . ' +
         '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant_id . ' +
         '       ?participant_id a atypes:MilitaryUnit . ' +
-        '       ?participant_id skos:altLabel ?abbrev . ' +
         '     } ' +
         '   } UNION { ' +
-        '       VALUES ?participant_id { {0} } . ' +
-        '       ?participant_id skos:altLabel ?abbrev . ' +
+        '     VALUES ?participant_id { {0} } ' +
         '   } ' +
-        '   ?id a etypes:Battle . ' +
         '   { ' +
-        '       ?id events:hadUnit ?abbrev . ' +
+        '     ?id crm:P11_had_participant ?participant_id . ' +
         '   } UNION { ' +
+        '       VALUES ?participant_id { {0} } . ' +
         '       ?id crm:P11_had_participant ?participant_id . ' +
         '   } ' +
+        '   { ?id a etypes:Battle . } UNION { ?id a etypes:Photography } ' +
         ' } ' +
         ' ?id crm:P4_has_time-span ?time_id . ' +
         ' ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
