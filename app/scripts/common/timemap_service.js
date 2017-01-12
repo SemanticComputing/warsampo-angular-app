@@ -296,8 +296,12 @@
 
         function createEventObject(e, distinctPhotoData) {
             var description = e.getDescription();
+            var start = _.isArray(e.start_time) ? new Date(e.start_time[0]) : new Date(e.start_time);
+            start = isFinite(start) ? start : undefined;
+            var end = _.isArray(e.end_time) ? new Date(e.end_time[0]) : new Date(e.end_time);
+            end = isFinite(end) ? end : undefined;
             var entry = {
-                start: new Date(e.start_time),
+                start: start || end,
                 title: description.length < 50 ? description : description.substr(0, 47) + '...',
                 options: {
                     theme: eventTypeThemes[e.type_id] || 'orange',
@@ -306,16 +310,11 @@
                     event: e
                 }
             };
-            var end_time;
-            if (e.start_time !== e.end_time) {
-                end_time = new Date(e.end_time);
-                end_time.setHours(23);
-                end_time.setMinutes(59);
-                entry.end = end_time;
-            } else {
-                end_time = entry.start;
+            if (start && end && start.getTime() !== end.getTime()) {
+                end.setHours(23);
+                end.setMinutes(59);
+                entry.end = end;
             }
-
             var points = _(e.places).map('point').compact().value();
             var polygons = _(e.places).map('polygon').compact().value();
             if (points.length) {
