@@ -57,6 +57,7 @@
             var photoConfig = Settings.getPhotoConfig();
 
             var bandInfo = timemapService.getDefaultBandInfo(start, end, highlights);
+            bandInfo[0].intervalPixels = 50;
             bandInfo[1].intervalPixels = 50;
 
             return eventService.getUnitAndSubUnitEventsByUnitId(id)
