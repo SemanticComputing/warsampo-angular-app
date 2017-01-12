@@ -77,22 +77,44 @@
                 case EVENT_TYPES.UNIT_FORMATION:
                 case EVENT_TYPES.UNIT_NAMING:
                     app = 'units';
-                    id = ((event.units || [])[0] || {}).id;
+                    id = getUnitId(event);
                     break;
                 case EVENT_TYPES.PROMOTION:
+                case EVENT_TYPES.PERSON_JOINING:
                 case EVENT_TYPES.BIRTH:
                 case EVENT_TYPES.DEATH:
                 case EVENT_TYPES.DISSAPEARING:
                 case EVENT_TYPES.MEDAL_ASSIGNMENT:
                     app = 'persons';
-                    id = event.participant_id;
+                    id = getParticipantId(event);
+                    break;
+                case EVENT_TYPES.PHOTOGRAPHY:
+                    app = event.participant_id ? 'persons' : (event.units ? 'units' : undefined);
+                    id = app === 'persons' ? getParticipantId(event) : getUnitId(event);
                     break;
                 default:
                     id = event.id;
                     app = 'events';
             }
-            var url = base + app + '?uri=' + id;
+            if (!app) {
+                return undefined;
+            }
+            var url = base + app + '?uri=' + encodeURIComponent(id);
+            if (_.includes(['units', 'persons'], app)) {
+                url += '&event=' + encodeURIComponent(event.id);
+                if (app === 'persons') {
+                    url += '&tab=2';
+                }
+            }
             return url;
+        }
+
+        function getParticipantId(event) {
+            return _.isArray(event.participant_id) ? event.participant_id[0] : event.participant_id;
+        }
+
+        function getUnitId(event) {
+            return ((event.units || [])[0] || {}).id;
         }
 
         function fetchImages(event) {

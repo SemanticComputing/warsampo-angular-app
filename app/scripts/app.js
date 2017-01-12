@@ -88,6 +88,7 @@
         DEATH: 'http://www.cidoc-crm.org/cidoc-crm/E69_Death',
         DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing',
         WOUNDING: 'http://ldf.fi/warsa/events/event_types/Wounding',
+        PHOTOGRAPHY: 'http://ldf.fi/warsa/events/event_types/Photography',
         MEDAL_ASSIGNMENT: 'http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment'
     })
     .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)
