@@ -122,6 +122,18 @@
         };
     };
 
+    // Apply highlights to a band with hotzones
+
+    var createHotZoneBandInfo = Timeline.createHotZoneBandInfo;
+
+    Timeline.createHotZoneBandInfo = function(params) {
+        var res = createHotZoneBandInfo.bind(Timeline)(params);
+        if (params.decorators) {
+            res.decorators = params.decorators;
+        }
+        return res;
+    };
+
     // Always resize and always animate resize
 
     Timeline._Impl.prototype.setAutoWidth = function(okToShrink) {
