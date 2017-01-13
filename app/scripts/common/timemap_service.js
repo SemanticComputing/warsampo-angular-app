@@ -296,10 +296,10 @@
 
         function createEventObject(e, distinctPhotoData) {
             var description = e.getDescription();
-            var start = _.isArray(e.start_time) ? new Date(e.start_time[0]) : new Date(e.start_time);
-            start = isFinite(start) ? start : undefined;
-            var end = _.isArray(e.end_time) ? new Date(e.end_time[0]) : new Date(e.end_time);
-            end = isFinite(end) ? end : undefined;
+            var start = _.isArray(e.start_time) ? e.start_time[0] : e.start_time;
+            start = isFinite(new Date(start)) ? start + 'Z' : undefined;
+            var end = _.isArray(e.end_time) ? e.end_time[0] : e.end_time;
+            end = isFinite(new Date(end)) ? end + 'Z' : undefined;
             var entry = {
                 start: start || end,
                 title: description.length < 50 ? description : description.substr(0, 47) + '...',
@@ -310,9 +310,8 @@
                     event: e
                 }
             };
-            if (start && end && start.getTime() !== end.getTime()) {
-                end.setHours(23);
-                end.setMinutes(59);
+            if (end && start !== end) {
+                end = end.replace('00:00:00', '23:59:59');
                 entry.end = end;
             }
             var points = _(e.places).map('point').compact().value();

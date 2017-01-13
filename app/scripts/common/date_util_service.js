@@ -39,10 +39,12 @@ angular.module('eventsApp')
             var end_year = end.getFullYear();
             return start_year === end_year ? start_year : start_year + '-' + end_year;
         }
-        if (end - start) {
-            return this.formatDate(start) + '-' + this.formatDate(end);
+        var startStr = this.formatDate(start);
+        var endStr = this.formatDate(end);
+        if (endStr !== startStr) {
+            return startStr + '-' + endStr;
         }
-        return this.formatDate(start);
+        return startStr;
     }
 
     function formatExtremeDateRange(start, end) {
@@ -61,7 +63,7 @@ angular.module('eventsApp')
 
     function formatDate(date, format) {
         format = format || 'dd.MM.yyyy';
-        return $filter('date')(date, format);
+        return $filter('date')(date, format, 'Z');
     }
 
 });

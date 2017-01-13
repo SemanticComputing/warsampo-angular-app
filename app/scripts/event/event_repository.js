@@ -85,8 +85,10 @@
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id crm:P4_has_time-span ?time_id . ' +
-        '     ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '       crm:P82b_end_of_the_end ?end_time . ' +
+        '     ?time_id crm:P82a_begin_of_the_begin ?start_t ; ' +
+        '       crm:P82b_end_of_the_end ?end_t . ' +
+        '     BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        '     BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         '   } ' +
         ' } ' +
         ' ORDER BY ?start_time ?end_time ';
@@ -97,8 +99,10 @@
         '   {0} ' + // Placeholder for type filter
         ' } ' +
         ' ?id crm:P4_has_time-span ?time_id . ' +
-        ' ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '    crm:P82b_end_of_the_end ?end_time . ' +
+        ' ?time_id crm:P82a_begin_of_the_begin ?start_t ; ' +
+        '    crm:P82b_end_of_the_end ?end_t . ' +
+        ' BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        ' BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         ' {1} ' + // Placeholder for time filter
         ' ?id skos:prefLabel ?description . ';
 
@@ -108,8 +112,10 @@
         '   ?id a ?type_id . ' +
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id crm:P4_has_time-span ?time_id . ' +
-        '   ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '      crm:P82b_end_of_the_end ?end_time . ' +
+        '   ?time_id crm:P82a_begin_of_the_begin ?start_t ; ' +
+        '      crm:P82b_end_of_the_end ?end_t . ' +
+        '   BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        '   BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ' +
         '    ?id dc:source|dct:source ?source_id . ' +
@@ -135,9 +141,11 @@
         ' ?event ?part_pred ?person . ' +
         ' ?event a ?id . ' +
         ' ?event crm:P4_has_time-span [ ' +
-        '   crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '   crm:P82b_end_of_the_end ?end_time ' +
+        '   crm:P82a_begin_of_the_begin ?start_t ; ' +
+        '   crm:P82b_end_of_the_end ?end_t ' +
         ' ] . ' +
+        ' BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        ' BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         ' ?id skos:prefLabel ?label  . ';
 
         var typesByActorQry =
@@ -165,9 +173,11 @@
         ' ?id ?part_pred ?participant_id . ' +
         ' ?id a ?type_id . ' +
         ' ?id crm:P4_has_time-span [ ' +
-        '   crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '   crm:P82b_end_of_the_end ?end_time ' +
-        ' ] . ';
+        '   crm:P82a_begin_of_the_begin ?start_t ; ' +
+        '   crm:P82b_end_of_the_end ?end_t ' +
+        ' ] . ' +
+        ' BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        ' BIND(xsd:dateTime(?end_t) AS ?end_time) ';
 
         var eventsAndSubUnitEventsByUnitQryResultSet =
         ' { ' +
@@ -198,8 +208,10 @@
         '   { ?id a etypes:Battle . } UNION { ?id a etypes:Photography } ' +
         ' } ' +
         ' ?id crm:P4_has_time-span ?time_id . ' +
-        ' ?time_id crm:P82a_begin_of_the_begin ?start_time ; ' +
-        '      crm:P82b_end_of_the_end ?end_time . ' +
+        ' ?time_id crm:P82a_begin_of_the_begin ?start_t ; ' +
+        '      crm:P82b_end_of_the_end ?end_t . ' +
+        ' BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        ' BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         ' FILTER (?start_time<=?end_time) . ';
 
         // TODO: harmonize
@@ -242,8 +254,10 @@
         '  } ' +
         '  OPTIONAL { ' +
         '    ?id crm:P4_has_time-span ?time_id .  ' +
-        '    ?time_id crm:P82a_begin_of_the_begin ?start_time ;  ' +
-        '     crm:P82b_end_of_the_end ?end_time .  ' +
+        '    ?time_id crm:P82a_begin_of_the_begin ?start_t ;  ' +
+        '     crm:P82b_end_of_the_end ?end_t .  ' +
+        '    BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        '    BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         '  } ' +
         '  OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         ' } ORDER BY ?start_time ?end_time ';
@@ -269,8 +283,10 @@
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P4_has_time-span ?time_id .  ' +
-        '   ?time_id crm:P82a_begin_of_the_begin ?start_time . ' +
-        '   ?time_id crm:P82b_end_of_the_end ?end_time . ' +
+        '   ?time_id crm:P82a_begin_of_the_begin ?start_t . ' +
+        '   BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
+        '   ?time_id crm:P82b_end_of_the_end ?end_t . ' +
+        '   BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         '  } ' +
         '  OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         '  ?id a ?type_id . ' +
@@ -281,15 +297,15 @@
         ' } ORDER BY ?start_time  ';
 
         var eventFilterWithinTimeSpan =
-        'FILTER(?start_time >= "{0}"^^xsd:date && ?end_time <= "{1}"^^xsd:date)';
+        'FILTER(?start_time >= "{0}T00:00:00"^^xsd:dateTime && ?end_time <= "{1}T23:59:59"^^xsd:dateTime)';
 
         var eventsWithinTimeSpanResultSet = eventQryResultSet.format(eventTypeFilter,
                 eventFilterWithinTimeSpan);
 
         var eventFilterWithinTimeSpanRelaxed =
         'FILTER( ' +
-        '   ?start_time <= "{1}"^^xsd:date && ' +
-        '   ?end_time >= "{0}"^^xsd:date ' +
+        '   ?start_time <= "{1}T00:00:00"^^xsd:dateTime && ' +
+        '   ?end_time >= "{0}T23:59:59"^^xsd:dateTime ' +
         ')';
 
         var eventsWithinRelaxedTimeSpanResultSet = eventQryResultSet.format(eventTypeFilter,
@@ -390,11 +406,11 @@
             var format = 'yyyy-MM-dd';
             if (start) {
                 start = dateUtilService.formatDate(start, format);
-                qry += ' FILTER(?start_time <= "' + end + '"^^xsd:date)';
+                qry += ' FILTER(?start_time <= "' + end + 'T00:00:00"^^xsd:dateTime)';
             }
             if (end) {
                 end = dateUtilService.formatDate(end, format);
-                qry += ' FILTER(?end_time >= "' + start + '"^^xsd:date)';
+                qry += ' FILTER(?end_time >= "' + start + 'T23:59:59"^^xsd:dateTime)';
             }
             return qry;
         }
