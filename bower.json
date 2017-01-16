@@ -53,5 +53,8 @@
         "js/blueimp-gallery-fullscreen.js"
       ]
     }
+  },
+  "resolutions": {
+    "angular": "^1.5.0"
   }
 }
