@@ -186,8 +186,8 @@
         self.fetchWikipediaArticles = function(unit) {
             return unitRepository.getUnitWikipedia(unit.id).then(function(data) {
                 if (data && data.length) {
-                    unit.wikilink = data;
-                    data[0].label = unit.name[0];
+                	  unit.wikilink = data;
+                    data[0].label = unit.label;
                     unit.hasLinks = true;
                 }
             });

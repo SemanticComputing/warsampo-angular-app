@@ -29,7 +29,21 @@
         ' SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?description ' +
         '  ?sid ?source ?level ';
 
-        var unitByIdQry = prefixes + select +
+		  var unitByIdQry = prefixes + select +
+        ' { ' +
+        // '   ?ename a etypes:UnitNaming . ' +
+        '   ?id skos:prefLabel ?label . ' +
+        '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
+        '   OPTIONAL { ?id dc:source ?sid . ' +
+        '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+        '   } ' +
+        // '   ?ename crm:P95_has_formed ?id . ' +
+        '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
+        '   VALUES ?id  { <ID> } ' +
+        '   OPTIONAL { ?id dc:description ?description . }  '+
+        ' } ';
+        
+        var unitByIdQryOLD = prefixes + select +
         ' { ' +
         '   ?ename a etypes:UnitNaming . ' +
         '   ?ename skos:prefLabel ?name . ' +
@@ -108,7 +122,31 @@
         '   ?id skos:prefLabel ?label . ' +
         ' } ';
 
-        var selectorQuery = prefixes +
+		  var selectorQuery = prefixes +
+		'SELECT DISTINCT ?id ?name  ' +
+		'WHERE {  ' +
+		'  { ' +
+		'    SELECT DISTINCT ?id ?label (GROUP_CONCAT(distinct ?conf; separator=", ") AS ?conflict) ' +
+		'        WHERE {  ' +
+		'        { ' +
+		'          SELECT DISTINCT ?id ' +
+		'            WHERE { ' +
+		'              VALUES ?nclass { etypes:UnitNaming crm:E66_Formation atypes:MilitaryUnit  } ' +
+		'              ?evt a ?nclass ;  ' +
+		'                 skos:prefLabel|skos:altLabel ?name .  ' +
+		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
+		'              ?evt (^crm:P95i_was_formed_by)|(crm:P95_has_formed) ?id . ' +
+		'              ?id a atypes:MilitaryUnit . ' +
+		'          } LIMIT 50 ' +
+		'      	} ' +
+		'      ?id skos:prefLabel ?label . ' +
+		'      OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+		'      } GROUP BY ?id ?label ' +
+		'  } ' +
+		'  BIND (IF(bound(?conflict), concat(?label," (",?conflict,")"), ?label) AS ?name) ' +
+		'} ORDER BY lcase(?name) ';
+	
+        var selectorQueryOLD = prefixes +
         'SELECT DISTINCT ?name ?id  ' +
         'WHERE { ' +
         '  { SELECT DISTINCT ?ename ' +
@@ -120,6 +158,8 @@
         '     LIMIT 300 ' +
         '  } ?ename skos:prefLabel ?name ; crm:P95_has_formed ?id . ' +
         '} ORDER BY lcase(?name) ' ;
+
+
 
         var wardiaryQry = prefixes +
         'SELECT ?label ?id ?time ' +
