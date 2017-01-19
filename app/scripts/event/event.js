@@ -93,13 +93,15 @@
             return eventRepository.getLooselyWithinTimeSpan(start, end);
         }
 
-        function getEventsLooselyWithinTimeSpanPager(start, end, pageSize, idFilter) {
+        function getEventsLooselyWithinTimeSpanPager(start, end, options) {
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
-            if (idFilter) {
-                return eventRepository.getLooselyWithinTimeSpanFilterById(start, end, idFilter, pageSize);
+            options = options || {};
+            if (options.idFilter) {
+                return eventRepository.getLooselyWithinTimeSpanFilterById(
+                    start, end, options.idFilter, options);
             }
-            return eventRepository.getLooselyWithinTimeSpan(start, end, pageSize);
+            return eventRepository.getLooselyWithinTimeSpan(start, end, options);
         }
 
         function getEventsByActorId(id, options) {
@@ -110,11 +112,11 @@
             return eventRepository.getByPlaceId(ids);
         }
 
-        function getEventsByPlaceIdPager(ids, pageSize, idFilter) {
-            if (idFilter) {
-                return eventRepository.getByPlaceIdFilterById(ids, idFilter, pageSize);
+        function getEventsByPlaceIdPager(ids, options) {
+            if (options.idFilter) {
+                return eventRepository.getByPlaceIdFilterById(ids, options.idFilter, options);
             }
-            return eventRepository.getByPlaceId(ids, pageSize);
+            return eventRepository.getByPlaceId(ids, options);
         }
 
         function getUnitAndSubUnitEventsByUnitId(id) {
