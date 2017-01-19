@@ -10,33 +10,44 @@
 
     /* @ngInject */
     function unitService($q, _, unitRepository, eventRepository, photoRepository,
-                    personRepository, dateUtilService, Settings, PHOTO_PAGE_SIZE) {
+            personRepository, dateUtilService, Settings, PHOTO_PAGE_SIZE, EVENT_TYPES) {
 
         var self = this;
 
         self.processUnitEvents = function(unit, events) {
-            var battles= [], formations=[], description=[], places=[];
-            for (var i=0; i<events.length; i++) {
-                var e=events[i],
-                    etype=e.type_id,
-                    edate='', edate2='', eplace='';
+            var battles = [], formations = [], other = [], description = [], places = [];
+            for (var i = 0; i<events.length; i++) {
+                var e = events[i],
+                    etype = e.type_id,
+                    edate = '', edate2 = '', eplace = '';
                 if (e.start_time && e.end_time) {
-                    edate=e.start_time; edate2=e.end_time;
-                    edate=dateUtilService.getExtremeDate(edate, true);
-                    edate2=dateUtilService.getExtremeDate(edate2, false);
-                    edate=dateUtilService.formatDateRange(edate,edate2);
+                    edate = e.start_time; edate2 = e.end_time;
+                    edate = dateUtilService.getExtremeDate(edate, true);
+                    edate2 = dateUtilService.getExtremeDate(edate2, false);
+                    edate = dateUtilService.formatDateRange(edate,edate2);
                 }
                 if (e.places) {
-                    eplace=', ' + _.map(e.places, 'label').join(', ');
+                    eplace = ', ' + _.map(e.places, 'label').join(', ');
                 }
-                if (edate!=='') {edate=edate+': ';}
+                if (edate !== '') {
+                    edate = edate + ': ';
+                }
 
-                if (etype.indexOf('Battle') > -1) {
-                    battles.push({ label: e.getLabel(), id: e.id });
-                } else if (etype.indexOf('Formation') > -1) {
-                    formations.push(edate + 'Perustaminen: ' + e.getLabel() + eplace);
-                } else if (etype.indexOf('TroopMovement') > -1) {
-                    description.push(edate + e.getLabel() + eplace);
+                switch (etype) {
+                    case EVENT_TYPES.BATTLE:
+                        battles.push({ label: e.getLabel(), id: e.id });
+                        break;
+                    case EVENT_TYPES.UNIT_FORMATION:
+                        formations.push(edate + 'Perustaminen: ' + e.getLabel() + eplace);
+                        break;
+                    case EVENT_TYPES.TROOP_MOVEMENT:
+                        description.push(edate + e.getLabel() + eplace);
+                        break;
+                    case EVENT_TYPES.MILITARY_ACTIVITY:
+                    case EVENT_TYPES.BOMBARDMENT:
+                    case EVENT_TYPES.POLITICAL_ACTIVITY:
+                        other.push(events[i]);
+                        break;
                 }
 
                 if (e.places) {
@@ -54,6 +65,9 @@
             }
             if (description.length) {
                 unit.descriptions = description;
+            }
+            if (other.length) {
+                unit.events = other;
             }
         };
 
