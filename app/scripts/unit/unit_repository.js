@@ -134,7 +134,7 @@
 		'              ?evt a ?nclass ;  ' +
 		'                 skos:prefLabel|skos:altLabel ?name .  ' +
 		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
-		'              ?evt (^crm:P95i_was_formed_by)|(crm:P95_has_formed) ?id . ' +
+		'              ?evt crm:P95_has_formed ?id . ' +
 		'              ?id a atypes:MilitaryUnit . ' +
 		'          } LIMIT 50 ' +
 		'      	} ' +

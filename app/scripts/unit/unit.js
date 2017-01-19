@@ -90,8 +90,7 @@
             if (includeSubUnits) {
                 related.push(self.fetchUnitAndSubUnitEvents(unit));
             } else {
-            	console.log(unit);
-                related.push(self.fetchUnitEvents(unit));
+            	 related.push(self.fetchUnitEvents(unit));
             }
             return $q.all(related).then(function() {
                 return unit;
