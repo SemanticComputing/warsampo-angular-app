@@ -32,7 +32,7 @@
 		  var unitByIdQry = prefixes + select +
         ' { ' +
         // '   ?ename a etypes:UnitNaming . ' +
-        '   ?id skos:prefLabel ?label . ' +
+        '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?preflabel . ' +
         '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
         '   OPTIONAL { ?id dc:source ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
@@ -41,23 +41,11 @@
         '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
         '   VALUES ?id  { <ID> } ' +
         '   OPTIONAL { ?id dc:description ?description . }  '+
+        '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") }  ' +
+        '   BIND (IF(bound(?conf), concat(?preflabel," (",?conf,")"), ?preflabel) AS ?label)  ' +
         ' } ';
         
-        var unitByIdQryOLD = prefixes + select +
-        ' { ' +
-        '   ?ename a etypes:UnitNaming . ' +
-        '   ?ename skos:prefLabel ?name . ' +
-        '   BIND(?name AS ?label) ' +
-        '   OPTIONAL {?ename skos:altLabel ?abbrev . } ' +
-        '   OPTIONAL { ?id dc:source ?sid . ' +
-        '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
-        '   } ' +
-        '   ?ename crm:P95_has_formed ?id . ' +
-        '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '   VALUES ?id  { <ID> } ' +
-        '   OPTIONAL { ?id dc:description ?description . }  '+
-        ' } ';
-
+        
         var relatedUnitQry = prefixes +
         ' SELECT DISTINCT  ?id ?level (SAMPLE(?name) AS ?label) WHERE { ' +
         ' { ' +
@@ -102,12 +90,23 @@
         '     FILTER ( BOUND(?level) )  ' +
         '   } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 ' +
         ' }  ' +
-        ' ?ename a etypes:UnitNaming ; ' +
-        '   skos:prefLabel ?name ; ' +
-        '   crm:P95_has_formed ?id . ' +
+        ' ?id skos:prefLabel ?pLabel . ' +
+        ' ' +
+        ' OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+        ' BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?name) ' +
+  
         ' } GROUP BY ?id ?level ORDER BY ?level ';
 
-        var byPersonIdQry = prefixes + select +
+		  var byPersonIdQry = prefixes + select +
+        ' { ' +
+        '   VALUES ?person { <PERSON> } . ' +
+        '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
+        '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
+        '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+        '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
+  		  ' } ';
+        
+        var byPersonIdQryOLD = prefixes + select +
         ' { ' +
         '   VALUES ?person { <PERSON> } . ' +
         '   { ' +
@@ -196,7 +195,7 @@
             var qry = unitByIdQry.replace('<ID>', id);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
-                    return data[0];
+                	return data[0];
                 }
                 return $q.reject('Does not exist');
             });

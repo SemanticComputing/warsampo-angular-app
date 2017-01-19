@@ -90,6 +90,7 @@
             if (includeSubUnits) {
                 related.push(self.fetchUnitAndSubUnitEvents(unit));
             } else {
+            	console.log(unit);
                 related.push(self.fetchUnitEvents(unit));
             }
             return $q.all(related).then(function() {
@@ -125,7 +126,7 @@
         };
 
         self.fetchUnitEvents = function(unit) {
-            return eventRepository.getByActorId(unit.id).then(function(events) {
+        		return eventRepository.getByActorId(unit.id).then(function(events) {
                 if (events && events.length) {
                     self.processUnitEvents(unit, events);
                     unit.hasLinks = true;
