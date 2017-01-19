@@ -311,13 +311,14 @@
         var eventsWithinRelaxedTimeSpanResultSet = eventQryResultSet.format(eventTypeFilter,
             eventFilterWithinTimeSpanRelaxed);
 
-        function getByTimeSpan(start, end, pageSize) {
+        function getByTimeSpan(start, end, options) {
+            options = options || {};
             // Get events that occured between the dates start and end (inclusive).
             // Returns a promise.
             var resultSet = eventsWithinTimeSpanResultSet.format(start, end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query,
-                pageSize, qryObj.resultSetQuery);
+                options.pageSize, qryObj.resultSetQuery);
         }
 
         function getById(id) {
@@ -330,37 +331,41 @@
             });
         }
 
-        function getLooselyWithinTimeSpan(start, end, pageSize) {
+        function getLooselyWithinTimeSpan(start, end, options) {
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
+            options = options || {};
             var resultSet = eventsWithinRelaxedTimeSpanResultSet.format(start, end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
-        function getLooselyWithinTimeSpanFilterById(start, end, id, pageSize) {
+        function getLooselyWithinTimeSpanFilterById(start, end, id, options) {
             // Get events that at least partially occured between the dates start and end.
             // Filter out the given id.
             // Returns a promise.
+            options = options || {};
             var resultSet = eventQryResultSet
                 .format(eventTypeFilter + 'FILTER(?id != {0})'
                     .format('<' + id + '>'), eventFilterWithinTimeSpanRelaxed)
                 .format(start, end);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
-        function getByPlaceId(id, pageSize) {
+        function getByPlaceId(id, options) {
+            options = options || {};
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
             }
             var resultSet = eventsByPlaceQryResultSet.format(id, '');
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
-        function getByPlaceIdFilterById(placeIds, id, pageSize) {
+        function getByPlaceIdFilterById(placeIds, id, options) {
+            options = options || {};
             placeIds = baseRepository.uriFy(placeIds);
             id = baseRepository.uriFy(id);
             if (!(id && placeIds)) {
@@ -369,7 +374,7 @@
             var filter = 'FILTER(?id != {0})'.format(id);
             var resultSet = eventsByPlaceQryResultSet.format(placeIds, filter);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
         function getByPersonId(id) {
@@ -383,6 +388,7 @@
         }
 
         function getByActorId(id, options) {
+            options = options || {};
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
@@ -415,14 +421,15 @@
             return qry;
         }
 
-        function getUnitAndSubUnitEventsByUnitId(id, pageSize) {
+        function getUnitAndSubUnitEventsByUnitId(id, options) {
+            options = options || {};
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
             }
             var resultSet = eventsAndSubUnitEventsByUnitQryResultSet.format(id);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
         function getPersonLifeEvents(id) {
