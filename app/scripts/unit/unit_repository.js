@@ -31,13 +31,11 @@
 
 		  var unitByIdQry = prefixes + select +
         ' { ' +
-        // '   ?ename a etypes:UnitNaming . ' +
         '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?preflabel . ' +
         '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
         '   OPTIONAL { ?id dc:source ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '   } ' +
-        // '   ?ename crm:P95_has_formed ?id . ' +
         '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
         '   VALUES ?id  { <ID> } ' +
         '   OPTIONAL { ?id dc:description ?description . }  '+
@@ -90,6 +88,7 @@
         '     FILTER ( BOUND(?level) )  ' +
         '   } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 ' +
         ' }  ' +
+        ' FILTER BOUND(?id) ' +
         ' ?id skos:prefLabel ?pLabel . ' +
         ' ' +
         ' OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
@@ -134,7 +133,7 @@
 		'              ?evt a ?nclass ;  ' +
 		'                 skos:prefLabel|skos:altLabel ?name .  ' +
 		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
-		'              ?evt crm:P95_has_formed ?id . ' +
+		'              ?evt ^crm:P95i_was_formed_by|crm:P95_has_formed ?id . ' +
 		'              ?id a atypes:MilitaryUnit . ' +
 		'          } LIMIT 50 ' +
 		'      	} ' +
@@ -145,21 +144,7 @@
 		'  BIND (IF(bound(?conflict), concat(?label," (",?conflict,")"), ?label) AS ?name) ' +
 		'} ORDER BY lcase(?name) ';
 	
-        var selectorQueryOLD = prefixes +
-        'SELECT DISTINCT ?name ?id  ' +
-        'WHERE { ' +
-        '  { SELECT DISTINCT ?ename ' +
-        '     WHERE { ' +
-        '        ?ename a etypes:UnitNaming . ' +
-        '        ?ename skos:prefLabel|skos:altLabel|skos:hiddenLabel ?name . ' +
-        '        FILTER ( regex(?name, "<REGEX>", "i") ) ' +
-        '     } ' +
-        '     LIMIT 300 ' +
-        '  } ?ename skos:prefLabel ?name ; crm:P95_has_formed ?id . ' +
-        '} ORDER BY lcase(?name) ' ;
-
-
-
+        
         var wardiaryQry = prefixes +
         'SELECT ?label ?id ?time ' +
         'WHERE { ' +

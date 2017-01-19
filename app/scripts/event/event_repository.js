@@ -188,6 +188,9 @@
         '   } UNION { ' +
         '       ?id a etypes:TroopMovement ; ' +
         '           crm:P95_has_formed ?participant_id . ' +
+        '   } UNION { ' +
+        '       ?id a etypes:UnitNaming ; ' +
+        '           crm:P95_has_formed ?participant_id . ' +
         '   } ' +
         ' } UNION { ' +
         '   { ' +
