@@ -29,21 +29,20 @@
         ' SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?description ' +
         '  ?sid ?source ?level ';
 
-		  var unitByIdQry = prefixes + select +
+        var unitByIdQry = prefixes + select +
         ' { ' +
+        '   VALUES ?id  { <ID> } ' +
         '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?preflabel . ' +
         '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
         '   OPTIONAL { ?id dc:source ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '   } ' +
         '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '   VALUES ?id  { <ID> } ' +
         '   OPTIONAL { ?id dc:description ?description . }  '+
         '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") }  ' +
         '   BIND (IF(bound(?conf), concat(?preflabel," (",?conf,")"), ?preflabel) AS ?label)  ' +
         ' } ';
-        
-        
+
         var relatedUnitQry = prefixes +
         ' SELECT DISTINCT  ?id ?level (SAMPLE(?name) AS ?label) WHERE { ' +
         ' { ' +
@@ -93,34 +92,19 @@
         ' ' +
         ' OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         ' BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?name) ' +
-  
+
         ' } GROUP BY ?id ?level ORDER BY ?level ';
 
-		  var byPersonIdQry = prefixes + select +
+        var byPersonIdQry = prefixes + select +
         ' { ' +
         '   VALUES ?person { <PERSON> } . ' +
         '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
         '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
         '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
-  		  ' } ';
-        
-        var byPersonIdQryOLD = prefixes + select +
-        ' { ' +
-        '   VALUES ?person { <PERSON> } . ' +
-        '   { ' +
-        '     ?evt a etypes:PersonJoining ; ' +
-        '        crm:P143_joined ?person . ' +
-        '        ?evt  crm:P144_joined_with ?id .  ' +
-        '   } UNION {  ' +
-        '     ?person owl:sameAs ?mennytmies . ' +
-        '     ?mennytmies a foaf:Person . ' +
-        '     ?mennytmies casualties:osasto ?id .  ' +
-        '   } ' +
-        '   ?id skos:prefLabel ?label . ' +
         ' } ';
 
-		  var selectorQuery = prefixes +
+        var selectorQuery = prefixes +
 		'SELECT DISTINCT ?id ?name  ' +
 		'WHERE {  ' +
 		'  { ' +
@@ -143,8 +127,7 @@
 		'  } ' +
 		'  BIND (IF(bound(?conflict), concat(?label," (",?conflict,")"), ?label) AS ?name) ' +
 		'} ORDER BY lcase(?name) ';
-	
-        
+
         var wardiaryQry = prefixes +
         'SELECT ?label ?id ?time ' +
         'WHERE { ' +
@@ -180,7 +163,7 @@
             var qry = unitByIdQry.replace('<ID>', id);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
-                	return data[0];
+                    return data[0];
                 }
                 return $q.reject('Does not exist');
             });
