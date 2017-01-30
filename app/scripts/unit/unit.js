@@ -41,6 +41,7 @@
                         formations.push(edate + 'Perustaminen: ' + e.getLabel() + eplace);
                         break;
                     case EVENT_TYPES.TROOP_MOVEMENT:
+                    case EVENT_TYPES.DISSOLUTION:
                         description.push(edate + e.getLabel() + eplace);
                         break;
                     case EVENT_TYPES.MILITARY_ACTIVITY:

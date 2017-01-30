@@ -76,6 +76,7 @@
                 case EVENT_TYPES.UNIT_JOINING:
                 case EVENT_TYPES.UNIT_FORMATION:
                 case EVENT_TYPES.UNIT_NAMING:
+                case EVENT_TYPES.DISSOLUTION:
                     app = 'units';
                     id = getUnitId(event);
                     break;

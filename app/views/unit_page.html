@@ -8,7 +8,7 @@
     <p ng-if="!ctrl.unit && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.unit">
       <h2>
-        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev.length"> ({{ ctrl.unit.abbrev | concatList }})</span>
+        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev.length"> – {{ ctrl.unit.abbrev | concatList }}</span>
       </h2>
       <div ng-include="'views/partials/unit_description_partial.html'"></div>
       <p><a ws-page-link="ctrl.unit.id" demo translate>SHOW_IN_DEMO</a></p>

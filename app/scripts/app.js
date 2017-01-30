@@ -82,6 +82,7 @@
         UNIT_JOINING: 'http://ldf.fi/warsa/events/event_types/UnitJoining',
         UNIT_FORMATION: 'http://www.cidoc-crm.org/cidoc-crm/E66_Formation',
         UNIT_NAMING: 'http://ldf.fi/warsa/events/event_types/UnitNaming',
+        DISSOLUTION: 'http://www.cidoc-crm.org/cidoc-crm/E68_Dissolution',
         PERSON_JOINING: 'http://ldf.fi/warsa/events/event_types/PersonJoining',
         PROMOTION: 'http://ldf.fi/warsa/events/event_types/Promotion',
         BIRTH: 'http://www.cidoc-crm.org/cidoc-crm/E67_Birth',

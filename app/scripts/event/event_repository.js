@@ -56,6 +56,7 @@
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
+        ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E68_Dissolution>) ' +
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Disappearing>) ' +
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Wounding>) ' +
@@ -188,6 +189,9 @@
         '   } UNION { ' +
         '       ?id a etypes:TroopMovement ; ' +
         '           crm:P95_has_formed ?participant_id . ' +
+        '   } UNION { ' +
+        '       ?id a crm:E68_Dissolution ; ' +
+        '           crm:P11_had_participant ?participant_id . ' +
         '   } UNION { ' +
         '       ?id a etypes:UnitNaming ; ' +
         '           crm:P95_has_formed ?participant_id . ' +
