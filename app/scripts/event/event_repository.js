@@ -245,7 +245,7 @@
         '    dc:title ?description ; '+
         '   { ?id dct:subject ?person . }  '+
         '   UNION  '+
-        '   { ?id articles:nerperson ?person . }  '+
+        '   { ?id articles:nerperson|articles:mentionsPerson ?person . }  '+
         '   UNION  '+
         '   { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
         '  } ' +
