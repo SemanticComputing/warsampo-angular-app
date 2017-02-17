@@ -37,6 +37,22 @@
         self.getCasualtiesByTimeSpan = getCasualtiesByTimeSpan;
         self.getEventTypes = getEventTypes;
 
+        self.getJsonLd = getJsonLd;
+
+        function getJsonLd(person) {
+            return {
+                '@context': 'http://schema.org',
+                '@type': 'Person',
+                '@id': person.id,
+                'givenName': person.fname,
+                'birthDate': person.birth,
+                'deathDate': person.death,
+                'familyName': person.sname,
+                'birthPlace': person.birth_place,
+                'deathPlace': person.death_place,
+                'description': person.getDescription()
+            };
+        }
 
         function fetchTimelineEvents(person, options) {
             options = options || {};
@@ -193,6 +209,7 @@
             ];
 
             return $q.all(related).then(function() {
+                person.jsonLd = self.getJsonLd(person);
                 return person;
             });
         }
@@ -209,6 +226,7 @@
             ];
 
             return $q.all(related).then(function() {
+                person.jsonLd = self.getJsonLd(person);
                 return person;
             });
         }

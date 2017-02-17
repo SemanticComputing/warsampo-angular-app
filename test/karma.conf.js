@@ -46,6 +46,7 @@ module.exports = function(config) {
       'bower_components/spin.js/spin.js',
       'bower_components/angular-spinner/angular-spinner.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'bower_components/checklist-model/checklist-model.js',
       'bower_components/sparql-faceter/dist/semantic-faceted-search.js',
       'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
       'bower_components/angular-mocks/angular-mocks.js',

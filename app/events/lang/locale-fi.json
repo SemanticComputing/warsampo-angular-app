@@ -76,6 +76,7 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Rajoita kuvienottopaikka samaan kuntaan tapahtumien kanssa.",
         "SHOW_HEATMAP": "Näytä lämpökartta menehtyneistä."
     },
+    "TITLE": "Sotasampo",
     "FOR_THIS_RESOURCE": "resurssiin",
     "NO_EVENTS": "Tapahtumia ei löytynyt",
     "UNKNOWN_ERROR": "Tuntematon virhe",

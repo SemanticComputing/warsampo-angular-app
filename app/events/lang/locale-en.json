@@ -76,6 +76,7 @@
         "LIMIT_TO_SAME_MUNICIPALITY": "Limit photos to those taken in the same municipality as the events.",
         "SHOW_HEATMAP": "Show a heatmap of casualties."
     },
+    "TITLE": "WarSampo",
     "FOR_THIS_RESOURCE": "for this resource",
     "NO_EVENTS": "No events found",
     "UNKNOWN_ERROR": "Unknown error",
