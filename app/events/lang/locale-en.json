@@ -1,5 +1,6 @@
 {
     "EVENT_DEMO": {
+        "TITLE": "Events",
         "N_PHOTOGRAPHY_PHOTOS": "{NUM, plural, =0{No photographs} one{One photograph taken} other{# photographs taken}}",
         "GO_TO_WINTER_WAR": "Go to Winter War",
         "WINTER_WAR_EVENT_TITLE": "Winter War Events",
@@ -42,18 +43,22 @@
         "GO_HOME": "Go to unit demo home"
     },
     "RANK_DEMO": {
+        "TITLE": "Rank",
         "SUPER_RANKS": "Higher ranks",
         "SUB_RANKS": "Lower ranks",
         "OTHER_RANKS": "Other ranks"
     },
     "MEDAL_DEMO": {
+        "TITLE": "Medal",
         "RELATED_MEDALS": "Other medals"
     },
     "TIME_DEMO": {
+        "TITLE": "Time Span",
         "RELATED_EVENTS": "Events during this time",
         "RELATED_CASUALTIES": "Casualties during this time"
     },
     "PHOTO_DEMO": {
+        "TITLE": "Photographs",
         "TEXT_SEARCH_EXCEPTION": "The text search terms are not valid. Please try again with another set of search terms.",
         "HELP_TEXT_TITLE": "Wartime Photographs",
         "HELP_TEXT": "<h4>View photos taken during the Winter War and Continuation War</h4><p>More photographs are loaded when the page is scrolled down.</p><p>The results can be narrowed down using the filters on the left. Choose a value in a selection filter (e.g. a place using the place filter), or freely type text to find using the description filter.</p><p>By default, the text search uses whole words. * can be used in queries to search with partial words. For example, <code>sotamie*</code> will find all forms of the word \"sotamies\".</p><p>The filters can be opened and closed by clicking on the plus sign and red cross, respectively. The filters restrict each other so that if a filter has a value selected, other selection facets only display values that return results.</p><p>Places and people have been linked to the photographs programmatically, so incorrect place and person assignments may be present. Possible errors can be reported by <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">sending feedback</a>.</p><p>Photographs may also be viewed through other WarSampo perspectives, such as <a target=\"_self\" href=\"/en/places/\">Places</a> or <a target=\"_self\" href=\"/en/events/\">Events</a>.</p>",

@@ -13,7 +13,6 @@
                 var setTitle = function(title) {
                     $translate('TITLE').then(function(appTitle) {
                         if (!title) {
-                            $window.document.title = appTitle;
                             return;
                         }
                         $window.document.title = appTitle + ' | ' + title;
