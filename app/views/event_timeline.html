@@ -1,4 +1,4 @@
-<ws-title>{{ 'EVENT_DEMO.TITLE' | translate }}</ws-title>
+<ws-title>{{ ctrl.getCurrent().getDescription() || ('EVENT_DEMO.TITLE' | translate) }}</ws-title>
 <div ng-if="ctrl.err">
   <p class="error-msg bg-danger">
   {{ 'ERROR_OCCURED' | translate }} <br /><br />
