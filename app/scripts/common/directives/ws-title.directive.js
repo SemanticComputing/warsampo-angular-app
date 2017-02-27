@@ -5,7 +5,7 @@
             restrict: 'EA',
             link: function($scope, $element) {
                 var el = $element[0];
-                el.hidden = true; // So the text not actually visible on the page
+                el.hidden = true; // So that the text is not actually visible on the page
 
                 var text = function() {
                     return el.innerHTML;

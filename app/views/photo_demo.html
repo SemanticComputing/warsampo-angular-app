@@ -13,13 +13,21 @@
     </div>
     <div class="row">
       <div class="col-sm-4 col-md-3 facet-container">
-        <seco-timespan-facet data-options="vm.facets.taken"></seco-timespan-facet>
         <seco-jena-text-facet data-options="vm.facets.description"></seco-jena-text-facet>
-        <seco-basic-facet data-options="vm.facets.place"></seco-basic-facet>
-        <seco-basic-facet data-options="vm.facets.person"></seco-basic-facet>
-        <seco-basic-facet data-options="vm.facets.unit"></seco-basic-facet>
-        <seco-basic-facet data-options="vm.facets.photographer"></seco-basic-facet>
-        <seco-basic-facet data-options="vm.facets.theme"></seco-basic-facet>
+        <div class="show-facets row">
+          <div class="col-xs-12">
+            <button class="btn btn-default pull-right visible-xs-block"
+              ng-click="show = !show">{{ show ? ('PHOTO_DEMO.HIDE_FACETS' | translate) : ('PHOTO_DEMO.SHOW_FACETS' | translate) }}</button>
+          </div>
+        </div>
+        <div class="hideable-facets" ng-class="{ 'hidden-xs': !show }">
+          <seco-timespan-facet data-options="vm.facets.taken"></seco-timespan-facet>
+          <seco-basic-facet data-options="vm.facets.place"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.person"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.unit"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.photographer"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.theme"></seco-basic-facet>
+        </div>
       </div>
 
       <div class="col-sm-8 col-md-9">

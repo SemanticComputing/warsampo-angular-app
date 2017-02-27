@@ -31,7 +31,7 @@
             },
             description: {
                 facetId: 'description',
-                name: 'PHOTO_DEMO.DESCRIPTION',
+                name: 'PHOTO_DEMO.SEARCH',
                 limit: 100000,
                 graph: '<http://ldf.fi/warsa/photographs>',
                 enabled: true
