@@ -37,6 +37,7 @@
         self.getCurrent = getCurrent;
         self.getImages = getImages;
         self.getWinterWarUrl = getWinterWarUrl;
+        self.visualize = visualize;
 
         /* Activate */
 
@@ -84,8 +85,6 @@
                 Settings.clearEventSettings();
                 demoService.cleanUp();
             });
-
-            return visualize();
         }
 
         // Update state based on url

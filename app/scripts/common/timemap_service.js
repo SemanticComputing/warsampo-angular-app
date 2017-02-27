@@ -193,28 +193,26 @@
 
             // Use timeout to let the template (or more specifically the map div)
             // render before creating the timemap.
-            return $timeout(function() {
-                return TimeMap.init({
-                    mapId: 'map',               // Id of map div element (required)
-                    timelineId: 'timeline',     // Id of timeline div element (required)
+            return $q.when(TimeMap.init({
+                mapId: 'map',               // Id of map div element (required)
+                timelineId: 'timeline',     // Id of timeline div element (required)
+                options: {
+                    // NB! THE FOLLOWING LINE (eventIconPath...) WILL BE REPLACED BY GRUNT BUILD!
+                    // Any change to the line will break the build as it currently stands.
+                    eventIconPath: 'vendor/timemap/images/',
+                    openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
+                },
+                datasets: [{
+                    id: 'warsa',
+                    title: 'Itsenäisen Suomen sotien tapahtumat',
+                    theme: 'orange',
+                    type: 'basic',
                     options: {
-                        // NB! THE FOLLOWING LINE (eventIconPath...) WILL BE REPLACED BY GRUNT BUILD!
-                        // Any change to the line will break the build as it currently stands.
-                        eventIconPath: 'vendor/timemap/images/',
-                        openInfoWindow: function() { openInfoWindow(this, infoWindowCallback); }
-                    },
-                    datasets: [{
-                        id: 'warsa',
-                        title: 'Itsenäisen Suomen sotien tapahtumat',
-                        theme: 'orange',
-                        type: 'basic',
-                        options: {
-                            items: res
-                        }
-                    }],
-                    bands: bands
-                });
-            }, 0).then(function(tm) {
+                        items: res
+                    }
+                }],
+                bands: bands
+            })).then(function(tm) {
                 // Add listeners for touch events for mobile support
                 [tm.timeline.getBand(0), tm.timeline.getBand(1)].forEach(function(band) {
                     SimileAjax.DOM.registerEventWithObject(band._div,'touchmove',band,'_onTouchMove');

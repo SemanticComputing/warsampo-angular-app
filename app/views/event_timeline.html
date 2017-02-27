@@ -8,4 +8,4 @@
 </div>
 
 <ws-settings></ws-settings>
-<div ng-if="!ctrl.err" ng-include="'views/partials/event_timeline_partial.html'"></div>
+<div ng-show="!ctrl.err" data-onload="ctrl.visualize()" ng-include="'views/partials/event_timeline_partial.html'"></div>
