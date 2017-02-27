@@ -14,6 +14,8 @@
 
         var self = this;
         var demoService = new EventDemoService();
+        // A promise chain for state changes
+        self.promise = $q.when();
 
         /* Public vars */
 
@@ -39,11 +41,9 @@
         /* Activate */
 
         init();
+        return self;
 
         /* Implementation */
-
-        // A promise chain for state changes
-        self.promise = $q.when();
 
         function getCasualtyCount() {
             return demoService.getCasualtyCount();

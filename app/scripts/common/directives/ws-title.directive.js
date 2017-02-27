@@ -12,10 +12,7 @@
                 };
                 var setTitle = function(title) {
                     $translate('TITLE').then(function(appTitle) {
-                        if (!title) {
-                            return;
-                        }
-                        $window.document.title = appTitle + ' | ' + title;
+                        $window.document.title = appTitle + (title ? ' | ' + title : '');
                     });
                 };
                 $scope.$watch(text, setTitle);
