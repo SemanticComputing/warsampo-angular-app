@@ -25,8 +25,6 @@
                 name: 'PHOTO_DEMO.PHOTO_TAKEN_BETWEEN',
                 startPredicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span>/<http://www.cidoc-crm.org/cidoc-crm/P82a_begin_of_the_begin>',
                 endPredicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span>/<http://www.cidoc-crm.org/cidoc-crm/P82b_end_of_the_end>',
-                min: new Date(1939,9,1),
-                max: new Date(1945,11,31),
                 enabled: true
             },
             description: {
@@ -47,7 +45,7 @@
                 facetId: 'person',
                 name: 'PHOTO_DEMO.PERSON',
                 predicate:
-                '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P11_had_participant>',
+                '<http://www.cidoc-crm.org/cidoc-crm/P138_represents>',
                 specifier: '?value a/rdfs:subClassOf* <http://www.cidoc-crm.org/cidoc-crm/E21_Person> .',
                 enabled: true
             },
@@ -69,10 +67,14 @@
             }
         };
 
+        var cons =
+        '?id <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?order . ' +
+        '?id <http://ldf.fi/warsa/photographs/is_color> ?color . ';
+
         var facetOptions = {
             endpointUrl: SPARQL_ENDPOINT_URL,
             rdfClass: '<http://ldf.fi/warsa/photographs/Photograph>',
-            constraint: '?id <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?order .',
+            constraint: cons,
             preferredLang : ['fi', 'sv']
         };
 

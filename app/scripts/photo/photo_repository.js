@@ -178,7 +178,7 @@
 
         function getByFacetSelections(facetSelections, options) {
             var resultSet = facetSelections.join(' ');
-            var qryObj = queryBuilder.buildQuery(photoQry, resultSet, 'DESC(?score) ?order');
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet, 'DESC(?score) DESC(?color) ?order');
             return endpoint.getObjects(qryObj.query, options.pageSize,
                     qryObj.resultSetQuery);
         }
