@@ -65,8 +65,15 @@
         var pnrPlaceQry =
         '{ ' +
         ' VALUES ?id { <ID> } ' +
-        ' ?id skos:prefLabel ?label . ' +
-        ' FILTER(langMatches(lang(?label), "FI")) ' +
+        ' ?id skos:prefLabel [] . ' +
+        ' OPTIONAL { ' +
+        '   ?id skos:prefLabel ?label . ' +
+        '   FILTER(langMatches(lang(?label), "FI")) ' +
+        ' } ' +
+        ' OPTIONAL { ' +
+        '   ?id skos:prefLabel ?label . ' +
+        '   FILTER(langMatches(lang(?label), "SV")) ' +
+        ' } ' +
         ' OPTIONAL { ' +
         '   ?id geo:lat ?point__lat ; ' +
         '   geo:long ?point__lon . ' +

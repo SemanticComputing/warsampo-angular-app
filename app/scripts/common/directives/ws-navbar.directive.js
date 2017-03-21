@@ -64,10 +64,11 @@
 
             function changeLocale(lang) {
                 if (_.includes(supportedLocales, lang)) {
-                    $translate.use(lang);
-                    init();
-                    $routeParams.lang = lang;
-                    $route.updateParams($routeParams);
+                    $translate.use(lang).then(function() {
+                        init();
+                        $routeParams.lang = lang;
+                        $route.updateParams($routeParams);
+                    });
                 }
             }
 

@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('UnitPageCtrl', function($routeParams, $q, eventService, unitService) {
+    .controller('UnitPageController', function($routeParams, eventService, unitService) {
         var self = this;
         if ($routeParams.uri) {
             self.isLoadingEvent = true;

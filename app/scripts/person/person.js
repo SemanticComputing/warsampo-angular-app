@@ -9,56 +9,126 @@
     .service('personService', personService);
 
     /* @ngInject */
-    function personService($q, _, baseService, personRepository, eventRepository, placeRepository,
-                    unitRepository, photoRepository, casualtyRepository, dateUtilService) {
+    function personService($q, _, baseService, personRepository, eventRepository,
+                    placeRepository, unitRepository, photoRepository, casualtyRepository,
+                    dateUtilService, Settings, EVENT_TYPES, WAR_INFO) {
         var self = this;
 
-        self.processLifeEvents = function(person, events) {
-            person.promotions=[];
-            person.ranks=[];
+        self.processLifeEvents = processLifeEvents;
+        self.processRelatedEvents = processRelatedEvents;
+        self.fetchLifeEvents = fetchLifeEvents;
+        self.fetchRelatedEvents = fetchRelatedEvents;
+        self.fetchDiaries = fetchDiaries;
+        self.fetchDeathRecord = fetchDeathRecord;
+        self.fetchRelated = fetchRelated;
+        self.fetchRelatedForDemo = fetchRelatedForDemo;
+        self.fetchRelatedUnits = fetchRelatedUnits;
+        self.fetchRelatedPhotos = fetchRelatedPhotos;
+        self.fetchRelatedPersons = fetchRelatedPersons;
+        self.fetchNationalBib = fetchNationalBib;
+        self.fetchTimelineEvents = fetchTimelineEvents;
 
-            var places = [];
-            for (var i=0; i<events.length; i++) {
-                var e=events[i],
-                    etype=e.type_id,
+        self.getById = getById;
+        self.getByIdList = getByIdList;
+        self.getByUnit = getByUnit;
+        self.getLifeEvents = getLifeEvents;
+        self.getNationalBibliography = getNationalBibliography;
+        self.getItems = getItems;
+        self.getCasualtiesByTimeSpan = getCasualtiesByTimeSpan;
+        self.getEventTypes = getEventTypes;
+
+        self.getJsonLd = getJsonLd;
+
+        function getJsonLd(person) {
+            return {
+                '@context': 'http://schema.org',
+                '@type': 'Person',
+                '@id': person.id,
+                'givenName': person.fname,
+                'birthDate': person.birth,
+                'deathDate': person.death,
+                'familyName': person.sname,
+                'birthPlace': person.birth_place,
+                'deathPlace': person.death_place,
+                'description': person.getDescription()
+            };
+        }
+
+        function fetchTimelineEvents(person, options) {
+            options = options || {};
+            var id = [];
+            if (options.includeUnitEvents && person.units) {
+                id = _.map(person.units, 'id');
+            }
+            id.push(person.id);
+            return eventRepository.getByActorId(id, {
+                start: WAR_INFO.winterWarTimeSpan.start,
+                end: WAR_INFO.continuationWarTimeSpan.end,
+                types: _.map(options.types, 'id')
+            })
+            .then(function(data) {
+                return baseService.getRelated(data, 'place_id', 'places', placeRepository);
+            }).then(function(data) {
+                if (data && data.length) {
+                    person.timelineEvents = data;
+                }
+                return person;
+            });
+        }
+
+        function processLifeEvents(person, events) {
+            person.promotions = [];
+            person.ranks = [];
+
+            var places  =  [];
+            for (var i = 0; i < events.length; i++) {
+                var e = events[i],
+                    etype = e.type_id,
                     edate, edate2;
                 if ('start_time' in e) {
-                    edate=e.start_time,
-                    edate2=e.end_time;
-                    edate=dateUtilService.getExtremeDate(edate, true);
-                    edate2=dateUtilService.getExtremeDate(edate2, false);
-                    edate=dateUtilService.formatDateRange(edate,edate2);
+                    edate = e.start_time,
+                    edate2 = e.end_time;
+                    edate = dateUtilService.getExtremeDate(edate, true);
+                    edate2 = dateUtilService.getExtremeDate(edate2, false);
+                    edate = dateUtilService.formatDateRange(edate,edate2);
                 }
-                var eplace = '';
+                var eplace  =  '';
                 if (e.places && e.places.length) {
-                    eplace=e.places[0].label;
-                    for (var j=0; j<e.places.length; j++) {
+                    eplace = e.places[0].label;
+                    for (var j = 0; j < e.places.length; j++) {
                         places.push({ id: e.places[j].id, label: e.places[j].label });
                     }
                 }
-                if (etype.indexOf('Death')>-1) {
+                if (etype === EVENT_TYPES.DEATH) {
                     person.death = edate;
                     if (eplace) person.death_place = eplace;
-                } else if (etype.indexOf('Birth')>-1) {
+                } else if (etype === EVENT_TYPES.BIRTH) {
                     person.birth = edate;
                     if (eplace) person.birth_place = eplace;
-                } else if (etype.indexOf('Wounding')>-1) {
+                } else if (etype === EVENT_TYPES.WOUNDING) {
                     person.wound = edate;
-                    if (eplace) person.wound_place = eplace;
-                } else if (etype.indexOf('Disappearing')>-1) {
+                    if (eplace) {
+                        person.wound_place = eplace;
+                    }
+                } else if (etype === EVENT_TYPES.DISSAPEARING) {
                     person.disapp = edate;
-                    if (eplace) person.disapp_place = eplace;
-                } else if (etype.indexOf('Promotion')>-1) {
-                    if (edate) person.promotions.push(e.rank.label + ' ' + edate);
+                    if (eplace) {
+                        person.disapp_place = eplace;
+                    }
+                } else if (etype === EVENT_TYPES.PROMOTION) {
+                    if (edate) {
+                        e.rank.label = e.rank.label + ' ' + edate;
+                        person.promotions.push(e.rank.label);
+                    }
                     person.ranks.unshift(e.rank);
                 }
             }
             person.places = _.uniq(places, 'id');
             return person;
 
-        };
+        }
 
-        self.processRelatedEvents = function(person, events) {
+        function processRelatedEvents(person, events) {
             var eventlist=[];
             var battles=[];
             var articles=[];
@@ -67,15 +137,13 @@
             for (var i=0; i<events.length; i++) {
                 var e = events[i],
                     etype = e.type_id;
-
-                if (etype.indexOf('Battle')>-1) {
+                if (etype === EVENT_TYPES.BATTLE) {
                     battles.push(e);
                 } else if (etype.indexOf('Article')>-1 ) {
                     articles.push(e); //
-                } else if (etype.indexOf('E13_Attribute_Assignment')>-1 ) {
-                    e.id = e.medal;
-                    medals.push(e);
-                } else if (etype.indexOf('PersonJoining') === -1) {
+                } else if (_.get(e, 'medal.id')) {
+                    medals.push(e.medal);
+                } else if (etype !== EVENT_TYPES.PERSON_JOINING) {
                     eventlist.push(e);
                 }
             }
@@ -97,38 +165,38 @@
                 person.medals=medals;
             }
             return person;
-        };
+        }
 
-        self.fetchLifeEvents = function(person) {
+        function fetchLifeEvents(person) {
             return self.getLifeEvents(person.id).then(function(events) {
                 self.processLifeEvents(person, events);
             });
-        };
+        }
 
-        self.fetchRelatedEvents = function(person) {
+        function fetchRelatedEvents(person) {
             return eventRepository.getByPersonId(person.id).then(function(events) {
                 return self.processRelatedEvents(person, events);
             });
-        };
+        }
 
-        self.fetchDiaries = function(person) {
+        function fetchDiaries(person) {
             return personRepository.getDiaries(person.id).then(function(diaries) {
                 if (diaries && diaries.length) {
                     person.diaries = diaries;
                     person.hasLinks = true;
                 }
             });
-        };
+        }
 
-        self.fetchDeathRecord = function(person) {
+        function fetchDeathRecord(person) {
             return casualtyRepository.getPersonDeathRecord(person.id).then(function(deathRecord) {
                 person.deathRecord = deathRecord;
                 return person;
             });
-        };
+        }
 
         // for info page:
-        self.fetchRelated = function(person) {
+        function fetchRelated(person) {
             var related = [
                 self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
@@ -136,16 +204,18 @@
                 self.fetchNationalBib(person),
                 self.fetchDeathRecord(person),
                 self.fetchRelatedPhotos(person),
-                self.fetchDiaries(person)
+                self.fetchDiaries(person),
+                self.fetchRelatedPersons(person)
             ];
 
             return $q.all(related).then(function() {
+                person.jsonLd = self.getJsonLd(person);
                 return person;
             });
-        };
+        }
 
         // for demo page:
-        self.fetchRelated2 = function(person) {
+        function fetchRelatedForDemo(person) {
             var related = [
                 self.fetchLifeEvents(person),
                 self.fetchRelatedEvents(person),
@@ -156,20 +226,22 @@
             ];
 
             return $q.all(related).then(function() {
+                person.jsonLd = self.getJsonLd(person);
                 return person;
             });
-        };
+        }
 
-        self.fetchRelatedUnits = function(person) {
+        function fetchRelatedUnits(person) {
             return unitRepository.getByPersonId(person.id).then(function(units) {
                 if (units && units.length) {
                     person.units = units;
                     person.hasLinks = true;
                 }
+                return person;
             });
-        };
+        }
 
-        self.fetchRelatedPhotos = function(person) {
+        function fetchRelatedPhotos(person) {
             return photoRepository.getByPersonId(person.id, 50).then(function(imgs) {
                 person.images = imgs;
                 return imgs.getTotalCount();
@@ -179,38 +251,48 @@
                 }
                 return person;
             });
-        };
+        }
 
-        self.fetchNationalBib = function(person) {
+        function fetchNationalBib(person) {
             return personRepository.getNationalBibliography(person).then(function(nb) {
                 if (nb && nb.length && nb[0].id) {
                     person.nationals = nb[0];
                     person.hasLinks = true;
                 }
             });
-        };
+        }
 
-        self.getByUnit = function(id) {
+        function fetchRelatedPersons(person) {
+            return personRepository.getRelatedPersons(person.id, Settings.pageSize)
+            .then(function(data) {
+                if (data) {
+                    person.relatedPersons = data;
+                    person.hasLinks = true;
+                }
+            });
+        }
+
+        function getByUnit(id) {
             return personRepository.getByUnitId(id);
-        };
+        }
 
-        self.getById = function(id) {
+        function getById(id) {
             return personRepository.getById(id);
-        };
+        }
 
-        self.getByIdList = function(ids) {
+        function getByIdList(ids) {
             return personRepository.getByIdList(ids);
-        };
+        }
 
-        self.getCasualtiesByTimeSpan = function(start, end) {
+        function getCasualtiesByTimeSpan(start, end) {
             return personRepository.getCasualtiesByTimeSpan(start, end);
-        };
+        }
 
-        self.getLifeEvents = function(id) {
+        function getLifeEvents(id) {
             return eventRepository.getPersonLifeEvents(id).then(function(events) {
                 return fetchPlaces(events);
             });
-        };
+        }
 
         function fetchPlaces(event) {
             var placeUris = _(event).castArray().map('place_id').flatten().compact().uniq().value();
@@ -220,12 +302,23 @@
             });
         }
 
-        self.getNationalBibliography = function(person) {
+        function getNationalBibliography(person) {
             return personRepository.getNationalBibliographyByName(person);
-        };
+        }
 
-        self.getItems = function (regx, controller) {
-            return personRepository.getItems(regx, controller);
-        };
+        function getItems(regx) {
+            return personRepository.getItems(regx);
+        }
+
+        function getEventTypes(person, options) {
+            var id;
+            if (options.includeUnitEvents && person.units) {
+                id = [person.id].concat(_.map(person.units, 'id'));
+            } else {
+                id = person.id;
+            }
+
+            return eventRepository.getTypesByActorId(id, options);
+        }
     }
 })();

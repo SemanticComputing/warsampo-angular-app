@@ -22,6 +22,7 @@
         self.fetchPeople = fetchPeople;
         self.fetchUnits = fetchUnits;
         self.fetchPlaces = fetchPlaces;
+        self.fetchRelatedPhotos = fetchRelatedPhotos;
         self.fetchRelated = fetchRelated;
         self.getPhotosByPlaceAndTimeSpan = getPhotosByPlaceAndTimeSpan;
         self.getByTimeSpan = getByTimeSpan;
@@ -37,6 +38,14 @@
                 self.fetchPlaces(photo)
             ];
             return $q.all(related).then(function() {
+                return photo;
+            });
+        }
+
+        function fetchRelatedPhotos(photo) {
+            return photoRepository.getByThemeId(photo.theme, PHOTO_PAGE_SIZE)
+            .then(function(photos) {
+                photo.relatedPhotos = photos;
                 return photo;
             });
         }
@@ -89,6 +98,7 @@
             if (place_id) {
                 return photoRepository.getByPlaceAndTimeSpan(place_id, start, end, options);
             }
+            return $q.when();
         }
 
         function getByTimeSpan(start, end, options) {
@@ -122,10 +132,10 @@
                     return $q.when();
                 }
                 promise = placeRepository.getNearbyPlaceIds(place_ids).then(function(ids) {
-                    return self.getPhotosByPlaceAndTimeSpan(ids, start, end, opts);
+                    return photoRepository.getByIdUnionPlaceAndTimeSpan(event.photo_id, ids, start, end, opts);
                 });
             } else {
-                promise = self.getByTimeSpan(start, end, opts);
+                promise = photoRepository.getByIdUnionTimeSpan(event.photo_id, start, end, opts);
             }
             return promise.then(function(pager) {
                 pager.pagesPerQuery = 1;

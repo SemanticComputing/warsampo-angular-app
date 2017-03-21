@@ -8,9 +8,10 @@
     */
     angular.module('eventsApp')
     .service('personRepository', function($q, _, AdvancedSparqlService, SparqlService,
-                personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
+                baseRepository, personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, personMapperService);
+        var historyEndpoint = new SparqlService('http://ldf.fi/history/sparql');
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
@@ -192,7 +193,7 @@
 
         var byMedalQryResultSet =
         ' VALUES ?medal { {0} } .  ' +
-        ' ?evt a  crm:E13_Attribute_Assignment ;	 ' +
+        ' ?evt a crm:E13_Attribute_Assignment ;	 ' +
         '   crm:P141_assigned ?medal ; ' +
         '   crm:P11_had_participant ?id .  ' +
         ' ?id a atypes:MilitaryPerson .	 ' +
@@ -213,6 +214,32 @@
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
         '   ?casualty casualties:kuolinaika ?death_time . ' +
         ' } ';
+
+        var relatedPersonQryResultSet =
+        ' SELECT DISTINCT ?id { ' +
+        '  ?pclass rdfs:subClassOf* crm:E21_Person . ' +
+        '  { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person (^crm:P11_had_participant)/crm:P11_had_participant ?id . ' +
+        '    BIND (20 AS ?score) ' +
+        '  } UNION { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person ^crm:P11_had_participant/:hasRank ?rank . ' +
+        '    ?rank ^:hasRank/crm:P11_had_participant ?id ; ' +
+        '     :level ?score . ' +
+        '  } UNION { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' +
+        '    BIND (30 AS ?score) ' +
+        '  } UNION { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+        '    ?person ^crm:P11_had_participant/crm:P141_assigned/^crm:P141_assigned/crm:P11_had_participant ?id . ' +
+        '    BIND (30 AS ?score) ' +
+        '  } ' +
+        '  FILTER(?person != ?id) ' +
+        '  ?id a ?pclass . ' +
+        ' } GROUP BY ?id ' +
+        ' ORDER BY DESC(sum(?score)) ';
 
         this.getByUnitId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
@@ -272,11 +299,10 @@
         };
 
         this.getNationalBibliography = function(person) {
-            if ('natiobib' in person ) {
+            if (person.natiobib) {
                 // Direct link by owl:sameAs
                 var qry = nationalBibliographyQry.format(person.natiobib);
-                var end2 = new SparqlService('http://ldf.fi/history/sparql');
-                return end2.getObjects(qry).then(function(data) {
+                return historyEndpoint.getObjects(qry).then(function(data) {
                     return personMapperService.makeObjectList(data);
                 });
             }
@@ -285,22 +311,25 @@
 
         this.getDiaries = function(person) {
             var qry = wardiaryQry.format('<{0}>'.format(person));
-            return endpoint.getObjects(qry).then(function(data) {
-                return data;
-            });
+            return endpoint.getObjects(qry);
         };
 
-        this.getItems = function (regx, controller) {
+        this.getItems = function(regx) {
             var qry = selectorQuery.format('{0}'.format(regx));
-            controller.items = [ {id:'#', name:'Etsitään ...'} ];
             return endpoint.getObjects(qry).then(function(data) {
                 var arr = data;
                 if (!arr.length) {
                     arr = [ {id:'#', name:'Ei hakutuloksia.'} ];
                 }
-                controller.items = arr;
                 return arr;
             });
+        };
+
+        this.getRelatedPersons = function(id, pageSize) {
+            id = baseRepository.uriFy(id);
+            var resultSet = relatedPersonQryResultSet.replace(/<ACTOR>/g, id);
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
     });
 })();

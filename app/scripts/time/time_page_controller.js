@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name eventsApp.controller:PageCtrl
+ * @name eventsApp.controller:PageController
  * @description
- * # PageCtrl
+ * # PageController
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-.controller('TimePageCtrl', function($routeParams, $q, $rootScope, timeService) {
+.controller('TimePageController', function($routeParams, $q, $rootScope, timeService) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;

@@ -15,6 +15,8 @@
         EventDemoServiceConstructor.prototype.getCasualtyCount = getCasualtyCount;
         EventDemoServiceConstructor.prototype.getCasualtyStats = getCasualtyStats;
         EventDemoServiceConstructor.prototype.getCurrent = getCurrent;
+        EventDemoServiceConstructor.prototype.clearCurrent = clearCurrent;
+        EventDemoServiceConstructor.prototype.clear = clear;
         EventDemoServiceConstructor.prototype.getImages = getImages;
 
         EventDemoServiceConstructor.prototype.createTimemap = createTimemapByTimeSpan;
@@ -23,18 +25,21 @@
         EventDemoServiceConstructor.prototype.calculateCasualties = calculateCasualties;
         EventDemoServiceConstructor.prototype.getCasualtyLocations = getCasualtyLocations;
         EventDemoServiceConstructor.prototype.updateHeatmap = updateHeatmap;
-        EventDemoServiceConstructor.prototype.onMouseUpListener = onMouseUpListener;
         EventDemoServiceConstructor.prototype.clearHeatmap = clearHeatmap;
         EventDemoServiceConstructor.prototype.getMinVisibleDate = getMinVisibleDate;
         EventDemoServiceConstructor.prototype.getMaxVisibleDate = getMaxVisibleDate;
         EventDemoServiceConstructor.prototype.getVisibleDateRange = getVisibleDateRange;
+        EventDemoServiceConstructor.prototype.scrollToDate = scrollToDate;
+        EventDemoServiceConstructor.prototype.navigateTo = navigateTo;
         EventDemoServiceConstructor.prototype.navigateToEvent = navigateToEvent;
         EventDemoServiceConstructor.prototype.navigateToDate = navigateToDate;
         EventDemoServiceConstructor.prototype.navigateToEarliestEvent = navigateToEarliestEvent;
         EventDemoServiceConstructor.prototype.setCenterVisibleDate = setCenterVisibleDate;
         EventDemoServiceConstructor.prototype.addOnScrollListener = addOnScrollListener;
+        EventDemoServiceConstructor.prototype.onMouseUpListener = onMouseUpListener;
         EventDemoServiceConstructor.prototype.setOnMouseUpListener = setOnMouseUpListener;
         EventDemoServiceConstructor.prototype.fetchImages = fetchImages;
+        EventDemoServiceConstructor.prototype.infoWindowCallback = infoWindowCallback;
 
         EventDemoServiceConstructor.prototype.cleanUp = cleanUp;
 
@@ -51,19 +56,28 @@
             self.current;
             self.images;
 
-            self.infoWindowCallback = infoWindowCallback;
+            self.infoWindowCallback = self.infoWindowCallback.bind(self);
 
-            function infoWindowCallback(item) {
-                // Change the URL but don't reload the page
-                if ($location.search().uri !== item.opts.event.id) {
-                    $location.search('uri', item.opts.event.id);
-                }
+        }
 
-                self.current = item;
-                eventService.fetchRelated(item.opts.event);
-                self.fetchImages(item);
+        function clear() {
+            return timemapService.clear(this.tm);
+        }
+
+        function clearCurrent() {
+            timemapService.clearSelection(this.current);
+            this.current = undefined;
+        }
+
+        function infoWindowCallback(item) {
+            // Change the URL but don't reload the page
+            if ($location.search().uri !== item.opts.event.id) {
+                $location.search('uri', item.opts.event.id);
             }
 
+            this.current = item;
+            eventService.fetchRelated(item.opts.event);
+            this.fetchImages(item);
         }
 
         function cleanUp() {
@@ -131,19 +145,19 @@
 
         function refresh() {
             var self = this;
-            var promises = [self.calculateCasualties(), self.updateHeatmap()];
-            return $q.all(promises).then(function(res) {
-                self.tm.timeline.setAutoWidth();
-                return res;
-            });
+            if (self.tm) {
+                var promises = [self.calculateCasualties(), self.updateHeatmap()];
+                return $q.all(promises).then(function(res) {
+                    self.tm.timeline.setAutoWidth();
+                    return res;
+                });
+            }
+            return $q.when();
         }
 
-        function navigateToEvent(e) {
-            var item = _.find(this.tm.getItems(), function(item) {
-                return _.isEqual(item.opts.event.id, e.id);
-            });
-            this.navigateToDate(new Date(e.start_time));
+        function navigateTo(item) {
             if (item) {
+                this.scrollToDate(item.getStart());
                 this.tm.setSelected(item);
                 item.openInfoWindow();
                 return this.refresh();
@@ -151,13 +165,33 @@
             return $q.reject('Event not found on timeline');
         }
 
-        function navigateToDate(date) {
+        function navigateToEvent(e) {
+            var id = angular.isString(e) ? e : e.id;
+
+            var item = _.find(this.tm.getItems(), function(item) {
+                return _.isEqual(item.opts.event.id, id);
+            });
+            if (item) {
+                return this.navigateTo(item);
+            }
+            if (!e.start_time) {
+                return $q.reject('Cannot navigate to event');
+            }
+            return this.navigateToDate(new Date(e.start_time));
+        }
+
+        function scrollToDate(date) {
             this.tm.scrollToDate(date);
             googleMapsService.normalizeMapZoom(this.map);
         }
 
+        function navigateToDate(date) {
+            this.scrollToDate(date);
+            return this.refresh();
+        }
+
         function navigateToEarliestEvent() {
-            this.navigateToDate('earliest');
+            return this.navigateToDate('earliest');
         }
 
         function setupTimemap() {
@@ -167,6 +201,8 @@
 
             self.setOnMouseUpListener(function() { self.onMouseUpListener(); });
             self.addOnScrollListener(_.throttle(_.bind(self.clearHeatmap, self), 500));
+
+            return true;
         }
 
         function getMinVisibleDate() {

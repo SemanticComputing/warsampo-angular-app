@@ -82,10 +82,14 @@
         UNIT_JOINING: 'http://ldf.fi/warsa/events/event_types/UnitJoining',
         UNIT_FORMATION: 'http://www.cidoc-crm.org/cidoc-crm/E66_Formation',
         UNIT_NAMING: 'http://ldf.fi/warsa/events/event_types/UnitNaming',
+        DISSOLUTION: 'http://www.cidoc-crm.org/cidoc-crm/E68_Dissolution',
+        PERSON_JOINING: 'http://ldf.fi/warsa/events/event_types/PersonJoining',
         PROMOTION: 'http://ldf.fi/warsa/events/event_types/Promotion',
         BIRTH: 'http://www.cidoc-crm.org/cidoc-crm/E67_Birth',
         DEATH: 'http://www.cidoc-crm.org/cidoc-crm/E69_Death',
         DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing',
+        WOUNDING: 'http://ldf.fi/warsa/events/event_types/Wounding',
+        PHOTOGRAPHY: 'http://ldf.fi/warsa/events/event_types/Photography',
         MEDAL_ASSIGNMENT: 'http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment'
     })
     .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)
@@ -141,70 +145,70 @@
         })
         .when(lang + '/events/page', {
             templateUrl: 'views/event_page.html',
-            controller: 'EventPageCtrl',
+            controller: 'EventPageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })
         .when(lang + '/events/:era?', {
             templateUrl: 'views/event_timeline.html',
-            controller: 'EventDemoCtrl',
-            controllerAs: 'timemapCtrl',
+            controller: 'EventDemoController',
+            controllerAs: 'ctrl',
             reloadOnSearch: false,
             resolve: getResolve()
         })
         .when(lang + '/units/page', {
             templateUrl: 'views/unit_page.html',
-            controller: 'UnitPageCtrl',
+            controller: 'UnitPageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })
         .when(lang + '/persons/page', {
             templateUrl: 'views/person_page.html',
-            controller: 'PersonPageCtrl',
+            controller: 'PersonPageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })
         .when(lang + '/ranks/page', {
             templateUrl: 'views/rank_page.html',
-            controller: 'RankPageCtrl',
+            controller: 'RankPageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })
         .when(lang + '/medals/page', {
             templateUrl: 'views/medal_page.html',
-            controller: 'MedalPageCtrl',
+            controller: 'MedalPageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })
         .when(lang + '/units/', {
             templateUrl: 'views/unit_timeline.html',
-            controller: 'UnitDemoCtrl',
+            controller: 'UnitDemoController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
             resolve: getResolve()
         })
         .when(lang + '/persons/', {
             templateUrl: 'views/person_timeline.html',
-            controller: 'PersonDemoCtrl',
+            controller: 'PersonDemoController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
             resolve: getResolve()
         })
         .when(lang + '/times/page', {
             templateUrl: 'views/time_page.html',
-            controller: 'TimePageCtrl',
+            controller: 'TimePageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })
         .when(lang + '/photographs/page', {
             templateUrl: 'views/photo_page.html',
-            controller: 'PhotoPageCtrl',
+            controller: 'PhotoPageController',
             controllerAs: 'vm',
             resolve: getResolve()
         })
         .when(lang + '/casualties/page', {
             templateUrl: 'views/semantic_page.html',
-            controller: 'SemanticPageCtrl',
+            controller: 'SemanticPageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })
@@ -216,7 +220,7 @@
         })
         .when(lang + '/page', {
             templateUrl: 'views/semantic_page.html',
-            controller: 'SemanticPageCtrl',
+            controller: 'SemanticPageController',
             controllerAs: 'ctrl',
             resolve: getResolve()
         })

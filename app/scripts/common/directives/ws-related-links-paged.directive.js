@@ -6,15 +6,15 @@
         return {
             restrict:'E',
             scope: {
-                title: '=',
-                pager: '=paginator'
+                title: '<',
+                pager: '<paginator'
             },
             link: function(scope, element, attrs) {
                 if ('external' in attrs) {
                     scope.external = true;
                 }
             },
-            controllerAs: 'relatedCtrl',
+            controllerAs: 'vm',
             controller: RelatedController,
             templateUrl: 'views/directive/ws-related-links-paged.directive.html'
         };
@@ -22,37 +22,37 @@
 
     /* @ngInject */
     function RelatedController($scope, Settings) {
-        var self = this;
+        var vm = this;
 
-        self.isLoadingPage = false;
-        self.pageSize = Settings.pageSize;
+        vm.isLoadingPage = false;
+        vm.pageSize = Settings.pageSize;
 
-        self.updatePage = updatePage;
+        vm.updatePage = updatePage;
 
         $scope.$watch('pager', function(val) {
             if (val) {
                 $scope.pager.getTotalCount().then(function(count) {
-                    self.totalItems = count;
+                    vm.totalItems = count;
                 });
-                self.isLoadingPage = true;
+                vm.isLoadingPage = true;
                 $scope.pager.getPage(0).then(function(page) {
-                    self.isLoadingPage = false;
-                    self.related = page;
+                    vm.isLoadingPage = false;
+                    vm.related = page;
                 });
             } else {
-                self.totalItems = null;
-                self.related = null;
+                vm.totalItems = null;
+                vm.related = null;
             }
         });
 
         function updatePage() {
-            self.isLoadingPage = true;
-            var latestPage = self.currentPage;
+            vm.isLoadingPage = true;
+            var latestPage = vm.currentPage;
 
-            $scope.pager.getPage(self.currentPage - 1).then(function(page) {
-                if (latestPage === self.currentPage) {
-                    self.isLoadingPage = false;
-                    self.related = page;
+            $scope.pager.getPage(vm.currentPage - 1).then(function(page) {
+                if (latestPage === vm.currentPage) {
+                    vm.isLoadingPage = false;
+                    vm.related = page;
                 }
             });
         }

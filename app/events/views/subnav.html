@@ -1,8 +1,8 @@
 <ul class="nav navbar-nav">
-  <li ng-show="ctrl.getHelpButtonVisibility()"><a href="" id="show-help" ng-click="ctrl.showHelp()" class="translate-cloak" translate-cloak translate>PERSPECTIVE_HELP</a></li>
-  <li ng-show="ctrl.getSettingsButtonVisibility()"><a href="" id="show-settings" ng-click="ctrl.toggleSettings()" class="translate-cloak" translate-cloak translate>SETTINGS</a></li>
-  <li ng-if="ctrl.getEventLinksVisibility()"><a target="_self" ng-href="{{ ctrl.winterWarLink }}" translate-cloak translate>WINTER_WAR</a></li>
-  <li ng-if="ctrl.getEventLinksVisibility()"><a target="_self" ng-href="{{ ctrl.continuationWarLink }}" translate-cloak translate>CONTINUATION_WAR</a></li>
-  <li><a ng-show="ctrl.lang === 'en'" ng-click="ctrl.changeLocale('fi')" href="" translate-cloak translate>IN_fi</a></li>
-  <li><a ng-show="ctrl.lang === 'fi'" ng-click="ctrl.changeLocale('en')" href="" translate-cloak translate>IN_en</a></li>
+  <li ng-show="ctrl.getHelpButtonVisibility()"><a href="" id="show-help" ng-click="ctrl.showHelp()"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> <span  class="translate-cloak" translate-cloak translate>PERSPECTIVE_HELP</span></a></li>
+    <li ng-show="ctrl.getSettingsButtonVisibility()"><a href="" id="show-settings" ng-click="ctrl.toggleSettings()"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <span class="translate-cloak" translate-cloak translate>SETTINGS</span></a></li>
+    <li ng-if="ctrl.getEventLinksVisibility()"><a ng-href="{{ ctrl.winterWarLink }}"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> <span translate-cloak translate>WINTER_WAR</span></a></li>
+    <li ng-if="ctrl.getEventLinksVisibility()"><a ng-href="{{ ctrl.continuationWarLink }}"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> <span translate-cloak translate>CONTINUATION_WAR</span></a></li>
+  <li><a ng-show="ctrl.lang === 'en'" ng-click="ctrl.changeLocale('fi')" href=""><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> <span translate-cloak translate>IN_fi</span></a></li>
+  <li><a ng-show="ctrl.lang === 'fi'" ng-click="ctrl.changeLocale('en')" href=""><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> <span translate-cloak translate>IN_en</span></a></li>
 </ul>

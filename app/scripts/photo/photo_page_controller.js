@@ -2,9 +2,9 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('PhotoPageCtrl', PhotoPageCtrl);
+    .controller('PhotoPageController', PhotoPageController);
 
-    function PhotoPageCtrl($routeParams, $q, $rootScope, _, photoService, eventService,
+    function PhotoPageController($routeParams, $q, $rootScope, _, photoService, eventService,
             placeRepository, Settings) {
 
         $rootScope.showSettings = null;
@@ -35,7 +35,10 @@
         }
 
         function fetchRelated(photo) {
-            var promises = { related: photoService.fetchRelated(photo) };
+            var promises = {
+                related: photoService.fetchRelated(photo),
+                photos: photoService.fetchRelatedPhotos(photo)
+            };
             if (photo.created) {
                 promises.eventsByTime = eventService.getEventsLooselyWithinTimeSpanPager(photo.created,
                             photo.created, Settings.pageSize);

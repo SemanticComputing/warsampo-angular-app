@@ -1,8 +1,9 @@
-<div> <a id="pageTypeURL" href="events"><h1 id="pageType" translate>TIME</h1></a></div> 
-<!-- Each page has metadata column on the left and link column on the right -->
+<ws-title>{{ 'TIME_DEMO.TITLE' | translate }}</ws-title>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
+    <h1 id="pageType"><a id="pageTypeURL" href="events" translate>TIME</a></h1>
+    <p class="uri">{{ ctrl.time.id }}</p>
     <img ng-show="ctrl.isLoadingObj" src="images/loading.gif" />
     <p ng-if="!ctrl.time && !ctrl.isLoadingObj" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.time">

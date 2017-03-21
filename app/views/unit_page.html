@@ -1,13 +1,14 @@
-<div> <a id="pageTypeURL" href="units/"><h1 id="pageType" translate>UNIT</h1></a></div> 
-<!-- Each page has metadata column on the left and link column on the right -->
+<ws-title>{{ ctrl.unit.label }}</ws-title>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
+    <h1 id="pageType"><a id="pageTypeURL" href="units/" translate>UNIT</a></h1>
+    <p class="uri">{{ ctrl.unit.id }}</p>
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.unit && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.unit">
       <h2>
-        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev.length"> ({{ ctrl.unit.abbrev | concatList }})</span>
+        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev.length"> – {{ ctrl.unit.abbrev | concatList }}</span>
       </h2>
       <div ng-include="'views/partials/unit_description_partial.html'"></div>
       <p><a ws-page-link="ctrl.unit.id" demo translate>SHOW_IN_DEMO</a></p>
@@ -26,6 +27,7 @@
 			<ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.unit.subUnits"></ws-related-links>
 			<ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.unit.relatedUnits"></ws-related-links>
       <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.unit.battles"></ws-related-links>
+      <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.unit.events"></ws-related-links>
       <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
       <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.unit.places"></ws-related-links>
       <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.unit.articles"></ws-related-links>

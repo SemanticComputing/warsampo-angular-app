@@ -15,12 +15,9 @@
     .controller('PhotoDemoController', PhotoDemoController);
 
     /* @ngInject */
-    function PhotoDemoController($scope, $uibModal, _, photoFacetService,
-            facetUrlStateHandlerService, Settings) {
+    function PhotoDemoController($scope, $translate, $uibModal, _, photoFacetService,
+            FacetHandler, facetUrlStateHandlerService, Settings) {
         var vm = this;
-
-        vm.facets;
-        vm.facetOptions;
 
         vm.disableFacets = disableFacets;
         vm.isScrollDisabled = isScrollDisabled;
@@ -43,25 +40,34 @@
             });
 
             photoFacetService.getFacets().then(function(facets) {
+                var initListener = $scope.$on('sf-initial-constraints', function(event, config) {
+                    updateResults(event, config);
+                    initListener();
+                });
+                $scope.$on('sf-facet-constraints', updateResults);
+
                 vm.facets = facets;
+                vm.handler = new FacetHandler(getFacetOptions());
             });
 
-            vm.facetOptions = getFacetOptions();
             vm.photos = [];
         }
 
         function showHelp() {
             $uibModal.open({
-                templateUrl: 'views/partials/photo.help.html',
-                size: 'lg'
+                component: 'helpModal',
+                size: 'lg',
+                resolve: {
+                    title: $translate('PHOTO_DEMO.HELP_TEXT_TITLE'),
+                    content: $translate('PHOTO_DEMO.HELP_TEXT'),
+                    options: function() { return { showEventLegend: false }; }
+                }
             });
         }
 
         function openModal(photo) {
             $uibModal.open({
-                templateUrl: 'views/partials/photo.modal.html',
-                controller: 'PhotoModalController',
-                controllerAs: 'vm',
+                component: 'photoModal',
                 size: 'lg',
                 resolve: {
                     photo: function() { return photo; }
@@ -71,8 +77,8 @@
 
         function getFacetOptions() {
             var options = photoFacetService.getFacetOptions();
-            options.updateResults = updateResults;
-            options.initialValues = facetUrlStateHandlerService.getFacetValuesFromUrlParams();
+            options.initialState = facetUrlStateHandlerService.getFacetValuesFromUrlParams();
+            options.scope = $scope;
             return options;
         }
 
@@ -80,17 +86,21 @@
             return vm.isLoadingResults;
         }
 
+        var latestPageUpdate;
         function nextPage() {
+            var updateId = _.uniqueId();
+            latestPageUpdate = updateId;
+
             vm.isLoadingResults = true;
             if (nextPageNo++ <= maxPage) {
                 vm.pager.getPage(nextPageNo-1)
                 .then(function(page) {
+                    if (updateId !== latestPageUpdate) {
+                        return;
+                    }
                     vm.photos = vm.photos.concat(page);
                     vm.isLoadingResults = false;
-                }).catch(function(error) {
-                    vm.isLoadingResults = false;
-                    vm.error = error.message || error;
-                });
+                }).catch(handleError);
             } else {
                 vm.isLoadingResults = false;
             }
@@ -100,7 +110,17 @@
             return vm.isLoadingResults || nextPageNo > maxPage;
         }
 
-        function updateResults(facetSelections) {
+        var latestUpdate;
+        function updateResults(event, facetSelections) {
+            if (vm.previousSelections && _.isEqual(facetSelections.constraint,
+                    vm.previousSelections)) {
+                return;
+            }
+            vm.previousSelections = _.clone(facetSelections.constraint);
+
+            var updateId = _.uniqueId();
+            latestUpdate = updateId;
+
             vm.error = undefined;
             facetUrlStateHandlerService.updateUrlParams(facetSelections);
             vm.isLoadingResults = true;
@@ -109,16 +129,23 @@
 
             photoFacetService.getResults(facetSelections)
             .then(function(pager) {
-                vm.pager = pager;
-                return vm.pager.getMaxPageNo();
-            }).then(function(no) {
-                maxPage = no;
+                return pager.getMaxPageNo().then(function(no) {
+                    return [pager, no];
+                });
+            }).then(function(res) {
+                if (latestUpdate !== updateId) {
+                    return;
+                }
+                vm.pager = res[0];
+                maxPage = res[1];
                 vm.isLoadingResults = false;
                 return nextPage();
-            }).catch(function(error) {
-                vm.isLoadingResults = false;
-                vm.error = error.message || error;
-            });
+            }).catch(handleError);
+        }
+
+        function handleError(error) {
+            vm.isLoadingResults = false;
+            vm.error = photoFacetService.getErrorMessage(error);
         }
     }
 })();

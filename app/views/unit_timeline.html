@@ -1,12 +1,17 @@
+<ws-title>{{ ctrl.currentObject.label }}</ws-title>
 <ws-settings></ws-settings>
 <div class="row">
   <div class="col-sm-3">
   	<h2 translate>UNIT_DEMO.TITLE</h2>
     <translate>UNIT_DEMO.DESCRIPTION</translate>
-    <input type="text" placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
-      class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()">
-    <select ng-model="ctrl.currentUnit" ng-change="ctrl.updateUnit()" size="32" class="form-control" id="unitselect"
-            ng-options="item as item.name for item in ctrl.items"></select>
+    <input type="text"
+      ng-model-options="{ debounce: 500 }"
+      placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
+      class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
+    <select ng-model="ctrl.currentSelection" ng-change="ctrl.updateUnit()"
+      size="32" class="form-control" id="unitselect"
+      ng-options="item.id as item.name for item in ctrl.items">
+    </select>
 	</div>
 
   <div class="col-sm-9">
@@ -14,71 +19,43 @@
       <div class="col-lg-5 col-lg-push-7 col-md-12">
         <div class="row">
           <div class="col-md-12">
-            <div ng-if="ctrl.currentUnit && !ctrl.getCurrent()">
-              <!-- Unit details -->
-              <h3>{{ ctrl.currentUnit.name[0] }} <span ng-if="ctrl.currentUnit.abbrev.length">({{ ctrl.currentUnit.abbrev | concatList }})</span></h3>
-              <p ng-if="ctrl.currentUnit.desc">{{ ctrl.currentUnit.desc }} (Wikipedia)</p>
-              <p ng-if="ctrl.currentUnit.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentUnit.altNames.join('; ') }}</p>
-              <div ng-show="ctrl.currentUnit.relatedEvents.length === 0" translate>
-                NO_RELATED_EVENTS
+            <div ng-switch="ctrl.showUnitDetails()">
+              <div ng-switch-when="true">
+                <!-- Unit details -->
+                <h3>{{ ctrl.currentObject.getLabel() }} <span ng-if="ctrl.currentObject.abbrev.length"> – {{ ctrl.currentObject.abbrev | concatList }}</span></h3>
+                <p ng-if="ctrl.currentObject.desc">{{ ctrl.currentObject.desc }} (Wikipedia)</p>
+                <p ng-if="ctrl.currentObject.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentObject.altNames.join('; ') }}</p>
+                <p>{{ ctrl.currentObject.getDescription() }}</p>
+                <p><a ws-page-link="ctrl.currentObject.id" translate>SHOW_INFO_PAGE</a></p>
+
+                <ws-photo-gallery images="ctrl.currentObject.images"></ws-photo-gallery>
+
+                <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.currentObject.relatedPersons"></ws-related-links-paged>
+                <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.currentObject.superUnits"></ws-related-links>
+                <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.currentObject.subUnits"></ws-related-links>
+                <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.currentObject.relatedUnits"></ws-related-links>
+                <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.currentObject.battles"></ws-related-links>
+                <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.currentObject.places"></ws-related-links>
+                <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.currentObject.articles"></ws-related-links>
+                <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.currentObject.wikilink"></ws-related-links>
+                <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentObject.diaries"></ws-related-links>
+
               </div>
-              <p>{{ ctrl.currentUnit.getDescription() }}</p>
-              <p><a ws-page-link="ctrl.currentUnit.id" translate>SHOW_INFO_PAGE</a></p>
-
-              <ws-photo-gallery images="ctrl.currentUnit.images"></ws-photo-gallery>
-
-              <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.currentUnit.relatedPersons"></ws-related-links-paged>
-              <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.currentUnit.superUnits"></ws-related-links>
-              <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.currentUnit.subUnits"></ws-related-links>
-              <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.currentUnit.relatedUnits"></ws-related-links>
-              <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.currentUnit.battles"></ws-related-links>
-              <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.currentUnit.places"></ws-related-links>
-              <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.currentUnit.articles"></ws-related-links>
-              <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.currentUnit.wikilink"></ws-related-links>
-              <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentUnit.diaries"></ws-related-links>
-
-            </div>
-            <div ng-if="ctrl.getCurrent()">
-              <!-- Event details -->
-              <h3>
-                <span ng-repeat="place in ctrl.getCurrent().places">
-                  <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
-                </span>
-                {{ ctrl.getCurrent().timeSpanString }} - {{ ctrl.getCurrent().getTypeLabel() }}
-              </h3>
-              <p>{{ ctrl.getCurrent().getDescription() }}</p>
-              <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
-              <p ng-if="ctrl.getCurrent().source"><small>{{ 'SOURCE' | translate }}: {{ ctrl.getCurrent().source }}</small></p>
-              <p ng-repeat="unit in ctrl.getCurrent().units" style="text-transform: capitalize">
-                {{ unit.label.join(' / ') }}
-              </p>
-
-              <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
-            </div>
-            <div ng-if="!(ctrl.getCurrent() || ctrl.currentUnit)">
-              <!-- Help text -->
-              <h3 translate>UNIT_DEMO.HELP_TEXT_TITLE</h3>
-              <translate>UNIT_DEMO.HELP_TEXT</translate>
-              <div ng-include="'views/partials/event_colors.html'"></div>
-            </div>
-            <hr/>
-            <div id="casualtyCount" ng-click="ctrl.showCasualtyStats = !ctrl.showCasualtyStats">
-              <p>{{ 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN' | translate }} {{ ctrl.getMinVisibleDate() | date : 'd.M.yyyy' }} - {{ ctrl.getMaxVisibleDate() | date : 'd.M.yyyy' }}: {{ ctrl.getCasualtyCount() }}
-              | <a>{{ ctrl.showCasualtyStats ? 'HIDE_ADDITIONAL_INFO' : 'SHOW_ADDITIONAL_INFO' | translate }}</a>
-              </p>
-            </div>
-            <div uib-collapse="!ctrl.showCasualtyStats">
-              <div class="row" ng-repeat="casualtyClass in ctrl.getCasualtyStats()">
-                <div ng-if="casualtyClass.id">
-                  <div class="col-xs-10 casualtyCount">
-                    {{ casualtyClass.description }}
-                  </div>
-                  <div class="col-xs-2 casualtyCount">
-                    {{ casualtyClass.count }}
-                  </div>
+              <div ng-switch-default>
+                <div ng-if="ctrl.isLoadingEvent">
+                  <h3>{{ 'LOADING' | translate}} <img src="images/loading.gif" /></h3>
+                </div>
+                <div ng-show="!ctrl.isLoadingEvent">
+                  <h3><a href="" ng-click="ctrl.clearEvent()">{{ ctrl.currentObject.getLabel() }}</a></h3>
+                  <event-details data-event=ctrl.getCurrent()></event-details>
+                  <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
+                  <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
                 </div>
               </div>
             </div>
+            <hr/>
+            <!-- Casualty statistics -->
+            <div ng-include="'views/partials/casualty_stats_partial.html'"></div>
           </div>
         </div>
       </div>
@@ -90,19 +67,7 @@
           <a ng-href="{{ ctrl.getDefaultUrl() }}" target="_self" translate>UNIT_DEMO.GO_HOME</a>
           </p>
         </div>
-        <div id="timemap-container">
-          <div id="loading-overlay" ng-if="ctrl.isLoadingTimeline">
-            <h2>{{ 'BUILDING_TIMELINE' | translate }} <img src="images/loading.gif" /></h2>
-          </div>
-          <div id="timemap">
-            <div id="mapcontainer">
-              <div id="map"></div>
-            </div>
-            <div id="timelinecontainer">
-              <div id="timeline"></div>
-            </div>
-          </div>
-        </div>
+        <div ng-include="'views/partials/timemap_partial.html'"></div>
       </div>
     </div>
   </div>

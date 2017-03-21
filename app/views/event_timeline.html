@@ -1,10 +1,11 @@
-<div ng-if="timemapCtrl.err">
+<ws-title>{{ ctrl.getCurrent().getDescription() || (ctrl.title | translate) }}</ws-title>
+<div ng-if="ctrl.err">
   <p class="error-msg bg-danger">
   {{ 'ERROR_OCCURED' | translate }} <br /><br />
-  <b>{{ timemapCtrl.err }}</b> <br /><br />
-  <a ng-href="{{ timemapCtrl.getWinterWarUrl() }}" target="_self" translate>EVENT_DEMO.GO_TO_WINTER_WAR</a>
+  <b>{{ ctrl.err }}</b> <br /><br />
+  <a ng-href="{{ ctrl.getWinterWarUrl() }}" target="_self" translate>EVENT_DEMO.GO_TO_WINTER_WAR</a>
   </p>
 </div>
 
 <ws-settings></ws-settings>
-<div ng-if="!timemapCtrl.err" ng-include="'views/partials/timemap_partial.html'"></div>
+<div ng-show="!ctrl.err" data-onload="ctrl.visualize()" ng-include="'views/partials/event_timeline_partial.html'"></div>

@@ -1,13 +1,20 @@
-<div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>PERSON</h1></a></div>
+<ws-title>{{ ctrl.person.label }}</ws-title>
+<ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
+    <h1 id="pageType"><a id="pageTypeURL" href="persons/" translate>PERSON</a></h1>
+    <p class="uri">{{ ctrl.person.id }}</p>
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.person && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">
       <h2>
         {{ ctrl.person.label }}
       </h2>
+      <p ng-if="ctrl.person.birth || ctrl.person.death">
+        {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
+        {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}
+      </p>
       <div ng-include="'views/partials/person_description_partial.html'"></div>
       <p><a ws-page-link="ctrl.person.id" demo translate>SHOW_IN_DEMO</a></p>
 
@@ -22,15 +29,16 @@
     <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.person.hasLinks" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
+     <div ng-if="ctrl.person.nationals" ng-include="'views/partials/national_bibliography_partial.html'"></div>
       <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
       <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>
       <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
       <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
       <ws-related-links data-title="'RELATED_MEDALS' | translate" data-related="ctrl.person.medals"></ws-related-links>
+      <ws-related-links-paged data-title="'PERSONS_DEMO.RELATED_PEOPLE' | translate" data-paginator="ctrl.person.relatedPersons"></ws-related-links-paged>
       <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
       <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
       <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.person.diaries"></ws-related-links>
       <ws-related-links title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
-     <div ng-if="ctrl.person.nationals" ng-include="'views/partials/national_bibliography_partial.html'"></div>
-  </div>
+  </div> 
 </div>

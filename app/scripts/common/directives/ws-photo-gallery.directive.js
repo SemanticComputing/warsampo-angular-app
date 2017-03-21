@@ -6,7 +6,8 @@
         return {
             restrict:'E',
             scope: {
-                images: '='
+                images: '<',
+                config: '<'
             },
             controller: PhotoGalleryContoller,
             controllerAs: 'ctrl',
@@ -22,8 +23,7 @@
         self.imageCount;
         self.isLoadingImages;
         self.photos = [];
-
-        self.toggleCollapse = toggleCollapse;
+        self.galleryId = _.uniqueId();
 
         var win = angular.element($window);
 
@@ -33,21 +33,27 @@
             win.unbind('resize', checkOverflow);
         });
 
-        angular.element('#blueimp-gallery').on('slide', function (event, index) {
-            var elem = angular.element('#photo-container a').eq(index);
-            var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
-            angular.element(this).children('.description').attr('href', url);
-        });
-
         $scope.$watch('images', function(val) {
-            if (!val || _.isArray(val)) {
+            if (!val || _.isArray(val) && !val.length) {
                 return;
             }
+
+            self.nPhotosText = _.get($scope, 'config.nPhotosText') || 'N_PHOTOS';
+
+            if (_.isArray(val)) {
+                return handleArray(val);
+            }
+            return handlePager(val);
+        });
+
+        function handlePager(images) {
+            self.toggleCollapse = toggleCollapse;
+
             self.imageCount = 0;
             self.photos = [];
             self.hasMore = false;
             self.isCollapsed = true;
-            self.imagePager = val;
+            self.imagePager = images;
             self.isLoadingImages = true;
             self.imagePager.getTotalCount().then(function(count) {
                 self.imageCount = count;
@@ -62,11 +68,29 @@
                 $timeout(function() {
                     checkOverflow();
                 }, 0);
+                setSlideListener();
                 self.isLoadingImages = false;
             }).catch(function() {
                 self.isLoadingImages = false;
             });
-        });
+        }
+
+        function handleArray(images) {
+            self.toggleCollapse = toggleCollapseSimple;
+
+            self.imageCount = images.length;
+            self.photos = images;
+            self.hasMore = false;
+            self.isCollapsed = true;
+            $timeout(function() {
+                checkOverflow();
+            }, 0);
+            setSlideListener();
+        }
+
+        function toggleCollapseSimple() {
+            self.isCollapsed = !self.isCollapsed;
+        }
 
         function toggleCollapse() {
             if (self.imageCount !== self.photos.length) {
@@ -78,12 +102,20 @@
             }
         }
 
+        function setSlideListener() {
+            angular.element('#blueimp-gallery-' + self.galleryId).on('slide', function (event, index) {
+                var elem = angular.element('#photo-container-' + self.galleryId + ' a').eq(index);
+                var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
+                angular.element(this).children('.description').attr('href', url);
+            });
+        }
+
         function checkOverflow() {
             if (self.photos == false) {
                 self.isLoadingImages = false;
                 return;
             }
-            var elem = angular.element('#photo-thumbs');
+            var elem = angular.element('#photo-thumbs-' + self.galleryId);
             if (elem && elem[0]) {
                 var fullHeight = elem[0].scrollHeight;
                 var visibleHeight = elem[0].clientHeight;
@@ -93,12 +125,12 @@
         }
 
         function getAllPhotos() {
-            self.isLoadingImages = true;
+            self.isLoadingMoreImages = true;
             return self.imagePager.getAllSequentially(100).then(function(page) {
-                self.isLoadingImages = false;
+                self.isLoadingMoreImages = false;
                 self.photos = page;
             }, function() {
-                self.isLoadingImages = false;
+                self.isLoadingMoreImages = false;
             }, function(partial) {
                 self.photos = partial;
             });

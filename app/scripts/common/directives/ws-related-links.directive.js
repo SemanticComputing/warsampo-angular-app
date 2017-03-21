@@ -9,8 +9,8 @@
         var directive = {
             restrict:'E',
             scope: {
-                title: '=',
-                related: '='
+                title: '<',
+                related: '<'
             },
             link: link,
             templateUrl: 'views/directive/ws-related-links.directive.html'

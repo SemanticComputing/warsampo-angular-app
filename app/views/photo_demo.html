@@ -1,30 +1,40 @@
+<ws-title>{{ 'PHOTO_DEMO.TITLE' | translate }}</ws-title>
 <div class="row photo-list-container">
   <div class="col-md-12">
     <div class="row">
-      <div class="col-md-12">
+      <div class="photo-demo-description col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h1 translate>PHOTO_DEMO.HEADER</h1>
+            <p translate>PHOTO_DEMO.APP_DESCRIPTION</p>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="row" ng-if="vm.error">
-      <div class="col-xs-12">
-        <uib-alert type="danger" ng-if="vm.error">
-          <p>{{ 'ERROR_OCCURED' | translate }}:</p>
-          <p>{{ vm.error }}</p>
-          <p translate>REFRESH_TO_RETRY</p>
-        </uib-alert>
-      </div>
-    </div>
-    <div class="row" ng-if="!vm.error">
+    <div class="row">
       <div class="col-sm-4 col-md-3 facet-container">
-        <facet-selector
-        ng-if="vm.facets"
-        data-facets="vm.facets"
-        data-update-results="vm.updateResults"
-        data-options="vm.facetOptions"
-        data-disable="vm.disableFacets">
-        </facet-selector>
+        <seco-jena-text-facet data-options="vm.facets.description"></seco-jena-text-facet>
+        <div class="show-facets row">
+          <div class="col-xs-12">
+            <button class="btn btn-default pull-right visible-xs-block"
+              ng-click="show = !show">{{ show ? ('PHOTO_DEMO.HIDE_FACETS' | translate) : ('PHOTO_DEMO.SHOW_FACETS' | translate) }}</button>
+          </div>
+        </div>
+        <div class="hideable-facets" ng-class="{ 'hidden-xs': !show }">
+          <seco-timespan-facet data-options="vm.facets.taken"></seco-timespan-facet>
+          <seco-basic-facet data-options="vm.facets.place"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.person"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.unit"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.photographer"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.theme"></seco-basic-facet>
+        </div>
       </div>
 
       <div class="col-sm-8 col-md-9">
+        <div uib-alert class="alert-danger" ng-if="vm.error">
+          <p>{{ 'ERROR_OCCURED' | translate }}:</p>
+          <p>{{ vm.error | translate }}</p>
+        </div>
         <div ng-include="'views/partials/photo_list_partial.html'"></div>
       </div>
     </div>

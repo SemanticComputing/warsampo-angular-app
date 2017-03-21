@@ -3,15 +3,15 @@
 
     /**
     * @ngdoc function
-    * @name eventsApp.controller:EventPageCtrl
+    * @name eventsApp.controller:EventPageController
     * @description
-    * # EventPageCtrl
+    * # EventPageController
     * Controller of the eventsApp
     */
     angular.module('eventsApp')
-    .controller('EventPageCtrl', EventPageCtrl);
+    .controller('EventPageController', EventPageController);
 
-    function EventPageCtrl($routeParams, $q, $rootScope, $translate,
+    function EventPageController($routeParams, $q, $rootScope, $translate,
             _, eventService, photoService, Settings, EVENT_TYPES) {
 
         $rootScope.showHelp = null;
@@ -42,9 +42,9 @@
                 self.isLoadingEvent = false;
 
                 var placeEventPromise = eventService.getEventsByPlaceIdPager(
-                    _.map(self.event.places, 'id'), Settings.pageSize, self.event.id);
+                    _.map(self.event.places, 'id'), { pageSize: Settings.pageSize }, self.event.id);
                 var timeEventPromise = eventService.getEventsLooselyWithinTimeSpanPager(
-                    self.event.start_time, self.event.end_time, Settings.pageSize, self.event.id);
+                    self.event.start_time, self.event.end_time, { pageSize: Settings.pageSize }, self.event.id);
                 return $q.all([
                     placeEventPromise,
                     timeEventPromise,
@@ -76,23 +76,46 @@
                 case EVENT_TYPES.UNIT_JOINING:
                 case EVENT_TYPES.UNIT_FORMATION:
                 case EVENT_TYPES.UNIT_NAMING:
+                case EVENT_TYPES.DISSOLUTION:
                     app = 'units';
-                    id = ((event.units || [])[0] || {}).id;
+                    id = getUnitId(event);
                     break;
                 case EVENT_TYPES.PROMOTION:
+                case EVENT_TYPES.PERSON_JOINING:
                 case EVENT_TYPES.BIRTH:
                 case EVENT_TYPES.DEATH:
                 case EVENT_TYPES.DISSAPEARING:
                 case EVENT_TYPES.MEDAL_ASSIGNMENT:
                     app = 'persons';
-                    id = event.participant_id;
+                    id = getParticipantId(event);
+                    break;
+                case EVENT_TYPES.PHOTOGRAPHY:
+                    app = event.participant_id ? 'persons' : (event.units ? 'units' : undefined);
+                    id = app === 'persons' ? getParticipantId(event) : getUnitId(event);
                     break;
                 default:
                     id = event.id;
                     app = 'events';
             }
-            var url = base + app + '?uri=' + id;
+            if (!app) {
+                return undefined;
+            }
+            var url = base + app + '?uri=' + encodeURIComponent(id);
+            if (_.includes(['units', 'persons'], app)) {
+                url += '&event=' + encodeURIComponent(event.id);
+                if (app === 'persons') {
+                    url += '&tab=2';
+                }
+            }
             return url;
+        }
+
+        function getParticipantId(event) {
+            return _.isArray(event.participant_id) ? event.participant_id[0] : event.participant_id;
+        }
+
+        function getUnitId(event) {
+            return ((event.units || [])[0] || {}).id;
         }
 
         function fetchImages(event) {
