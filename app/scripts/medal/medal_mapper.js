@@ -5,36 +5,22 @@
     * Service for transforming event SPARQL results into objects.
     */
 
-    function Medal() { }
-
-    Medal.prototype.getDescription = function() {
-        var arr=[];
-        if (this.comment) { arr = arr.concat(this.comment); }
-        return arr;
-    };
-
-    function MedalMapper() {
-        this.objectClass = Medal;
-    }
-
-    MedalMapper.prototype.postProcess = function(medals) {
-        medals.forEach(function(medal) {
-            if (_.isArray(medal.label)) {
-                medal.label = medal.label[0];
-            }
-        });
-
-        return medals;
-    };
-
     angular.module('eventsApp')
-    .factory('medalMapperService', function(objectMapperService) {
-        var proto = Object.getPrototypeOf(objectMapperService);
+    .factory('medalMapperService', function(translateableObjectMapperService, Medal) {
+        var proto = Object.getPrototypeOf(translateableObjectMapperService);
         MedalMapper.prototype = angular.extend({}, proto, MedalMapper.prototype);
+        MedalMapper.objectClass = Medal;
 
         return new MedalMapper();
+
+        function MedalMapper() { }
+
     })
-    .factory('Medal', function() {
+    .factory('Medal', function(TranslateableObject) {
+        Medal.prototype = TranslateableObject.prototype;
         return Medal;
+
+        function Medal() { }
     });
+
 })();

@@ -2,10 +2,14 @@
   <div class="row">
     <div class="col-xs-10 text-left">
       <h3 class="modal-title">
-        {{vm.photo.created | date:'dd.MM.yyyy'}}
-        <span ng-repeat="place in vm.photo.places">
-          <a ng-click="vm.close()" ws-page-link="place.id">{{ place.label }}</a>
-        </span>
+        <div ng-switch="!!(vm.photo.created || vm.photo.places.length)">
+          <span ng-switch-when="true">
+            {{ vm.photo.created | date:'dd.MM.yyyy' }}
+            <span ng-repeat="place in vm.photo.places">
+              <a ng-click="vm.close()" ws-page-link="place.id">{{ place.label }}</a>
+            </span>
+          </span>
+          <span ng-switch-when="false" translate>PHOTO</span>
       </h3>
     </div>
     <div class="col-xs-2">
@@ -24,6 +28,7 @@
       {{ vm.photo.description }}
       <span ng-if="vm.photo.place_string">({{ vm.photo.place_string }})</span>
       </p>
+      <p ng-if="vm.photo.note"><small>{{ vm.photo.note }}</small></p>
       <div class="row">
         <div class="col-md-6">
           <div ng-if="vm.photo.creators || vm.photo.photographer_string">

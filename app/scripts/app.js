@@ -177,7 +177,7 @@
         .when(lang + '/medals/page', {
             templateUrl: 'views/medal_page.html',
             controller: 'MedalPageController',
-            controllerAs: 'ctrl',
+            controllerAs: 'vm',
             resolve: getResolve()
         })
         .when(lang + '/units/', {

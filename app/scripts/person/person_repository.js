@@ -41,7 +41,7 @@
         var select =
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
         '  ?natiobib ?wikilink ?casualty ?bury_place ?bury_place_uri ?living_place ' +
-        '  ?living_place_uri ?profession ?mstatus ?num_children ?way_to_die ?cas_unit ' +
+        '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ' +
         '  ?sid ?source ';
 
         var personQryResultSet =

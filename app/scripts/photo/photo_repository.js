@@ -58,8 +58,8 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?url ?thumbnail_url ?description ?created ' +
-        '  ?participant_id ?unit_id ?place_id ?place_string ' +
+        ' SELECT DISTINCT ?id ?url ?thumbnail_url ?description ?note ?created ' +
+        '  ?time_id ?participant_id ?unit_id ?place_id ?place_string ' +
         '  ?source ?creator_id ?photographer_string ?theme ';
 
         var photoQry = select +
@@ -68,10 +68,14 @@
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
         '  OPTIONAL { ?id dc:description ?description . } ' +
+        '  OPTIONAL { ?id crm:P3_has_note ?note . } ' +
         '  OPTIONAL { ?id wph:theme ?theme . } ' +
         '  OPTIONAL { ' +
         '   ?id ^crm:P94_has_created ?event_id . ' +
-        '   OPTIONAL { ?event_id crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . } ' +
+        '   OPTIONAL { ' +
+        '    ?event_id crm:P4_has_time-span ?time_id . ' +
+        '    ?time_id crm:P82a_begin_of_the_begin ?created .' +
+        '   } ' +
         '   OPTIONAL { ?event_id crm:P14_carried_out_by ?creator_id . } ' +
         '   OPTIONAL { ?event_id crm:P7_took_place_at ?place_id . } ' +
         '   OPTIONAL { ' +

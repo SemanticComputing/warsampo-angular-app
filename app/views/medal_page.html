@@ -2,25 +2,26 @@
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
-    <h1 id="pageType"><a id="pageTypeURL" href="persons/" translate>MEDAL</a></h1>
-    <p class="uri">{{ ctrl.medal.id }}</p>
-    <img ng-show="ctrl.isLoadingMedal" src="images/loading.gif" />
-    <p ng-if="!ctrl.medal && !ctrl.isLoadingMedal" translate>NO_METADATA_FOUND</p>
-    <div id="dataContent" ng-if="ctrl.medal">
+    <img ng-show="vm.isLoadingMedal" src="images/loading.gif" />
+    <p ng-if="!vm.medal && !vm.isLoadingMedal" translate>NO_METADATA_FOUND</p>
+    <div id="dataContent" ng-if="vm.medal">
       <h2>
-        {{ ctrl.medal.label }}
+        {{ vm.medal.getLabel() }}
       </h2>
-      <p ng-repeat="desc in ctrl.medal.getDescription()">
-      {{ desc }}
+      <p ng-switch="!!vm.medal.getDescription()">
+        <span ng-switch-when="true">{{ vm.medal.getDescription() }} (Wikipedia)</span>
+        <span ng-switch-when="false" translate>MEDAL</span>
       </p>
+      <p ng-if="vm.error" class="error-msg bg-danger">vm.error</p>
+      <p class="uri"><small>{{ 'URI' | translate }}:&nbsp;{{ vm.medal.id }}</small></p>
     </div>
   </div>
   <!-- Links -->
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
-    <img ng-show="ctrl.isLoadingPersons" src="images/loading.gif" />
+    <img ng-show="vm.isLoadingLinks" src="images/loading.gif" />
     <div id="linkContent">
-    	<ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.medal.persons"></ws-related-links-paged>
-  		<ws-related-links data-title="'MEDAL_DEMO.RELATED_MEDALS' | translate" data-related="ctrl.medal.relatedMedals"></ws-related-links-paged>
+    	<ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="vm.medal.persons"></ws-related-links-paged>
+  		<ws-related-links data-title="'MEDAL_DEMO.RELATED_MEDALS' | translate" data-related="vm.medal.relatedMedals"></ws-related-links-paged>
   	</div>
 </div>

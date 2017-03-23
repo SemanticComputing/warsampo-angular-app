@@ -2,23 +2,22 @@
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
-    <h1 id="pageType"><a id="pageTypeURL" href="photographs" translate>PHOTO</a></h1>
-    <p class="uri">{{ vm.photo.id }}</p>
     <img ng-show="vm.isLoadingObj" src="images/loading.gif" />
     <p ng-if="!vm.photo && !vm.isLoadingObj" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="vm.photo">
-      <h2>
+      <h2><span id="pageType" translate>PHOTO</span>
         <span ng-repeat="place in vm.photo.places">
           <a ws-page-link="place.id">{{ place.label }}</a>{{ $last ? ' ' : ', ' }}
         </span>
         <span ng-if="vm.photo.created">
-          {{ vm.photo.created | date:'dd.MM.yyyy' }}
+          <a ws-page-link="vm.photo.time_id">{{ vm.photo.created | date:'dd.MM.yyyy' }}</a>
         </span>
       </h2>
       <p>
         {{ vm.photo.description }}
         <span ng-if="vm.photo.place_string">({{ vm.photo.place_string }})</span>
       </p>
+      <p ng-if="vm.photo.note"><small>{{ vm.photo.note }}</small></p>
       <p ng-if="vm.photo.creators || vm.photo.photographer_string">
         <span translate>PHOTOGRAPHER</span>:
         <span ng-repeat="person in vm.photo.creators">
@@ -27,7 +26,11 @@
         <span ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</span>
       </p>
       <p><img ng-src="{{ vm.photo.url }}" /></p>
-      <p ng-if="vm.photo.source">{{ 'SOURCE' | translate }}: {{ vm.photo.source }}</p>
+      <p>
+        <small ng-if="vm.photo.source">{{ 'SOURCE' | translate }}: {{ vm.photo.source }} | </small>
+        <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.photo.id }}</small>
+      </p>
+      <p><a ws-page-link="vm.photo.id" demo translate>SHOW_IN_DEMO</a></p>
       <ws-photo-gallery data-images="vm.photo.relatedPhotos"></ws-photo-gallery>
     </div>
   </div>
