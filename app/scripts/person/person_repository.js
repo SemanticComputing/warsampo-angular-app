@@ -274,7 +274,6 @@
 
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
-                    console.log(data[0]);
                     return data[0];
                 }
                 return $q.reject('Does not exist');

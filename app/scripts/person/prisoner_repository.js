@@ -3,7 +3,7 @@
     /* eslint-disable angular/no-service-method */
 
     /*
-    * Service that provides an interface for fetching casualty data.
+    * Service that provides an interface for fetching prisoner data.
     */
     angular.module('eventsApp')
     .service('prisonerRepository', function($q, _, SparqlService, objectMapperService,
@@ -26,25 +26,30 @@
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
         ' PREFIX sf: <http://ldf.fi/functions#>'  +
-        ' PREFIX georss: <http://www.georss.org/georss/> ';
+        ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX prisoners: <http://ldf.fi/schema/warsa/prisoners/> ';
 
-        var personDeathRecordQry = prefixes +
+        var personPrisonerRecordQry = prefixes +
         'SELECT ?id ?pred_lbl ?obj_text ?obj_link WHERE {'  +
         '   ?id crm:P70_documents <{0}> . ' +
         '   ?id a prisoners:PrisonerOfWar . ' +
         '   ?id ?pred ?obj .'  +
-        '   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?pred_lbl) .'  +
+        '   BIND(?pred as ?pred_lbl )  . ' +
+        //'   ?pred skos:prefLabel ?pred_lbl . ' +
+        //'   FILTER( lang(?pred_lbl)="" ) ' +
+        //'   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?pred_lbl) .'  +
         '   OPTIONAL {' +
-        '   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?obj_lbl) .'  +
+        '   	?obj skos:prefLabel ?obj_lbl . '  +
+        '     FILTER( lang(?obj_lbl)="{1}" || lang(?obj_lbl)="" ) ' +
+        //'   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?obj_lbl) .'  +
         '   }' +
-        '   BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) .'  +
+        '   BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) '  +
         '   BIND(COALESCE(?obj_lbl, ?obj) as ?obj_text)'  +
         '} ORDER BY ?pred_lbl';
 
 
-        this.getPersonDeathRecord = function(id, lang) {
-            var qry = personDeathRecordQry.format(id, lang || 'fi');
+        this.getPersonPrisonerRecord = function(id, lang) {
+            var qry = personPrisonerRecordQry.format(id, lang || 'fi');
             return endpoint.getObjects(qry).then(function(data) {
                 return objectMapperService.makeObjectListNoGrouping(data);
             });

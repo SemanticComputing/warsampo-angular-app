@@ -191,7 +191,7 @@
 
         function fetchDeathRecord(person) {
             return casualtyRepository.getPersonDeathRecord(person.id).then(function(deathRecord) {
-                console.log(deathRecord);
+                console.log("fetching dr...")
                 person.deathRecord = deathRecord;
                 return person;
             });
@@ -199,7 +199,8 @@
 
         function fetchPrisonerRecord(person) {
             return prisonerRepository.getPersonPrisonerRecord(person.id).then(function(prisonerRecord) {
-                person.deathRecord = prisonerRecord;
+                console.log("fetching pr...")
+                person.prisonerRecord = prisonerRecord;
                 return person;
             });
         }
@@ -212,7 +213,7 @@
                 self.fetchRelatedUnits(person),
                 self.fetchNationalBib(person),
                 self.fetchDeathRecord(person),
-                //self.fetchPrisonerRecord(person),
+                self.fetchPrisonerRecord(person),
                 self.fetchRelatedPhotos(person),
                 self.fetchDiaries(person),
                 self.fetchRelatedPersons(person)
@@ -220,6 +221,7 @@
 
             return $q.all(related).then(function() {
                 person.jsonLd = self.getJsonLd(person);
+                console.log(person.prisonerRecord);
                 return person;
             });
         }
