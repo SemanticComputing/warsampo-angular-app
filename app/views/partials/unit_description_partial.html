@@ -1,10 +1,14 @@
 <p ng-if="ctrl.unit.altNames.length">
   <span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.unit.altNames | concatList }}
 </p>
-<p ng-if="ctrl.unit.getDescription()">{{ ctrl.unit.getDescription() }} (Wikipedia)</p>
+<p ng-switch="!!ctrl.unit.getDescription()">
+  <span ng-switch-when="true">{{ ctrl.unit.getDescription() }} (Wikipedia)</span>
+  <span ng-switch-when="false" translate>UNIT</span>
+</p>
 <p ng-repeat="cmd in ctrl.unit.commanders">{{ cmd }}</p>
 <p ng-repeat="desc in ctrl.unit.descriptions">{{ desc }}</p>
 <p ng-if="ctrl.unit.note"><span translate>NOTE</span>: {{ ctrl.unit.note }}</p>
-<p ng-if="ctrl.unit.source || ctrl.unit.sid">
-  <span translate>SOURCE</span>: {{ ctrl.unit.source || ctrl.unit.sid | concatList }}
+<p>
+  <small ng-if="ctrl.unit.source || ctrl.unit.sid">{{ 'SOURCE' | translate }}: {{ ctrl.unit.source || ctrl.unit.sid | concatList }} | </small>
+  <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ ctrl.unit.id }}</small>
 </p>

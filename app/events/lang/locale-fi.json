@@ -109,7 +109,7 @@
     "UNIT": "Joukko-osasto",
     "PERSON": "Henkilö",
     "TIME": "Aika",
-    "PHOTO": "Kuva",
+    "PHOTO": "Valokuva",
     "MEDAL": "Kunniamerkki",
     "N_PHOTOS": "{NUM, plural, =0{Ei {forResource} liittyviä kuvia} one{Yksi {forResource} liittyvä kuva} other{# {forResource} liittyvää kuvaa}}",
     "BUILDING_TIMELINE": "Rakennetaan aikajanaa",

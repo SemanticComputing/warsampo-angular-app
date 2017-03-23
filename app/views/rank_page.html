@@ -2,15 +2,17 @@
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
-    <h1 id="pageType"><a id="pageTypeURL" href="persons/" translate>RANK</a></h1>
-    <p class="uri">{{ ctrl.rank.id }}</p>
     <img ng-show="ctrl.isLoadingRank" src="images/loading.gif" />
     <p ng-if="!ctrl.rank && !ctrl.isLoadingRank" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.rank">
       <h2>
         {{ ctrl.rank.getLabel() }}
       </h2>
-      <p ng-if="ctrl.rank.getDescription()">{{ ctrl.rank.getDescription() }} (Wikipedia)</p>
+      <p ng-switch="!!ctrl.rank.getDescription()">
+        <span ng-switch-when="true">{{ ctrl.rank.getDescription() }} (Wikipedia)</span>
+        <span ng-switch-when="false" translate>RANK</span>
+      </p>
+      <p><small class="uri">{{ 'URI' | translate }}:&nbsp;{{ ctrl.rank.id }}</small></p>
     </div>
   </div>
   <!-- Links -->
