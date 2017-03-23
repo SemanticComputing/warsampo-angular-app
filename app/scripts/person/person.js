@@ -11,7 +11,7 @@
     /* @ngInject */
     function personService($q, _, baseService, personRepository, eventRepository,
                     placeRepository, unitRepository, photoRepository, casualtyRepository,
-                    dateUtilService, Settings, EVENT_TYPES, WAR_INFO) {
+                    prisonerRepository, dateUtilService, Settings, EVENT_TYPES, WAR_INFO) {
         var self = this;
 
         self.processLifeEvents = processLifeEvents;
@@ -20,6 +20,7 @@
         self.fetchRelatedEvents = fetchRelatedEvents;
         self.fetchDiaries = fetchDiaries;
         self.fetchDeathRecord = fetchDeathRecord;
+        self.fetchPrisonerRecord = fetchPrisonerRecord;
         self.fetchRelated = fetchRelated;
         self.fetchRelatedForDemo = fetchRelatedForDemo;
         self.fetchRelatedUnits = fetchRelatedUnits;
@@ -190,7 +191,15 @@
 
         function fetchDeathRecord(person) {
             return casualtyRepository.getPersonDeathRecord(person.id).then(function(deathRecord) {
+                console.log(deathRecord);
                 person.deathRecord = deathRecord;
+                return person;
+            });
+        }
+
+        function fetchPrisonerRecord(person) {
+            return prisonerRepository.getPersonPrisonerRecord(person.id).then(function(prisonerRecord) {
+                person.deathRecord = prisonerRecord;
                 return person;
             });
         }
@@ -203,6 +212,7 @@
                 self.fetchRelatedUnits(person),
                 self.fetchNationalBib(person),
                 self.fetchDeathRecord(person),
+                //self.fetchPrisonerRecord(person),
                 self.fetchRelatedPhotos(person),
                 self.fetchDiaries(person),
                 self.fetchRelatedPersons(person)
