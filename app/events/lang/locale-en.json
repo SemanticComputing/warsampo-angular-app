@@ -145,6 +145,7 @@
     "CURRENTLY_SELECTED_EVENT": "Currently selected event",
     "CASUALTIES_DURING_TIMESPAN": "Casualties during",
     "DEATH_RECORD": "Death Record",
+    "PRISONER_RECORD": "Prisoner Record",
     "LOADING": "Loading...",
     "NOTE": "Note"
 }

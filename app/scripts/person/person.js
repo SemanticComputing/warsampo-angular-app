@@ -191,7 +191,6 @@
 
         function fetchDeathRecord(person) {
             return casualtyRepository.getPersonDeathRecord(person.id).then(function(deathRecord) {
-                console.log("fetching dr...")
                 person.deathRecord = deathRecord;
                 return person;
             });
@@ -199,7 +198,6 @@
 
         function fetchPrisonerRecord(person) {
             return prisonerRepository.getPersonPrisonerRecord(person.id).then(function(prisonerRecord) {
-                console.log("fetching pr...")
                 person.prisonerRecord = prisonerRecord;
                 return person;
             });
@@ -221,7 +219,6 @@
 
             return $q.all(related).then(function() {
                 person.jsonLd = self.getJsonLd(person);
-                console.log(person.prisonerRecord);
                 return person;
             });
         }

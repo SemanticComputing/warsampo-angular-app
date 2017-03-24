@@ -1,0 +1,78 @@
+<div ng-if="ctrl.person.prisonerRecord.length">
+  <h3 translate="PRISONER_RECORD"></h3>
+
+  <table class="table death-record">
+    <tr>
+      <td>Nimi</td>
+      <td>{{ ctrl.person.prisonerRecord[0].prefLabel }}</td>
+    </tr>
+    <tr>
+      <td>{{ ctrl.person.prisonerRecord[0].birth_date_lbl }}</td>
+      <td>
+        <div ng-if="ctrl.person.prisonerRecord[0].birth_date | isArray">
+            <div ng-repeat="value in ctrl.person.prisonerRecord[0].birth_date">
+              {{ value }}
+            </div>
+        </div>
+        <div ng-if="!(ctrl.person.prisonerRecord[0].birth_date | isArray)">
+            {{ ctrl.person.prisonerRecord[0].birth_date }}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>{{ ctrl.person.prisonerRecord[0].birth_place_lbl }}</td>
+      <td>
+        <div ng-if="ctrl.person.prisonerRecord[0].birth_place | isArray">
+            <div ng-repeat="value in ctrl.person.prisonerRecord[0].birth_place">
+              {{ value }}
+            </div>
+        </div>
+        <div ng-if="!(ctrl.person.prisonerRecord[0].birth_place | isArray)">
+            {{ ctrl.person.prisonerRecord[0].birth_place }}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>{{ ctrl.person.prisonerRecord[0].marital_status_lbl }}</td>
+      <td>
+        <div ng-if="ctrl.person.prisonerRecord[0].marital_status | isArray">
+            <div ng-repeat="value in ctrl.person.prisonerRecord[0].marital_status">
+              {{ value }}
+            </div>
+        </div>
+        <div ng-if="!(ctrl.person.prisonerRecord[0].marital_status | isArray)">
+            {{ ctrl.person.prisonerRecord[0].marital_status }}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>{{ ctrl.person.prisonerRecord[0].amount_children_lbl }}</td>
+      <td>
+        <div ng-if="ctrl.person.prisonerRecord[0].amount_children | isArray">
+            <div ng-repeat="value in ctrl.person.prisonerRecord[0].amount_children">
+              <div ng-if="ctrl.person.prisonerRecord[0].amount_children_source">
+                {{ value }}, source: {{ ctrl.person.prisonerRecord[0].amount_children_source }}
+              </div>
+            </div>
+        </div>
+        <div ng-if="!(ctrl.person.prisonerRecord[0].amount_children | isArray)">
+            {{ ctrl.person.prisonerRecord[0].amount_children }}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>{{ ctrl.person.prisonerRecord[0].has_occupation_lbl }}</td>
+      <td>
+        <div ng-if="ctrl.person.prisonerRecord[0].has_occupation | isArray">
+            <div ng-repeat="value in ctrl.person.prisonerRecord[0].has_occupation">
+              {{ value }}
+            </div>
+        </div>
+        <div ng-if="!(ctrl.person.prisonerRecord[0].has_occupation | isArray)">
+            {{ ctrl.person.prisonerRecord[0].has_occupation }}
+        </div>
+      </td>
+    </tr>
+
+  </table>
+</div>
