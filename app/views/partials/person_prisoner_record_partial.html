@@ -10,12 +10,12 @@
       <td>{{ ctrl.person.prisonerRecord[0].birth_date_lbl }}</td>
       <td>
         <div ng-if="ctrl.person.prisonerRecord[0].birth_date | isArray">
-            <div ng-repeat="value in ctrl.person.prisonerRecord[0].birth_date">
-              {{ value }}
-            </div>
+          <div ng-repeat="value in ctrl.person.prisonerRecord[0].birth_date">
+              {{ value | date:'dd.MM.yyyy' }}<span ng-if="ctrl.person.prisonerRecord[0].birth_date_source[$index] != 'no_source_for_' + value ">, lähde: {{ ctrl.person.prisonerRecord[0]birth_date_source[$index] }}</span>
+          </div>
         </div>
         <div ng-if="!(ctrl.person.prisonerRecord[0].birth_date | isArray)">
-            {{ ctrl.person.prisonerRecord[0].birth_date }}
+            {{ ctrl.person.prisonerRecord[0].birth_date | date:'dd.MM.yyyy' }}
         </div>
       </td>
     </tr>
@@ -23,25 +23,12 @@
       <td>{{ ctrl.person.prisonerRecord[0].birth_place_lbl }}</td>
       <td>
         <div ng-if="ctrl.person.prisonerRecord[0].birth_place | isArray">
-            <div ng-repeat="value in ctrl.person.prisonerRecord[0].birth_place">
-              {{ value }}
-            </div>
+          <div ng-repeat="value in ctrl.person.prisonerRecord[0].birth_place">
+              {{ value }}<span ng-if="ctrl.person.prisonerRecord[0].birth_place_source[$index] != 'no_source_for_' + value ">, lähde: {{ ctrl.person.prisonerRecord[0]birth_place_source[$index] }}</span>
+          </div>
         </div>
         <div ng-if="!(ctrl.person.prisonerRecord[0].birth_place | isArray)">
             {{ ctrl.person.prisonerRecord[0].birth_place }}
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>{{ ctrl.person.prisonerRecord[0].marital_status_lbl }}</td>
-      <td>
-        <div ng-if="ctrl.person.prisonerRecord[0].marital_status | isArray">
-            <div ng-repeat="value in ctrl.person.prisonerRecord[0].marital_status">
-              {{ value }}
-            </div>
-        </div>
-        <div ng-if="!(ctrl.person.prisonerRecord[0].marital_status | isArray)">
-            {{ ctrl.person.prisonerRecord[0].marital_status }}
         </div>
       </td>
     </tr>
@@ -50,9 +37,7 @@
       <td>
         <div ng-if="ctrl.person.prisonerRecord[0].amount_children | isArray">
             <div ng-repeat="value in ctrl.person.prisonerRecord[0].amount_children">
-              <div ng-if="ctrl.person.prisonerRecord[0].amount_children_source">
-                {{ value }}, source: {{ ctrl.person.prisonerRecord[0].amount_children_source }}
-              </div>
+                {{ value }}<span ng-if="ctrl.person.prisonerRecord[0].amount_children_source[$index] != 'no_source_for_' + value ">, lähde: {{ ctrl.person.prisonerRecord[0].amount_children_source[$index] }}</span>
             </div>
         </div>
         <div ng-if="!(ctrl.person.prisonerRecord[0].amount_children | isArray)">
@@ -64,15 +49,54 @@
       <td>{{ ctrl.person.prisonerRecord[0].has_occupation_lbl }}</td>
       <td>
         <div ng-if="ctrl.person.prisonerRecord[0].has_occupation | isArray">
-            <div ng-repeat="value in ctrl.person.prisonerRecord[0].has_occupation">
-              {{ value }}
-            </div>
+          <div ng-repeat="value in ctrl.person.prisonerRecord[0].has_occupation">
+              {{ value }}<span ng-if="ctrl.person.prisonerRecord[0].has_occupation_source[$index] != 'no_source_for_' + value ">, lähde: {{ ctrl.person.prisonerRecord[0].has_occupation_source[$index] }}</span>
+          </div>
         </div>
         <div ng-if="!(ctrl.person.prisonerRecord[0].has_occupation | isArray)">
             {{ ctrl.person.prisonerRecord[0].has_occupation }}
         </div>
       </td>
     </tr>
+    <tr>
+      <td>{{ ctrl.person.prisonerRecord[0].rank_lbl }}</td>
+      <td>
+        <div ng-if="ctrl.person.prisonerRecord[0].rank | isArray">
+          <div ng-repeat="value in ctrl.person.prisonerRecord[0].rank">
+              {{ value }}<span ng-if="ctrl.person.prisonerRecord[0].rank_source[$index] != 'no_source_for_' + value ">, lähde: {{ ctrl.person.prisonerRecord[0].rank_source[$index] }}</span>
+          </div>
+        </div>
+        <div ng-if="!(ctrl.person.prisonerRecord[0].rank | isArray)">
+            {{ ctrl.person.prisonerRecord[0].rank }}
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>{{ ctrl.person.prisonerRecord[0].unit_lbl }}</td>
+      <td>
+        <div ng-if="ctrl.person.prisonerRecord[0].unit | isArray">
+          <div ng-repeat="value in ctrl.person.prisonerRecord[0].unit">
+              {{ value }}<span ng-if="ctrl.person.prisonerRecord[0].unit_source[$index] != 'no_source_for_' + value ">, lähde: {{ ctrl.person.prisonerRecord[0].unit_source[$index] }}</span>
+          </div>
+        </div>
+        <div ng-if="!(ctrl.person.prisonerRecord[0].unit | isArray)">
+            {{ ctrl.person.prisonerRecord[0].unit }}
+        </div>
+      </td>
+   </tr>
+   <tr>
+     <td>{{ ctrl.person.prisonerRecord[0].place_captured_lbl }}</td>
+     <td>
+       <div ng-if="ctrl.person.prisonerRecord[0].place_captured | isArray">
+         <div ng-repeat="value in ctrl.person.prisonerRecord[0].place_captured">
+             {{ value }}<span ng-if="ctrl.person.prisonerRecord[0].place_captured_source[$index] != 'no_source_for_' + value ">, lähde: {{ ctrl.person.prisonerRecord[0].place_captured_source[$index] }}</span>
+         </div>
+       </div>
+       <div ng-if="!(ctrl.person.prisonerRecord[0].place_captured | isArray)">
+           {{ ctrl.person.prisonerRecord[0].place_captured }}
+       </div>
+     </td>
+  </tr>
 
   </table>
 </div>
