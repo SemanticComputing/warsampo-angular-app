@@ -36,7 +36,7 @@
             <h5><span translate>PHOTOGRAPHER</span>:</h5>
             <ul class="list-unstyled" ng-if="vm.photo.creators">
               <li ng-repeat="person in vm.photo.creators">
-              <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label || person.sname }}</a>
+              <a ng-click="vm.close()" ws-page-link="person.id">{{ person.getLabel() || person.sname }}</a>
               </li>
             </ul>
             <p ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</p>
@@ -47,7 +47,7 @@
             <h5><span translate>PHOTO_DEMO.RELATED_PEOPLE</span>:</h5>
             <ul class="list-unstyled" ng-if="vm.photo.people">
               <li ng-repeat="person in vm.photo.people">
-              <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label }}</a>
+              <a ng-click="vm.close()" ws-page-link="person.id">{{ person.getLabel() }}</a>
               </li>
             </ul>
           </div>
@@ -59,7 +59,7 @@
             <h5><span translate>PHOTO_DEMO.RELATED_UNITS</span>:</h5>
               <ul class="list-unstyled" ng-if="vm.photo.units">
                 <li ng-repeat="unit in vm.photo.units">
-                <a ng-click="vm.close()" ws-page-link="unit.id">{{ unit.label }}</a>
+                <a ng-click="vm.close()" ws-page-link="unit.id">{{ unit.getLabel() }}</a>
                 </li>
               </ul>
             </div>

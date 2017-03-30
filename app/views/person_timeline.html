@@ -18,7 +18,7 @@
     </select>
   </div>
   <div class="col-sm-9">
-    <h1>{{ ctrl.person.label }}</h1>
+    <h1>{{ ctrl.person.getLabel() }}</h1>
     <p ng-if="ctrl.person.birth || ctrl.person.death">
       {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
       {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}

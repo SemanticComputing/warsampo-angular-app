@@ -21,7 +21,7 @@
   </p>
   <p>
     <span ng-repeat="unit in $ctrl.event.units">
-      <a ws-page-link="unit.id">{{ ::unit.label }}</a>{{ $last ? ' ' : ', ' }}
+      <a ws-page-link="unit.id">{{ ::unit.getLabel() }}</a>{{ $last ? ' ' : ', ' }}
     </span>
   </p>
 </div>

@@ -1,4 +1,4 @@
-<ws-title>{{ ctrl.person.label }}</ws-title>
+<ws-title>{{ ctrl.person.getLabel() }}</ws-title>
 <ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <!-- Metadata -->
@@ -7,7 +7,7 @@
     <p ng-if="!ctrl.person && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">
       <h2>
-        {{ ctrl.person.label }}
+        {{ ctrl.person.getLabel() }}
       </h2>
       <p ng-if="ctrl.person.birth || ctrl.person.death">
         {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
