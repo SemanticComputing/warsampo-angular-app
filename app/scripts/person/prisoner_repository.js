@@ -6,7 +6,7 @@
     * Service that provides an interface for fetching prisoner data.
     */
     angular.module('eventsApp')
-    .service('prisonerRepository', function($q, _, SparqlService, objectMapperService,
+    .service('prisonerRepository', function($q, _, SparqlService, objectMapperService, dateUtilService,
             ENDPOINT_CONFIG) {
         var endpoint = new SparqlService(ENDPOINT_CONFIG);
 
@@ -34,8 +34,12 @@
         // test with http://ldf.fi/warsa/actors/person_p525088
         // http://ldf.fi/warsa/prisoners/prisoner_571
 
+          // person_753249
+
+
         var personPrisonerRecordQry = prefixes +
-        'SELECT ?id ?prefLabel ' +
+        'SELECT ?id ' +
+        '?prefLabel ?prefLabel_lbl ?prefLabel_source ' +
         '?birth_date ?birth_date_lbl ?birth_date_source ' +
         '?birth_place ?birth_place_lbl ?birth_place_source ' +
         '?marital_status ?marital_status_lbl ?marital_status_source ' +
@@ -63,6 +67,15 @@
         '   ?id crm:P70_documents <{0}> . ' +
         '   ?id a prisoners:PrisonerOfWar . ' +
         '   ?id skos:prefLabel ?prefLabel . ' +
+        '   BIND("Nimi" AS ?prefLabel_lbl ) ' +
+        '   OPTIONAL { ' +
+        '      ?rei a rdf:Statement . ' +
+        '      ?rei rdf:subject ?id . ' +
+        '      ?rei rdf:predicate skos:prefLabel . ' +
+        '      ?rei rdf:object ?prefLabel . ' +
+        '      ?rei dc:source ?prefLabel_source_temp ' +
+        '   } ' +
+        '   BIND ( if (BOUND (?prefLabel_source_temp), ?prefLabel_source_temp, CONCAT("no_source_for_", STR(?prefLabel)) )  as ?prefLabel_source )  ' +
         '   OPTIONAL { ' +
         '     ?id prisoners:birth_date ?birth_date . ' +
         '     prisoners:birth_date skos:prefLabel ?birth_date_lbl . ' +
@@ -74,7 +87,7 @@
         '          ?rei rdf:object ?birth_date . ' +
         '          ?rei dc:source ?birth_date_source_temp ' +
         '     } ' +
-        '   BIND ( if (BOUND (?birth_date_source_temp), ?birth_date_source_temp, CONCAT("no_source_for_", STR(?birth_date)) )  as ?birth_date_source )  ' +
+        '     BIND ( if (BOUND (?birth_date_source_temp), ?birth_date_source_temp, CONCAT("no_source_for_", STR(?birth_date)) )  as ?birth_date_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id prisoners:birth_place ?birth_place . ' +
@@ -87,7 +100,7 @@
         '          ?rei rdf:object ?birth_place . ' +
         '          ?rei dc:source ?birth_place_source_temp ' +
         '     } ' +
-        '   BIND ( if (BOUND (?birth_place_source_temp), ?birth_place_source_temp, CONCAT("no_source_for_", STR(?birth_place)) )  as ?birth_place_source )  ' +
+        '     BIND ( if (BOUND (?birth_place_source_temp), ?birth_place_source_temp, CONCAT("no_source_for_", STR(?birth_place)) )  as ?birth_place_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id prisoners:marital_status ?marital_status . ' +
@@ -100,7 +113,7 @@
         '          ?rei rdf:object ?marital_status . ' +
         '          ?rei dc:source ?marital_status_source_temp ' +
         '     } ' +
-        '   BIND ( if (BOUND (?marital_status_source_temp), ?marital_status_source_temp, CONCAT("no_source_for_", STR(?marital_status)) )  as ?marital_status_source )  ' +
+        '     BIND ( if (BOUND (?marital_status_source_temp), ?marital_status_source_temp, CONCAT("no_source_for_", STR(?marital_status)) )  as ?marital_status_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id prisoners:amount_children ?amount_children . ' +
@@ -260,11 +273,99 @@
 
         this.getPersonPrisonerRecord = function(id, lang) {
             var qry = personPrisonerRecordQry.format(id, lang || 'fi');
-            console.log(qry);
+            //console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
-                console.log(objectMapperService.makeObjectList(data));
-                return objectMapperService.makeObjectList(data);
+                //console.log(objectMapperService.makeObjectList(data));
+                var obj = objectMapperService.makeObjectList(data)[0];
+                return makePropertyList(obj);
             });
         };
+
+        function makePropertyList(prisonerObj) {
+          var propertyList = [];
+          if (prisonerObj.hasOwnProperty('prefLabel')) {
+            propertyList.push(makePropertyObject('prefLabel', prisonerObj.prefLabel_lbl, prisonerObj.prefLabel, prisonerObj.prefLabel_source));
+          }
+          if (prisonerObj.hasOwnProperty('birth_date')) {
+            propertyList.push(makePropertyObject('birth_date', prisonerObj.birth_date_lbl, dateUtilService.formatDate(prisonerObj.birth_date), prisonerObj.birth_date_source));
+          }
+          if (prisonerObj.hasOwnProperty('birth_place')) {
+            propertyList.push(makePropertyObject('birth_place', prisonerObj.birth_place_lbl, prisonerObj.birth_place, prisonerObj.birth_place_source));
+          }
+          if (prisonerObj.hasOwnProperty('marital_status')) {
+            propertyList.push(makePropertyObject('marital_status', prisonerObj.marital_status_lbl, prisonerObj.marital_status, prisonerObj.marital_status_source));
+          }
+          if (prisonerObj.hasOwnProperty('amount_children')) {
+            propertyList.push(makePropertyObject('amount_children', prisonerObj.amount_children_lbl, prisonerObj.amount_children, prisonerObj.amount_children_source));
+          }
+          if (prisonerObj.hasOwnProperty('has_occupation')) {
+            propertyList.push(makePropertyObject('has_occupation', prisonerObj.has_occupation_lbl, prisonerObj.has_occupation, prisonerObj.has_occupation_source));
+          }
+          if (prisonerObj.hasOwnProperty('rank')) {
+            propertyList.push(makePropertyObject('rank', prisonerObj.rank_lbl, prisonerObj.rank, prisonerObj.rank_source));
+          }
+          if (prisonerObj.hasOwnProperty('unit')) {
+            propertyList.push(makePropertyObject('unit', prisonerObj.unit_lbl, prisonerObj.unit, prisonerObj.unit_source));
+          }
+          if (prisonerObj.hasOwnProperty('time_captured')) {
+            propertyList.push(makePropertyObject('time_captured', prisonerObj.time_captured_lbl, dateUtilService.formatDate(prisonerObj.time_captured), prisonerObj.time_captured_source));
+          }
+          if (prisonerObj.hasOwnProperty('place_captured')) {
+            propertyList.push(makePropertyObject('place_captured', prisonerObj.place_captured_lbl, prisonerObj.place_captured, prisonerObj.place_captured_source));
+          }
+          if (prisonerObj.hasOwnProperty('explanation')) {
+            propertyList.push(makePropertyObject('explanation', prisonerObj.explanation_lbl, prisonerObj.explanation, prisonerObj.explanation_source));
+          }
+          if (prisonerObj.hasOwnProperty('camps_and_hospitals')) {
+            propertyList.push(makePropertyObject('camps_and_hospitals', prisonerObj.camps_and_hospitals_lbl, prisonerObj.camps_and_hospitals, prisonerObj.camps_and_hospitals_source));
+          }
+          if (prisonerObj.hasOwnProperty('returned_date')) {
+            propertyList.push(makePropertyObject('returned_date', prisonerObj.returned_date_lbl, dateUtilService.formatDate(prisonerObj.returned_date), prisonerObj.returned_date_source));
+          }
+          if (prisonerObj.hasOwnProperty('death_date')) {
+            propertyList.push(makePropertyObject('death_date', prisonerObj.death_date_lbl, prisonerObj.death_date, prisonerObj.death_date_source));
+          }
+          if (prisonerObj.hasOwnProperty('burial_place')) {
+            propertyList.push(makePropertyObject('burial_place', prisonerObj.burial_place_lbl, prisonerObj.burial_place, prisonerObj.burial_place_source));
+          }
+          if (prisonerObj.hasOwnProperty('photograph')) {
+            propertyList.push(makePropertyObject('photograph', prisonerObj.photograph_lbl, prisonerObj.photograph, prisonerObj.photograph_source));
+          }
+          if (prisonerObj.hasOwnProperty('karaganda_card_file')) {
+            propertyList.push(makePropertyObject('karaganda_card_file', prisonerObj.karaganda_card_file_lbl, prisonerObj.karaganda_card_file, prisonerObj.karaganda_card_file_source));
+          }
+          if (prisonerObj.hasOwnProperty('continuation_war_card_file')) {
+            propertyList.push(makePropertyObject('continuation_war_card_file', prisonerObj.continuation_war_card_file_lbl, prisonerObj.continuation_war_card_file, prisonerObj.continuation_war_card_file_source));
+          }
+          if (prisonerObj.hasOwnProperty('continuation_war_russian_card_file')) {
+            propertyList.push(makePropertyObject('continuation_war_russian_card_file', prisonerObj.continuation_war_russian_card_file_lbl, prisonerObj.continuation_war_russian_card_file, prisonerObj.continuation_war_russian_card_file_source));
+          }
+          if (prisonerObj.hasOwnProperty('winter_war_collection')) {
+            propertyList.push(makePropertyObject('winter_war_collection', prisonerObj.winter_war_collection_lbl, prisonerObj.winter_war_collection, prisonerObj.winter_war_collection_source));
+          }
+          if (prisonerObj.hasOwnProperty('flyer')) {
+            propertyList.push(makePropertyObject('flyer', prisonerObj.flyer_lbl, prisonerObj.flyer, prisonerObj.flyer_source));
+          }
+          if (prisonerObj.hasOwnProperty('karelian_archive_documents')) {
+            propertyList.push(makePropertyObject('karelian_archive_documents', prisonerObj.karelian_archive_documents_lbl, prisonerObj.karelian_archive_documents, prisonerObj.karelian_archive_documents_source));
+          }
+          if (prisonerObj.hasOwnProperty('recording')) {
+            propertyList.push(makePropertyObject('recording', prisonerObj.recording_lbl, prisonerObj.recording, prisonerObj.recording_source));
+          }
+
+          return propertyList;
+        }
+
+        function makePropertyObject(propertyKey, propertyLabel, value, source) {
+          return {  'propertyKey' : propertyKey,
+                    'propertyLabel': propertyLabel,
+                    'value':value,
+                    'source': source };
+        }
+
+
+
+
+
     });
 })();
