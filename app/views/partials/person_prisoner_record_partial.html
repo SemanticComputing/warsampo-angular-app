@@ -1,4 +1,10 @@
 <div ng-if="ctrl.person.prisonerRecord.length">
+
+  <video class="prisoner-video" controls>
+    <source src="images/Oranki.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
   <h3 translate="PRISONER_RECORD"></h3>
   <table class="table death-record">
     <tr ng-repeat="property in ctrl.person.prisonerRecord">
