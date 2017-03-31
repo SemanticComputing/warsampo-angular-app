@@ -1,4 +1,4 @@
-<ws-title>{{ ctrl.currentObject.label }}</ws-title>
+<ws-title>{{ ctrl.currentObject.getLabel() }}</ws-title>
 <ws-settings></ws-settings>
 <div class="row">
   <div class="col-sm-3">
@@ -23,9 +23,8 @@
               <div ng-switch-when="true">
                 <!-- Unit details -->
                 <h3>{{ ctrl.currentObject.getLabel() }} <span ng-if="ctrl.currentObject.abbrev.length"> – {{ ctrl.currentObject.abbrev | concatList }}</span></h3>
-                <p ng-if="ctrl.currentObject.desc">{{ ctrl.currentObject.desc }} (Wikipedia)</p>
                 <p ng-if="ctrl.currentObject.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentObject.altNames.join('; ') }}</p>
-                <p>{{ ctrl.currentObject.getDescription() }}</p>
+                <p ng-if="ctrl.currentObject.getDescription()">{{ ctrl.currentObject.getDescription() }} (Wikipedia)</p>
                 <p><a ws-page-link="ctrl.currentObject.id" translate>SHOW_INFO_PAGE</a></p>
 
                 <ws-photo-gallery images="ctrl.currentObject.images"></ws-photo-gallery>

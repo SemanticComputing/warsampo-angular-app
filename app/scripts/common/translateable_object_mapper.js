@@ -6,9 +6,10 @@
         function TranslateableObjectMapper() { }
 
         function reviseObject(obj, orig) {
-            obj.setLangAttr('label', orig);
-            obj.setLangAttr('description', orig);
-            obj.setLangAttr('type', orig);
+            var clone = _.clone(obj);
+            _.forOwn(clone, function(value, key) {
+                obj.setLangAttr(key, orig);
+            });
             return obj;
         }
 

@@ -34,6 +34,33 @@
                 graph: '<http://ldf.fi/warsa/photographs>',
                 enabled: true
             },
+            period: {
+                facetId: 'period',
+                name: 'PHOTO_DEMO.PERIOD',
+                enabled: true,
+                choices: [
+                    {
+                        id: 'winterwar',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/WinterWar> .',
+                        label: 'WINTER_WAR'
+                    },
+                    {
+                        id: 'interimpeace',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/InterimPeace> .',
+                        label: 'INTERIM_PEACE'
+                    },
+                    {
+                        id: 'continationwar',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/ContinuationWar> .',
+                        label: 'CONTINUATION_WAR'
+                    },
+                    {
+                        id: 'laplandwar',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/LaplandWar> .',
+                        label: 'LAPLAND_WAR'
+                    }
+                ]
+            },
             place: {
                 facetId: 'spatial',
                 name: 'PHOTO_DEMO.PLACE',
@@ -44,8 +71,7 @@
             person: {
                 facetId: 'person',
                 name: 'PHOTO_DEMO.PERSON',
-                predicate:
-                '<http://www.cidoc-crm.org/cidoc-crm/P138_represents>',
+                predicate: '<http://www.cidoc-crm.org/cidoc-crm/P138_represents>',
                 specifier: '?value a/rdfs:subClassOf* <http://www.cidoc-crm.org/cidoc-crm/E21_Person> .',
                 enabled: true
             },
@@ -86,9 +112,17 @@
         }
 
         function getFacets() {
-            return $translate(_.map(facets, 'name'))
+            var facetClone = _.cloneDeep(facets);
+            return $translate(_.map(facets.period.choices, 'label'))
             .then(function(translations) {
-                var facetClone = _.cloneDeep(facets);
+                facetClone.period.choices.forEach(function(choice) {
+                    var trans = translations[choice.label];
+                    if (trans) {
+                        choice.label = trans;
+                    }
+                });
+                return $translate(_.map(facets, 'name'));
+            }).then(function(translations) {
                 _.forOwn(facetClone, function(val) {
                     var trans = translations[val.name];
                     if (trans) {

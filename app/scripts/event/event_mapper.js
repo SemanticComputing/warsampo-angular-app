@@ -10,12 +10,11 @@
     .factory('Event', Event);
 
     /* @ngInject */
-    function eventMapperService(_, translateableObjectMapperService, dateUtilService, defaultLocale, Event) {
+    function eventMapperService(translateableObjectMapperService, dateUtilService, Event) {
         var proto = Object.getPrototypeOf(translateableObjectMapperService);
 
         EventMapper.prototype.reviseObject = reviseObject;
         EventMapper.prototype.objectClass = Event;
-        EventMapper.prototype.defaultLocale = defaultLocale;
 
         EventMapper.prototype = angular.extend({}, proto, EventMapper.prototype);
 
@@ -33,7 +32,7 @@
     }
 
     /* @ngInject */
-    function Event($translate, TranslateableObject) {
+    function Event(TranslateableObject) {
         Event.prototype = TranslateableObject.prototype;
 
         return Event;

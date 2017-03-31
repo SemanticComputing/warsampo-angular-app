@@ -80,18 +80,14 @@
         function processLifeEvents(person, events) {
             person.promotions = [];
             person.ranks = [];
+            events = events || [];
 
             var places  =  [];
-            for (var i = 0; i < events.length; i++) {
-                var e = events[i],
-                    etype = e.type_id,
-                    edate, edate2;
-                if ('start_time' in e) {
-                    edate = e.start_time,
-                    edate2 = e.end_time;
-                    edate = dateUtilService.getExtremeDate(edate, true);
-                    edate2 = dateUtilService.getExtremeDate(edate2, false);
-                    edate = dateUtilService.formatDateRange(edate,edate2);
+            events.forEach(function(e) {
+                var etype = e.type_id;
+                var edate;
+                if (e.start_time) {
+                    edate = dateUtilService.formatExtremeDateRange(e.start_time, e.end_time);
                 }
                 var eplace  =  '';
                 if (e.places && e.places.length) {
@@ -123,47 +119,47 @@
                     }
                     person.ranks.unshift(e.rank);
                 }
-            }
+            });
             person.places = _.uniq(places, 'id');
             return person;
 
         }
 
         function processRelatedEvents(person, events) {
-            var eventlist=[];
-            var battles=[];
-            var articles=[];
-            var medals=[];
+            var eventlist = [];
+            var battles = [];
+            var articles = [];
+            var medals = [];
+            events = events || [];
 
-            for (var i=0; i<events.length; i++) {
-                var e = events[i],
-                    etype = e.type_id;
+            events.forEach(function(e) {
+                var etype = e.type_id;
                 if (etype === EVENT_TYPES.BATTLE) {
                     battles.push(e);
                 } else if (etype.indexOf('Article')>-1 ) {
-                    articles.push(e); //
+                    articles.push(e);
                 } else if (_.get(e, 'medal.id')) {
                     medals.push(e.medal);
                 } else if (etype !== EVENT_TYPES.PERSON_JOINING) {
                     eventlist.push(e);
                 }
-            }
+            });
 
             if (eventlist.length) {
                 person.hasLinks = true;
-                person.events=eventlist;
+                person.events = eventlist;
             }
             if (battles.length) {
                 person.hasLinks = true;
-                person.battles=battles;
+                person.battles = battles;
             }
             if (articles.length) {
                 person.hasLinks = true;
-                person.articles=articles;
+                person.articles = articles;
             }
             if (medals.length) {
                 person.hasLinks = true;
-                person.medals=medals;
+                person.medals = medals;
             }
             return person;
         }

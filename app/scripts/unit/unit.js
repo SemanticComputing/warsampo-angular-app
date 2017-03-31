@@ -16,15 +16,12 @@
 
         self.processUnitEvents = function(unit, events) {
             var battles = [], formations = [], other = [], description = [], places = [];
-            for (var i = 0; i<events.length; i++) {
-                var e = events[i],
-                    etype = e.type_id,
-                    edate = '', edate2 = '', eplace = '';
+            events = events || [];
+            events.forEach(function(e) {
+                var etype = e.type_id,
+                    edate = '', eplace = '';
                 if (e.start_time && e.end_time) {
-                    edate = e.start_time; edate2 = e.end_time;
-                    edate = dateUtilService.getExtremeDate(edate, true);
-                    edate2 = dateUtilService.getExtremeDate(edate2, false);
-                    edate = dateUtilService.formatDateRange(edate,edate2);
+                    edate = dateUtilService.formatExtremeDateRange(e.start_time, e.end_time);
                 }
                 if (e.places) {
                     eplace = ', ' + _.map(e.places, 'label').join(', ');
@@ -47,14 +44,14 @@
                     case EVENT_TYPES.MILITARY_ACTIVITY:
                     case EVENT_TYPES.BOMBARDMENT:
                     case EVENT_TYPES.POLITICAL_ACTIVITY:
-                        other.push(events[i]);
+                        other.push(e);
                         break;
                 }
 
                 if (e.places) {
                     places.concat(e.places);
                 }
-            }
+            });
 
             if (events.length) { unit.hasLinks = true; }
 
@@ -202,7 +199,7 @@
             return unitRepository.getUnitWikipedia(unit.id).then(function(data) {
                 if (data && data.length) {
                     unit.wikilink = data;
-                    data[0].label = unit.label;
+                    data[0].label = unit.getLabel();
                     unit.hasLinks = true;
                 }
             });
