@@ -12,6 +12,7 @@
         <span ng-if="vm.photo.created">
           <a ws-page-link="vm.photo.time_id">{{ vm.photo.created | date:'dd.MM.yyyy' }}</a>
         </span>
+        <span ng-if="vm.photo.period">({{ vm.photo.getPeriod() }})</span>
       </h2>
       <p>
         {{ vm.photo.description }}
@@ -21,7 +22,7 @@
       <p ng-if="vm.photo.creators || vm.photo.photographer_string">
         <span translate>PHOTOGRAPHER</span>:
         <span ng-repeat="person in vm.photo.creators">
-          <a ng-click="vm.close()" ws-page-link="person.id">{{ person.label || person.sname }}</a>{{ $last ? ' ' : ', ' }}
+          <a ng-click="vm.close()" ws-page-link="person.id">{{ person.getLabel() || person.sname }}</a>{{ $last ? ' ' : ', ' }}
         </span>
         <span ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</span>
       </p>

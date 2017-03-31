@@ -19,41 +19,16 @@
 
         function postProcess(objects) {
             objects.forEach(function(obj) {
-                if (!_.isArray(obj.name)) {
-                    obj.name = obj.name ? [obj.name] : [];
-                }
-
-                if (!_.isArray(obj.abbrev)) {
-                    obj.abbrev = obj.abbrev ? [obj.abbrev] : [];
-                }
+                obj.name = obj.name ? _.castArray(obj.name) : [];
+                obj.abbrev = obj.abbrev ? _.castArray(obj.abbrev) : [];
 
                 obj.altNames = obj.name.slice();
                 obj.altNames.shift();
 
-                obj.abbrev = removeNameAbbrevs(obj.name, obj.abbrev);
-
-                if (_.isArray(obj.label)) {
-                    obj.label = obj.label[0];
-                } else if (!obj.label) {
-                    if (obj.abbrev.length) {
-                        obj.label = '{0} ({1})'.format(obj.name[0], obj.abbrev[0]);
-                    } else {
-                        obj.label = obj.name[0];
-                    }
-                }
+                obj.abbrev = _.difference(obj.abbrev, obj.name);
             });
 
             return objects;
-        }
-
-        function removeNameAbbrevs(names,abbrevs) {
-            var abb2=[];
-            for (var i=0; i<abbrevs.length; i++) {
-                if (names.indexOf(abbrevs[i])<0) {
-                    abb2.push(abbrevs[i]);
-                }
-            }
-            return abb2;
         }
 
     })

@@ -67,7 +67,8 @@
         '   ?id foaf:page ?wikilink . FILTER(REGEX(STR(?wikilink),"wikipedia","i")) ' +
         '  } ' +
         '  OPTIONAL { ' +
-        '   ?id crm:P70i_is_documented_in ?casualty .' +
+        '   ?id crm:P70i_is_documented_in ?casualty . ' +
+        '   ?casualty a casualties:DeathRecord . ' +
         '   OPTIONAL { ' +
         '    ?casualty casualties:hautauskunta ?bury_place_uri . ' +
         '    ?bury_place_uri skos:prefLabel ?bury_place . ' +

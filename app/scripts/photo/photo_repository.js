@@ -45,7 +45,7 @@
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
+        ' PREFIX wev: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
         ' PREFIX wph: <http://ldf.fi/warsa/photographs/> ' +
         ' PREFIX wat: <http://ldf.fi/warsa/actors/actor_types/> ' +
@@ -59,7 +59,7 @@
 
         var select =
         ' SELECT DISTINCT ?id ?url ?thumbnail_url ?description ?note ?created ' +
-        '  ?time_id ?participant_id ?unit_id ?place_id ?place_string ' +
+        '  ?time_id ?period ?participant_id ?unit_id ?place_id ?place_string ' +
         '  ?source ?creator_id ?photographer_string ?theme ';
 
         var photoQry = select +
@@ -72,6 +72,7 @@
         '  OPTIONAL { ?id wph:theme ?theme . } ' +
         '  OPTIONAL { ' +
         '   ?id ^crm:P94_has_created ?event_id . ' +
+        '   OPTIONAL { ?event_id wev:related_period/skos:prefLabel ?period . } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P4_has_time-span ?time_id . ' +
         '    ?time_id crm:P82a_begin_of_the_begin ?created .' +

@@ -7,7 +7,7 @@
 </p>
 <p ng-repeat="cmd in ctrl.unit.commanders">{{ cmd }}</p>
 <p ng-repeat="desc in ctrl.unit.descriptions">{{ desc }}</p>
-<p ng-if="ctrl.unit.note"><span translate>NOTE</span>: {{ ctrl.unit.note }}</p>
+<p ng-if="ctrl.unit.note"><span translate>NOTE</span>: {{ ctrl.unit.note | concatList }}</p>
 <p>
   <small ng-if="ctrl.unit.source || ctrl.unit.sid">{{ 'SOURCE' | translate }}: {{ ctrl.unit.source || ctrl.unit.sid | concatList }} | </small>
   <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ ctrl.unit.id }}</small>

@@ -1,4 +1,4 @@
-<ws-title>{{ ctrl.person.label }}</ws-title>
+<ws-title>{{ ctrl.person.getLabel() }}</ws-title>
 <ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <!-- Metadata -->
@@ -7,7 +7,7 @@
     <p ng-if="!ctrl.person && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">
       <h2>
-        {{ ctrl.person.label }}
+        {{ ctrl.person.getLabel() }}
       </h2>
       <p ng-if="ctrl.person.birth || ctrl.person.death">
         {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
@@ -18,6 +18,7 @@
 
       <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
 
+      <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
       <div ng-include="'views/partials/person_death_record_partial.html'"></div>
     </div>
   </div>
@@ -38,5 +39,5 @@
       <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
       <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.person.diaries"></ws-related-links>
       <ws-related-links title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
-  </div> 
+  </div>
 </div>
