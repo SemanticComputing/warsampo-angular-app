@@ -6,7 +6,7 @@
       <td>
         <div ng-if="property.value | isArray">
           <div ng-repeat="v in property.value">
-              {{ v }}<span ng-if="property.source[$index] != 'no_source_for_' + v "> (lähde: {{ property.source[$index] }}</span>
+              {{ v }}<span ng-if="!property.source[$index].startsWith('no_source_for_')"> (lähde: {{ property.source[$index] }})</span>
           </div>
         </div>
         <div ng-if="!(property.value | isArray)">

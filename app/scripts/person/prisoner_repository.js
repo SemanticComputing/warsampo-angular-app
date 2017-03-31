@@ -37,24 +37,31 @@
         // http://ldf.fi/warsa/prisoners/prisoner_571
 
         // ldf.fi fuseki:
-        // person_753249
+        // http://ldf.fi/warsa/actors/person_753249
 
         var personPrisonerRecordQry = prefixes +
         'SELECT ?id ' +
         '?prefLabel ?prefLabel_lbl ?prefLabel_source ' +
         '?birth_date ?birth_date_lbl ?birth_date_source ' +
         '?birth_place ?birth_place_lbl ?birth_place_source ' +
+        '?home_place ?home_place_lbl ?home_place_source ' +
+        '?residence_place ?residence_place_lbl ?residence_place_source ' +
         '?marital_status ?marital_status_lbl ?marital_status_source ' +
         '?amount_children ?amount_children_lbl ?amount_children_source ' +
         '?has_occupation ?has_occupation_lbl ?has_occupation_source ' +
         '?rank ?rank_lbl ?rank_source ' +
         '?unit ?unit_lbl ?unit_source ' +
         '?time_captured ?time_captured_lbl ?time_captured_source ' +
-        '?recording_municipality ?recording_municipality_lbl ?recording_source ' +
+        '?place_captured_municipality ?place_captured_municipality_lbl ?place_captured_municipality_source ' +
+        '?place_captured ?place_captured_lbl ?place_captured_source ' +
+        '?place_captured_battle ?place_captured_battle_lbl ?place_captured_battle_source ' +
         '?explanation ?explanation_lbl ?explanation_source ' +
         '?camps_and_hospitals ?camps_and_hospitals_lbl ?camps_and_hospitals_source ' +
+        '?other_information ?other_information_lbl ?other_information_source ' +
         '?returned_date ?returned_date_lbl ?returned_source ' +
         '?death_date ?death_date_lbl ?death_date_source ' +
+        '?death_place ?death_place_lbl ?death_place_source ' +
+        '?cause_of_death ?cause_of_death_lbl ?cause_of_death_source ' +
         '?burial_place ?burial_place_lbl ?burial_source ' +
         '?photograph ?photograph_lbl ?photograph_source ' +
         '?karaganda_card_file ?karaganda_card_file_lbl ?karaganda_card_source ' +
@@ -71,7 +78,6 @@
         '   ?id skos:prefLabel ?prefLabel . ' +
         '   BIND("Nimi" AS ?prefLabel_lbl ) ' +
         '   OPTIONAL { ' +
-        '      ?rei a rdf:Statement . ' +
         '      ?rei rdf:subject ?id . ' +
         '      ?rei rdf:predicate skos:prefLabel . ' +
         '      ?rei rdf:object ?prefLabel . ' +
@@ -83,7 +89,7 @@
         '     prisoners:birth_date skos:prefLabel ?birth_date_lbl . ' +
         '     FILTER( lang(?birth_date_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:birth_date . ' +
         '          ?rei rdf:object ?birth_date . ' +
@@ -96,7 +102,7 @@
         '     prisoners:birth_place skos:prefLabel ?birth_place_lbl . ' +
         '     FILTER( lang(?birth_place_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:birth_place . ' +
         '          ?rei rdf:object ?birth_place . ' +
@@ -105,11 +111,37 @@
         '     BIND ( if (BOUND (?birth_place_source_temp), ?birth_place_source_temp, CONCAT("no_source_for_", STR(?birth_place)) )  as ?birth_place_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
+        '     ?id prisoners:home_place ?home_place . ' +
+        '     prisoners:home_place skos:prefLabel ?home_place_lbl . ' +
+        '     FILTER( lang(?home_place_lbl)="{1}" ) ' +
+        '     OPTIONAL { ' +
+
+        '          ?rei rdf:subject ?id . ' +
+        '          ?rei rdf:predicate prisoners:home_place . ' +
+        '          ?rei rdf:object ?home_place . ' +
+        '          ?rei dc:source ?home_place_source_temp ' +
+        '     } ' +
+        '     BIND ( if (BOUND (?home_place_source_temp), ?home_place_source_temp, CONCAT("no_source_for_", STR(?home_place)) )  as ?home_place_source )  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
+        '     ?id prisoners:residence_place ?residence_place . ' +
+        '     prisoners:residence_place skos:prefLabel ?residence_place_lbl . ' +
+        '     FILTER( lang(?residence_place_lbl)="{1}" ) ' +
+        '     OPTIONAL { ' +
+
+        '          ?rei rdf:subject ?id . ' +
+        '          ?rei rdf:predicate prisoners:residence_place . ' +
+        '          ?rei rdf:object ?residence_place . ' +
+        '          ?rei dc:source ?residence_place_source_temp ' +
+        '     } ' +
+        '     BIND ( if (BOUND (?residence_place_source_temp), ?residence_place_source_temp, CONCAT("no_source_for_", STR(?residence_place)) )  as ?residence_place_source )  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
         '     ?id prisoners:marital_status ?marital_status . ' +
         '     prisoners:marital_status skos:prefLabel ?marital_status_lbl . ' +
         '     FILTER( lang(?marital_status_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:marital_status . ' +
         '          ?rei rdf:object ?marital_status . ' +
@@ -122,7 +154,7 @@
         '     prisoners:amount_children skos:prefLabel ?amount_children_lbl . ' +
         '     FILTER( lang(?amount_children_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:amount_children . ' +
         '          ?rei rdf:object ?amount_children . ' +
@@ -135,7 +167,7 @@
         '     bioc:has_occupation skos:prefLabel ?has_occupation_lbl . ' +
         '     FILTER( lang(?has_occupation_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate bioc:has_occupation . ' +
         '          ?rei rdf:object ?has_occupation . ' +
@@ -148,7 +180,7 @@
         '     prisoners:rank skos:prefLabel ?rank_lbl . ' +
         '     FILTER( lang(?rank_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:rank . ' +
         '          ?rei rdf:object ?rank . ' +
@@ -161,7 +193,7 @@
         '     prisoners:unit skos:prefLabel ?unit_lbl . ' +
         '     FILTER( lang(?unit_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:unit . ' +
         '          ?rei rdf:object ?unit . ' +
@@ -174,7 +206,7 @@
         '     prisoners:time_captured skos:prefLabel ?time_captured_lbl . ' +
         '     FILTER( lang(?time_captured_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:time_captured . ' +
         '          ?rei rdf:object ?time_captured . ' +
@@ -183,24 +215,50 @@
         '   BIND ( if (BOUND (?time_captured_source_temp), ?time_captured_source_temp, CONCAT("no_source_for_", STR(?time_captured)) )  as ?time_captured_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '     ?id prisoners:recording ?recording . ' +
-        '     prisoners:recording skos:prefLabel ?recording_lbl . ' +
-        '     FILTER( lang(?recording_lbl)="{1}" ) ' +
+        '     ?id prisoners:place_captured_municipality ?place_captured_municipality . ' +
+        '     prisoners:place_captured_municipality skos:prefLabel ?place_captured_municipality_lbl . ' +
+        '     FILTER( lang(?place_captured_municipality_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
-        '          ?rei rdf:predicate prisoners:recording . ' +
-        '          ?rei rdf:object ?recording . ' +
-        '          ?rei dc:source ?recording_source_temp ' +
+        '          ?rei rdf:predicate prisoners:place_captured_municipality . ' +
+        '          ?rei rdf:object ?place_captured_municipality . ' +
+        '          ?rei dc:source ?place_captured_municipality_source_temp ' +
         '     } ' +
-        '   BIND ( if (BOUND (?recording_source_temp), ?recording_source_temp, CONCAT("no_source_for_", STR(?recording)) )  as ?recording_source )  ' +
+        '   BIND ( if (BOUND (?place_captured_municipality_source_temp), ?place_captured_municipality_source_temp, CONCAT("no_source_for_", STR(?place_captured_municipality)) )  as ?place_captured_municipality_source )  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
+        '     ?id prisoners:place_captured ?place_captured . ' +
+        '     prisoners:place_captured skos:prefLabel ?place_captured_lbl . ' +
+        '     FILTER( lang(?place_captured_lbl)="{1}" ) ' +
+        '     OPTIONAL { ' +
+
+        '          ?rei rdf:subject ?id . ' +
+        '          ?rei rdf:predicate prisoners:place_captured . ' +
+        '          ?rei rdf:object ?place_captured . ' +
+        '          ?rei dc:source ?place_captured_source_temp ' +
+        '     } ' +
+        '   BIND ( if (BOUND (?place_captured_source_temp), ?place_captured_source_temp, CONCAT("no_source_for_", STR(?place_captured)) )  as ?place_captured_source )  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
+        '     ?id prisoners:place_captured_battle ?place_captured_battle . ' +
+        '     prisoners:place_captured_battle skos:prefLabel ?place_captured_battle_lbl . ' +
+        '     FILTER( lang(?place_captured_battle_lbl)="{1}" ) ' +
+        '     OPTIONAL { ' +
+
+        '          ?rei rdf:subject ?id . ' +
+        '          ?rei rdf:predicate prisoners:place_captured_battle . ' +
+        '          ?rei rdf:object ?place_captured_battle . ' +
+        '          ?rei dc:source ?place_captured_battle_source_temp ' +
+        '     } ' +
+        '   BIND ( if (BOUND (?place_captured_battle_source_temp), ?place_captured_battle_source_temp, CONCAT("no_source_for_", STR(?place_captured_battle)) )  as ?place_captured_battle_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id prisoners:explanation ?explanation . ' +
         '     prisoners:explanation skos:prefLabel ?explanation_lbl . ' +
         '     FILTER( lang(?explanation_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:explanation . ' +
         '          ?rei rdf:object ?explanation . ' +
@@ -213,7 +271,7 @@
         '     prisoners:camps_and_hospitals skos:prefLabel ?camps_and_hospitals_lbl . ' +
         '     FILTER( lang(?camps_and_hospitals_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:camps_and_hospitals . ' +
         '          ?rei rdf:object ?camps_and_hospitals . ' +
@@ -222,11 +280,24 @@
         '   BIND ( if (BOUND (?camps_and_hospitals_source_temp), ?camps_and_hospitals_source_temp, CONCAT("no_source_for_", STR(?camps_and_hospitals)) )  as ?camps_and_hospitals_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
+        '     ?id prisoners:other_information ?other_information . ' +
+        '     prisoners:other_information skos:prefLabel ?other_information_lbl . ' +
+        '     FILTER( lang(?other_information_lbl)="{1}" ) ' +
+        '     OPTIONAL { ' +
+
+        '          ?rei rdf:subject ?id . ' +
+        '          ?rei rdf:predicate prisoners:other_information . ' +
+        '          ?rei rdf:object ?other_information . ' +
+        '          ?rei dc:source ?other_information_source_temp ' +
+        '     } ' +
+        '   BIND ( if (BOUND (?other_information_source_temp), ?other_information_source_temp, CONCAT("no_source_for_", STR(?other_information)) )  as ?other_information_source )  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
         '     ?id prisoners:returned_date ?returned_date . ' +
         '     prisoners:returned_date skos:prefLabel ?returned_date_lbl . ' +
         '     FILTER( lang(?returned_date_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:returned_date . ' +
         '          ?rei rdf:object ?returned_date . ' +
@@ -239,7 +310,7 @@
         '     prisoners:death_date skos:prefLabel ?death_date_lbl . ' +
         '     FILTER( lang(?death_date_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:death_date . ' +
         '          ?rei rdf:object ?death_date . ' +
@@ -248,11 +319,24 @@
         '   BIND ( if (BOUND (?death_date_source_temp), ?death_date_source_temp, CONCAT("no_source_for_", STR(?death_date)) )  as ?death_date_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
+        '     ?id prisoners:cause_of_death ?cause_of_death . ' +
+        '     prisoners:cause_of_death skos:prefLabel ?cause_of_death_lbl . ' +
+        '     FILTER( lang(?cause_of_death_lbl)="{1}" ) ' +
+        '     OPTIONAL { ' +
+
+        '          ?rei rdf:subject ?id . ' +
+        '          ?rei rdf:predicate prisoners:cause_of_death . ' +
+        '          ?rei rdf:object ?cause_of_death . ' +
+        '          ?rei dc:source ?cause_of_death_source_temp ' +
+        '     } ' +
+        '   BIND ( if (BOUND (?cause_of_death_source_temp), ?cause_of_death_source_temp, CONCAT("no_source_for_", STR(?cause_of_death)) )  as ?cause_of_death_source )  ' +
+        '   } ' +
+        '   OPTIONAL { ' +
         '     ?id prisoners:death_place ?death_place . ' +
         '     prisoners:death_place skos:prefLabel ?death_place_lbl . ' +
         '     FILTER( lang(?death_place_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:death_place . ' +
         '          ?rei rdf:object ?death_place . ' +
@@ -265,7 +349,7 @@
         '     prisoners:burial_place skos:prefLabel ?burial_place_lbl . ' +
         '     FILTER( lang(?burial_place_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:burial_place . ' +
         '          ?rei rdf:object ?burial_place . ' +
@@ -278,7 +362,7 @@
         '     prisoners:photograph skos:prefLabel ?photograph_lbl . ' +
         '     FILTER( lang(?photograph_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:photograph . ' +
         '          ?rei rdf:object ?photograph . ' +
@@ -291,7 +375,7 @@
         '     prisoners:karanga_card_file skos:prefLabel ?karanga_card_file_lbl . ' +
         '     FILTER( lang(?karanga_card_file_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:karanga_card_file . ' +
         '          ?rei rdf:object ?karanga_card_file . ' +
@@ -304,7 +388,7 @@
         '     prisoners:continuation_war_card_file skos:prefLabel ?continuation_war_card_file_lbl . ' +
         '     FILTER( lang(?continuation_war_card_file_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:continuation_war_card_file . ' +
         '          ?rei rdf:object ?continuation_war_card_file . ' +
@@ -317,7 +401,7 @@
         '     prisoners:continuation_war_russian_card_file skos:prefLabel ?continuation_war_russian_card_file_lbl . ' +
         '     FILTER( lang(?continuation_war_russian_card_file_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:continuation_war_russian_card_file . ' +
         '          ?rei rdf:object ?continuation_war_russian_card_file . ' +
@@ -330,7 +414,7 @@
         '     prisoners:winter_war_collection skos:prefLabel ?winter_war_collection_lbl . ' +
         '     FILTER( lang(?winter_war_collection_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:winter_war_collection . ' +
         '          ?rei rdf:object ?winter_war_collection . ' +
@@ -343,7 +427,7 @@
         '     prisoners:winter_war_collection_from_moscow skos:prefLabel ?winter_war_collection_from_moscow_lbl . ' +
         '     FILTER( lang(?winter_war_collection_from_moscow_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:winter_war_collection_from_moscow . ' +
         '          ?rei rdf:object ?winter_war_collection_from_moscow . ' +
@@ -356,7 +440,7 @@
         '     prisoners:flyer skos:prefLabel ?flyer_lbl . ' +
         '     FILTER( lang(?flyer_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:flyer . ' +
         '          ?rei rdf:object ?flyer . ' +
@@ -369,7 +453,7 @@
         '     prisoners:karelian_archive_documents skos:prefLabel ?karelian_archive_documents_lbl . ' +
         '     FILTER( lang(?karelian_archive_documents_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:karelian_archive_documents . ' +
         '          ?rei rdf:object ?karelian_archive_documents . ' +
@@ -382,7 +466,7 @@
         '     prisoners:recording skos:prefLabel ?recording_lbl . ' +
         '     FILTER( lang(?recording_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
-        '          ?rei a rdf:Statement . ' +
+
         '          ?rei rdf:subject ?id . ' +
         '          ?rei rdf:predicate prisoners:recording . ' +
         '          ?rei rdf:object ?recording . ' +
@@ -399,6 +483,7 @@
             return endpoint.getObjects(qry).then(function(data) {
                 //console.log(objectMapperService.makeObjectList(data));
                 var obj = objectMapperService.makeObjectList(data)[0];
+                console.log(makePropertyList(obj));
                 return makePropertyList(obj);
             });
         };
@@ -409,11 +494,17 @@
             propertyList.push(makePropertyObject('prefLabel', prisonerObj.prefLabel_lbl, prisonerObj.prefLabel, prisonerObj.prefLabel_source));
           }
           if (prisonerObj.hasOwnProperty('birth_date')) {
-            propertyList.push(makePropertyObject('birth_date', prisonerObj.birth_date_lbl, dateUtilService.formatDate(prisonerObj.birth_date), prisonerObj.birth_date_source));
+            propertyList.push(makePropertyObject('birth_date', prisonerObj.birth_date_lbl, prisonerObj.birth_date, prisonerObj.birth_date_source));
           }
           if (prisonerObj.hasOwnProperty('birth_place')) {
             propertyList.push(makePropertyObject('birth_place', prisonerObj.birth_place_lbl, prisonerObj.birth_place, prisonerObj.birth_place_source));
           }
+          // if (prisonerObj.hasOwnProperty('home_place')) {
+          //   propertyList.push(makePropertyObject('home_place', prisonerObj.home_place_lbl, prisonerObj.home_place, prisonerObj.home_place_source));
+          // }
+          // if (prisonerObj.hasOwnProperty('residence_place')) {
+          //   propertyList.push(makePropertyObject('residence_place', prisonerObj.residence_place_lbl, prisonerObj.residence_place, prisonerObj.residence_place_source));
+          // }
           if (prisonerObj.hasOwnProperty('marital_status')) {
             propertyList.push(makePropertyObject('marital_status', prisonerObj.marital_status_lbl, prisonerObj.marital_status, prisonerObj.marital_status_source));
           }
@@ -430,10 +521,16 @@
             propertyList.push(makePropertyObject('unit', prisonerObj.unit_lbl, prisonerObj.unit, prisonerObj.unit_source));
           }
           if (prisonerObj.hasOwnProperty('time_captured')) {
-            propertyList.push(makePropertyObject('time_captured', prisonerObj.time_captured_lbl, dateUtilService.formatDate(prisonerObj.time_captured), prisonerObj.time_captured_source));
+            propertyList.push(makePropertyObject('time_captured', prisonerObj.time_captured_lbl, prisonerObj.time_captured, prisonerObj.time_captured_source));
           }
-          if (prisonerObj.hasOwnProperty('recording')) {
-            propertyList.push(makePropertyObject('recording', prisonerObj.recording_lbl, prisonerObj.recording, prisonerObj.recording_source));
+          if (prisonerObj.hasOwnProperty('place_captured_municipality')) {
+            propertyList.push(makePropertyObject('place_captured_municipality', prisonerObj.place_captured_municipality_lbl, prisonerObj.place_captured_municipality, prisonerObj.place_captured_municipality_source));
+          }
+          if (prisonerObj.hasOwnProperty('place_captured')) {
+            propertyList.push(makePropertyObject('place_captured', prisonerObj.place_captured_lbl, prisonerObj.place_captured, prisonerObj.place_captured_source));
+          }
+          if (prisonerObj.hasOwnProperty('place_captured_battle')) {
+            propertyList.push(makePropertyObject('place_captured_battle', prisonerObj.place_captured_battle_lbl, prisonerObj.place_captured_battle, prisonerObj.place_captured_battle_source));
           }
           if (prisonerObj.hasOwnProperty('explanation')) {
             propertyList.push(makePropertyObject('explanation', prisonerObj.explanation_lbl, prisonerObj.explanation, prisonerObj.explanation_source));
@@ -441,11 +538,20 @@
           if (prisonerObj.hasOwnProperty('camps_and_hospitals')) {
             propertyList.push(makePropertyObject('camps_and_hospitals', prisonerObj.camps_and_hospitals_lbl, prisonerObj.camps_and_hospitals, prisonerObj.camps_and_hospitals_source));
           }
+          // if (prisonerObj.hasOwnProperty('other_information')) {
+          //   propertyList.push(makePropertyObject('other_information', prisonerObj.other_information_lbl, prisonerObj.other_information, prisonerObj.other_information_source));
+          // }
           if (prisonerObj.hasOwnProperty('returned_date')) {
-            propertyList.push(makePropertyObject('returned_date', prisonerObj.returned_date_lbl, dateUtilService.formatDate(prisonerObj.returned_date), prisonerObj.returned_date_source));
+            propertyList.push(makePropertyObject('returned_date', prisonerObj.returned_date_lbl, prisonerObj.returned_date, prisonerObj.returned_date_source));
           }
           if (prisonerObj.hasOwnProperty('death_date')) {
             propertyList.push(makePropertyObject('death_date', prisonerObj.death_date_lbl, prisonerObj.death_date, prisonerObj.death_date_source));
+          }
+          if (prisonerObj.hasOwnProperty('death_place')) {
+            propertyList.push(makePropertyObject('death_place', prisonerObj.death_place_lbl, prisonerObj.death_place, prisonerObj.death_place_source));
+          }
+          if (prisonerObj.hasOwnProperty('cause_of_death')) {
+            propertyList.push(makePropertyObject('cause_of_death', prisonerObj.cause_of_death_lbl, prisonerObj.cause_of_death, prisonerObj.cause_of_death_source));
           }
           if (prisonerObj.hasOwnProperty('burial_place')) {
             propertyList.push(makePropertyObject('burial_place', prisonerObj.burial_place_lbl, prisonerObj.burial_place, prisonerObj.burial_place_source));
@@ -479,6 +585,17 @@
         }
 
         function makePropertyObject(propertyKey, propertyLabel, value, source) {
+          if ( propertyKey == 'birth_date' || propertyKey == 'time_captured'
+          || propertyKey == 'returned_date' || propertyKey == 'death_date' ) {
+            if (_.isArray(value)) {
+                for (var i = 0; i < value.length; i++) {
+                  value[i] = dateUtilService.formatDate(value[i]);
+                }
+            } else {
+              value = dateUtilService.formatDate(value);
+            }
+          }
+
           return {  'propertyKey' : propertyKey,
                     'propertyLabel': propertyLabel,
                     'value':value,
