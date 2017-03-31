@@ -2,13 +2,11 @@
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
-    <h1 id="pageType"><a id="pageTypeURL" href="units/" translate>UNIT</a></h1>
-    <p class="uri">{{ ctrl.unit.id }}</p>
     <img ng-show="ctrl.isLoadingEvent" src="images/loading.gif" />
     <p ng-if="!ctrl.unit && !ctrl.isLoadingEvent" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.unit">
       <h2>
-        {{ ctrl.unit.label }}<span ng-if="ctrl.unit.abbrev.length"> – {{ ctrl.unit.abbrev | concatList }}</span>
+        <span>{{ ctrl.unit.label }}</span><span ng-if="ctrl.unit.abbrev.length"> – {{ ctrl.unit.abbrev | concatList }}</span>
       </h2>
       <div ng-include="'views/partials/unit_description_partial.html'"></div>
       <p><a ws-page-link="ctrl.unit.id" demo translate>SHOW_IN_DEMO</a></p>

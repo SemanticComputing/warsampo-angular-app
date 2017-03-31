@@ -2,14 +2,14 @@
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">
-    <h1 id="pageType"><a id="pageTypeURL" href="events" translate>TIME</a></h1>
-    <p class="uri">{{ ctrl.time.id }}</p>
     <img ng-show="ctrl.isLoadingObj" src="images/loading.gif" />
     <p ng-if="!ctrl.time && !ctrl.isLoadingObj" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.time">
       <h2>
+        <span class="pageType" translate>TIME</span> -
         {{ ctrl.time.timeString }}
       </h2>
+      <p><small class="uri">{{ 'URI' | translate }}: {{ ctrl.time.id }}</small></p>
       <ws-photo-gallery data-images="ctrl.time.photos"></ws-photo-gallery>
     </div>
   </div>

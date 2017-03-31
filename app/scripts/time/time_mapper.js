@@ -8,7 +8,7 @@
     function TimeMapper() { }
 
     angular.module('eventsApp')
-    .factory('timeMapperService', function(objectMapperService, TranslateableObject) {
+    .factory('timeMapperService', function(objectMapperService, TranslateableObject, dateUtilService) {
         var proto = Object.getPrototypeOf(objectMapperService);
 
         TimeMapper.prototype.reviseObject = reviseObject;
@@ -18,12 +18,7 @@
         return new TimeMapper();
 
         function reviseObject(obj) {
-            if (obj.bob !== obj.eoe) {
-                obj.timeString = new Date(obj.bob).toLocaleDateString() + ' - ' +
-                    new Date(obj.eoe).toLocaleDateString();
-            } else {
-                obj.timeString = new Date(obj.bob).toLocaleDateString();
-            }
+            obj.timeString = dateUtilService.formatExtremeDateRange(obj.bob, obj.eoe);
 
             return obj;
         }

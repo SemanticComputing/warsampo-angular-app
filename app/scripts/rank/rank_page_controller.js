@@ -2,10 +2,10 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('RankPageController', function($routeParams, $q, $rootScope, eventService, rankService) {
-        $rootScope.showSettings = null;
-        $rootScope.showHelp = null;
-
+    .controller('RankPageController', RankPageController);
+    
+    /* @ngInject */
+    function RankPageController($routeParams, rankService) {
         var self = this;
 
         if ($routeParams.uri) {
@@ -25,5 +25,5 @@
                 self.isLoadingPersons = false;
             });
         }
-    });
+    }
 })();

@@ -1,16 +1,18 @@
 <div>
-  <h3>
+  <h2>
+    <span>{{ $ctrl.event.getTypeLabel() }} - </span>
     <span ng-repeat="place in $ctrl.event.places">
       <a ws-page-link="place.id">{{ ::place.label | concatList }}</a>{{ $last ? ' ' : ', ' }}
     </span>
-    {{ $ctrl.event.timeSpanString }} - {{ $ctrl.event.getTypeLabel() }}
-  </h3>
+    <span><a ws-page-link="$ctrl.event.time_id">{{ $ctrl.event.timeSpanString }}</a></span>
+  </h2>
   <p>{{ $ctrl.event.getDescription() }}</p>
   <div ng-if="$ctrl.event.photos">
     <ws-photo-gallery data-images="$ctrl.event.photos" data-config="$ctrl.config"></ws-photo-gallery>
   </div>
-  <p ng-if="$ctrl.event.source">
-  <small>{{ 'SOURCE' | translate }}: {{ $ctrl.event.source | concatList }}</small>
+  <p>
+    <small ng-if="$ctrl.event.source">{{ 'SOURCE' | translate }}: {{ $ctrl.event.source | concatList }} | </small>
+    <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ $ctrl.event.id }}</small>
   </p>
   <p>
     <span ng-repeat="person in $ctrl.event.people">

@@ -112,7 +112,7 @@
     "UNIT": "Unit",
     "PERSON": "Person",
     "TIME": "Time",
-    "PHOTO": "Photo",
+    "PHOTO": "Photograph",
     "MEDAL": "Medal",
     "N_PHOTOS": "{NUM, plural, =0{No related photos found {forResource}} one{Found one related photo {forResource}} other{# related photos {forResource}}}",
     "BUILDING_TIMELINE": "Building the timeline",

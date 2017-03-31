@@ -6,9 +6,9 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('medalRepository', function($q, SparqlService, medalMapperService, ENDPOINT_CONFIG) {
+    .service('medalRepository', function($q, AdvancedSparqlService, medalMapperService, ENDPOINT_CONFIG) {
 
-        var endpoint = new SparqlService(ENDPOINT_CONFIG);
+        var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, medalMapperService);
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
@@ -17,6 +17,8 @@
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
+        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
         ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
         ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
@@ -25,10 +27,12 @@
         ' PREFIX medal: <http://ldf.fi/warsa/medals/> ';
 
         var medalQry = prefixes +
-        ' SELECT DISTINCT ?id ?label WHERE {  ' +
+        ' SELECT DISTINCT ?id ?label ?description WHERE {  ' +
         '  VALUES ?id { {0} } .   ' +
         '  ?id a medal:Medal . ' +
         '  ?id skos:prefLabel ?label . ' +
+        '  ?id a/skos:prefLabel ?type . ' +
+        '  OPTIONAL { ?id dc:description|dct:description ?description . } ' +
         ' } ';
 
         var relatedMedalQry = prefixes +
@@ -56,7 +60,7 @@
             var qry = medalQry.format('<{0}>'.format(id));
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
-                    return medalMapperService.makeObjectList(data)[0];
+                    return data[0];
                 }
                 return $q.reject('Does not exist');
             });
@@ -64,9 +68,7 @@
 
         this.getRelatedMedals = function(id) {
             var qry = relatedMedalQry.format('<{0}>'.format(id));
-            return endpoint.getObjects(qry).then(function(data) {
-                return medalMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry);
         };
     });
 })();
