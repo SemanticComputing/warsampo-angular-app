@@ -97,13 +97,13 @@
         '   ?id crm:P70_documents <{0}> . ' +
         '   ?id a casualties:DeathRecord . ' +
         '   ?id ?pred ?obj .'  +
-        '   ?pred skos:prefLabel ?pred_lbl . ' +
-        '   FILTER( lang(?pred_lbl)="{1}" ) ' +
-        //'   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?pred_lbl) .'  +
+        //'   ?pred skos:prefLabel ?pred_lbl . ' +
+        //'   FILTER( lang(?pred_lbl)="{1}" ) ' +
+        '   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?pred_lbl) .'  +
         '   OPTIONAL {' +
-        '   	?obj skos:prefLabel ?obj_lbl . '  +
-        '     FILTER( lang(?obj_lbl)="{1}" || lang(?obj_lbl)="" ) ' +
-        //'   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?obj_lbl) .'  +
+        //'   	?obj skos:prefLabel ?obj_lbl . '  +
+        //'     FILTER( lang(?obj_lbl)="{1}" || lang(?obj_lbl)="" ) ' +
+        '   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?obj_lbl) .'  +
         '   }' +
         '   BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) '  +
         '   BIND(COALESCE(?obj_lbl, ?obj) as ?obj_text) '  +

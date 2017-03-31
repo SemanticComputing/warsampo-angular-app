@@ -483,7 +483,7 @@
             return endpoint.getObjects(qry).then(function(data) {
                 //console.log(objectMapperService.makeObjectList(data));
                 var obj = objectMapperService.makeObjectList(data)[0];
-                console.log(makePropertyList(obj));
+                //console.log(makePropertyList(obj));
                 return makePropertyList(obj);
             });
         };
