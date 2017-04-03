@@ -28,7 +28,8 @@
         ' PREFIX sf: <http://ldf.fi/functions#>'  +
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX bioc: <http://ldf.fi/schema/bioc/> ' +
-        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
+        //' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
+        ' PREFIX dc: <http://purl.org/dc/terms/> ' +
         ' PREFIX prisoners: <http://ldf.fi/schema/warsa/prisoners/> ';
 
         // testing with http://ldf.fi/warsa/actors/person_p525088
@@ -50,7 +51,7 @@
         '?marital_status ?marital_status_lbl ?marital_status_source ' +
         '?amount_children ?amount_children_lbl ?amount_children_source ' +
         '?has_occupation ?has_occupation_lbl ?has_occupation_source ' +
-        '?rank ?rank_lbl ?rank_source ' +
+        '?rank ?rank_lbl ?rank_value_lbl ?rank_source ' +
         '?unit ?unit_lbl ?unit_source ' +
         '?time_captured ?time_captured_lbl ?time_captured_source ' +
         '?place_captured_municipality ?place_captured_municipality_lbl ?place_captured_municipality_source ' +
@@ -177,8 +178,9 @@
         '   BIND ( if (BOUND (?has_occupation_source_temp), ?has_occupation_source_temp, CONCAT("no_source_for_", STR(?has_occupation)) )  as ?has_occupation_source )  ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '     ?id prisoners:rank ?rank . ' +
+        '     ?id prisoners:rank ?rank_id . ' +
         '     prisoners:rank skos:prefLabel ?rank_lbl . ' +
+        '     ?rank_id skos:prefLabel ?rank . ' +
         '     FILTER( lang(?rank_lbl)="{1}" ) ' +
         '     OPTIONAL { ' +
 
@@ -484,7 +486,7 @@
             return endpoint.getObjects(qry).then(function(data) {
                 //console.log(objectMapperService.makeObjectList(data));
                 var obj = objectMapperService.makeObjectList(data)[0];
-                //console.log(makePropertyList(obj));
+                console.log(makePropertyList(obj));
                 return makePropertyList(obj);
             });
         };
