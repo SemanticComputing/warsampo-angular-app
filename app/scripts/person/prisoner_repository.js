@@ -38,6 +38,7 @@
 
         // ldf.fi fuseki:
         // http://ldf.fi/warsa/actors/person_753249
+        // http://localhost:9000/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
 
         var personPrisonerRecordQry = prefixes +
         'SELECT ?id ' +
