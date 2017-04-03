@@ -14,7 +14,7 @@
     .service('cemeteryService', cemeteryService);
 
     /* @ngInject */
-    function cemeteryService($q, _, baseService, cemeteryRepository) {
+    function cemeteryService($q, _, baseService, cemeteryRepository, Settings) {
         var self = this;
 
         /* Public API */
@@ -35,6 +35,7 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchRelated(cemetery) {
+            //console.log(cemetery);
             var related = [
                 self.fetchPeople(cemetery)
             ];
@@ -53,8 +54,15 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchPeople(cemetery) {
-            // TODO: Implementation
-            return $q.when(cemetery);
+
+            return cemeteryRepository.getRelatedPersons(cemetery.id, Settings.pageSize)
+            .then(function(data) {
+                if (data) {
+                  //console.log(data);
+                  cemetery.relatedPersons = data;
+                  cemetery.hasLinks = true;
+                }
+            });
         }
 
         /**

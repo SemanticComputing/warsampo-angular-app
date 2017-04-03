@@ -26,6 +26,9 @@
         self.getSingleById = getSingleById;
         self.getByPlaceId = getByPlaceId;
         self.getByPlaceIdFilterById = getByPlaceIdFilterById;
+        self.getRelatedPersons = getRelatedPersons;
+
+        // test url: http://localhost:9000/fi/cemeteries/page?uri=http%3A%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0667_1
 
         /* Implementation */
 
@@ -36,6 +39,7 @@
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
+        ' PREFIX cemeteries: <http://ldf.fi/schema/warsa/places/cemeteries/>'
         ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
@@ -46,7 +50,7 @@
         ' SELECT DISTINCT ?id ?type ?type_id ?label ?place_id ';
 
         var baseResultSet =
-        ' ?id a nsc:Hautausmaa . ' +
+        ' ?id a cemeteries:Cemetery . ' +
         ' ?id skos:prefLabel ?label . ';
 
         var singleResultSet =
@@ -56,19 +60,26 @@
         var byPlaceQryResultSet =
         ' VALUES ?place_id { <ID> } ' +
         ' <FILTER> ' +
-        ' ?id nsc:hautausmaakunta ?place_id . ' +
+        ' ?id cemeteries:temporary_municipality ?place_id . ' +
         baseResultSet;
+
+        var relatedPersonQryResultSet =
+        ' SELECT DISTINCT ?id { ' +
+        '  VALUES ?cemetery { <CEMETERY> } ' +
+        '  ?id nsc:hautausmaa ?cemetery . ' +
+        ' } ' +
+        '';
 
         var cemeteryQry = select +
         ' { ' +
         '  <RESULT_SET> ' +
-        '  OPTIONAL { ' +
-        '   ?id a ?type_id . ' +
-        '   ?type_id skos:prefLabel ?type . ' +
-        '  } ' +
+        '  ?id a ?type_id . ' +
+        '  ?type_id skos:prefLabel ?type . ' +
         '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
-        '  OPTIONAL { ?id nsc:hautausmaakunta ?place_id . } ' +
+        '  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
         ' } ';
+
+
 
         /**
         * @ngdoc method
@@ -88,6 +99,7 @@
             }
             var resultSet = singleResultSet.replace('<ID>', baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet);
+            //console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
                     return data[0];
@@ -145,5 +157,27 @@
             var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
+
+        /**
+        * @ngdoc method
+        * @methodOf eventsApp.cemeteryRepository
+        * @name eventsApp.cemeteryRepository#getRelatedPersons
+        * @description
+        * Get related persons
+        * @param {string} id The URI cemetery resource.
+        * @param {number} [pageSize] The page size.
+        * @returns {promise} A promise of the list of the query results as objects,
+        *   or if pageSize was given, a promise of a `PagerService` instance.
+        */
+        function getRelatedPersons(id, pageSize) {
+          id = baseRepository.uriFy(id);
+          var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
+          var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet);
+          console.log( endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery)  );
+          return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        }
+
+
+
     }
 })();
