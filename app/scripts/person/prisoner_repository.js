@@ -41,6 +41,37 @@
         // http://ldf.fi/warsa/actors/person_753249
         // http://localhost:9000/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
 
+        var prisonerRecordProperties = [
+          'birth_date',
+          'birth_place',
+          'home_place',
+          'residence_place',
+          'marital_status',
+          'amount_children',
+          'has_occupation',
+          'rank',
+          'unit',
+          'time_captured',
+          'place_captured_municipality',
+          'place_captured',
+          'place_captured_battle',
+          'explanation',
+          'camps_and_hospitals',
+          'other_information',
+          'returned_date',
+          'death_date',
+          'cause_of_death',
+          'burial_place',
+          'photograph',
+          'karaganda_card_file',
+          'continuation_war_card_file',
+          'continuation_war_russian_card_file',
+          'winter_war_collection',
+          'winter_war_collection_from_moscow',
+          'flyer',
+          'karelian_archive_documents',
+          'recording',
+        ];
         var personPrisonerRecordQry = prefixes +
         'SELECT ?id ' +
         '?prefLabel ?prefLabel_lbl ?prefLabel_source ' +
@@ -480,19 +511,50 @@
         '}' ;
 
 
+
         this.getPersonPrisonerRecord = function(id, lang) {
+
+            var prisonerRecordQry = '';
+            for (var i = 0; i < prisonerRecordProperties.length; i++) {
+                    prisonerRecordQry += generatePrisonerPropertyQry(prisonerRecordProperties[i]);
+            }
+            console.log(prisonerRecordQry);
+
             var qry = personPrisonerRecordQry.format(id, lang || 'fi');
             //console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
                 //console.log(objectMapperService.makeObjectList(data));
                 var obj = objectMapperService.makeObjectList(data)[0];
-                console.log(makePropertyList(obj));
+                //console.log(makePropertyList(obj));
                 return makePropertyList(obj);
             });
         };
 
+       function generatePrisonerPropertyQry(property) {
+          var qry =
+          '   OPTIONAL { ' +
+          '     ?id prisoners:' + property + ' ?' + property + ' . ' +
+          '     prisoners:' + property + ' skos:prefLabel ?' + property + '_lbl . ' +
+          '     FILTER( lang(?' + property + '_lbl)="{1}" ) ' +
+          '     ?rei rdf:subject ?id . ' +
+          '     ?rei rdf:predicate prisoners:' + property + ' . ' +
+          '     ?rei rdf:object ?' + property + ' . ' +
+          '     ?rei dc:source ?' + property + '_source . ' +
+          '   } ' +
+          '   OPTIONAL { ' +
+          '     ?id prisoners:' + property + ' ?' + property + ' . ' +
+          '     prisoners:' + property + ' skos:prefLabel ?' + property + '_lbl . ' +
+          '     FILTER( lang(?' + property + '_lbl)="{1}" ) ' +
+          '   } ';
+          return qry;
+
+        }
+
         function makePropertyList(prisonerObj) {
           var propertyList = [];
+
+          console.log(prisonerRecordProperties);
+
           if (prisonerObj.hasOwnProperty('prefLabel')) {
             propertyList.push(makePropertyObject('prefLabel', prisonerObj.prefLabel_lbl, prisonerObj.prefLabel, prisonerObj.prefLabel_source));
           }
