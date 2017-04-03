@@ -58,7 +58,9 @@
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
         '  OPTIONAL { ?id dc:description ?description } ' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
-        '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+        '   OPTIONAL { ?sid skos:prefLabel ?source . ' +
+        '               FILTER( lang(?source)="fi" ) ' +
+        '   } ' +
         '  }' +
         '  OPTIONAL { ' +
         '   ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +

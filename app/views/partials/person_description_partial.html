@@ -14,6 +14,8 @@
 <p ng-if="ctrl.person.cas_unit">{{ 'PERSONS_DEMO.SERVED_IN_UNIT' | translate }} {{ ctrl.person.cas_unit }}</p>
 <p ng-if="ctrl.person.rank">{{ ctrl.person.rank }}</p>
 <p>
-  <small ng-if="ctrl.person.source || ctrl.person.sid">{{ 'SOURCE' | translate }}: {{ ctrl.person.source || ctrl.person.sid | concatList }} | </small>
+  <small ng-if="ctrl.person.source || ctrl.person.sid">{{ 'SOURCE' | translate }}: {{ ctrl.person.source || ctrl.person.sid | concatList }} </small>
+</p>
+<p>
   <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ ctrl.person.id }}</small>
 </p>
