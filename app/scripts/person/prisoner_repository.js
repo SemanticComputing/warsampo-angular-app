@@ -28,7 +28,8 @@
         ' PREFIX sf: <http://ldf.fi/functions#>'  +
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX bioc: <http://ldf.fi/schema/bioc/> ' +
-        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
+        //' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
+        ' PREFIX dc: <http://purl.org/dc/terms/> '
         ' PREFIX prisoners: <http://ldf.fi/schema/warsa/prisoners/> ';
 
         // testing with http://ldf.fi/warsa/actors/person_p525088
