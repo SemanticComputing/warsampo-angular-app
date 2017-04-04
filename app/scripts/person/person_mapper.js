@@ -7,7 +7,7 @@
 
         PersonMapper.prototype.reviseObject = reviseObject;
         PersonMapper.prototype = angular.extend({}, proto, PersonMapper.prototype);
-        Person.objectClass = Person;
+        PersonMapper.prototype.objectClass = Person;
 
         return new PersonMapper();
 

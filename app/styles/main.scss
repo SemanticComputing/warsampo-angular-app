@@ -241,3 +241,7 @@ table.death-record tr:nth-child(even) {
     display:block !important;
   }
 }
+
+.preserve-whitespace {
+    white-space: pre-line;
+}

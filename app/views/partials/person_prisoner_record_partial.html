@@ -1,4 +1,4 @@
-<div ng-if="ctrl.person.prisonerRecord.length">
+<div ng-if="ctrl.person.prisonerRecord">
 
   <h3>Video (testi)</h3>
   <video class="prisoner-video" controls>
@@ -8,20 +8,15 @@
 
   <h3 translate="PRISONER_RECORD"></h3>
   <table class="table death-record">
-    <tr ng-repeat="property in ctrl.person.prisonerRecord">
-      <td>{{ property.propertyLabel }}</td>
-      <td ng-if="property.value | isArray">
-          <div ng-repeat="v in property.value">
-            <span ng-if="property.source | isArray">
-              {{ v }}<span ng-if="property.source"> (lähde: {{ property.source[$index] }})</span>
-            </span>
-            <span ng-if="!(property.source | isArray)">
-              {{ v }}<span ng-if="property.source"> (lähde: {{ property.source }})</span>
-            </span>
+    <tr>
+      <td>Nimi</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
+    </tr>
+    <tr ng-repeat="(key, property) in ctrl.person.prisonerRecord.properties">
+      <td>{{ property.propertyLabel || property[0].propertyLabel }}</td>
+      <td>
+          <div ng-repeat="v in (property | castArray)">
+              {{ v.valueLabel || v.id }}<span ng-if="v.source"> (lähde: {{ v.source | concatList }})</span>
           </div>
-      </td>
-      <td ng-if="!(property.value | isArray)">
-          {{ property.value }} <span ng-if="property.source"> (lähde: {{ property.source }})</span>
       </td>
     </tr>
   </table>
