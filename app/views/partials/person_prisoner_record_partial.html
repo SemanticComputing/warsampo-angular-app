@@ -1,7 +1,8 @@
 <div ng-if="ctrl.person.prisonerRecord.length">
 
+  <h3>Video (testi)</h3>
   <video class="prisoner-video" controls>
-    <source src="images/Oranki.mp4" type="video/mp4">
+    <source src="http://static.sotasampo.fi/videos/test/Oranki.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
@@ -11,11 +12,16 @@
       <td>{{ property.propertyLabel }}</td>
       <td ng-if="property.value | isArray">
           <div ng-repeat="v in property.value">
-              {{ v }}<span ng-if="!property.source[$index].startsWith('no_source_for_')"> (lähde: {{ property.source[$index] }})</span>
+            <span ng-if="property.source | isArray">
+              {{ v }}<span ng-if="property.source"> (lähde: {{ property.source[$index] }})</span>
+            </span>
+            <span ng-if="!(property.source | isArray)">
+              {{ v }}<span ng-if="property.source"> (lähde: {{ property.source }})</span>
+            </span>
           </div>
       </td>
       <td ng-if="!(property.value | isArray)">
-          {{ property.value }}
+          {{ property.value }} <span ng-if="property.source"> (lähde: {{ property.source }})</span>
       </td>
       </td>
     </tr>

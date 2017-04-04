@@ -52,6 +52,9 @@
         "TITLE": "Medal",
         "RELATED_MEDALS": "Other medals"
     },
+    "CEMETERY_DEMO": {
+        "OTHER_CEMETERIES_CLOSE": "Other cemeteries nearby"
+    },
     "TIME_DEMO": {
         "TITLE": "Time Span",
         "RELATED_EVENTS": "Events during this time",
@@ -149,6 +152,7 @@
     "CURRENTLY_SELECTED_EVENT": "Currently selected event",
     "CASUALTIES_DURING_TIMESPAN": "Casualties during",
     "DEATH_RECORD": "Death Record",
+    "CEMETERY": "Cemetery",
     "PRISONER_RECORD": "Prisoner Record",
     "LOADING": "Loading...",
     "NOTE": "Note"

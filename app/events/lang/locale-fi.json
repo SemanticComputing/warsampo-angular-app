@@ -52,6 +52,9 @@
         "TITLE": "Mitali",
         "RELATED_MEDALS": "Muita kunniamerkkejä"
     },
+    "CEMETERY_DEMO": {
+        "OTHER_CEMETERIES_CLOSE": "Muita hautausmaita samalla alueella"
+    },
     "TIME_DEMO": {
         "TITLE": "Ajanjakso",
         "RELATED_EVENTS": "Tapahtumia tähän aikaan",
@@ -149,6 +152,7 @@
     "CURRENTLY_SELECTED_EVENT": "Tällä hetkellä valittu tapahtuma",
     "CASUALTIES_DURING_TIMESPAN": "Menehtyneitä ajanjaksolla",
     "DEATH_RECORD": "Kuolinasiakirja",
+    "CEMETERY": "Hautausmaa",
     "PRISONER_RECORD": "Sotavankeuden tiedot",
     "LOADING": "Ladataan...",
     "NOTE": "Muistiinpano"
