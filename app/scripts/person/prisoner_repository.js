@@ -134,10 +134,7 @@
 
         function makePropertyList(prisonerObj) {
           var propertyList = [];
-
-          console.log(prisonerObj);
-
-
+          //console.log(prisonerObj);
           if (prisonerObj.hasOwnProperty('prefLabel')) {
             propertyList.push(makePropertyObject('prefLabel', prisonerObj.prefLabel_lbl, prisonerObj.prefLabel, prisonerObj.prefLabel_source));
           }
@@ -249,10 +246,6 @@
                     'value':value,
                     'source': source };
         }
-
-
-
-
 
     });
 })();
