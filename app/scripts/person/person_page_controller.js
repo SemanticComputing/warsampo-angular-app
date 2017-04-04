@@ -2,12 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('PersonPageController', PersonPageController)
-    .filter('isArray', function() {
-        return function (input) {
-          return angular.isArray(input);
-        };
-    });
+    .controller('PersonPageController', PersonPageController);
 
     /* @ngInject */
     function PersonPageController($routeParams, $q, $rootScope, personService) {
