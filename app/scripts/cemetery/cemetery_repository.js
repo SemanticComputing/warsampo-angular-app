@@ -39,7 +39,8 @@
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
-        ' PREFIX cemeteries: <http://ldf.fi/schema/warsa/places/cemeteries/>'
+        ' PREFIX cemeteries: <http://ldf.fi/schema/warsa/places/cemeteries/>' +
+        ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
         ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
@@ -64,10 +65,9 @@
         baseResultSet;
 
         var relatedPersonQryResultSet =
-        ' SELECT DISTINCT ?id { ' +
         '  VALUES ?cemetery { <CEMETERY> } ' +
-        '  ?id nsc:hautausmaa ?cemetery . ' +
-        ' } ' +
+        '  ?death_record nsc:hautausmaa ?cemetery . ' +
+        '  ?death_record crm:P70_documents ?id . ' +
         '';
 
         var cemeteryQry = select +
@@ -78,8 +78,6 @@
         '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
         '  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
         ' } ';
-
-
 
         /**
         * @ngdoc method
@@ -170,14 +168,11 @@
         *   or if pageSize was given, a promise of a `PagerService` instance.
         */
         function getRelatedPersons(id, pageSize) {
-          id = baseRepository.uriFy(id);
-          var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
-          var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet);
-          console.log( endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery)  );
-          return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            id = baseRepository.uriFy(id);
+            var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
+            var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
-
-
 
     }
 })();

@@ -23,7 +23,7 @@
         self.getCemeteriesByPlaceId = getCemeteriesByPlaceId;
 
         self.fetchRelated = fetchRelated;
-        self.fetchPeople = fetchPeople;
+        self.fetchRelatedPersons = fetchRelatedPersons;
 
         /**
         * @ngdoc method
@@ -35,10 +35,11 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchRelated(cemetery) {
-            //console.log(cemetery);
+            console.log(cemetery);
             var related = [
-                self.fetchPeople(cemetery)
+                self.fetchRelatedPersons(cemetery)
             ];
+            //console.log(cemetery);
             return $q.all(related).then(function() {
                 return cemetery;
             });
@@ -53,14 +54,12 @@
         * @param {Object} cemetery The cemetery object for which to fetch related data.
         * @returns {promise} A promise of the modified cemetery object.
         */
-        function fetchPeople(cemetery) {
-
+        function fetchRelatedPersons(cemetery) {
             return cemeteryRepository.getRelatedPersons(cemetery.id, Settings.pageSize)
             .then(function(data) {
                 if (data) {
-                  //console.log(data);
-                  cemetery.relatedPersons = data;
-                  cemetery.hasLinks = true;
+                    cemetery.relatedPersons = data;
+                    cemetery.hasLinks = true;
                 }
             });
         }
