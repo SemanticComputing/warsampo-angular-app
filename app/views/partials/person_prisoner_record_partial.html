@@ -7,15 +7,16 @@
   </video>
 
   <h3 translate="PRISONER_RECORD"></h3>
-  <table class="table death-record">
+  <table class="table person-record">
     <tr>
       <td>Nimi</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
     </tr>
     <tr ng-repeat="(key, property) in ctrl.person.prisonerRecord.properties">
-      <td>{{ property.propertyLabel || property[0].propertyLabel }}</td>
-      <td>
+      <td class="person-record-property">{{ property.propertyLabel || property[0].propertyLabel }}</td>
+      <td class="person-record-value">
           <div ng-repeat="v in (property | castArray)">
               {{ v.valueLabel || v.id }}<span ng-if="v.source"> (lähde: {{ v.source | concatList }})</span>
+              <hr ng-if="key=='other_information' && !$last">
           </div>
       </td>
     </tr>

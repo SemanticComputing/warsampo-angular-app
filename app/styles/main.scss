@@ -85,25 +85,32 @@ a.no-decoration {
 }
 
 .prisoner-video {
-  width: 65%;
-  max-width: 550px;
+  width: 100%;
+  max-width: 700px;
   margin-bottom:30px;
 }
 
-.death-record {
+.person-record {
     // font-family: "Courier New", Courier, monospace;
-    width: 65%;
+    width: 100%;
     border: 1px solid #ddd;
-    max-width: 550px;
+    max-width: 700px;
 }
 
-.death-record > tbody > tr > td {
+.person-record-property {
+    width:40%;
+}
+
+.person-record-value {
+    width:60%;
+}
+
+.person-record > tbody > tr > td {
     border-top: 1px solid #ddd;
     padding: 4px !important;
-    width:50%;
 }
 
-table.death-record tr:nth-child(even) {
+table.person-record tr:nth-child(even) {
     background-color: #f8f6f4;
 }
 
