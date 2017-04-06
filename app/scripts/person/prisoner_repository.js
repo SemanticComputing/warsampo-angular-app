@@ -43,8 +43,8 @@
         var prisonerRecordProperties = [
             'birth_date',
             'birth_place',
-            'home_place',
-            'residence_place',
+            //'home_place',
+            //'residence_place',
             'marital_status',
             'amount_children',
             'has_occupation',
@@ -56,12 +56,13 @@
             'place_captured_battle',
             'explanation',
             'camps_and_hospitals',
-            'other_information',
             'returned_date',
             'death_date',
+            'death_place',
             'cause_of_death',
             'burial_place',
             'photograph',
+            'other_information',
             'karaganda_card_file',
             'continuation_war_card_file',
             'continuation_war_russian_card_file',
@@ -92,35 +93,46 @@
             var qry = prisonerRecordQry
                 .replace(/<ID>/g, '<' + id + '>')
                 .replace(/<LANG>/g, lang);
+            //console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
+                console.log(data[0]);
                 return data[0];
             });
         };
 
         function generatePrisonerPropertyQry(property) {
+            var namespace;
+            if (property == 'has_occupation') {
+                namespace = 'bioc:'
+            } else {
+                namespace = 'prisoners:'
+            }
+
             var qry =
             ' OPTIONAL { ' +
             '  ?rei_<PROPERTY> rdf:subject ?id . ' +
-            '  ?id prisoners:<PROPERTY> ?properties__<PROPERTY>__id . ' +
-            //'  OPTIONAL { ?<PROPERTY>__id skos:prefLabel ?<PROPERTY> . } ' +
-            '  prisoners:<PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
+            '  ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
+            '  OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
+            //'  ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . ' +
+            '  <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
             '  FILTER(lang(?properties__<PROPERTY>__propertyLabel)="<LANG>") . ' +
-            '  ?rei_<PROPERTY> rdf:predicate prisoners:<PROPERTY> . ' +
+            '  ?rei_<PROPERTY> rdf:predicate <NAMESPACE><PROPERTY> . ' +
             '  ?rei_<PROPERTY> rdf:object ?properties__<PROPERTY>__id . ' +
             '  ?rei_<PROPERTY> dct:source ?properties__<PROPERTY>__source . ' +
             ' } ' +
             ' OPTIONAL { ' +
-            '  ?id prisoners:<PROPERTY> ?properties__<PROPERTY>__id . ' +
-            //'  OPTIONAL { ?<PROPERTY>__id skos:prefLabel ?<PROPERTY>__valueLabel . } ' +
-            '  prisoners:<PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
+            '  ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
+            '  OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
+            //' { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
+            '  <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
             '  FILTER(lang(?properties__<PROPERTY>__propertyLabel)="<LANG>") . ' +
             ' } ';
 
-            return qry.replace(/<PROPERTY>/g, property);
+            return qry.replace(/<PROPERTY>/g, property).replace(/<NAMESPACE>/g, namespace);
         }
 
         function generatePrisonerSelectRow(property) {
-            return '?properties__' + property + '__id ?properties__' + property + '__propertyLabel ?properties__' + property + '__source ';
+            return '?properties__' + property + '__id ?properties__' + property + '__propertyLabel ?properties__' + property + '__valueLabel ?properties__' + property + '__source ';
         }
     });
 })();
