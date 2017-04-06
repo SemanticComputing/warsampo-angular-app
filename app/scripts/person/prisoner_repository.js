@@ -93,20 +93,13 @@
             var qry = prisonerRecordQry
                 .replace(/<ID>/g, '<' + id + '>')
                 .replace(/<LANG>/g, lang);
-            //console.log(qry);
             return endpoint.getObjects(qry).then(function(data) {
-                console.log(data[0]);
                 return data[0];
             });
         };
 
         function generatePrisonerPropertyQry(property) {
-            var namespace;
-            if (property == 'has_occupation') {
-                namespace = 'bioc:'
-            } else {
-                namespace = 'prisoners:'
-            }
+            var namespace = property === 'has_occupation' ? 'bioc:' : 'prisoners:';
 
             var qry =
             ' OPTIONAL { ' +
