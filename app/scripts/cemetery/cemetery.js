@@ -23,7 +23,7 @@
         self.getCemeteriesByPlaceId = getCemeteriesByPlaceId;
 
         self.fetchRelated = fetchRelated;
-        self.fetchRelatedPersons = fetchRelatedPersons;
+        self.fetchPeople = fetchPeople;
 
         /**
         * @ngdoc method
@@ -35,11 +35,9 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchRelated(cemetery) {
-            console.log(cemetery);
             var related = [
-                self.fetchRelatedPersons(cemetery)
+                self.fetchPeople(cemetery)
             ];
-            //console.log(cemetery);
             return $q.all(related).then(function() {
                 return cemetery;
             });
@@ -54,20 +52,25 @@
         * @param {Object} cemetery The cemetery object for which to fetch related data.
         * @returns {promise} A promise of the modified cemetery object.
         */
-        function fetchRelatedPersons(cemetery) {
+        function fetchPeople(cemetery) {
             return cemeteryRepository.getRelatedPersons(cemetery.id, Settings.pageSize)
             .then(function(data) {
                 if (data) {
                     cemetery.relatedPersons = data;
                     cemetery.hasLinks = true;
-                }
+                  }
             });
         }
 
         /**
         * @ngdoc method
         * @methodOf eventsApp.cemeteryService
-        * @name eventsApp.cemeteryService#getSingleCemeteryById
+        * @name eventsApp.ce  this.getRelatedPersons = function(id, pageSize) {
+            id = baseRepository.uriFy(id);
+            var resultSet = relatedPersonQryResultSet.replace(/<ACTOR>/g, id);
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        };meteryService#getSingleCemeteryById
         * @description
         * Get a single cemetery by its URI.
         * @param {string} id The URI cemetery resource.
@@ -96,4 +99,4 @@
             return cemeteryRepository.getByPlaceId(ids, pageSize);
         }
     }
-})();
+})()

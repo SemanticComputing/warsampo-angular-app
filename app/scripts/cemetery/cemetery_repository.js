@@ -49,8 +49,11 @@
 
         var orderBy = '?label';
 
-        var select =
+        var singleSelect =
         ' SELECT DISTINCT ?id ?type ?type_id ?label ?place_id ?status';
+
+        var select =
+        ' SELECT DISTINCT ?id ?type ?type_id ?label ';
 
         var baseResultSet =
         ' ?id a cemeteries:Cemetery . ' +
@@ -67,12 +70,19 @@
         baseResultSet;
 
         var relatedPersonQryResultSet =
-        '  VALUES ?cemetery { <CEMETERY> } ' +
-        '  ?death_record nsc:hautausmaa ?cemetery . ' +
-        '  ?death_record crm:P70_documents ?id . ' +
-        '';
+        '   VALUES ?cemetery { <CEMETERY> } ' +
+        '   ?death_record crm:P70_documents ?id . ' +
+        '   ?death_record nsc:hautausmaa ?cemetery . ';
 
         var cemeteryQry = select +
+        ' { ' +
+        '  <RESULT_SET> ' +
+        '  ?id a ?type_id . ' +
+        '  ?type_id skos:prefLabel ?type . ' +
+        '  ?id skos:prefLabel ?label . ' +
+        ' } ';
+
+        var singleCemeteryQry = singleSelect +
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id a ?type_id . ' +
@@ -102,11 +112,9 @@
         '  OPTIONAL { ?id cemeteries-schema:memorial_unveiling_date ?memorial_unveiling_date . } ' +
         '  OPTIONAL { ?id cemeteries-schema:memorial ?memorial . } ' +
         '  OPTIONAL { ?id cemeteries-schema:memorial_sculptor ?memorial_sculptor . } ' +
-        '  OPTIONAL { ' +
-        '   ?cem_temp wgs84:lat ?lat . ' +
-        '   ?cem_temp wgs84:long ?long . ' +
-        '  } ' +
-        '  OPTIONAL { ?cem_temp cemeteries-schema:address ?address . } ' +
+        '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
+        '  OPTIONAL { ?id wgs84:long ?long . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
         ' } ';
 
         /**
@@ -126,8 +134,9 @@
                 $q.reject('Expected a single URI');
             }
             var resultSet = singleResultSet.replace('<ID>', baseRepository.uriFy(id));
-            var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet);
-            //console.log(qryObj.query);
+            var qryObj = queryBuilder.buildQuery(singleCemeteryQry, resultSet);
+            console.log("cemetery - getSingleById");
+            console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
                     return data[0];
@@ -201,8 +210,11 @@
             id = baseRepository.uriFy(id);
             var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
             var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet);
+            console.log("cemetery - getRelatedPersons");
+            console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
+
 
     }
 })();
