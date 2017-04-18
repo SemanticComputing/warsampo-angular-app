@@ -28,7 +28,7 @@
         self.getByPlaceIdFilterById = getByPlaceIdFilterById;
         self.getRelatedPersons = getRelatedPersons;
 
-        // test url: http://localhost:9000/fi/cemeteries/page?uri=http%3A%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0667_1
+        // test url: http://localhost:9000/fi/cemeteries/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0003_1
 
         /* Implementation */
 
@@ -50,10 +50,19 @@
         var orderBy = '?label';
 
         var singleSelect =
-        ' SELECT DISTINCT ?id ?type ?type_id ?label ?place_id ?status';
+        ' SELECT DISTINCT ?id ?type ?type_id ?label ?place_id ?status ?cemetery_type ' +
+        ' ?cemetery_id ?narc_name ?current_municipality ?former_municipality ' +
+        ' ?photograph_1 ?photographer_1 ' +
+        ' ?photograph_2 ?photographer_2 ' +
+        ' ?photograph_3 ?photographer_3 ' +
+        ' ?photograph_4 ?photographer_4 ' +
+        ' ?photograph_5 ?photographer_5 ' +
+        ' ?camera_club ?architect ?number_of_graves ?date_of_foundation ' +
+        ' ?memorial_unveiling_date ?memorial ?memorial_sculptor ' +
+        ' ?lat ?long ?address ';
 
         var select =
-        ' SELECT DISTINCT ?id ?type ?type_id ?label ';
+        ' SELECT DISTINCT ?id ?label ';
 
         var baseResultSet =
         ' ?id a cemeteries:Cemetery . ' +
@@ -74,11 +83,9 @@
         '   ?death_record crm:P70_documents ?id . ' +
         '   ?death_record nsc:hautausmaa ?cemetery . ';
 
-        var cemeteryQry = select +
+        var relatedQry = select +
         ' { ' +
         '  <RESULT_SET> ' +
-        '  ?id a ?type_id . ' +
-        '  ?type_id skos:prefLabel ?type . ' +
         '  ?id skos:prefLabel ?label . ' +
         ' } ';
 
@@ -135,11 +142,13 @@
             }
             var resultSet = singleResultSet.replace('<ID>', baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(singleCemeteryQry, resultSet);
-            console.log("cemetery - getSingleById");
+            console.log("cemetery - getSingleById - query:");
             console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
+                    console.log(data[0]);
                     return data[0];
+
                 }
                 return $q.reject('Not found');
             });
@@ -191,7 +200,9 @@
             var resultSet = byPlaceQryResultSet
                 .replace('<ID>', placeIds)
                 .replace('<FILTER>', filter);
-            var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet, orderBy);
+            var qryObj = queryBuilder.buildQuery(relatedQry, resultSet, orderBy);
+            console.log("cemetery - getByPlaceIdFilterById - query:");
+            console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 
@@ -209,8 +220,8 @@
         function getRelatedPersons(id, pageSize) {
             id = baseRepository.uriFy(id);
             var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
-            var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet);
-            console.log("cemetery - getRelatedPersons");
+            var qryObj = queryBuilder.buildQuery(relatedQry, resultSet);
+            console.log("cemetery - getRelatedPersons - query:");
             console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
