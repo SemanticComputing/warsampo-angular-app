@@ -9,6 +9,24 @@
       <h2>
         {{ vm.cemetery.getLabel() }}
       </h2>
+      <p ng-if="vm.cemetery.date_of_foundation">
+        Perustamisvuosi: {{ vm.cemetery.date_of_foundation }}
+      </p>
+      <p ng-if="vm.cemetery.number_of_graves">
+        Hautojen lukumäärä: {{ vm.cemetery.number_of_graves }}
+      </p>
+      <p ng-if="vm.cemetery.memorial">
+        Muistomerkki: {{ vm.cemetery.memorial }} (kuvanveistäjä: {{ vm.cemetery.memorial_sculptor }}, paljastettu {{ vm.cemetery.memorial_unveiling_date }})
+      </p>
+      <p ng-if="vm.cemetery.address">
+        Katusoite: {{ vm.cemetery.address }}
+      </p>
+      <img ng-if="vm.cemetery.photograph_1" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_1 }}">
+      <img ng-if="vm.cemetery.photograph_2" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_2 }}">
+      <img ng-if="vm.cemetery.photograph_3" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_3 }}">
+      <img ng-if="vm.cemetery.photograph_4" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_4 }}">
+      <img ng-if="vm.cemetery.photograph_5" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_5 }}">
+
     </div>
   </div>
   <!-- Links -->
