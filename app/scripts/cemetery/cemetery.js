@@ -14,7 +14,7 @@
     .service('cemeteryService', cemeteryService);
 
     /* @ngInject */
-    function cemeteryService($q, _, baseService, cemeteryRepository, Settings) {
+    function cemeteryService($q, _, baseService, cemeteryRepository, photoRepository, Settings) {
         var self = this;
 
         /* Public API */
@@ -24,6 +24,7 @@
 
         self.fetchRelated = fetchRelated;
         self.fetchPeople = fetchPeople;
+        self.fetchRelatedPhotos = fetchRelatedPhotos;
 
         /**
         * @ngdoc method
@@ -36,7 +37,8 @@
         */
         function fetchRelated(cemetery) {
             var related = [
-                self.fetchPeople(cemetery)
+                self.fetchPeople(cemetery),
+                self.fetchRelatedPhotos(cemetery)
             ];
             return $q.all(related).then(function() {
                 return cemetery;
@@ -59,6 +61,18 @@
                     cemetery.relatedPersons = data;
                     cemetery.hasLinks = true;
                   }
+            });
+        }
+
+        function fetchRelatedPhotos(cemetery) {
+            return photoRepository.getByCemeteryId(cemetery.id, 50).then(function(imgs) {
+                cemetery.images = imgs;
+                return imgs.getTotalCount();
+            }).then(function(count) {
+                if (count) {
+                    cemetery.hasLinks = true;
+                }
+                return cemetery;
             });
         }
 

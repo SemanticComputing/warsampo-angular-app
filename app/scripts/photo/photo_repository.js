@@ -25,6 +25,7 @@
         self.getByIdUnionTimeSpan = getByIdUnionTimeSpan;
         self.getByIdUnionPlaceAndTimeSpan = getByIdUnionPlaceAndTimeSpan;
         self.getByPersonId = getByPersonId;
+        self.getByCemeteryId = getByCemeteryId;
         self.getByUnitId = getByUnitId;
         self.getByThemeId = getByThemeId;
         self.getMinimalDataWithPlaceByTimeSpan = getMinimalDataWithPlaceByTimeSpan;
@@ -129,6 +130,11 @@
         ' { ?id ^crm:P94_has_created/crm:P11_had_participant ?participant_id . } ' +
         ' UNION ' +
         ' { ?id ^crm:P94_has_created/crm:P14_carried_out_by ?participant_id . } ' +
+        ' ?id a wph:Photograph . ';
+
+        var photosByCemeteryResultSet =
+        ' VALUES ?cemetery_id { <ID> } ' +
+        ' ?id crm:P138_represents ?cemetery_id . ' +
         ' ?id a wph:Photograph . ';
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +
@@ -258,6 +264,18 @@
             }
             var resultSet = photosByPersonResultSet.replace('<ID>', id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+        }
+
+        function getByCemeteryId(id, pageSize) {
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var resultSet = photosByCemeteryResultSet.replace('<ID>', id);
+            var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
+            console.log("photorepo - getByCemeteryId - query:");
+            console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 

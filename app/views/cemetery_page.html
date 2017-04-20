@@ -21,11 +21,8 @@
       <p ng-if="vm.cemetery.address">
         Katusoite: {{ vm.cemetery.address }}
       </p>
-      <img ng-if="vm.cemetery.photograph_1" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_1 }}">
-      <img ng-if="vm.cemetery.photograph_2" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_2 }}">
-      <img ng-if="vm.cemetery.photograph_3" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_3 }}">
-      <img ng-if="vm.cemetery.photograph_4" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_4 }}">
-      <img ng-if="vm.cemetery.photograph_5" src="http://static.sotasampo.fi/photographs/cemeteries/300x200px/_p_{{ vm.cemetery.photograph_5 }}">
+
+      <ws-photo-gallery images="vm.cemetery.images"></ws-photo-gallery>
 
     </div>
   </div>
