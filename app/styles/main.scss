@@ -34,11 +34,20 @@ body {
     overflow: hidden;
 }
 
-.cemetery-collapse-with-teaser {
+.simple-collapse-with-teaser {
     min-height: 205px !important;
     display: block !important;
     overflow: hidden;
 }
+
+.simple-collapse-with-teaser a:hover, .collapse-with-teaser a:hover  {
+    text-decoration: none;
+}
+
+.simple-gallery-caption {
+    margin-top:4px;
+}
+
 
 .photo-gallery {
     max-width: 13000px;
@@ -52,12 +61,12 @@ body {
     padding: 5px;
 }
 
-.cemetery-gallery-thumbnail-container {
+.simple-gallery-thumbnail-container {
     display: inline-block;
-    height: 200px;
+    height: 228px;  // image height 220px + caption 20px + padding
     width: 300px;
     overflow: hidden;
-    padding: 5px;
+    padding: 8px;
 }
 
 .error-msg {
