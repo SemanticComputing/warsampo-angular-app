@@ -1,0 +1,43 @@
+<div id="blueimp-gallery-{{ ::ctrl.galleryId }}" class="blueimp-gallery blueimp-gallery-controls">
+  <!-- The container for the modal slides -->
+  <div class="slides"></div>
+  <!-- Controls for the borderless lightbox -->
+  <h3 class="title"></h3>
+  <a class="description" target="_self" translate>SHOW_INFO_PAGE</a>
+  <a class="prev">‹</a>
+  <a class="next">›</a>
+  <a class="close">×</a>
+</div>
+<div>
+  <div ng-show="ctrl.isLoadingImages">
+    {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
+  </div>
+  <p ng-show="!ctrl.isLoadingImages">
+    <!-- <span translate="{{ ctrl.nPhotosText || 'N_PHOTOS'}}"
+        translate-value-for-resource="{{ (ctrl.resourceType || 'FOR_THIS_RESOURCE') | translate }}"
+        translate-values="{ NUM: ctrl.imageCount }"
+        translate-interpolation="messageformat"></span>
+    <span ng-show="ctrl.hasMore || !ctrl.isCollapsed"> |
+      <a href="" ng-click="ctrl.toggleCollapse()">
+        <span ng-show="ctrl.isCollapsed" translate>SHOW_ALL_PHOTOS</span>
+        <span ng-show="!ctrl.isCollapsed" translate>SHOW_LESS_PHOTOS</span>
+      </a>
+    </span> -->
+    <img ng-show="ctrl.isLoadingMoreImages" src="images/loading.gif" />
+  </p>
+  <div ng-if="ctrl.imageCount">
+    <div id="photo-thumbs-{{ ctrl.galleryId }}" class="cemetery-collapse-with-teaser photo-gallery" >
+      <div id="photo-container-{{ ctrl.galleryId }}">
+        <a ng-repeat="img in ctrl.photos"
+          data-gallery="#blueimp-gallery-{{ ::ctrl.galleryId }}"
+          title="{{ ::img.description }} ({{ ::img.created }} {{ ::img.source }})"
+          data-id="{{ ::img.id }}"
+          ng-href="{{ ::img.url }}">
+          <div class="cemetery-gallery-thumbnail-container">
+            <img ws-fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ ::img.thumbnail_url }}" />
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

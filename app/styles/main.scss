@@ -34,6 +34,12 @@ body {
     overflow: hidden;
 }
 
+.cemetery-collapse-with-teaser {
+    min-height: 205px !important;
+    display: block !important;
+    overflow: hidden;
+}
+
 .photo-gallery {
     max-width: 13000px;
 }
@@ -42,6 +48,14 @@ body {
     display: inline-block;
     height: 100px;
     width: 100px;
+    overflow: hidden;
+    padding: 5px;
+}
+
+.cemetery-gallery-thumbnail-container {
+    display: inline-block;
+    height: 200px;
+    width: 300px;
     overflow: hidden;
     padding: 5px;
 }
