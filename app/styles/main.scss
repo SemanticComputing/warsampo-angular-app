@@ -164,12 +164,14 @@ table.person-record tr:nth-child(even) {
 
 #simple-google-map-container {
     width: 100%;
+    max-width: 1215px;
     height: 400px;
     position: relative;
 }
 
 #simple-google-map {
     width: 100%;
+    max-width: 1215px;
     height: 400px;
 }
 

@@ -142,11 +142,11 @@
             }
             var resultSet = singleResultSet.replace('<ID>', baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(singleCemeteryQry, resultSet);
-            console.log("cemetery - getSingleById - query:");
-            console.log(qryObj.query);
+            // console.log("cemetery - getSingleById - query:");
+            // console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
-                    console.log(data[0]);
+                    // console.log(data[0]);
                     return data[0];
 
                 }
@@ -201,8 +201,8 @@
                 .replace('<ID>', placeIds)
                 .replace('<FILTER>', filter);
             var qryObj = queryBuilder.buildQuery(relatedQry, resultSet, orderBy);
-            console.log("cemetery - getByPlaceIdFilterById - query:");
-            console.log(qryObj.query);
+            // console.log("cemetery - getByPlaceIdFilterById - query:");
+            // console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 
@@ -221,8 +221,8 @@
             id = baseRepository.uriFy(id);
             var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
             var qryObj = queryBuilder.buildQuery(relatedQry, resultSet);
-            console.log("cemetery - getRelatedPersons - query:");
-            console.log(qryObj.query);
+            // console.log("cemetery - getRelatedPersons - query:");
+            // console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 
