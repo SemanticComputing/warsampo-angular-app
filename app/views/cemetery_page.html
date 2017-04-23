@@ -1,6 +1,7 @@
 <div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>CEMETERY</h1></a></div>
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
+
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="vm.isLoadingMedal" src="images/loading.gif" />
@@ -24,8 +25,13 @@
 
       <ws-simple-photo-gallery images="vm.cemetery.images"></ws-simple-photo-gallery>
 
+      <div id="simple-google-map-container">
+        <ws-google-map id="simple-google-map" persons="vm.cemetery.relatedPersons" style="position: absolute;"></ws-google-map>
+      </div>
+
     </div>
   </div>
+
   <!-- Links -->
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
@@ -36,4 +42,6 @@
       <ws-related-links-paged data-title="'CEMETERY_DEMO.OTHER_CEMETERIES_CLOSE' | translate" data-paginator="vm.relatedCemeteriesByPlace"></ws-related-links-paged>
 
     </div>
+  </div>
+
 </div>

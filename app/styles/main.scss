@@ -162,6 +162,17 @@ table.person-record tr:nth-child(even) {
     left: 0px;
 }
 
+#simple-google-map-container {
+    width: 100%;
+    height: 400px;
+    position: relative;
+}
+
+#simple-google-map {
+    width: 100%;
+    height: 400px;
+}
+
 .blueimp-gallery {
     .title {
         overflow: hidden;
