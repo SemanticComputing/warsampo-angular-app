@@ -65,7 +65,7 @@
 
             var personUris = _(cemetery).castArray().map('person_id').flatten().compact().uniq().value();
 
-            return eventRepository.getByPersonId(personUris).then(function(places) {
+            return eventRepository.getDeathByPersonId(personUris).then(function(places) {
                 return baseService.combineRelated(cemetery, persons, 'person_id', 'relatedPersons');
             });
 
