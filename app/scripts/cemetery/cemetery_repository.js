@@ -52,11 +52,6 @@
         var singleSelect =
         ' SELECT DISTINCT ?id ?type ?type_id ?label ?place_id ?status ?cemetery_type ' +
         ' ?cemetery_id ?narc_name ?current_municipality ?former_municipality ' +
-        ' ?photograph_1 ?photographer_1 ' +
-        ' ?photograph_2 ?photographer_2 ' +
-        ' ?photograph_3 ?photographer_3 ' +
-        ' ?photograph_4 ?photographer_4 ' +
-        ' ?photograph_5 ?photographer_5 ' +
         ' ?camera_club ?architect ?number_of_graves ?date_of_foundation ' +
         ' ?memorial_unveiling_date ?memorial ?memorial_sculptor ' +
         ' ?lat ?long ?address ';
@@ -102,16 +97,6 @@
         '  OPTIONAL { ?id cemeteries-schema:narc_name ?narc_name . } ' +
         '  OPTIONAL { ?id cemeteries-schema:current_municipality ?current_municipality . } ' +
         '  OPTIONAL { ?id cemeteries-schema:former_municipality ?former_municipality . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photograph_1 ?photograph_1 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photographer_1 ?photographer_1 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photograph_2 ?photograph_2 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photographer_2 ?photographer_2 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photograph_3 ?photograph_3 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photographer_3 ?photographer_3 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photograph_4 ?photograph_4 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photographer_4 ?photographer_4 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photograph_5 ?photograph_5 . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:photographer_5 ?photographer_5 . } ' +
         '  OPTIONAL { ?id cemeteries-schema:camera_club ?camera_club . } ' +
         '  OPTIONAL { ?id cemeteries-schema:architect ?architect . } ' +
         '  OPTIONAL { ?id cemeteries-schema:number_of_graves ?number_of_graves . } ' +
