@@ -132,18 +132,25 @@
                 }
             }
 
+            function formatQry(qry, ids) {
+                return prefixes + select + qry.replace('<ID>', baseRepository.uriFy(ids));
+            }
+
             id = _.castArray(id);
             id.forEach(function(uri) {
                 pushUri(uri);
             });
 
-            warsaQ = prefixes + select + warsaQ.replace('<ID>', baseRepository.uriFy(warsaId));
-            pnrQ = prefixes + select + pnrQ.replace('<ID>', baseRepository.uriFy(pnrId));
+            var queries = [];
 
-            return $q.all([
-                warsaEndpoint.getObjects(warsaQ),
-                pnrEndpoint.getObjects(pnrQ)
-            ]).then(function(places) {
+            if (warsaId.length) {
+                queries.push(warsaEndpoint.getObjects(formatQry(warsaQ, warsaId)));
+            }
+            if (pnrId.length) {
+                queries.push(pnrEndpoint.getObjects(formatQry(pnrQ, pnrId)));
+            }
+
+            return $q.all(queries).then(function(places) {
                 return _.flatten(places);
             });
         }
