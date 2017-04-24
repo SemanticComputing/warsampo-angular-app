@@ -79,12 +79,7 @@
         /**
         * @ngdoc method
         * @methodOf eventsApp.cemeteryService
-        * @name eventsApp.ce  this.getRelatedPersons = function(id, pageSize) {
-            id = baseRepository.uriFy(id);
-            var resultSet = relatedPersonQryResultSet.replace(/<ACTOR>/g, id);
-            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        };meteryService#getSingleCemeteryById
+        * @name eventsApp.cemeteryService#getSingleCemeteryById
         * @description
         * Get a single cemetery by its URI.
         * @param {string} id The URI cemetery resource.
