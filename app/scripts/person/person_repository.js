@@ -284,6 +284,9 @@
 
         this.getByIdList = function(ids, pageSize) {
             ids = baseRepository.uriFy(ids);
+            if (!ids) {
+                return $q.when();
+            }
             var resultSet = personQryResultSet.format(ids);
             var qryObj = queryBuilder.buildQuery(personQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
