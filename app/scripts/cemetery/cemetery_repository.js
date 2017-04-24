@@ -134,7 +134,7 @@
             // console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
-                    console.log(data[0]);
+                    //console.log(data[0]);
                     return data[0];
 
                 }

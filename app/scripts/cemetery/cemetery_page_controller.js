@@ -42,7 +42,8 @@
                     vm.relatedCemeteriesByPlace = cemeteries;
                     vm.isLoadingLinks = false;
                 });
-            }).catch(function() {
+            }).catch(function(error) {
+                console.log(error);
                 vm.isLoadingCemetery = false;
                 vm.isLoadingLinks = false;
             });

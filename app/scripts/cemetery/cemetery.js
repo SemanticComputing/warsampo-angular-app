@@ -58,11 +58,7 @@
         function fetchPeople(cemetery) {
             return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository)
             .then(function(cemetery) {
-                var personUris = _(cemetery).castArray().map('person_id').flatten().compact().uniq().value();
-                return eventRepository.getDeathByPersonId(personUris);
-            })
-            .then(function(deaths) {
-                return baseService.combineRelated(cemetery.buriedPersons, deaths, 'died_id', 'deathEvent');
+                return baseService.getRelated(cemetery.buriedPersons, 'death_id', 'deathEvent', eventRepository);
             });
         }
 

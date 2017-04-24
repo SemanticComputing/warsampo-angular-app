@@ -7,10 +7,16 @@
 
         var self = this;
 
+        self.drawMarker = drawMarker;
         self.createHeatmap = createHeatmap;
         self.clearHeatmap = clearHeatmap;
         self.updateHeatmap = updateHeatmap;
         self.normalizeMapZoom = normalizeMapZoom;
+
+
+        function drawMarker(lat, long, map) {
+            return;
+        }
 
         // Expects a list of objects with lat and lon
         function createHeatmap() {

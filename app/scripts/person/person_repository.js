@@ -42,7 +42,7 @@
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
         '  ?natiobib ?wikilink ?casualty ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ' +
-        '  ?sid ?source ';
+        '  ?sid ?source ?death_id ';
 
         var personQryResultSet =
         ' VALUES ?id { {0} }' +
@@ -56,9 +56,10 @@
         '  ?id skos:prefLabel ?lbl .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
-        '  OPTIONAL { ?id dc:description ?description } ' +
+        '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
+        '  OPTIONAL { ?id dc:description ?description . } ' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
-        '   OPTIONAL { ?sid skos:prefLabel ?source . ' +
+        '  OPTIONAL { ?sid skos:prefLabel ?source . ' +
         '               FILTER( lang(?source)="fi" ) ' +
         '   } ' +
         '  }' +

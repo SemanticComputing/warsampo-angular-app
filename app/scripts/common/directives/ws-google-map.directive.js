@@ -6,8 +6,7 @@
         return {
             restrict:'E',
             scope: {
-                persons: '<',
-                config: '<'
+                objects: '<',
             },
             controller: GoogleMapContoller,
             controllerAs: 'ctrl',
@@ -23,15 +22,24 @@
 
         initMap();
 
-        $scope.$watch('persons', function(val) {
+        $scope.$watch('objects', function(val) {
             if (!val || _.isArray(val) && !val.length) {
                 return;
             }
-            drawMarkers(val)
+            visualizeDeaths(val)
         });
 
-        function drawMarkers(markers) {
-            console.log(markers.getAllSequentially(100));
+        function visualizeDeaths(personObjs) {
+            var lat;
+            var long;
+
+            personObjs.forEach(function(personObj) {
+                console.log(personObj);
+                console.log(personObj.death_id);
+                console.log(personObj.deathEvent);
+                //googleMapsService.drawMarker()
+            });
+
 
             var uluru = {lat: -25.363, lng: 131.044};
             var marker = new google.maps.Marker({

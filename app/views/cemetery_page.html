@@ -4,7 +4,7 @@
 
   <!-- Metadata -->
   <div class="col-sm-8">
-    <img ng-show="vm.isLoadingMedal" src="images/loading.gif" />
+    <img ng-show="vm.isLoadingCemetery" src="images/loading.gif" />
     <p ng-if="!vm.cemetery && !vm.isLoadingCemetery" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="vm.cemetery">
       <h2>
@@ -28,7 +28,7 @@
       <h3>Menehtymispaikat</h3>
 
       <div id="simple-google-map-container">
-        <ws-google-map id="simple-google-map" persons="vm.cemetery.relatedPersons" style="position: absolute;"></ws-google-map>
+        <ws-google-map id="simple-google-map" objects="vm.cemetery.buriedPersons" style="position: absolute;"></ws-google-map>
       </div>
 
     </div>
