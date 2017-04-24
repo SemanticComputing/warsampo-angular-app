@@ -107,8 +107,9 @@
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?long . } ' +
         '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
-        '  OPTIONAL { ?death_record_id nsc:hautausmaa ?id . } ' +
-        '  OPTIONAL { ?death_record_id crm:P70_documents ?person_id . } ' +
+        '  OPTIONAL { ?death_record_id nsc:hautausmaa ?id . ' +
+        '     ?death_record_id crm:P70_documents ?person_id . ' +
+        ' } ' +
         ' } ';
 
         /**
