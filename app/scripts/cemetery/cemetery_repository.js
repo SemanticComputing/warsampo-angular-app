@@ -54,9 +54,9 @@
         ' ?cemetery_id ?narc_name ?current_municipality ?former_municipality ' +
         ' ?camera_club ?architect ?number_of_graves ?date_of_foundation ' +
         ' ?memorial_unveiling_date ?memorial ?memorial_sculptor ' +
-        ' ?lat ?long ?address ';
+        ' ?lat ?long ?address ?person_id ';
 
-        var select =
+        var relatedSelect =
         ' SELECT DISTINCT ?id ?label ';
 
         var baseResultSet =
@@ -75,10 +75,10 @@
 
         var relatedPersonQryResultSet =
         '   VALUES ?cemetery { <CEMETERY> } ' +
-        '   ?death_record crm:P70_documents ?id . ' +
-        '   ?death_record nsc:hautausmaa ?cemetery . ';
+        '   ?death_record nsc:hautausmaa ?cemetery . ' +
+        '   ?death_record crm:P70_documents ?id . ';
 
-        var relatedQry = select +
+        var relatedQry = relatedSelect +
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id skos:prefLabel ?label . ' +
@@ -107,6 +107,8 @@
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?long . } ' +
         '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
+        '  OPTIONAL { ?death_record_id nsc:hautausmaa ?id . } ' +
+        '  OPTIONAL { ?death_record_id crm:P70_documents ?person_id . } ' +
         ' } ';
 
         /**
@@ -131,7 +133,7 @@
             // console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
-                    // console.log(data[0]);
+                    console.log(data[0]);
                     return data[0];
 
                 }
@@ -206,8 +208,8 @@
             id = baseRepository.uriFy(id);
             var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
             var qryObj = queryBuilder.buildQuery(relatedQry, resultSet);
-            // console.log("cemetery - getRelatedPersons - query:");
-            // console.log(qryObj.query);
+            console.log("cemetery - getRelatedPersons - query:");
+            console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 
