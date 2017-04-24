@@ -283,11 +283,8 @@
         };
 
         this.getByIdList = function(ids, pageSize) {
-            if (_.isArray(ids)) {
-                ids = '<{0}>'.format(ids.join('> <'));
-            } else if (ids) {
-                ids = '<{0}>'.format(ids);
-            } else {
+            ids = baseRepository.uriFy(ids);
+            if (!ids) {
                 return $q.when();
             }
             var resultSet = personQryResultSet.format(ids);

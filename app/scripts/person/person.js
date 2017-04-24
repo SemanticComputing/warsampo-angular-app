@@ -99,19 +99,23 @@
                 if (etype === EVENT_TYPES.DEATH) {
                     person.death = edate;
                     if (eplace) person.death_place = eplace;
+                    person.deathEvent = e;
                 } else if (etype === EVENT_TYPES.BIRTH) {
                     person.birth = edate;
                     if (eplace) person.birth_place = eplace;
+                    person.birthEvent = e;
                 } else if (etype === EVENT_TYPES.WOUNDING) {
                     person.wound = edate;
                     if (eplace) {
                         person.wound_place = eplace;
                     }
+                    person.woundEvent = e;
                 } else if (etype === EVENT_TYPES.DISSAPEARING) {
                     person.disapp = edate;
                     if (eplace) {
                         person.disapp_place = eplace;
                     }
+                    person.disappearanceEvent = e;
                 } else if (etype === EVENT_TYPES.PROMOTION) {
                     if (edate) {
                         e.rank.label = e.rank.label + ' ' + edate;
@@ -295,15 +299,7 @@
 
         function getLifeEvents(id) {
             return eventRepository.getPersonLifeEvents(id).then(function(events) {
-                return fetchPlaces(events);
-            });
-        }
-
-        function fetchPlaces(event) {
-            var placeUris = _(event).castArray().map('place_id').flatten().compact().uniq().value();
-
-            return placeRepository.getById(placeUris).then(function(places) {
-                return baseService.combineRelated(event, places, 'place_id', 'places');
+                return baseService.getRelated(events, 'place_id', 'places', placeRepository);
             });
         }
 
