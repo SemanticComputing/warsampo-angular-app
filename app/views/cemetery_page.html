@@ -40,7 +40,7 @@
     <img ng-show="vm.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="(!vm.cemetery || !vm.cemetery.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
-      <ws-related-links-paged data-title="'CEMETERY_DEMO.PEOPLE_BURIED' | translate" data-paginator="vm.cemetery.relatedPersons"></ws-related-links-paged>
+      <ws-related-links data-title="'CEMETERY_DEMO.PEOPLE_BURIED' | translate" data-related="vm.cemetery.buriedPersons"></ws-related-links>
       <ws-related-links-paged data-title="'CEMETERY_DEMO.OTHER_CEMETERIES_CLOSE' | translate" data-paginator="vm.relatedCemeteriesByPlace"></ws-related-links-paged>
 
     </div>

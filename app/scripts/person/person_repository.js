@@ -270,18 +270,6 @@
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
-        this.getById = function(id) {
-            var resultSet = personQryResultSet.format('<{0}>'.format(id));
-            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
-
-            return endpoint.getObjects(qryObj.query).then(function(data) {
-                if (data.length) {
-                    return data[0];
-                }
-                return $q.reject('Does not exist');
-            });
-        };
-
         this.getByIdList = function(ids, pageSize) {
             ids = baseRepository.uriFy(ids);
             if (!ids) {
@@ -291,6 +279,8 @@
             var qryObj = queryBuilder.buildQuery(personQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
+
+        this.getById = this.getByIdList;
 
         this.getCasualtiesByTimeSpan = function(start, end, pageSize) {
             var resultSet = casualtiesByTimeSpanQryResultSet.format(start, end);

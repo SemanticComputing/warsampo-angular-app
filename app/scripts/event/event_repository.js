@@ -312,14 +312,13 @@
         var personDeathQry = prefixes + select +
         ' { ' +
         '   <RESULT_SET> ' +
-        '  ?id crm:P100_was_death_of ?died_id . ';
+        '  ?id crm:P100_was_death_of ?died_id . ' +
         '  OPTIONAL { ?id a ?type_id . } ' +
         '  OPTIONAL { ' +
         '    ?type_id skos:prefLabel ?type . ' +
         '  } ' +
         '  OPTIONAL { ' +
-        '   ?id skos:prefLabel ?label . ' +
-        '   BIND(?label AS ?description) ' +
+        '   ?id skos:prefLabel ?description . ' +
         '  } ' +
         '  OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         ' } ';

@@ -14,7 +14,8 @@
     .service('cemeteryService', cemeteryService);
 
     /* @ngInject */
-    function cemeteryService($q, _, baseService, cemeteryRepository, photoRepository, eventRepository, Settings) {
+    function cemeteryService($q, _, baseService, cemeteryRepository,
+          personRepository, photoRepository, eventRepository, Settings) {
         var self = this;
 
         /* Public API */
@@ -55,18 +56,14 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchPeople(cemetery) {
-            // return cemeteryRepository.getRelatedPersons(cemetery.id, Settings.pageSize)
-            // .then(function(data) {
-            //     if (data) {
-            //         cemetery.relatedPersons = data;
-            //         cemetery.hasLinks = true;
-            //       }
-            // });
-
-            return eventRepository.getDeathByPersonId(personUris).then(function(places) {
-                return baseService.getRelated(cemetery, persons, 'person_id', 'relatedPersons');
+            return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository)
+            .then(function(cemetery) {
+                var personUris = _(cemetery).castArray().map('person_id').flatten().compact().uniq().value();
+                return eventRepository.getDeathByPersonId(personUris);
+            })
+            .then(function(deaths) {
+                return baseService.combineRelated(cemetery.buriedPersons, deaths, 'died_id', 'deathEvent');
             });
-
         }
 
         function fetchRelatedPhotos(cemetery) {
