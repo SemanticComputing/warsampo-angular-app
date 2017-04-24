@@ -187,37 +187,17 @@
 
         var eventsAndSubUnitEventsByUnitQryResultSet =
         ' { ' +
-        '   VALUES ?participant_id { {0} } ' +
-        '   { ' +
-        '       ?id a crm:E66_Formation ; ' +
-        '           crm:P95_has_formed ?participant_id . ' +
-        '   } UNION { ' +
-        '       ?id a etypes:TroopMovement ; ' +
-        '           crm:P95_has_formed ?participant_id . ' +
-        '   } UNION { ' +
-        '       ?id a crm:E68_Dissolution ; ' +
-        '           crm:P11_had_participant ?participant_id . ' +
-        '   } UNION { ' +
-        '       ?id a etypes:UnitNaming ; ' +
-        '           crm:P95_has_formed ?participant_id . ' +
-        '   } ' +
-        ' } UNION { ' +
         '   { ' +
         '     SELECT DISTINCT ?participant_id { ' +
-        '       VALUES ?unit { {0} } . ' +
+        '       VALUES ?unit { <ID> } . ' +
         '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant_id . ' +
         '       ?participant_id a atypes:MilitaryUnit . ' +
         '     } ' +
         '   } UNION { ' +
-        '     VALUES ?participant_id { {0} } ' +
+        '     VALUES ?participant_id { <ID> } ' +
         '   } ' +
-        '   { ' +
-        '     ?id crm:P11_had_participant ?participant_id . ' +
-        '   } UNION { ' +
-        '       VALUES ?participant_id { {0} } . ' +
-        '       ?id crm:P11_had_participant ?participant_id . ' +
-        '   } ' +
-        '   { ?id a etypes:Battle . } UNION { ?id a etypes:Photography } ' +
+        '   ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
+        '   ?id ?part_pred ?participant_id . ' +
         ' } ' +
         ' ?id crm:P4_has_time-span ?time_id . ' +
         ' ?time_id crm:P82a_begin_of_the_begin ?start_t ; ' +
@@ -442,7 +422,7 @@
             if (!id) {
                 return $q.when();
             }
-            var resultSet = eventsAndSubUnitEventsByUnitQryResultSet.format(id);
+            var resultSet = eventsAndSubUnitEventsByUnitQryResultSet.replace(/<ID>/g, id);
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
