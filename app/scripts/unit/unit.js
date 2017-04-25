@@ -230,8 +230,8 @@
             return unitRepository.getSubUnits(unit);
         };
 
-        self.getItems = function (regx) {
-            return unitRepository.getItems(regx);
+        self.getItems = function(regx, withEventsOnly) {
+            return unitRepository.getItems(regx, withEventsOnly);
         };
 
         self.getActorInfo = function(ids) {

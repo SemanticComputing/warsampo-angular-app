@@ -109,8 +109,12 @@
         function getItems() {
             var rx = self.queryregex;
             var testAlphabet = /[^.0-9 ]/g;
+            var withEventsOnly = false;
 
-            if (rx.length<1) { rx='^1.*$'; }
+            if (rx.length<1) {
+                rx='^.*$';
+                withEventsOnly = true;
+            }
             else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
             else if (rx.length<2) { rx='^'+rx; }
             else if (rx.length<5) { rx = '(^|^.* )'+rx+'.*$'; }
@@ -119,13 +123,13 @@
                 rx = '^.*'+rx+'.*$';
             }
 
-            self.items = [{ id:'#', name: 'Etsitään ...' }];
+            self.items = [{ id:'#', name: ['Etsitään...'] }];
 
-            return unitService.getItems(rx).then(function(data) {
+            return unitService.getItems(rx, withEventsOnly).then(function(data) {
                 if (data.length) {
                     self.items = data;
                 } else {
-                    self.items = [{ id:'#', name:'Ei hakutuloksia.' }];
+                    self.items = [{ id:'#', name:['Ei hakutuloksia.'] }];
                 }
                 return self.items;
             });

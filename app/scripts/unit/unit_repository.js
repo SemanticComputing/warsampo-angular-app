@@ -13,6 +13,7 @@
 
         var prefixes =
         ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
+        ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
@@ -119,6 +120,7 @@
 		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
 		'              ?evt ^crm:P95i_was_formed_by|crm:P95_has_formed ?id . ' +
 		'              ?id a atypes:MilitaryUnit . ' +
+        '              <ADDITIONAL_FILTER> ' +
 		'          } LIMIT 50 ' +
 		'      	} ' +
 		'      ?id skos:prefLabel ?label . ' +
@@ -127,6 +129,16 @@
 		'  } ' +
 		'  BIND (IF(bound(?conflict), concat(?label," (",?conflict,")"), ?label) AS ?name) ' +
 		'} ORDER BY lcase(?name) ';
+
+        // Units that have (or their subunits have) participated in battles
+        var selectorEventFilter =
+        ' ?id (^crm:P144_joined_with/crm:P143_joined)* [ ' +
+        '    a atypes:MilitaryUnit ; ' +
+        '    ^crm:P11_had_participant [ ' +
+        '      crm:P4_has_time-span [] ; ' +
+        '      a etypes:Battle ' +
+        '   ] ' +
+        ' ] . ';
 
         var wardiaryQry = prefixes +
         'SELECT ?label ?id ?time ' +
@@ -193,8 +205,10 @@
             return endpoint.getObjects(qry);
         };
 
-        this.getItems = function(regx) {
-            var qry = selectorQuery.replace('<REGEX>', regx);
+        this.getItems = function(regx, withEventsOnly) {
+            var qry = selectorQuery.replace('<ADDITIONAL_FILTER>',
+                withEventsOnly ? selectorEventFilter : '');
+            qry = qry.replace('<REGEX>', regx);
             return endpoint.getObjects(qry);
         };
 
