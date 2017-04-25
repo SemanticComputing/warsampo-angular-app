@@ -43,12 +43,14 @@
 
         var select =
             ' SELECT DISTINCT ?id ?label ?municipality_id ?municipality__id ' +
-            ' ?municipality__label ?point__lat ?point__lon ';
+            ' ?municipality__label ?point__lat ?point__lon ?type_id ?type ';
 
         var warsaPlaceQry =
         '{ ' +
         ' VALUES ?id { <ID> } ' +
+        ' ?id a ?type_id . ' +
         ' ?id skos:prefLabel ?label . ' +
+        ' OPTIONAL { ?type_id skos:prefLabel ?type . } ' +
         ' OPTIONAL { ?id sch:polygon ?polygon . } ' +
         ' OPTIONAL { ' +
         '   ?id geo:lat ?point__lat ; ' +

@@ -6,7 +6,7 @@
         return {
             restrict:'E',
             scope: {
-                objects: '<',
+                places: '<',
             },
             controller: GoogleMapContoller,
             controllerAs: 'ctrl',
@@ -22,41 +22,21 @@
 
         initMap();
 
-        $scope.$watch('objects', function(val) {
+        $scope.$watch('places', function(val) {
             if (!val || _.isArray(val) && !val.length) {
                 return;
             }
-            visualizeDeaths(val)
+            googleMapsService.plotObjects(val, self.map);
         });
 
-        function visualizeDeaths(personObjs) {
-            var lat;
-            var long;
-
-            personObjs.forEach(function(personObj) {
-                console.log(personObj);
-                console.log(personObj.death_id);
-                console.log(personObj.deathEvent);
-                //googleMapsService.drawMarker()
-            });
-
-
-            var uluru = {lat: -25.363, lng: 131.044};
-            var marker = new google.maps.Marker({
-                position: uluru,
-                map: self.map
-            });
-        }
-
         function initMap() {
-            var uluru = {lat: -25.363, lng: 131.044};
-            self.map = new google.maps.Map($element[0], {
+            var mapOptions = {
+                mapTypeId: google.maps.MapTypeId.ROAD,
+                center: new google.maps.LatLng(65.44000165965534, 27.04906940460205),
                 zoom: 4,
-                center: uluru
-            });
-
+            };
+            self.map = new google.maps.Map($element[0], mapOptions);
         }
-
     }
 
 })();

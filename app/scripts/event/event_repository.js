@@ -341,6 +341,8 @@
             }
             var resultSet = singleEventQryResultSet.replace('<ID>', ids);
             var qryObj = queryBuilder.buildQuery(singleEventQry, resultSet);
+            // console.log('eventRepo - getById:')
+            // console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 

@@ -15,7 +15,8 @@
 
     /* @ngInject */
     function cemeteryService($q, _, baseService, cemeteryRepository,
-          personRepository, photoRepository, eventRepository, Settings) {
+          personRepository, photoRepository, eventRepository, placeRepository,
+          Settings) {
         var self = this;
 
         /* Public API */
@@ -59,6 +60,12 @@
             return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository)
             .then(function(cemetery) {
                 return baseService.getRelated(cemetery.buriedPersons, 'death_id', 'deathEvent', eventRepository);
+            })
+            .then(function(buriedPersons) {
+                //console.log(buriedPersons);
+                var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
+                //console.log(events);
+                return baseService.getRelated(events, 'place_id', 'place', placeRepository);
             });
         }
 

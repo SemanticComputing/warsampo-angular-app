@@ -28,7 +28,9 @@
         self.getByPlaceIdFilterById = getByPlaceIdFilterById;
         self.getRelatedPersons = getRelatedPersons;
 
-        // test url: http://localhost:9000/fi/cemeteries/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0003_1
+        // test urls:
+        // espoo http://localhost:9000/fi/cemeteries/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0003_1
+        // helsinki http://localhost:9000/fi/cemeteries/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0005_6
 
         /* Implementation */
 
@@ -189,8 +191,8 @@
                 .replace('<ID>', placeIds)
                 .replace('<FILTER>', filter);
             var qryObj = queryBuilder.buildQuery(relatedQry, resultSet, orderBy);
-            // console.log("cemetery - getByPlaceIdFilterById - query:");
-            // console.log(qryObj.query);
+            //  console.log("cemetery - getByPlaceIdFilterById - query:");
+            //  console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 

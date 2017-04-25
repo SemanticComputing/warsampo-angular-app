@@ -7,15 +7,21 @@
 
         var self = this;
 
-        self.drawMarker = drawMarker;
+        self.plotObjects = plotObjects;
         self.createHeatmap = createHeatmap;
         self.clearHeatmap = clearHeatmap;
         self.updateHeatmap = updateHeatmap;
         self.normalizeMapZoom = normalizeMapZoom;
 
-
-        function drawMarker(lat, long, map) {
-            return;
+        // Expects a list of objects with lat and lon
+        function plotObjects(objects, map) {
+            objects.forEach(function(obj) {
+                var point = new google.maps.LatLng(obj.lat, obj.lon);
+                var marker = new google.maps.Marker({
+              		    position: point,
+              		    map: map,
+                });
+            });
         }
 
         // Expects a list of objects with lat and lon

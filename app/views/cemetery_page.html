@@ -28,7 +28,7 @@
       <h3>Menehtymispaikat</h3>
 
       <div id="simple-google-map-container">
-        <ws-google-map id="simple-google-map" objects="vm.cemetery.buriedPersons" style="position: absolute;"></ws-google-map>
+        <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
       </div>
 
     </div>
@@ -38,7 +38,7 @@
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
     <img ng-show="vm.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="(!vm.cemetery || !vm.cemetery.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p>
+    <!-- <p ng-if="(!vm.cemetery || !vm.cemetery.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p> -->
     <div id="linkContent">
       <ws-related-links data-title="'CEMETERY_DEMO.PEOPLE_BURIED' | translate" data-related="vm.cemetery.buriedPersons"></ws-related-links>
       <ws-related-links-paged data-title="'CEMETERY_DEMO.OTHER_CEMETERIES_CLOSE' | translate" data-paginator="vm.relatedCemeteriesByPlace"></ws-related-links-paged>
