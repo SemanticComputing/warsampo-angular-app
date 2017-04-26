@@ -286,7 +286,12 @@
         }
 
         function getById(id) {
-            return personRepository.getById(id);
+            return personRepository.getById(id).then(function(person) {
+                if (person.length) {
+                    return person[0];
+                }
+                return $q.reject('Does not exist');
+            });
         }
 
         function getByIdList(ids) {
