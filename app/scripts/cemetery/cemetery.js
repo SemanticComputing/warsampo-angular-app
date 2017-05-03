@@ -16,7 +16,7 @@
     /* @ngInject */
     function cemeteryService($q, _, baseService, cemeteryRepository,
           personRepository, photoRepository, eventRepository, placeRepository,
-          Settings) {
+          rankRepository, Settings) {
         var self = this;
 
         /* Public API */
@@ -57,16 +57,17 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchPeople(cemetery) {
-            return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository)
-            .then(function(cemetery) {
-                return baseService.getRelated(cemetery.buriedPersons, 'death_id', 'deathEvent', eventRepository);
-            })
-            .then(function(buriedPersons) {
-                //console.log(buriedPersons);
-                var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
-                //console.log(events);
-                return baseService.getRelated(events, 'place_id', 'place', placeRepository);
-            });
+              return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository) // return a cemetery object
+              .then(function(cemetery) {
+                  return baseService.getRelated(cemetery.buriedPersons, 'death_id', 'deathEvent', eventRepository); // return list of persons
+              })
+              .then(function(buriedPersons) {
+                  return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
+              })
+              .then(function(buriedPersons) {
+                  var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
+                  return baseService.getRelated(events, 'place_id', 'place', placeRepository); // return list of events
+              });
         }
 
         function fetchRelatedPhotos(cemetery) {
