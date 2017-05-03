@@ -42,7 +42,7 @@
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
         '  ?natiobib ?wikilink ?casualty ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
-        '  ?sid ?source ?death_id ';
+        '  ?unit ?sid ?source ?death_id ';
 
         var personQryResultSet =
         ' VALUES ?id { {0} }' +
@@ -80,7 +80,10 @@
         '    ?casualty casualties:asuinkunta ?living_place_uri . ' +
         '    ?living_place_uri skos:prefLabel ?living_place . }' +
         '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
-        '   OPTIONAL { ?casualty casualties:osasto ?unit_id . }' +
+        '   OPTIONAL { ' +
+        '     ?casualty casualties:osasto ?unit_id . ' +
+        '     ?unit_id skos:prefLabel ?unit . ' +
+        '   } ' +
         '   OPTIONAL { ?casualty casualties:sotilasarvo ?rank_id . }' +
         '   OPTIONAL { ' +
         '    ?casualty casualties:menehtymisluokka ?way_id . ' +

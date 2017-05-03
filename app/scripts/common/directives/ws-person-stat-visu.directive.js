@@ -29,6 +29,7 @@
         function createVisualizations(data) {
             google.charts.load('current', {packages: ['corechart']});
             google.charts.setOnLoadCallback(function () { drawPieChart(data, 'rank_label', '', 'rank_chart'); });
+            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'unit', '', 'unit_chart'); });
 
         }
 
@@ -46,7 +47,6 @@
         }
 
         function countProperties(data, prop) {
-            console.log(data);
             var res = {};
             $.each(data, function( i, value ) {
               if (value.hasOwnProperty(prop)) {
