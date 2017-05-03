@@ -31,6 +31,7 @@
             })
             .then(function(cemetery) {
                 vm.places = getDeathPlaces(cemetery);
+                vm.persons = addRankLabel(cemetery.buriedPersons);
                 vm.isLoadingCemetery = false;
                 return cemeteryService.getCemeteriesByPlaceId(vm.cemetery.place_id,
                     Settings.pageSize, vm.cemetery.id);
@@ -65,6 +66,13 @@
               });
           });
           return places;
+      }
+
+      function addRankLabel(buriedPersons) {
+          buriedPersons.forEach(function(person) {
+                person.rank_label = person.rank[0].getLabel();
+          });
+          return buriedPersons;
       }
 
       function pickPlaceByType(places) {
