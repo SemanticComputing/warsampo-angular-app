@@ -30,7 +30,7 @@
             google.charts.load('current', {packages: ['corechart']});
             google.charts.setOnLoadCallback(function () { drawPieChart(data, 'rank_label', '', 'rank_chart'); });
             google.charts.setOnLoadCallback(function () { drawPieChart(data, 'unit', '', 'unit_chart'); });
-
+            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'way_to_die', '', 'way_to_die_chart'); });
         }
 
         function drawPieChart(data, prop, label, target) {
