@@ -31,7 +31,7 @@
             })
             .then(function(cemetery) {
                 vm.places = getDeathPlaces(cemetery);
-                vm.persons = addRankLabel(cemetery.buriedPersons);
+                vm.persons = addRankAndUnitLabel(cemetery.buriedPersons);
                 vm.isLoadingCemetery = false;
                 return cemeteryService.getCemeteriesByPlaceId(vm.cemetery.place_id,
                     Settings.pageSize, vm.cemetery.id);
@@ -68,9 +68,23 @@
           return places;
       }
 
-      function addRankLabel(buriedPersons) {
+      /*  todo:
+          two prefLabels: http://ldf.fi/warsa/actors/actor_1754
+                          http://ldf.fi/warsa/actors/actor_1293
+      */
+      function addRankAndUnitLabel(buriedPersons) {
           buriedPersons.forEach(function(person) {
-                person.rank_label = person.rank[0].getLabel();
+              person.rank_label = person.rank[0].getLabel();
+              if (person.unit.length != 0) {
+                    if (person.unit.length > 1 ) {
+                      if (_.isArray(person.unit[0].label)) {
+                            //console.log(person.unit);
+                      }
+
+
+                    }
+                    person.unit_label = person.unit[0].label;
+              }
           });
           return buriedPersons;
       }

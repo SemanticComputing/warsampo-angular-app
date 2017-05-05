@@ -28,15 +28,17 @@
 
         function createVisualizations(data) {
             google.charts.load('current', {packages: ['corechart']});
-            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'rank_label', '', 'rank_chart'); });
-            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'unit', '', 'unit_chart'); });
-            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'way_to_die', '', 'way_to_die_chart'); });
+            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'rank_label', '', 'rank_chart', 1/100); });
+            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'unit_label', '', 'unit_chart', 2/100); });
+            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'way_to_die', '', 'way_to_die_chart', 1/100); });
         }
 
-        function drawPieChart(data, prop, label, target) {
+        function drawPieChart(data, prop, label, target, sliceVisibilityThreshold) {
             var arr = countByProperty(data, prop),
               data = google.visualization.arrayToDataTable( [[label, 'Lukumäärä']].concat(arr)),
-              options = { title: label },
+              options = { title: label,
+                          sliceVisibilityThreshold: sliceVisibilityThreshold
+                        },
               chart = new google.visualization.PieChart(document.getElementById(target));
             chart.draw(data, options);
         }
@@ -51,7 +53,6 @@
             $.each(data, function( i, value ) {
               if (value.hasOwnProperty(prop)) {
                 var y=value[prop];
-
                 if (res.hasOwnProperty(y)) {
                   res[y] += 1;
                 } else {

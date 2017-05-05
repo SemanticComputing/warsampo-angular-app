@@ -20,7 +20,7 @@
         self.map;
         self.markers;
         self.infoWindow;
-        self.overlays = {}; // google.maps.ImageMapType objects, used for historical maps 
+        self.overlays = {}; // google.maps.ImageMapType objects, used for historical maps
 
         initMap();
 
@@ -29,7 +29,7 @@
                 return;
             }
             googleMapsService.plotObjects(val, self.map, self.infoWindow);
-            googleMapsService.addMapWarperOverlay(29, self.overlays, 0.75, self.map,);
+            //googleMapsService.addMapWarperOverlay(29, self.overlays, 0.75, self.map,);
         });
 
         function initMap() {

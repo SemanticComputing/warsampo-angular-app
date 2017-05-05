@@ -16,7 +16,7 @@
     /* @ngInject */
     function cemeteryService($q, _, baseService, cemeteryRepository,
           personRepository, photoRepository, eventRepository, placeRepository,
-          rankRepository, Settings) {
+          unitRepository, rankRepository, Settings) {
         var self = this;
 
         /* Public API */
@@ -27,6 +27,7 @@
         self.fetchRelated = fetchRelated;
         self.fetchPeople = fetchPeople;
         self.fetchRelatedPhotos = fetchRelatedPhotos;
+        self.fetchRelatedUnits = fetchRelatedUnits;
 
         /**
         * @ngdoc method
@@ -40,7 +41,8 @@
         function fetchRelated(cemetery) {
             var related = [
                 self.fetchPeople(cemetery),
-                self.fetchRelatedPhotos(cemetery)
+                self.fetchRelatedPhotos(cemetery),
+                self.fetchRelatedUnits(cemetery)
             ];
             return $q.all(related).then(function() {
                 return cemetery;
@@ -65,9 +67,22 @@
                   return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
               })
               .then(function(buriedPersons) {
+                  return baseService.getRelated(buriedPersons, 'unit_id', 'unit', unitRepository); // return list of persons
+              })
+              .then(function(buriedPersons) {
                   var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
                   return baseService.getRelated(events, 'place_id', 'place', placeRepository); // return list of events
               });
+        }
+
+        function fetchRelatedUnits(cemetery) {
+            return unitRepository.getByCemeteryId(cemetery.id).then(function(units) {
+                if (units && units.length) {
+                    cemetery.units = units;
+                    cemetery.hasLinks = true;
+                }
+                return cemetery;
+            });
         }
 
         function fetchRelatedPhotos(cemetery) {

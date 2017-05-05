@@ -54,7 +54,8 @@
     },
     "CEMETERY_DEMO": {
         "OTHER_CEMETERIES_CLOSE": "Other cemeteries nearby",
-        "PEOPLE_BURIED": "Buried people"
+        "PEOPLE_BURIED": "Buried people",
+        "PEOPLE_BURIED_UNITS": "Units of buried people"
     },
     "TIME_DEMO": {
         "TITLE": "Time Span",

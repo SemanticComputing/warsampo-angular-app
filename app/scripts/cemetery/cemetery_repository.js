@@ -26,7 +26,6 @@
         self.getSingleById = getSingleById;
         self.getByPlaceId = getByPlaceId;
         self.getByPlaceIdFilterById = getByPlaceIdFilterById;
-        // self.getRelatedPersons = getRelatedPersons;
 
         // test urls:
         // espoo http://localhost:9000/fi/cemeteries/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0003_1
@@ -75,11 +74,6 @@
         ' <FILTER> ' +
         ' ?id cemeteries:temporary_municipality ?place_id . ' +
         baseResultSet;
-
-        // var relatedPersonQryResultSet =
-        // '   VALUES ?cemetery { <CEMETERY> } ' +
-        // '   ?death_record nsc:hautausmaa ?cemetery . ' +
-        // '   ?death_record crm:P70_documents ?id . ';
 
         var relatedQry = relatedSelect +
         ' { ' +
@@ -196,27 +190,6 @@
             //  console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
-
-        /**
-        * @ngdoc method
-        * @methodOf eventsApp.cemeteryRepository
-        * @name eventsApp.cemeteryRepository#getRelatedPersons
-        * @description
-        * Get related persons
-        * @param {string} id The URI cemetery resource.
-        * @param {number} [pageSize] The page size.
-        * @returns {promise} A promise of the list of the query results as objects,
-        *   or if pageSize was given, a promise of a `PagerService` instance.
-        */
-        // function getRelatedPersons(id, pageSize) {
-        //     id = baseRepository.uriFy(id);
-        //     var resultSet = relatedPersonQryResultSet.replace(/<CEMETERY>/g, id);
-        //     var qryObj = queryBuilder.buildQuery(relatedQry, resultSet);
-        //     console.log("cemetery - getRelatedPersons - query:");
-        //     console.log(qryObj.query);
-        //     return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
-        // }
-
 
     }
 })();
