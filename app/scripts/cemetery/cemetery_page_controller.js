@@ -31,7 +31,10 @@
             })
             .then(function(cemetery) {
                 vm.places = getDeathPlaces(cemetery);
-                vm.persons = addRankAndUnitLabel(cemetery.buriedPersons);
+                vm.persons = addRankLabel(cemetery.buriedPersons);
+                console.log(cemetery.units);
+                console.log(cemetery.units.value);
+                vm.units = cemetery.units.value;
                 vm.isLoadingCemetery = false;
                 return cemeteryService.getCemeteriesByPlaceId(vm.cemetery.place_id,
                     Settings.pageSize, vm.cemetery.id);
@@ -68,21 +71,11 @@
           return places;
       }
 
-      function addRankAndUnitLabel(buriedPersons) {
-
+      function addRankLabel(buriedPersons) {
           buriedPersons.forEach(function(person) {
               if (person.rank && person.rank.length > 0) {
                 person.rank_label = person.rank[0].getLabel();
               }
-
-              /*  TODO: some units have two preflabels, e.g.
-                  http://ldf.fi/warsa/actors/actor_1754
-                  http://ldf.fi/warsa/actors/actor_1293
-              */
-              if (person.unit && person.unit.length > 0) {
-                  person.unit_label = person.unit[0].getLabel();
-              }
-
           });
           return buriedPersons;
       }

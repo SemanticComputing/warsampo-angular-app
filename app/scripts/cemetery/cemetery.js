@@ -72,18 +72,16 @@
                   return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
               })
               .then(function(buriedPersons) {
-                  return baseService.getRelated(buriedPersons, 'unit_id', 'unit', unitRepository); // return list of persons
-              })
-              .then(function(buriedPersons) {
                   var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
                   return baseService.getRelated(events, 'place_id', 'place', placeRepository); // return list of events
               });
         }
 
         function fetchRelatedUnits(cemetery) {
-            return unitRepository.getByCemeteryId(cemetery.id).then(function(units) {
-                if (units && units.length) {
-                    cemetery.units = units;
+            return unitRepository.getByCemeteryId(cemetery.id, 10).then(function(units) {
+                if (units) {
+                    cemetery.unitsPager = units;
+                    cemetery.units = units.getAll();
                     cemetery.hasLinks = true;
                 }
                 return cemetery;

@@ -7,6 +7,7 @@
             restrict:'E',
             scope: {
                 persons: '<',
+                units: '<'
             },
             controller: PersonStatVisuContoller,
             controllerAs: 'vm',
@@ -26,10 +27,22 @@
             createVisualizations(val)
         });
 
+        $scope.$watch('units', function(val) {
+            if (!val || _.isArray(val) && !val.length) {
+                return;
+            }
+            createVisualizations2(val)
+        });
+
+        google.charts.load('current', {packages: ['corechart']});
+
+        function createVisualizations2(data) {
+            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'label', '', 'unit_chart', 4/100); });
+        }
+
         function createVisualizations(data) {
-            google.charts.load('current', {packages: ['corechart']});
             google.charts.setOnLoadCallback(function () { drawPieChart(data, 'rank_label', '', 'rank_chart', 1/100); });
-            google.charts.setOnLoadCallback(function () { drawPieChart(data, 'unit_label', '', 'unit_chart', 4/100); });
+            //google.charts.setOnLoadCallback(function () { drawPieChart(data, 'unit_label', '', 'unit_chart', 4/100); });
             google.charts.setOnLoadCallback(function () { drawPieChart(data, 'way_to_die', '', 'way_to_die_chart', 1/100); });
         }
 

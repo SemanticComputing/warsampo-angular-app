@@ -7,7 +7,7 @@
     */
     angular.module('eventsApp')
     .service('unitRepository', function($q, AdvancedSparqlService, baseRepository,
-            unitMapperService, ENDPOINT_CONFIG) {
+            unitMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, unitMapperService);
 
@@ -26,9 +26,19 @@
         ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ' +
         ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
 
+        var queryBuilder = new QueryBuilderService(prefixes);
+
         var select =
         ' SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?description ' +
         '  ?sid ?source ?level ';
+
+        var minimalQry = select +
+        ' {	' +
+        '  <RESULT_SET> ' +
+        '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
+        '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+        '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
+        ' }	';
 
         var unitByIdQry = prefixes + select +
         ' { ' +
@@ -105,16 +115,12 @@
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
         ' } ';
 
-        var byCemeteryIdQry = prefixes + select +
-        ' { ' +
+        var byCemeteryIdQryResultSet =
         '   VALUES ?cemetery { <CEMETERY> } . ' +
         '   ?death_record nsc:hautausmaa ?cemetery . ' +
         '   ?death_record crm:P70_documents ?person . ' +
-        '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
-        '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
-        '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
-        '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
-        ' } ';
+        '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ';
+
 
         var selectorQuery = prefixes +
     		'SELECT DISTINCT ?id ?name  ' +
@@ -192,13 +198,14 @@
             return endpoint.getObjects(qry);
         };
 
-        this.getByCemeteryId = function(id) {
+        this.getByCemeteryId = function(id, pageSize) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
             }
-            var qry = byCemeteryIdQry.replace('<CEMETERY>', id);
-            return endpoint.getObjects(qry);
+            var resultSet = byCemeteryIdQryResultSet.replace('<CEMETERY>', id);
+            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);            
         };
 
         this.getRelatedUnits = function(unit) {

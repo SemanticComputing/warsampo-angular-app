@@ -34,7 +34,7 @@
         <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
       </div>
 
-      <ws-person-stat-visu persons="vm.persons"></ws-person-stat-visu>
+      <ws-person-stat-visu persons="vm.persons" units="vm.units"></ws-person-stat-visu>
 
     </div>
   </div>
@@ -46,7 +46,7 @@
     <!-- <p ng-if="(!vm.cemetery || !vm.cemetery.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p> -->
     <div id="linkContent">
       <ws-related-links-paged data-title="'CEMETERY_DEMO.PEOPLE_BURIED' | translate" data-paginator="vm.cemetery.buriedPersonsPager"></ws-related-links-paged>
-      <ws-related-links data-title="'CEMETERY_DEMO.PEOPLE_BURIED_UNITS' | translate" data-related="vm.cemetery.units"></ws-related-links>
+      <ws-related-links-paged data-title="'CEMETERY_DEMO.PEOPLE_BURIED_UNITS' | translate" data-paginator="vm.cemetery.unitsPager"></ws-related-links-paged>
       <ws-related-links-paged data-title="'CEMETERY_DEMO.OTHER_CEMETERIES_CLOSE' | translate" data-paginator="vm.relatedCemeteriesByPlace"></ws-related-links-paged>
 
     </div>
