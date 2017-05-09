@@ -214,7 +214,7 @@
                 self.fetchPrisonerRecord(person),
                 self.fetchRelatedPhotos(person),
                 self.fetchDiaries(person),
-                self.fetchRelatedPersons(person)
+                self.fetchRelatedPersons(person) 
             ];
 
             return $q.all(related).then(function() {

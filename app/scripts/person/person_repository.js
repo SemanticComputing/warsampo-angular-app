@@ -320,7 +320,7 @@
                 if (!arr.length) {
                     arr = [ {id:'#', name:'Ei hakutuloksia.'} ];
                 }
-                return arr;
+                return arr; 
             });
         };
 
