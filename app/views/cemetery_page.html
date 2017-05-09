@@ -22,6 +22,9 @@
       <p ng-if="vm.cemetery.address">
         Katusoite: {{ vm.cemetery.address }}
       </p>
+      <p>
+        <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.cemetery.id }}</small>
+      </p>
 
       <ws-simple-photo-gallery images="vm.cemetery.images"></ws-simple-photo-gallery>
 

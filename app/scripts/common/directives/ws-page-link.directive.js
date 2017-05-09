@@ -39,9 +39,13 @@
                 } else if (_.includes(objId, '/medals/')) {
                     path = isDemoLink ? 'medals/' : 'medals/page';
                 } else if (_.includes(objId, '/places/') || _.includes(objId, '/pnr/')) {
-                    path = isDemoLink ? 'places/' : 'places/page';
-                    target = '_self';
-                    params = '&oldMap=true';
+                    if (_.includes(objId, '/cemeteries/')) {
+                        path = isDemoLink ? 'cemeteries/' : 'cemeteries/page';
+                    } else {
+                        path = isDemoLink ? 'places/' : 'places/page';
+                        target = '_self';
+                        params = '&oldMap=true';
+                    }
                 } else {
                     path = 'page';
                     target = '_self';
