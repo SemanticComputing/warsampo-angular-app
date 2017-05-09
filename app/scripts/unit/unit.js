@@ -215,7 +215,12 @@
         };
 
         self.getById = function(id) {
-            return unitRepository.getById(id);
+            return unitRepository.getById(id).then(function(unit) {
+                if (unit.length) {
+                    return unit[0];
+                }
+                return $q.reject('Does not exist');
+            });
         };
 
         self.getByIdList = function(ids) {

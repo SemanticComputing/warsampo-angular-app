@@ -59,6 +59,12 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchPeople(cemetery) {
+              console.log(cemetery);
+              //return personRepository.getById(cemetery.person_id, 10)
+              // .then(function(buriedPersons) {
+              //     cemetery.buriedPersons = buriedPersons;
+              //     return cemetery;
+              // })
               return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository) // return a cemetery object
               .then(function(cemetery) {
                   return baseService.getRelated(cemetery.buriedPersons, 'death_id', 'deathEvent', eventRepository); // return list of persons

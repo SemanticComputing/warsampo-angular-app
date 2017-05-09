@@ -170,24 +170,11 @@
         '  } ' +
         '} ORDER BY ?label ';
 
-        // this.getById = function(id) {
-        //     id = baseRepository.uriFy(id);
-        //     var qry = unitByIdQry.replace('<ID>', id);
-        //     return endpoint.getObjects(qry).then(function(data) {
-        //         if (data.length) {
-        //             return data[0];
-        //         }
-        //         return $q.reject('Does not exist');
-        //     });
-        // };
-
         this.getByIdList = function(ids) {
             ids = baseRepository.uriFy(ids);
             var qry = unitByIdQry.replace('<ID>', ids);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
-                    // TODO: returning data instead of data[0] breaks unit info page
-                    //return data[0];
                     return data;
                 }
                 return $q.reject('Does not exist');
