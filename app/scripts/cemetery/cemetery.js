@@ -59,15 +59,14 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchPeople(cemetery) {
-              console.log(cemetery);
-              //return personRepository.getById(cemetery.person_id, 10)
-              // .then(function(buriedPersons) {
-              //     cemetery.buriedPersons = buriedPersons;
-              //     return cemetery;
-              // })
-              return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository) // return a cemetery object
-              .then(function(cemetery) {
-                  return baseService.getRelated(cemetery.buriedPersons, 'death_id', 'deathEvent', eventRepository); // return list of persons
+              return personRepository.getById(cemetery.person_id, 10)
+              .then(function(buriedPersons) {
+                  cemetery.buriedPersonsPager = buriedPersons;
+                  return buriedPersons.getAll();
+              })
+              .then(function(buriedPersons) {
+                  cemetery.buriedPersons = buriedPersons;
+                  return baseService.getRelated(buriedPersons, 'death_id', 'deathEvent', eventRepository); // return list of persons
               })
               .then(function(buriedPersons) {
                   return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
@@ -128,6 +127,7 @@
         * @returns {promise} A promise of the list of the query results as objects,
         *   or if pageSize was given, a promise of a `PagerService` instance.
         */
+
         function getCemeteriesByPlaceId(ids, pageSize, idFilter) {
             if (idFilter) {
                 return cemeteryRepository.getByPlaceIdFilterById(ids, idFilter, pageSize);
@@ -138,4 +138,4 @@
 
 
     }
-})()
+})();

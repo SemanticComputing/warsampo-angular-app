@@ -69,15 +69,15 @@
       }
 
       function addRankAndUnitLabel(buriedPersons) {
+
           buriedPersons.forEach(function(person) {
               person.rank_label = person.rank[0].getLabel();
-
               /*  TODO: some units have two preflabels, e.g.
                   http://ldf.fi/warsa/actors/actor_1754
                   http://ldf.fi/warsa/actors/actor_1293
               */
               if (person.unit.length > 0) {
-                  person.unit_label = person.unit[0].label;
+                  person.unit_label = person.unit[0].getLabel();
               }
 
           });

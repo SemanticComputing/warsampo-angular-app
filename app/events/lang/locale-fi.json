@@ -54,8 +54,8 @@
     },
     "CEMETERY_DEMO": {
         "OTHER_CEMETERIES_CLOSE": "Muita hautausmaita samalla alueella",
-        "PEOPLE_BURIED": "Haudattuja henkilöitä",
-        "PEOPLE_BURIED_UNITS": "Menehtyneiden joukko-osastot"
+        "PEOPLE_BURIED": "Sankarivainajat",
+        "PEOPLE_BURIED_UNITS": "Sankarivainajien joukko-osastot"
     },
     "TIME_DEMO": {
         "TITLE": "Ajanjakso",
