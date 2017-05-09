@@ -14,7 +14,9 @@
     .service('cemeteryService', cemeteryService);
 
     /* @ngInject */
-    function cemeteryService($q, _, baseService, cemeteryRepository, Settings) {
+    function cemeteryService($q, _, baseService, cemeteryRepository,
+          personRepository, photoRepository, eventRepository, placeRepository,
+          unitRepository, rankRepository, Settings) {
         var self = this;
 
         /* Public API */
@@ -23,7 +25,9 @@
         self.getCemeteriesByPlaceId = getCemeteriesByPlaceId;
 
         self.fetchRelated = fetchRelated;
-        self.fetchRelatedPersons = fetchRelatedPersons;
+        self.fetchPeople = fetchPeople;
+        self.fetchRelatedPhotos = fetchRelatedPhotos;
+        self.fetchRelatedUnits = fetchRelatedUnits;
 
         /**
         * @ngdoc method
@@ -35,11 +39,11 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchRelated(cemetery) {
-            console.log(cemetery);
             var related = [
-                self.fetchRelatedPersons(cemetery)
+                self.fetchPeople(cemetery),
+                self.fetchRelatedPhotos(cemetery),
+                self.fetchRelatedUnits(cemetery)
             ];
-            //console.log(cemetery);
             return $q.all(related).then(function() {
                 return cemetery;
             });
@@ -54,13 +58,48 @@
         * @param {Object} cemetery The cemetery object for which to fetch related data.
         * @returns {promise} A promise of the modified cemetery object.
         */
-        function fetchRelatedPersons(cemetery) {
-            return cemeteryRepository.getRelatedPersons(cemetery.id, Settings.pageSize)
-            .then(function(data) {
-                if (data) {
-                    cemetery.relatedPersons = data;
+        function fetchPeople(cemetery) {
+              console.log(cemetery);
+              //return personRepository.getById(cemetery.person_id, 10)
+              // .then(function(buriedPersons) {
+              //     cemetery.buriedPersons = buriedPersons;
+              //     return cemetery;
+              // })
+              return baseService.getRelated(cemetery, 'person_id', 'buriedPersons', personRepository) // return a cemetery object
+              .then(function(cemetery) {
+                  return baseService.getRelated(cemetery.buriedPersons, 'death_id', 'deathEvent', eventRepository); // return list of persons
+              })
+              .then(function(buriedPersons) {
+                  return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
+              })
+              .then(function(buriedPersons) {
+                  return baseService.getRelated(buriedPersons, 'unit_id', 'unit', unitRepository); // return list of persons
+              })
+              .then(function(buriedPersons) {
+                  var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
+                  return baseService.getRelated(events, 'place_id', 'place', placeRepository); // return list of events
+              });
+        }
+
+        function fetchRelatedUnits(cemetery) {
+            return unitRepository.getByCemeteryId(cemetery.id).then(function(units) {
+                if (units && units.length) {
+                    cemetery.units = units;
                     cemetery.hasLinks = true;
                 }
+                return cemetery;
+            });
+        }
+
+        function fetchRelatedPhotos(cemetery) {
+            return photoRepository.getByCemeteryId(cemetery.id, 50).then(function(imgs) {
+                cemetery.images = imgs;
+                return imgs.getTotalCount();
+            }).then(function(count) {
+                if (count) {
+                    cemetery.hasLinks = true;
+                }
+                return cemetery;
             });
         }
 
@@ -95,5 +134,8 @@
             }
             return cemeteryRepository.getByPlaceId(ids, pageSize);
         }
+
+
+
     }
-})();
+})()

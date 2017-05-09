@@ -4,6 +4,11 @@
 
     /*
     * Service that provides an interface for fetching prisoner data.
+
+      ldf.fi fuseki has one test prisoner:
+      http://ldf.fi/warsa/actors/person_753249 <--> http://ldf.fi/warsa/prisoners/prisoner_860
+      info page url:
+      http://localhost:9000/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
     */
     angular.module('eventsApp')
     .service('prisonerRepository', function($q, _, AdvancedSparqlService, prisonerMapperService,
@@ -31,14 +36,7 @@
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX prisoners: <http://ldf.fi/schema/warsa/prisoners/> ';
 
-        // testing with http://ldf.fi/warsa/actors/person_p525088
-        // full url: http://localhost:9000/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p525088
-
-        // http://ldf.fi/warsa/prisoners/prisoner_571
-
-        // ldf.fi fuseki:
-        // http://ldf.fi/warsa/actors/person_753249
-        // http://localhost:9000/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
+        // l
 
         var prisonerRecordProperties = [
             'birth_date',

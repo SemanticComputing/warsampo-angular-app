@@ -22,7 +22,6 @@
         this.getByUnitId = getByActorId;
         this.getUnitAndSubUnitEventsByUnitId = getUnitAndSubUnitEventsByUnitId;
         this.getPersonLifeEvents = getPersonLifeEvents;
-        this.getDeathByPersonId = getDeathByPersonId;
         this.getByActorId = getByActorId;
         this.getTypesByActorId = getTypesByActorId;
 
@@ -54,7 +53,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
-        '  ?title ?place_id ?medal__id ?medal__label ?source ?photo_id ?died_id ';
+        '  ?title ?place_id ?medal__id ?medal__label ?source ?photo_id ';
 
         var eventTypeFilter =
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
@@ -64,10 +63,14 @@
         ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Wounding>) ' +
         ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E67_Birth>) ';
 
+        var singleEventQryResultSet =
+        '   VALUES ?id { <ID> } ' +
+        '   ?id a ?type_id . ' +
+        '   ?type_id rdfs:subClassOf* crm:E5_Event . ';
+
         var singleEventQry = prefixes + select +
         ' { ' +
-        '   VALUES ?id { {0} } ' +
-        '   ?type_id rdfs:subClassOf* crm:E5_Event . ' +
+        '   <RESULT_SET> ' +
         '   ?id a ?type_id . ' +
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id skos:prefLabel ?description . ' +
@@ -305,25 +308,6 @@
         '  } ' +
         ' } ORDER BY ?start_time  ';
 
-        var personDeathQryResultSet =
-        ' VALUES ?person { <PERSON> } ' +
-        ' ?id crm:P100_was_death_of ?person . ';
-
-        var personDeathQry = prefixes + select +
-        ' { ' +
-        '   <RESULT_SET> ' +
-        '  ?id crm:P100_was_death_of ?died_id . ';
-        '  OPTIONAL { ?id a ?type_id . } ' +
-        '  OPTIONAL { ' +
-        '    ?type_id skos:prefLabel ?type . ' +
-        '  } ' +
-        '  OPTIONAL { ' +
-        '   ?id skos:prefLabel ?label . ' +
-        '   BIND(?label AS ?description) ' +
-        '  } ' +
-        '  OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
-        ' } ';
-
         var eventFilterWithinTimeSpan =
         'FILTER(?start_time >= "{0}T00:00:00"^^xsd:dateTime && ?end_time <= "{1}T23:59:59"^^xsd:dateTime)';
 
@@ -349,14 +333,17 @@
                 options.pageSize, qryObj.resultSetQuery);
         }
 
-        function getById(id) {
-            var qry = singleEventQry.format('<' + id + '>');
-            return endpoint.getObjects(qry).then(function(data) {
-                if (data.length) {
-                    return (data)[0];
-                }
-                return $q.reject('Does not exist');
-            });
+        function getById(ids, options) {
+            options = options || {};
+            ids = baseRepository.uriFy(ids);
+            if (!ids) {
+                return $q.when();
+            }
+            var resultSet = singleEventQryResultSet.replace('<ID>', ids);
+            var qryObj = queryBuilder.buildQuery(singleEventQry, resultSet);
+            // console.log('eventRepo - getById:')
+            // console.log(qryObj.query);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
         function getLooselyWithinTimeSpan(start, end, options) {
@@ -468,17 +455,6 @@
             }
             var qry = personLifeEventsQry.format(id);
             return endpoint.getObjects(qry);
-        }
-
-        function getDeathByPersonId(id, options) {
-            options = options || {};
-            id = baseRepository.uriFy(id);
-            if (!id) {
-                return $q.when();
-            }
-            var resultSet = personDeathQryResultSet.replace('<PERSON>', id);
-            var qryObj = queryBuilder.buildQuery(personDeathQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
         function getTypesByActorId(id, options) {

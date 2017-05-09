@@ -82,8 +82,11 @@
         }
 
         function getEventById(id) {
-            return eventRepository.getById(id).then(function(events) {
-                return self.fetchPlaces(events);
+            return eventRepository.getById(id).then(function(event) {
+                if (event.length) {
+                    return self.fetchPlaces(event[0]);
+                }
+                return $q.reject('Does not exist');
             });
         }
 

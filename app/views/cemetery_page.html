@@ -1,24 +1,52 @@
 <div> <a id="pageTypeURL" href="persons/"><h1 id="pageType" translate>CEMETERY</h1></a></div>
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
+
   <!-- Metadata -->
   <div class="col-sm-8">
-    <img ng-show="vm.isLoadingMedal" src="images/loading.gif" />
+    <img ng-show="vm.isLoadingCemetery" src="images/loading.gif" />
     <p ng-if="!vm.cemetery && !vm.isLoadingCemetery" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="vm.cemetery">
       <h2>
         {{ vm.cemetery.getLabel() }}
       </h2>
+      <p ng-if="vm.cemetery.date_of_foundation">
+        Perustamisvuosi: {{ vm.cemetery.date_of_foundation }}
+      </p>
+      <p ng-if="vm.cemetery.number_of_graves">
+        Hautojen lukumäärä: {{ vm.cemetery.number_of_graves }}
+      </p>
+      <p ng-if="vm.cemetery.memorial">
+        Muistomerkki: {{ vm.cemetery.memorial }} (kuvanveistäjä: {{ vm.cemetery.memorial_sculptor }}, paljastettu {{ vm.cemetery.memorial_unveiling_date }})
+      </p>
+      <p ng-if="vm.cemetery.address">
+        Katusoite: {{ vm.cemetery.address }}
+      </p>
+
+      <ws-simple-photo-gallery images="vm.cemetery.images"></ws-simple-photo-gallery>
+
+      <h3>Menehtymispaikat</h3>
+
+      <div id="simple-google-map-container">
+        <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
+      </div>
+
+      <ws-person-stat-visu persons="vm.persons"></ws-person-stat-visu>
+
     </div>
   </div>
+
   <!-- Links -->
   <div class="col-sm-4">
     <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
     <img ng-show="vm.isLoadingLinks" src="images/loading.gif" />
-    <p ng-if="(!vm.cemetery || !vm.cemetery.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p>
+    <!-- <p ng-if="(!vm.cemetery || !vm.cemetery.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p> -->
     <div id="linkContent">
-      <ws-related-links-paged data-title="'CEMETERY_DEMO.PEOPLE_BURIED' | translate" data-paginator="vm.cemetery.relatedPersons"></ws-related-links-paged>
+      <ws-related-links data-title="'CEMETERY_DEMO.PEOPLE_BURIED' | translate" data-related="vm.cemetery.buriedPersons"></ws-related-links>
+      <ws-related-links data-title="'CEMETERY_DEMO.PEOPLE_BURIED_UNITS' | translate" data-related="vm.cemetery.units"></ws-related-links>
       <ws-related-links-paged data-title="'CEMETERY_DEMO.OTHER_CEMETERIES_CLOSE' | translate" data-paginator="vm.relatedCemeteriesByPlace"></ws-related-links-paged>
 
     </div>
+  </div>
+
 </div>

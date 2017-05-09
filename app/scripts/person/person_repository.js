@@ -41,8 +41,8 @@
         var select =
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
         '  ?natiobib ?wikilink ?casualty ?bury_place ?bury_place_uri ?living_place ' +
-        '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ' +
-        '  ?sid ?source ';
+        '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
+        '  ?sid ?source ?death_id ';
 
         var personQryResultSet =
         ' VALUES ?id { {0} }' +
@@ -56,9 +56,10 @@
         '  ?id skos:prefLabel ?lbl .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
-        '  OPTIONAL { ?id dc:description ?description } ' +
+        '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
+        '  OPTIONAL { ?id dc:description ?description . } ' +
         '  OPTIONAL { ?id dc:source ?sid . ' +
-        '   OPTIONAL { ?sid skos:prefLabel ?source . ' +
+        '  OPTIONAL { ?sid skos:prefLabel ?source . ' +
         '               FILTER( lang(?source)="fi" ) ' +
         '   } ' +
         '  }' +
@@ -79,6 +80,8 @@
         '    ?casualty casualties:asuinkunta ?living_place_uri . ' +
         '    ?living_place_uri skos:prefLabel ?living_place . }' +
         '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
+        '   OPTIONAL { ?casualty casualties:osasto ?unit_id . } ' +
+        '   OPTIONAL { ?casualty casualties:sotilasarvo ?rank_id . }' +
         '   OPTIONAL { ' +
         '    ?casualty casualties:menehtymisluokka ?way_id . ' +
         '    ?way_id skos:prefLabel ?way_to_die . ' +
@@ -269,18 +272,6 @@
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
-        this.getById = function(id) {
-            var resultSet = personQryResultSet.format('<{0}>'.format(id));
-            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
-
-            return endpoint.getObjects(qryObj.query).then(function(data) {
-                if (data.length) {
-                    return data[0];
-                }
-                return $q.reject('Does not exist');
-            });
-        };
-
         this.getByIdList = function(ids, pageSize) {
             ids = baseRepository.uriFy(ids);
             if (!ids) {
@@ -290,6 +281,8 @@
             var qryObj = queryBuilder.buildQuery(personQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
+
+        this.getById = this.getByIdList;
 
         this.getCasualtiesByTimeSpan = function(start, end, pageSize) {
             var resultSet = casualtiesByTimeSpanQryResultSet.format(start, end);

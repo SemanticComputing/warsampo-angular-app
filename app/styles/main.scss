@@ -34,6 +34,21 @@ body {
     overflow: hidden;
 }
 
+.simple-collapse-with-teaser {
+    min-height: 205px !important;
+    display: block !important;
+    overflow: hidden;
+}
+
+.simple-collapse-with-teaser a:hover, .collapse-with-teaser a:hover  {
+    text-decoration: none;
+}
+
+.simple-gallery-caption {
+    margin-top:4px;
+}
+
+
 .photo-gallery {
     max-width: 13000px;
 }
@@ -44,6 +59,14 @@ body {
     width: 100px;
     overflow: hidden;
     padding: 5px;
+}
+
+.simple-gallery-thumbnail-container {
+    display: inline-block;
+    height: 228px;  // image height 220px + caption 20px + padding
+    width: 300px;
+    overflow: hidden;
+    padding: 8px;
 }
 
 .error-msg {
@@ -137,6 +160,19 @@ table.person-record tr:nth-child(even) {
     height: 100%;
     top: 0px;
     left: 0px;
+}
+
+#simple-google-map-container {
+    width: 100%;
+    max-width: 1215px;
+    height: 400px;
+    position: relative;
+}
+
+#simple-google-map {
+    width: 100%;
+    max-width: 1215px;
+    height: 400px;
 }
 
 .blueimp-gallery {

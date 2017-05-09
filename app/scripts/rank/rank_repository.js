@@ -7,7 +7,7 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('rankRepository', function($q, SparqlService, rankMapperService, ENDPOINT_CONFIG) {
+    .service('rankRepository', function($q, baseRepository, SparqlService, rankMapperService, ENDPOINT_CONFIG) {
 
         var self = this;
 
@@ -54,12 +54,15 @@
         '  ?id skos:prefLabel ?label . ' +
         '}  GROUP BY ?id ?label ?level ORDER BY ?label' ;
 
-        function getById(id) {
-            var qry = rankQry.format('<{0}>'.format(id));
-
+        function getById(ids) {
+            ids = baseRepository.uriFy(ids);
+            if (!ids) {
+                return $q.when();
+            }
+            var qry = rankQry.format(ids);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
-                    return rankMapperService.makeObjectList(data)[0];
+                    return rankMapperService.makeObjectList(data);
                 }
                 return $q.reject('Does not exist');
             });
@@ -67,7 +70,6 @@
 
         function getRelatedRanks(id) {
             var qry = relatedRankQry.format('<{0}>'.format(id));
-
             return endpoint.getObjects(qry).then(function(data) {
                 return rankMapperService.makeObjectList(data);
             });

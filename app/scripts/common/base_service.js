@@ -15,7 +15,6 @@
         // Non-paged objects only, curently
         function getRelated(obj, idProp, targetProp, repository) {
             var uris = _(obj).castArray().map(idProp).flatten().compact().uniq().value();
-
             return repository.getById(uris).then(function(related) {
                 return self.combineRelated(obj, related, idProp, targetProp);
             });
