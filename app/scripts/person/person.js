@@ -231,7 +231,8 @@
                 self.fetchRelatedUnits(person),
                 self.fetchNationalBib(person),
                 self.fetchRelatedPhotos(person),
-                self.fetchDiaries(person)
+                self.fetchDiaries(person),
+                self.fetchRelatedPersons(person)
             ];
 
             return $q.all(related).then(function() {

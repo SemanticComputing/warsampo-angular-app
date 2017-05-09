@@ -219,7 +219,7 @@
         ' } ';
 
         var relatedPersonQryResultSet =
-        ' SELECT DISTINCT ?id { ' +
+        ' SELECT DISTINCT ?id (sum(?score) AS ?totscore){ ' +
         '  ?pclass rdfs:subClassOf* crm:E21_Person . ' +
         '  { ' +
         '    VALUES ?person { <ACTOR> } ' +
@@ -241,8 +241,7 @@
         '  } ' +
         '  FILTER(?person != ?id) ' +
         '  ?id a ?pclass . ' +
-        ' } GROUP BY ?id ' +
-        ' ORDER BY DESC(sum(?score)) ';
+        ' } GROUP BY ?id ';
 
         this.getByUnitId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
@@ -328,7 +327,7 @@
         this.getRelatedPersons = function(id, pageSize) {
             id = baseRepository.uriFy(id);
             var resultSet = relatedPersonQryResultSet.replace(/<ACTOR>/g, id);
-            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet, 'DESC(?totscore)');
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
     });
