@@ -79,13 +79,14 @@
 
         function fetchRelatedUnits(cemetery) {
             return unitRepository.getByCemeteryId(cemetery.id, 10).then(function(units) {
-                if (units) {
-                    cemetery.unitsPager = units;
-                    cemetery.units = units.getAll();
-                    cemetery.hasLinks = true;
-                }
+                cemetery.unitsPager = units;
+                cemetery.hasLinks = true;
+                return units.getAll();
+            })
+            .then(function(units) {
+                cemetery.units = units;
                 return cemetery;
-            });
+            });              
         }
 
         function fetchRelatedPhotos(cemetery) {
