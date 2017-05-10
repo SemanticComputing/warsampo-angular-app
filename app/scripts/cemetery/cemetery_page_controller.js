@@ -32,7 +32,7 @@
             .then(function(cemetery) {
                 vm.places = getDeathPlaces(cemetery);
                 vm.persons = addRankLabel(cemetery.buriedPersons);
-                console.log(cemetery.units);
+                //console.log(cemetery.units);
                 vm.units = cemetery.units;
                 vm.isLoadingCemetery = false;
                 return cemeteryService.getCemeteriesByPlaceId(vm.cemetery.place_id,
