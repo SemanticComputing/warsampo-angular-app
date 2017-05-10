@@ -104,9 +104,10 @@
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?long . } ' +
         '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
-        '  OPTIONAL { ?death_record_id nsc:hautausmaa ?id . ' +
+        '  OPTIONAL { ' +
+        '     ?death_record_id nsc:hautausmaa ?id . ' +
         '     ?death_record_id crm:P70_documents ?person_id . ' +
-        ' } ' +
+        '  } ' +
         ' } ';
 
         /**
@@ -127,8 +128,8 @@
             }
             var resultSet = singleResultSet.replace('<ID>', baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(singleCemeteryQry, resultSet);
-             //console.log("cemetery - getSingleById - query:");
-             //console.log(qryObj.query);
+            //console.log("cemetery - getSingleById - query:");
+            //console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
                     //console.log(data[0]);

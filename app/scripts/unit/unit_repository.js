@@ -116,12 +116,13 @@
         ' } ';
 
         var byCemeteryIdQryResultSet =
-        '   VALUES ?cemetery { <CEMETERY> } . ' +
-        '   ?death_record nsc:hautausmaa ?cemetery . ' +
-        '   ?death_record crm:P70_documents ?person . ' +
-        '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ';
-
-
+        '   SELECT DISTINCT ?id (COUNT(?id) as ?unit_count) { ' +
+        '     VALUES ?cemetery { <CEMETERY> } . ' +
+        '     ?death_record nsc:hautausmaa ?cemetery . ' +
+        '     ?death_record nsc:osasto ?id . ' +
+        '   } ' +
+        '   GROUP BY ?id ';
+    
         var selectorQuery = prefixes +
     		'SELECT DISTINCT ?id ?name  ' +
     		'WHERE {  ' +
@@ -204,8 +205,8 @@
                 return $q.when();
             }
             var resultSet = byCemeteryIdQryResultSet.replace('<CEMETERY>', id);
-            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);            
+            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, 'DESC(?unit_count)');
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
         this.getRelatedUnits = function(unit) {

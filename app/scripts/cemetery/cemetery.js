@@ -72,6 +72,9 @@
                   return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
               })
               .then(function(buriedPersons) {
+                  return baseService.getRelated(buriedPersons, 'unit_id', 'unit', unitRepository); // return list of persons
+              })
+              .then(function(buriedPersons) {
                   var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
                   return baseService.getRelated(events, 'place_id', 'place', placeRepository); // return list of events
               });
@@ -81,12 +84,8 @@
             return unitRepository.getByCemeteryId(cemetery.id, 10).then(function(units) {
                 cemetery.unitsPager = units;
                 cemetery.hasLinks = true;
-                return units.getAll();
-            })
-            .then(function(units) {
-                cemetery.units = units;
-                return cemetery;
-            });              
+
+            });
         }
 
         function fetchRelatedPhotos(cemetery) {

@@ -31,9 +31,7 @@
             })
             .then(function(cemetery) {
                 vm.places = getDeathPlaces(cemetery);
-                vm.persons = addRankLabel(cemetery.buriedPersons);
-                //console.log(cemetery.units);
-                vm.units = cemetery.units;
+                vm.buriedPersons = addRankAndUnitLabel(cemetery.buriedPersons);
                 vm.isLoadingCemetery = false;
                 return cemeteryService.getCemeteriesByPlaceId(vm.cemetery.place_id,
                     Settings.pageSize, vm.cemetery.id);
@@ -48,6 +46,25 @@
                 vm.isLoadingLinks = false;
             });
         }
+      }
+
+      function addRankAndUnitLabel(buriedPersons) {
+          buriedPersons.forEach(function(person) {
+
+              // Persons from casulties have only one rank
+              if (person.rank && person.rank.length > 0) {
+                person.rank_label = person.rank[0].getLabel();
+              }
+
+              /* Persons from casulties may have 0, 1 or 2 units.
+                 Always choose the first (higest in the hierarchy) for the
+                 unit pie chart */
+              if (person.unit && person.unit.length > 0) {
+                person.unit_label = person.unit[0].getLabel();
+              }
+
+          });
+          return buriedPersons;
       }
 
       function getDeathPlaces(cemetery) {
@@ -68,15 +85,6 @@
               });
           });
           return places;
-      }
-
-      function addRankLabel(buriedPersons) {
-          buriedPersons.forEach(function(person) {
-              if (person.rank && person.rank.length > 0) {
-                person.rank_label = person.rank[0].getLabel();
-              }
-          });
-          return buriedPersons;
       }
 
       function pickPlaceByType(places) {
