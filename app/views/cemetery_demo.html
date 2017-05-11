@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-4 col-md-3 facet-container">      
+      <div class="col-sm-4 col-md-3 facet-container">
         <div class="hideable-facets" ng-class="{ 'hidden-xs': !show }">
           <seco-text-facet data-options="vm.facets.name"></seco-text-facet>
           <seco-basic-facet data-options="vm.facets.cemetery_type"></seco-basic-facet>
@@ -29,7 +29,11 @@
           <p>{{ 'ERROR_OCCURED' | translate }}:</p>
           <p>{{ vm.error | translate }}</p>
         </div>
-        <div ng-include="'views/partials/cemetery_results_partial.html'"></div>
+
+        <div id="cemetery-results-google-map-container ">
+          <ws-google-map id="cemetery-results-google-map" places="vm.cemeteries" style="position: absolute;"></ws-google-map>
+        </div>
+        <!-- <div ng-include="'views/partials/cemetery_results_partial.html'"></div>  -->
       </div>
 
     </div>

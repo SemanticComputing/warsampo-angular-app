@@ -13,15 +13,33 @@
         self.clearHeatmap = clearHeatmap;
         self.updateHeatmap = updateHeatmap;
         self.normalizeMapZoom = normalizeMapZoom;
+        self.removeMarkersFromMap = removeMarkersFromMap;
 
         function plotObjects(objects, map, infoWindow) {
+            var markers = [];
             objects.forEach(function(obj) {
-                var infoWindowHtml = '<div id="content">'+
-                  '<a href="' + obj.link + '"><h3>' + obj.description + '</h3></a>'+
-                  '<div id="bodyContent">'+
-                  '<p>Paikka: ' + obj.label + ' (' + obj.type + ')</p>' +
-                  '</div>'+
-                  '</div>';
+                var infoWindowHtml = '';
+
+                if (obj.link) {
+                    infoWindowHtml = '<div id="content">'+
+                      '<a href="' + obj.link + '"><h3>' + obj.description + '</h3></a>'+
+                      '<div id="bodyContent">'+
+                      '<p>Paikka: ' + obj.label + ' (' + obj.type + ')</p>' +
+                      '</div>'+
+                      '</div>';
+               } else if (obj.id.startsWith('http://ldf.fi/warsa/places/cemeteries/')) {
+                    var fMun = '';
+                    if (obj.hasOwnProperty('former_municipality')) {
+                        fMun = '<p>Entinen kunta: ' + obj.former_municipality + '</p>';
+                    }
+                    infoWindowHtml = '<div id="content">'+
+                      '<a href="' + obj.id + '"><h3>' + obj.label + '</h3></a>'+
+                      '<div id="bodyContent">'+
+                      '<p>Kunta: ' + obj.current_municipality + '</p>' +
+                      fMun +
+                      '</div>'+
+                      '</div>';
+                }
 
                 var point = new google.maps.LatLng(obj.lat, obj.lon);
                 var marker = new google.maps.Marker({
@@ -33,8 +51,10 @@
                     infoWindow.setContent(marker.content);
                     infoWindow.open(map, marker);
                 });
+                markers.push(marker);
 
             });
+            return markers;
         }
 
         function addMapWarperOverlay(mapWarperId, overlays, opacity, map) {
@@ -116,5 +136,12 @@
             });
             return map;
         }
+
+        function removeMarkersFromMap(markers) {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+        		}
+        }
+
     });
 })();

@@ -179,6 +179,19 @@ table.faceter-results .ng-table-header {
     height: 400px;
 }
 
+#cemetery-results-google-map-container {
+    width: 100%;
+    max-width: 1215px;
+    height: 800px;
+    position: relative;
+}
+
+#cemetery-results-google-map {
+    width: 100%;
+    max-width: 1215px;
+    height: 800px;
+}
+
 .blueimp-gallery {
     .title {
         overflow: hidden;

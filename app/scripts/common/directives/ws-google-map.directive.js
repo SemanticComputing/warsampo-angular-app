@@ -18,7 +18,7 @@
         var self = this;
 
         self.map;
-        self.markers;
+        self.markers = [];
         self.infoWindow;
         self.overlays = {}; // google.maps.ImageMapType objects, used for historical maps
 
@@ -28,7 +28,8 @@
             if (!val || _.isArray(val) && !val.length) {
                 return;
             }
-            googleMapsService.plotObjects(val, self.map, self.infoWindow);
+            googleMapsService.removeMarkersFromMap(self.markers);
+            self.markers = googleMapsService.plotObjects(val, self.map, self.infoWindow);
             //googleMapsService.addMapWarperOverlay(29, self.overlays, 0.75, self.map,);
         });
 

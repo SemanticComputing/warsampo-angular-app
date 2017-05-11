@@ -24,6 +24,7 @@
             updateResults(event, config);
             initListener();
         });
+
         $scope.$on('sf-facet-constraints', updateResults);
 
         cemeteryFacetService.getFacets().then(function(facets) {
@@ -66,6 +67,7 @@
 
         function updateResults(event, facetSelections) {
             facetUrlStateHandlerService.updateUrlParams(facetSelections);
+            vm.cemeteries = [];
             vm.isLoadingResults = true;
             cemeteryFacetService.getResults( facetSelections )
             .then( function ( pager ) {
@@ -76,6 +78,10 @@
                 } else {
                     initializeTable();
                 }
+                return pager.getAll();
+            })
+            .then(function(cemeteries) {
+                vm.cemeteries = cemeteries;
             });
         }
     }

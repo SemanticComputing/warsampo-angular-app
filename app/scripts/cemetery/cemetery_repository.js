@@ -57,7 +57,7 @@
         ' ?cemetery_id ?narc_name ?current_municipality ?former_municipality ' +
         ' ?camera_club ?architect ?number_of_graves ?date_of_foundation ' +
         ' ?memorial_unveiling_date ?memorial ?memorial_sculptor ' +
-        ' ?lat ?long ?address ?person_id ';
+        ' ?lat ?lon ?address ?person_id ';
 
         var relatedSelect =
         ' SELECT DISTINCT ?id ?label ';
@@ -131,7 +131,7 @@
         '  OPTIONAL { ?id cemeteries-schema:memorial ?memorial . } ' +
         '  OPTIONAL { ?id cemeteries-schema:memorial_sculptor ?memorial_sculptor . } ' +
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
-        '  OPTIONAL { ?id wgs84:long ?long . } ' +
+        '  OPTIONAL { ?id wgs84:long ?lon . } ' +
         '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
         ' } ';
 
@@ -220,7 +220,6 @@
         function getByFacetSelections(facetSelections, options) {
             var resultSet = facetSelections.join(' ');
             var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet, '?name');
-            //console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, options.pageSize,
                     qryObj.resultSetQuery);
         }
