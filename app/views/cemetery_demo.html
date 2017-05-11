@@ -12,14 +12,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-4 col-md-3 facet-container">
-        <seco-jena-text-facet data-options="vm.facets.description"></seco-jena-text-facet>
-        <div class="show-facets row">
-          <div class="col-xs-12">
-            <button class="btn btn-default pull-right visible-xs-block"
-              ng-click="show = !show">{{ show ? ('PHOTO_DEMO.HIDE_FACETS' | translate) : ('PHOTO_DEMO.SHOW_FACETS' | translate) }}</button>
-          </div>
-        </div>
+      <div class="col-sm-4 col-md-3 facet-container">      
         <div class="hideable-facets" ng-class="{ 'hidden-xs': !show }">
           <seco-text-facet data-options="vm.facets.name"></seco-text-facet>
           <seco-basic-facet data-options="vm.facets.cemetery_type"></seco-basic-facet>
