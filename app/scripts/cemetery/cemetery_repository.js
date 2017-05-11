@@ -26,6 +26,7 @@
         self.getSingleById = getSingleById;
         self.getByPlaceId = getByPlaceId;
         self.getByPlaceIdFilterById = getByPlaceIdFilterById;
+        self.getByFacetSelections = getByFacetSelections;
 
         // test urls:
         // espoo http://localhost:9000/fi/cemeteries/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Fplaces%2Fcemeteries%2Fh0003_1
@@ -81,6 +82,7 @@
         '  ?id skos:prefLabel ?label . ' +
         ' } ';
 
+        // singleCemeteryQry with person_id for cemetery info page charts
         var singleCemeteryQry = singleSelect +
         ' { ' +
         '  <RESULT_SET> ' +
@@ -108,6 +110,29 @@
         '     ?death_record_id nsc:hautausmaa ?id . ' +
         '     ?death_record_id crm:P70_documents ?person_id . ' +
         '  } ' +
+        ' } ';
+
+        var cemeteryQry = singleSelect +
+        ' { ' +
+        '  <RESULT_SET> ' +
+        '  ?id skos:prefLabel ?label . ' +
+        '  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:status ?status . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:cemetery_type ?cemetery_type . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:cemetery_id ?cemetery_id . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:narc_name ?narc_name . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:current_municipality ?current_municipality . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:former_municipality ?former_municipality . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:camera_club ?camera_club . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:architect ?architect . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:number_of_graves ?number_of_graves . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:date_of_foundation ?date_of_foundation . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:memorial_unveiling_date ?memorial_unveiling_date . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:memorial ?memorial . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:memorial_sculptor ?memorial_sculptor . } ' +
+        '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
+        '  OPTIONAL { ?id wgs84:long ?long . } ' +
+        '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
         ' } ';
 
         /**
@@ -191,6 +216,15 @@
             //  console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
+
+        function getByFacetSelections(facetSelections, options) {
+            var resultSet = facetSelections.join(' ');
+            var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet, '?name');
+            //console.log(qryObj.query);
+            return endpoint.getObjects(qryObj.query, options.pageSize,
+                    qryObj.resultSetQuery);
+        }
+
 
     }
 })();

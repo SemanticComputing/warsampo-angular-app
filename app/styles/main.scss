@@ -133,8 +133,12 @@ a.no-decoration {
     padding: 4px !important;
 }
 
-table.person-record tr:nth-child(even) {
+table.person-record tr:nth-child(even), table.faceter-results tr:nth-child(even) {
     background-color: #f8f6f4;
+}
+
+table.faceter-results .ng-table-header {
+    text-align: left;
 }
 
 #timemap-container {

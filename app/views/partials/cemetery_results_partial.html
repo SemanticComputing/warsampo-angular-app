@@ -1,0 +1,34 @@
+<table class="table faceter-results ng-table-responsive" ng-table="vm.tableParams">
+  <!--<colgroup>-->
+    <!--<col width="15%" />-->
+    <!--<col width="4%" />-->
+    <!--<col width="8%" />-->
+    <!--<col width="10%" />-->
+  <!--</colgroup>-->
+  <tr ng-show="!vm.isLoadingResults" ng-repeat="cemetery in $data">
+
+    <td data-title="'CEMETERY_DEMO.NAME' | translate">
+      <a ws-page-link ng-href="/cemeteries/page?uri={{::cemetery.id}}">
+        {{::cemetery.label}}
+      </a>
+    </td>
+    <td data-title="'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate">
+      <a href="#" ng-if="::cemetery.current_municipality">{{::cemetery.current_municipality}}</a>
+    </td>
+    <td data-title="'CEMETERY_DEMO.FORMER_MUNICIPALITY' | translate">
+      <a href="#" ng-if="::cemetery.former_municipality">{{::cemetery.former_municipality}}</a>
+    </td>
+    <td data-title="'CEMETERY_DEMO.ARCHITECT' | translate">
+      <span>{{::cemetery.architect}}</span>
+    </td>
+    <td data-title="'CEMETERY_DEMO.MEMORIAL' | translate">
+      <span>{{::cemetery.memorial}}</span>
+    </td>
+    <td data-title="'CEMETERY_DEMO.CAMERA_CLUB' | translate">
+      <span>{{::cemetery.camera_club}}</span>
+    </td>
+
+  </tr>
+
+</table>
+<img class="loading-img" src="images/loading-lg.gif" ng-if="vm.isLoadingResults"></img>

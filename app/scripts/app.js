@@ -28,6 +28,7 @@
         'ngRoute',
         'ngSanitize',
         'ngTouch',
+        'ngTable',
         'ui.bootstrap',
         'truncate',
         'pascalprecht.translate',
@@ -134,6 +135,12 @@
         .when('/photographs', {
             redirectTo: '/' + defaultLocale + '/photographs/'
         })
+        .when('/cemeteries/page', {
+            redirectTo: '/' + defaultLocale + '/cemeteries/page'
+        })
+        .when('/cemeteries', {
+            redirectTo: '/' + defaultLocale + '/cemeteries/'
+        })
         .when(lang + '/photographs', {
             templateUrl: 'views/photo_demo.html',
             controller: 'PhotoDemoController',
@@ -211,6 +218,14 @@
             templateUrl: 'views/semantic_page.html',
             controller: 'SemanticPageController',
             controllerAs: 'ctrl',
+            resolve: getResolve()
+        })
+
+        .when(lang + '/cemeteries', {
+            templateUrl: 'views/cemetery_demo.html',
+            controller: 'CemeteryDemoController',
+            controllerAs: 'vm',
+            reloadOnSearch: false,
             resolve: getResolve()
         })
         .when(lang + '/cemeteries/page', {

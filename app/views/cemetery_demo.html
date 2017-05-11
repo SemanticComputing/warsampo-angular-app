@@ -1,0 +1,44 @@
+<ws-title>{{ 'PHOTO_DEMO.TITLE' | translate }}</ws-title>
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="photo-demo-description col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h1 translate>CEMETERY_DEMO.HEADER</h1>
+            <p translate>CEMETERY_DEMO.APP_DESCRIPTION</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4 col-md-3 facet-container">
+        <seco-jena-text-facet data-options="vm.facets.description"></seco-jena-text-facet>
+        <div class="show-facets row">
+          <div class="col-xs-12">
+            <button class="btn btn-default pull-right visible-xs-block"
+              ng-click="show = !show">{{ show ? ('PHOTO_DEMO.HIDE_FACETS' | translate) : ('PHOTO_DEMO.SHOW_FACETS' | translate) }}</button>
+          </div>
+        </div>
+        <div class="hideable-facets" ng-class="{ 'hidden-xs': !show }">
+          <seco-text-facet data-options="vm.facets.name"></seco-text-facet>
+          <seco-basic-facet data-options="vm.facets.cemetery_type"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.current_municipality"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.former_municipality"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.architect"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.memorial"></seco-basic-facet>
+          <seco-basic-facet data-options="vm.facets.camera_club"></seco-basic-facet>
+        </div>
+      </div>
+
+      <div class="col-sm-8 col-md-9">
+        <div uib-alert class="alert-danger" ng-if="vm.error">
+          <p>{{ 'ERROR_OCCURED' | translate }}:</p>
+          <p>{{ vm.error | translate }}</p>
+        </div>
+        <div ng-include="'views/partials/cemetery_results_partial.html'"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
