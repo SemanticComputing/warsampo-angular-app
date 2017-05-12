@@ -77,7 +77,7 @@
                           type: place.getTypeLabel(),
                           label: place.getLabel(),
                           description: event.getLabel(),
-                          link: person.id,
+                          id: person.id,
                           lat: place.point.lat,
                           lon: place.point.lon,
                       });

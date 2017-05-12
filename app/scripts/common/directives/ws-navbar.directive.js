@@ -65,7 +65,7 @@
             }
 
             function getCemeteryLinksVisibility() {
-                return _.includes($location.url(), '/cemeteries');
+                return _.includes($location.url(), '/cemeteries') && !_.includes($location.url(), '/page') ;
             }
 
             function setCemeteryResultFormat(resultFormat) {

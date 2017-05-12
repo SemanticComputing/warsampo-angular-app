@@ -19,10 +19,9 @@
             var markers = [];
             objects.forEach(function(obj) {
                 var infoWindowHtml = '';
-
-                if (obj.link) {
+                if (obj.id.startsWith('http://ldf.fi/warsa/actors/')) {
                     infoWindowHtml = '<div id="content">'+
-                      '<a href="' + obj.link + '"><h3>' + obj.description + '</h3></a>'+
+                      '<a href="/persons/page?uri=' + obj.id + '"><h3>' + obj.description + '</h3></a>'+
                       '<div id="bodyContent">'+
                       '<p>Paikka: ' + obj.label + ' (' + obj.type + ')</p>' +
                       '</div>'+
@@ -33,7 +32,7 @@
                         fMun = '<p>Entinen kunta: ' + obj.former_municipality + '</p>';
                     }
                     infoWindowHtml = '<div id="content">'+
-                      '<a href="' + obj.id + '"><h3>' + obj.label + '</h3></a>'+
+                      '<a href="/cemeteries/page?uri=' + obj.id + '"><h3>' + obj.label + '</h3></a>'+
                       '<div id="bodyContent">'+
                       '<p>Kunta: ' + obj.current_municipality + '</p>' +
                       fMun +

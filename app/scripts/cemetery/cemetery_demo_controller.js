@@ -52,11 +52,13 @@
         }
 
         function updateResultFormat() {
-            if ($location.search().resultFormat) {
-                vm.resultFormat = $location.search().resultFormat;
-            } else {
-                $location.search('resultFormat', 'map');
-                vm.resultFormat = 'map';
+            if ( _.includes($location.url(), '/cemeteries') && !_.includes($location.url(), '/page') ) {
+                if ($location.search().resultFormat) {
+                    vm.resultFormat = $location.search().resultFormat;
+                } else {
+                    $location.search('resultFormat', 'map');
+                    vm.resultFormat = 'map';
+                }
             }
         }
 
