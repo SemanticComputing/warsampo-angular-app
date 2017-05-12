@@ -1,18 +1,7 @@
-<ws-title>{{ 'PHOTO_DEMO.TITLE' | translate }}</ws-title>
+<ws-title>{{ 'CEMETERY_DEMO.TITLE' | translate }}</ws-title>
 <div class="row">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="photo-demo-description col-md-12">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <h1 translate>CEMETERY_DEMO.HEADER</h1>
-            <p translate>CEMETERY_DEMO.APP_DESCRIPTION</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-4 col-md-3 facet-container">
+  <div id="cemetery-demo-container" class="col-md-12">
+      <div class="col-sm-4 col-md-2 facet-container">
         <div class="hideable-facets" ng-class="{ 'hidden-xs': !show }">
           <seco-text-facet data-options="vm.facets.name"></seco-text-facet>
           <seco-basic-facet data-options="vm.facets.cemetery_type"></seco-basic-facet>
@@ -30,12 +19,17 @@
           <p>{{ vm.error | translate }}</p>
         </div>
 
-        <div id="cemetery-results-google-map-container">
+        <div>
+            <h1 translate>CEMETERY_DEMO.HEADER</h1>
+            <p translate>CEMETERY_DEMO.APP_DESCRIPTION</p>
+        </div>
+
+        <div ng-show="vm.resultFormat == 'map'" id="cemetery-results-google-map-container">
           <ws-google-map id="cemetery-results-google-map" places="vm.cemeteries" style="position: absolute;"></ws-google-map>
         </div>
-        <!-- <div ng-include="'views/partials/cemetery_results_partial.html'"></div>  -->
+        <div ng-show="vm.resultFormat == 'list'" ng-include="'views/partials/cemetery_results_partial.html'"></div>
       </div>
 
-    </div>
+
   </div>
 </div>

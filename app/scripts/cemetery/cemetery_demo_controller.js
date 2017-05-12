@@ -15,14 +15,20 @@
     .controller('CemeteryDemoController', CemeteryDemoController);
 
     /* @ngInject */
-    function CemeteryDemoController($scope, $translate, $uibModal, _, cemeteryFacetService,
+    function CemeteryDemoController($scope, $translate, $location, $uibModal, _, cemeteryFacetService,
             NgTableParams, FacetHandler, facetUrlStateHandlerService, Settings) {
 
         var vm = this;
 
         var initListener = $scope.$on('sf-initial-constraints', function(event, config) {
+            updateResultFormat();
             updateResults(event, config);
             initListener();
+        });
+
+        // URL to controller
+        $scope.$on('$locationChangeSuccess', function(event) {
+            updateResultFormat();
         });
 
         $scope.$on('sf-facet-constraints', updateResults);
@@ -43,6 +49,15 @@
                     getData: getData
                 }
             );
+        }
+
+        function updateResultFormat() {
+            if ($location.search().resultFormat) {
+                vm.resultFormat = $location.search().resultFormat;
+            } else {
+                $location.search('resultFormat', 'map');
+                vm.resultFormat = 'map';
+            }
         }
 
         function getFacetOptions() {
@@ -67,7 +82,6 @@
 
         function updateResults(event, facetSelections) {
             facetUrlStateHandlerService.updateUrlParams(facetSelections);
-            vm.cemeteries = [];
             vm.isLoadingResults = true;
             cemeteryFacetService.getResults( facetSelections )
             .then( function ( pager ) {
@@ -79,6 +93,7 @@
                     initializeTable();
                 }
                 return pager.getAll();
+
             })
             .then(function(cemeteries) {
                 vm.cemeteries = cemeteries;

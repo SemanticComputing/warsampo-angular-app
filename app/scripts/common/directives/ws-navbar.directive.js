@@ -35,6 +35,8 @@
 
             self.changeLocale = changeLocale;
             self.getEventLinksVisibility = getEventLinksVisibility;
+            self.getCemeteryLinksVisibility = getCemeteryLinksVisibility;
+            self.setCemeteryResultFormat = setCemeteryResultFormat;
 
             self.toggleSettings = Settings.toggleSettings;
             self.getSettingsVisibility = Settings.getSettingsVisibility;
@@ -60,6 +62,14 @@
 
             function getEventLinksVisibility() {
                 return _.includes($location.url(), '/events');
+            }
+
+            function getCemeteryLinksVisibility() {
+                return _.includes($location.url(), '/cemeteries');
+            }
+
+            function setCemeteryResultFormat(resultFormat) {
+                $location.search('resultFormat', resultFormat);
             }
 
             function changeLocale(lang) {
