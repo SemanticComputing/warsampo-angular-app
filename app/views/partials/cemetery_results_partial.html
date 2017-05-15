@@ -13,19 +13,19 @@
       </a>
     </td>
     <td data-title="'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate">
-      <a href="#" ng-if="::cemetery.current_municipality">{{::cemetery.current_municipality}}</a>
+      <span ng-if="::cemetery.current_municipality">{{::cemetery.current_municipality}}</span>
     </td>
     <td data-title="'CEMETERY_DEMO.FORMER_MUNICIPALITY' | translate">
-      <a href="#" ng-if="::cemetery.former_municipality">{{::cemetery.former_municipality}}</a>
+      <span ng-if="::cemetery.former_municipality">{{::cemetery.former_municipality}}</span>
     </td>
     <td data-title="'CEMETERY_DEMO.ARCHITECT' | translate">
-      <span>{{::cemetery.architect}}</span>
+      <span ng-if="::cemetery.architect">{{::cemetery.architect}}</span>
     </td>
     <td data-title="'CEMETERY_DEMO.MEMORIAL' | translate">
-      <span>{{::cemetery.memorial}}</span>
+      <span ng-if="::cemetery.memorial">{{::cemetery.memorial}}</span>
     </td>
     <td data-title="'CEMETERY_DEMO.CAMERA_CLUB' | translate">
-      <span>{{::cemetery.camera_club}}</span>
+      <span ng-if="::cemetery.camera_club">{{::cemetery.camera_club}}</span>
     </td>
 
   </tr>
