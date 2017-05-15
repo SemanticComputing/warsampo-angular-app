@@ -24,6 +24,7 @@
             }
             vm.isLoadingCemetery = true;
             vm.isLoadingLinks = true;
+            self.err = undefined;
             cemeteryService.getSingleCemeteryById($routeParams.uri)
             .then(function(cemetery) {
                 vm.cemetery = cemetery;
@@ -40,8 +41,9 @@
                 vm.relatedCemeteriesByPlace = cemeteries;
                 vm.isLoadingLinks = false;
             })
-            .catch(function(error) {
-                console.log(error);
+            .catch(function(data) {
+                data = data || 'Unknown error';
+                self.err = data.message || data;
                 vm.isLoadingCemetery = false;
                 vm.isLoadingLinks = false;
             });
