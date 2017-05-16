@@ -43,7 +43,7 @@
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX cemeteries: <http://ldf.fi/schema/warsa/places/cemeteries/>' +
         ' PREFIX cemeteries-schema: <http://ldf.fi/schema/warsa/cemeteries/> ' +
-        ' PREFIX warsa-schema: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
         ' PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';

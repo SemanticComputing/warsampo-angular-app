@@ -76,23 +76,23 @@
     )
     .constant('PHOTO_PAGE_SIZE', 50)
     .constant('EVENT_TYPES', {
-        BATTLE: 'http://ldf.fi/warsa/events/event_types/Battle',
-        POLITICAL_ACTIVITY: 'http://ldf.fi/warsa/events/event_types/PoliticalActivity',
-        MILITARY_ACTIVITY: 'http://ldf.fi/warsa/events/event_types/MilitaryActivity',
-        BOMBARDMENT: 'http://ldf.fi/warsa/events/event_types/Bombardment',
-        TROOP_MOVEMENT: 'http://ldf.fi/warsa/events/event_types/TroopMovement',
-        UNIT_JOINING: 'http://ldf.fi/warsa/events/event_types/UnitJoining',
-        UNIT_FORMATION: 'http://www.cidoc-crm.org/cidoc-crm/E66_Formation',
-        UNIT_NAMING: 'http://ldf.fi/warsa/events/event_types/UnitNaming',
-        DISSOLUTION: 'http://www.cidoc-crm.org/cidoc-crm/E68_Dissolution',
-        PERSON_JOINING: 'http://ldf.fi/warsa/events/event_types/PersonJoining',
-        PROMOTION: 'http://ldf.fi/warsa/events/event_types/Promotion',
-        BIRTH: 'http://www.cidoc-crm.org/cidoc-crm/E67_Birth',
-        DEATH: 'http://www.cidoc-crm.org/cidoc-crm/E69_Death',
-        DISSAPEARING: 'http://ldf.fi/warsa/events/event_types/Dissapearing',
-        WOUNDING: 'http://ldf.fi/warsa/events/event_types/Wounding',
-        PHOTOGRAPHY: 'http://ldf.fi/warsa/events/event_types/Photography',
-        MEDAL_ASSIGNMENT: 'http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment'
+        BATTLE: 'http://ldf.fi/schema/warsa/Battle',
+        POLITICAL_ACTIVITY: 'http://ldf.fi/schema/warsa/PoliticalActivity',
+        MILITARY_ACTIVITY: 'http://ldf.fi/schema/warsa/MilitaryActivity',
+        BOMBARDMENT: 'http://ldf.fi/schema/warsa/Bombardment',
+        TROOP_MOVEMENT: 'http://ldf.fi/schema/warsa/TroopMovement',
+        UNIT_JOINING: 'http://ldf.fi/schema/warsa/UnitJoining',
+        UNIT_FORMATION: 'http://ldf.fi/schema/warsa/UnitFormation',
+        UNIT_NAMING: 'http://ldf.fi/schema/warsa/UnitNaming',
+        DISSOLUTION: 'http://ldf.fi/schema/warsa/Dissolution',
+        PERSON_JOINING: 'http://ldf.fi/schema/warsa/PersonJoining',
+        PROMOTION: 'http://ldf.fi/schema/warsa/Promotion',
+        BIRTH: 'http://ldf.fi/schema/warsa/Birth',
+        DEATH: 'http://ldf.fi/schema/warsa/Death',
+        DISSAPEARING: 'http://ldf.fi/schema/warsa/Dissapearing',
+        WOUNDING: 'http://ldf.fi/schema/warsa/Wounding',
+        PHOTOGRAPHY: 'http://ldf.fi/schema/warsa/Photography',
+        MEDAL_ASSIGNMENT: 'http://ldf.fi/schema/warsa/MedalAwarding'
     })
     .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)
     .constant('PNR_SERVICE_URI', PNR_SERVICE_URI)

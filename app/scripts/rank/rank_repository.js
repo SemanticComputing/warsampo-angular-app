@@ -17,19 +17,19 @@
         var endpoint = new SparqlService(ENDPOINT_CONFIG);
 
         var prefixes =
-        ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX dct: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX org: <http://rdf.muninn-project.org/ontologies/organization#> ' +
-        ' PREFIX wra: <http://ldf.fi/warsa/actors/ranks/> ';
+        ' PREFIX wra: <http://ldf.fi/warsa/actors/ranks/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ';
 
         var rankQry = prefixes  +
         'SELECT DISTINCT ?id ?label ?abbrev ?comment ?wikilink ?description ' +
         'WHERE { ' +
         '  VALUES ?id { {0} } . ' +
-        '  ?id a wra:Rank .  ' +
+        '  ?id a wsc:Rank .  ' +
         '  ?id skos:prefLabel ?label . '  +
         '  OPTIONAL { ?id rdfs:comment ?comment }  ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
@@ -41,7 +41,7 @@
         var relatedRankQry = prefixes +
         'SELECT ?id ?label ?level WHERE {' +
         '    VALUES ?rank { {0}  } .   ' +
-        '    ?id a wra:Rank . ' +
+        '    ?id a wsc:Rank . ' +
         '    { ?id org:rankSeniorTo ?rank . ' +
         '     BIND (2 AS ?level) .' +
         '    } UNION { ' +

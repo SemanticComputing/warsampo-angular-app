@@ -14,27 +14,18 @@
         var historyEndpoint = new SparqlService('http://ldf.fi/history/sparql');
 
         var prefixes =
-        ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
-        ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
-        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
-        ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ';
+        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -57,8 +48,8 @@
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
-        '  OPTIONAL { ?id dc:description ?description . } ' +
-        '  OPTIONAL { ?id dc:source ?sid . ' +
+        '  OPTIONAL { ?id dct:description ?description . } ' +
+        '  OPTIONAL { ?id dct:source ?sid . ' +
         '  OPTIONAL { ?sid skos:prefLabel ?source . ' +
         '               FILTER( lang(?source)="fi" ) ' +
         '   } ' +
@@ -114,7 +105,7 @@
         'SELECT DISTINCT ?name ?id WHERE {	' +
         '  SELECT DISTINCT ?name ?id WHERE {	' +
         '    GRAPH <http://ldf.fi/warsa/actors> {	' +
-        '      { ?id a crm:E21_Person } UNION { ?id a atypes:PoliticalPerson } UNION { ?id a atypes:MilitaryPerson . } ' +
+        '      { ?id a crm:E21_Person } UNION { ?id a wsc:PoliticalPerson } UNION { ?id a wsc:MilitaryPerson . } ' +
         '      ?id skos:prefLabel ?name .   	    	' +
         '      FILTER (regex(?name, "^{0}$", "i"))	' +
         '    } 	' +
@@ -128,14 +119,14 @@
         '    VALUES ?actor { {0} } .	' +
         '    ?uri crm:P70_documents ?actor .	' +
         '    ?uri skos:prefLabel ?label .	' +
-        '    ?uri <http://purl.org/dc/terms/hasFormat> ?id .	' +
+        '    ?uri dct:hasFormat ?id .	' +
         '    OPTIONAL { ?uri crm:P4_has_time-span ?time . }	' +
         '    }	' +
         '} ORDER BY ?time	';
 
         var byUnitQryResultSet =
         ' SELECT ?id (COUNT(?s) AS ?no) { ' +
-        '  ?evt a etypes:PersonJoining ; ' +
+        '  ?evt a wsc:PersonJoining ; ' +
         '  crm:P143_joined ?id . ' +
         '  ?evt  crm:P144_joined_with {0} .  ' +
         '  ?s ?p ?id . ' +
@@ -147,7 +138,7 @@
         'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end WHERE { ' +
         '   <RESULT_SET> ' +
         ' 	OPTIONAL { ' +
-        ' 	  ?evt a etypes:PersonJoining ; ' +
+        ' 	  ?evt a wsc:PersonJoining ; ' +
         ' 	  crm:P143_joined ?id . ' +
         '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
         '     OPTIONAL { ' +
@@ -163,7 +154,7 @@
 
         var commandersByUnitQry = prefixes +
         'SELECT ?id ?sname ?fname ?label ?role ?join_start ?join_end WHERE { ' +
-        ' ?evt a etypes:PersonJoining ; ' +
+        ' ?evt a wsc:PersonJoining ; ' +
         '   crm:P143_joined ?id . ' +
         ' ?evt  crm:P144_joined_with {0} .  ' +
         ' ?evt crm:P107_1_kind_of_member ?role . ' +
@@ -181,10 +172,10 @@
         ' { ' +
         '  SELECT DISTINCT ?id (COUNT(?s) AS ?no) WHERE { ' +
         '   VALUES ?rank { {0} } . ' +
-        '   ?evt :hasRank ?rank . ' +
+        '   ?evt wacs:hasRank ?rank . ' +
         '   ?evt crm:P11_had_participant ?id . ' +
-        '   ?evt a etypes:Promotion .	' +
-        '   ?id a atypes:MilitaryPerson .	' +
+        '   ?evt a wsc:Promotion .	' +
+        '   ?id a wsc:MilitaryPerson .	' +
         '   ?s ?p ?id .	' +
         '  } GROUP BY ?id ' +
         ' }	';
@@ -202,7 +193,7 @@
         ' ?evt a crm:E13_Attribute_Assignment ;	 ' +
         '   crm:P141_assigned ?medal ; ' +
         '   crm:P11_had_participant ?id .  ' +
-        ' ?id a atypes:MilitaryPerson .	 ' +
+        ' ?id a wsc:MilitaryPerson .	 ' +
         ' ?id foaf:familyName ?sname ; ' +
         '   foaf:firstName ?fname . ';
 
@@ -230,9 +221,9 @@
         '    BIND (20 AS ?score) ' +
         '  } UNION { ' +
         '    VALUES ?person { <ACTOR> } ' +
-        '    ?person ^crm:P11_had_participant/:hasRank ?rank . ' +
-        '    ?rank ^:hasRank/crm:P11_had_participant ?id ; ' +
-        '     :level ?score . ' +
+        '    ?person ^crm:P11_had_participant/wacs:hasRank ?rank . ' +
+        '    ?rank ^wacs:hasRank/crm:P11_had_participant ?id ; ' +
+        '     wacs:level ?score . ' +
         '  } UNION { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' +
@@ -313,7 +304,7 @@
                 if (!arr.length) {
                     arr = [ {id:'#', name:'Ei hakutuloksia.'} ];
                 }
-                return arr; 
+                return arr;
             });
         };
 

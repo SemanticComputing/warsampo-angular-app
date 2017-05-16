@@ -41,20 +41,16 @@
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX wev: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX wph: <http://ldf.fi/warsa/photographs/> ' +
-        ' PREFIX wat: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX dctype: <http://purl.org/dc/dcmitype/> ' +
-        ' PREFIX dc: <http://purl.org/dc/terms/> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX text: <http://jena.apache.org/text#> ' +
-        ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
+        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wevs: <http://ldf.fi/schema/warsa/events/> ' +
+        ' PREFIX wphs: <http://ldf.fi/schema/warsa/photographs/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -68,12 +64,12 @@
         '  <RESULT_SET> ' +
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
-        '  OPTIONAL { ?id dc:description ?description . } ' +
+        '  OPTIONAL { ?id dct:description ?description . } ' +
         '  OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '  OPTIONAL { ?id wph:theme ?theme . } ' +
+        '  OPTIONAL { ?id wphs:theme ?theme . } ' +
         '  OPTIONAL { ' +
         '   ?id ^crm:P94_has_created ?event_id . ' +
-        '   OPTIONAL { ?event_id wev:related_period/skos:prefLabel ?period . } ' +
+        '   OPTIONAL { ?event_id wevs:related_period/skos:prefLabel ?period . } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P4_has_time-span ?time_id . ' +
         '    ?time_id crm:P82a_begin_of_the_begin ?created .' +
@@ -82,7 +78,7 @@
         '   OPTIONAL { ?event_id crm:P7_took_place_at ?place_id . } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?unit_id . ' +
-        '    ?unit_id a wat:MilitaryUnit . ' +
+        '    ?unit_id a wsc:MilitaryUnit . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?participant_id . ' +
@@ -90,12 +86,12 @@
         '   } ' +
         '  } ' +
         '  OPTIONAL { ' +
-        '   ?id dc:source ?source_id . ' +
+        '   ?id dct:source ?source_id . ' +
         '   ?source_id skos:prefLabel ?source . ' +
         '   FILTER(langMatches(lang(?source), "fi")) ' +
         '  } ' +
-        '  OPTIONAL { ?id wph:place_string ?place_string . } ' +
-        '  OPTIONAL { ?id wph:photographer_string ?photographer_string . } ' +
+        '  OPTIONAL { ?id wphs:place_string ?place_string . } ' +
+        '  OPTIONAL { ?id wphs:photographer_string ?photographer_string . } ' +
         ' } ';
 
         var photoByIdResultSet =
@@ -104,12 +100,12 @@
 
         var photosByThemeResultSet =
         '  BIND("<VAL>" AS ?theme) ' +
-        '  ?id wph:theme ?theme . ';
+        '  ?id wphs:theme ?theme . ';
 
         var photosByTimeResultSet =
         ' ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
         ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ' +
-        ' ?id a wph:Photograph . ';
+        ' ?id a wsc:Photograph . ';
 
         var photosByPlaceAndTimeResultSet =
         ' VALUES ?place_id { <PLACE> } ' +
@@ -117,25 +113,25 @@
         '  crm:P7_took_place_at ?place_id ; ' +
         '  crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
         ' ] . ' +
-        ' ?id a wph:Photograph . ' +
+        ' ?id a wsc:Photograph . ' +
         ' FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ';
 
         var photosByUnitResultSet =
         ' VALUES ?unit_id { <ID> } ' +
         ' ?id ^crm:P94_has_created/crm:P11_had_participant ?unit_id . ' +
-        ' ?id a wph:Photograph . ';
+        ' ?id a wsc:Photograph . ';
 
         var photosByPersonResultSet =
         ' VALUES ?participant_id { <ID> } ' +
         ' { ?id ^crm:P94_has_created/crm:P11_had_participant ?participant_id . } ' +
         ' UNION ' +
         ' { ?id ^crm:P94_has_created/crm:P14_carried_out_by ?participant_id . } ' +
-        ' ?id a wph:Photograph . ';
+        ' ?id a wsc:Photograph . ';
 
         var photosByCemeteryResultSet =
         ' VALUES ?cemetery_id { <ID> } ' +
         ' ?id crm:P138_represents ?cemetery_id . ' +
-        ' ?id a wph:Photograph . ';
+        ' ?id a wsc:Photograph . ';
 
         var minimalPhotosWithPlaceByTimeQry = prefixes +
         ' SELECT DISTINCT ?created ?place_id WHERE { ' +
@@ -143,7 +139,7 @@
         '    crm:P7_took_place_at ?place_id ; ' +
         '    crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created ' +
         '   ] . ' +
-        '   ?id a wph:Photograph . ' +
+        '   ?id a wsc:Photograph . ' +
         '   FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ' +
         ' } ' +
         ' ORDER BY ?created ';
@@ -153,7 +149,7 @@
         ' WHERE { ' +
         '  ?id ^crm:P94_has_created/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?created . ' +
         '  FILTER(?created >= "<START>"^^xsd:date && ?created <= "<END>"^^xsd:date) ' +
-        '  ?id a wph:Photograph . ' +
+        '  ?id a wsc:Photograph . ' +
         ' } ' +
         ' ORDER BY ?created ';
 

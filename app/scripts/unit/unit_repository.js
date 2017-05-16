@@ -12,7 +12,6 @@
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, unitMapperService);
 
         var prefixes =
-        ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
@@ -20,12 +19,12 @@
         ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
+        ' PREFIX wsc: <http://ldf.fi/warsa/actors/actor_types/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
-        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ' +
-        ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ' +
-        ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
+        ' PREFIX wars: <http://ldf.fi/schema/warsa/articles/> ' +
+        ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -36,22 +35,22 @@
         var minimalQry = select +
         ' {	' +
         '  <RESULT_SET> ' +
-        '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
-        '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+        '   ?id a wsc:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
+        '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
         ' }	';
 
         var unitByIdQry = prefixes + select +
         ' { ' +
         '   VALUES ?id  { <ID> } ' +
-        '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?preflabel . ' +
+        '   ?id a wsc:MilitaryUnit ; skos:prefLabel ?preflabel . ' +
         '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
-        '   OPTIONAL { ?id dc:source ?sid . ' +
+        '   OPTIONAL { ?id dct:source ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '   } ' +
         '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '   OPTIONAL { ?id dc:description ?description . }  '+
-        '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") }  ' +
+        '   OPTIONAL { ?id dct:description ?description . }  '+
+        '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") }  ' +
         '   BIND (IF(bound(?conf), concat(?preflabel," (",?conf,")"), ?preflabel) AS ?label)  ' +
         ' } ';
 
@@ -94,7 +93,7 @@
         '       BIND (1 AS ?level) ' +
         '       FILTER ( ?unit != ?id ) ' +
         '     } ' +
-        '     ?id a atypes:MilitaryUnit . ' +
+        '     ?id a wsc:MilitaryUnit . ' +
         '     ?s ?p ?id . ' +
         '     FILTER ( BOUND(?level) )  ' +
         '   } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 ' +
@@ -102,7 +101,7 @@
         ' FILTER BOUND(?id) ' +
         ' ?id skos:prefLabel ?pLabel . ' +
         ' ' +
-        ' OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+        ' OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         ' BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?name) ' +
 
         ' } GROUP BY ?id ?level ORDER BY ?level ';
@@ -111,8 +110,8 @@
         ' { ' +
         '   VALUES ?person { <PERSON> } . ' +
         '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
-        '   ?id a atypes:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
-        '   OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+        '   ?id a wsc:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
+        '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
         ' } ';
 
@@ -123,7 +122,7 @@
         '     ?death_record nsc:osasto ?id . ' +
         '   } ' +
         '   GROUP BY ?id ';
-    
+
         var selectorQuery = prefixes +
 		'SELECT DISTINCT ?id ?name  ' +
 		'WHERE {  ' +
@@ -133,17 +132,17 @@
 		'        { ' +
 		'          SELECT DISTINCT ?id ' +
 		'            WHERE { ' +
-		'              VALUES ?nclass { etypes:UnitNaming crm:E66_Formation atypes:MilitaryUnit  } ' +
+		'              VALUES ?nclass { wsc:UnitNaming crm:E66_Formation wsc:MilitaryUnit  } ' +
 		'              ?evt a ?nclass ;  ' +
 		'                 skos:prefLabel|skos:altLabel ?name .  ' +
 		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
 		'              ?evt ^crm:P95i_was_formed_by|crm:P95_has_formed ?id . ' +
-		'              ?id a atypes:MilitaryUnit . ' +
+		'              ?id a wsc:MilitaryUnit . ' +
         '              <ADDITIONAL_FILTER> ' +
 		'          } LIMIT 50 ' +
 		'      	} ' +
 		'      ?id skos:prefLabel ?label . ' +
-		'      OPTIONAL { ?id :hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
+		'      OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
 		'      } GROUP BY ?id ?label ' +
 		'  } ' +
 		'  BIND (IF(bound(?conflict), concat(?label," (",?conflict,")"), ?label) AS ?name) ' +
@@ -152,10 +151,10 @@
         // Units that have (or their subunits have) participated in battles
         var selectorEventFilter =
         ' ?id (^crm:P144_joined_with/crm:P143_joined)* [ ' +
-        '    a atypes:MilitaryUnit ; ' +
+        '    a wsc:MilitaryUnit ; ' +
         '    ^crm:P11_had_participant [ ' +
         '      crm:P4_has_time-span [] ; ' +
-        '      a etypes:Battle ' +
+        '      a wsc:Battle ' +
         '   ] ' +
         ' ] . ';
 
@@ -166,7 +165,7 @@
         '    VALUES ?unit { <ID> } . ' +
         '    ?uri crm:P70_documents ?unit . ' +
         '    ?uri skos:prefLabel ?label . ' +
-        '    ?uri <http://purl.org/dc/terms/hasFormat> ?id . ' +
+        '    ?uri dct:hasFormat ?id . ' +
         '    OPTIONAL { ?uri crm:P4_has_time-span ?time . } ' +
         '    } ' +
         '} ORDER BY ?time ';
@@ -183,9 +182,9 @@
         'WHERE { ' +
         '  GRAPH <http://ldf.fi/warsa/articles> { ' +
         '  VALUES ?unit { <ID> } .  ' +
-        '  ?id a articles:Article ; ' +
-        '      <http://purl.org/dc/elements/1.1/title> ?label ;  ' +
-        '      articles:nerunit ?unit .  ' +
+        '  ?id a wsc:Article ; ' +
+        '      dc:title|dct:title ?label ;  ' +
+        '      wars:nerunit ?unit .  ' +
         '  } ' +
         '} ORDER BY ?label ';
 

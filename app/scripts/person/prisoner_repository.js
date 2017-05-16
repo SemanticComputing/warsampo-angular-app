@@ -25,9 +25,6 @@
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> 	' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX photos: <http://ldf.fi/warsa/photographs/> ' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
         ' PREFIX sf: <http://ldf.fi/functions#>'  +
@@ -35,8 +32,6 @@
         ' PREFIX bioc: <http://ldf.fi/schema/bioc/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX prisoners: <http://ldf.fi/schema/warsa/prisoners/> ';
-
-        // l
 
         var prisonerRecordProperties = [
             'birth_date',

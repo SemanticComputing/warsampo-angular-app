@@ -26,20 +26,13 @@
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
-        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
-        ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
         ' PREFIX sch: <http://schema.org/>' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
-        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX actors: <http://ldf.fi/warsa/actors/> ' +
-        ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
+        ' PREFIX suo: <http://www.yso.fi/onto/suo/> ';
 
         var select =
             ' SELECT DISTINCT ?id ?label ?municipality_id ?municipality__id ' +

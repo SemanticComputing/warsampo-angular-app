@@ -31,20 +31,16 @@
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>' +
-        ' PREFIX hipla: <http://ldf.fi/schema/hipla/> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>' +
         ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
-        ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#>' +
         ' PREFIX sch: <http://schema.org/>' +
-        ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX etypes: <http://ldf.fi/warsa/events/event_types/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
-        ' PREFIX actors: <http://ldf.fi/warsa/actors/> ' +
-        ' PREFIX articles: <http://ldf.fi/schema/warsa/articles/> ';
+        ' PREFIX wevs: <http://ldf.fi/warsa/events/> ' +
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ' +
+        ' PREFIX wars: <http://ldf.fi/schema/warsa/articles/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -56,12 +52,12 @@
         '  ?title ?place_id ?medal__id ?medal__label ?source ?photo_id ';
 
         var eventTypeFilter =
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/TroopMovement>) ' +
-        ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E68_Dissolution>) ' +
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Battle>) ' +
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Disappearing>) ' +
-        ' FILTER(?type_id != <http://ldf.fi/warsa/events/event_types/Wounding>) ' +
-        ' FILTER(?type_id != <http://www.cidoc-crm.org/cidoc-crm/E67_Birth>) ';
+        ' FILTER(?type_id != wsc:TroopMovement) ' +
+        ' FILTER(?type_id != wsc:Dissolution) ' +
+        ' FILTER(?type_id != wsc:Battle) ' +
+        ' FILTER(?type_id != wsc:Disappearing) ' +
+        ' FILTER(?type_id != wsc:Wounding) ' +
+        ' FILTER(?type_id != wsc:Birth) ';
 
         var singleEventQryResultSet =
         '   VALUES ?id { <ID> } ' +
@@ -79,7 +75,7 @@
         '     ?id ?part_pred ?participant_id . ' +
         '   } ' +
         '   OPTIONAL { ' +
-        '    ?id dc:source|dct:source ?source_id . ' +
+        '    ?id dct:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
         '   } ' +
@@ -124,7 +120,7 @@
         '   BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         '   ?id skos:prefLabel ?description . ' +
         '   OPTIONAL { ' +
-        '    ?id dc:source|dct:source ?source_id . ' +
+        '    ?id dct:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
         '    FILTER(langMatches(lang(?source), "FI"))  ' +
         '   } ' +
@@ -135,7 +131,7 @@
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         '     ?id ?part_pred ?participant_id . ' +
         '   } ' +
-        '   OPTIONAL { ?id events:hadCommander ?commander . } ' +
+        '   OPTIONAL { ?id wevs:hadCommander ?commander . } ' +
         '   OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         ' } ';
 
@@ -191,7 +187,7 @@
         '     SELECT DISTINCT ?participant_id { ' +
         '       VALUES ?unit { <ID> } . ' +
         '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant_id . ' +
-        '       ?participant_id a atypes:MilitaryUnit . ' +
+        '       ?participant_id a wsc:MilitaryUnit . ' +
         '     } ' +
         '   } UNION { ' +
         '     VALUES ?participant_id { <ID> } ' +
@@ -214,25 +210,25 @@
         '   GRAPH <http://ldf.fi/warsa/events> { ' +
         '    ?id crm:P11_had_participant ?person ; ' +
         '    	skos:prefLabel ?description . ' +
-        '    	OPTIONAL { ?id events:hadUnit ?unit . } ' +
+        '    	OPTIONAL { ?id wevs:hadUnit ?unit . } ' +
         '   }' +
         '  }' +
         '  UNION  ' +
-        '  { ?id a etypes:PersonJoining . ?id crm:P143_joined ?person . ' +
+        '  { ?id a wsc:PersonJoining . ?id crm:P143_joined ?person . ' +
         '    ?id crm:P107_1_kind_of_member ?participant_role .  ' +
         '    ?id crm:P144_joined_with ?unit . ' +
         '    ?unit skos:prefLabel ?description . '+
         '  }  '+
         '  UNION '+
         '  { '+
-        '   ?id a articles:Article ; '+
+        '   ?id a wsc:Article ; '+
         '    dct:hasFormat ?link ; '+
-        '    dc:title ?description ; '+
+        '    dc:title|dct:title ?description ; '+
         '   { ?id dct:subject ?person . }  '+
         '   UNION  '+
-        '   { ?id articles:mentionsPerson ?person . }  '+
+        '   { ?id wars:mentionsPerson ?person . }  '+
         '   UNION  '+
-        '   { ?author skos:relatedMatch ?person . ?id articles:author ?author . } '+
+        '   { ?author skos:relatedMatch ?person . ?id wars:author ?author . } '+
         '  } ' +
         '  UNION  '+
         '  { ' +
@@ -264,13 +260,13 @@
         '  UNION  ' +
         '  { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . } ' +
         '  UNION  ' +
-        '  { ?id a etypes:Disappearing ; crm:P11_had_participant ?person . } ' +
+        '  { ?id a wsc:Disappearing ; crm:P11_had_participant ?person . } ' +
         '  UNION  ' +
-        '  { ?id a etypes:Wounding ; crm:P11_had_participant ?person . } ' +
+        '  { ?id a wsc:Wounding ; crm:P11_had_participant ?person . } ' +
         '  UNION  ' +
-        '  { ?id a etypes:Promotion ; ' +
+        '  { ?id a wsc:Promotion ; ' +
         '   crm:P11_had_participant ?person ; ' +
-        '   actors:hasRank ?rank__id . ' +
+        '   wacs:hasRank ?rank__id . ' +
         '   ?rank__id skos:prefLabel ?rank__label . ' +
         '  } ' +
         '  OPTIONAL { ' +

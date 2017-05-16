@@ -41,22 +41,22 @@
                 choices: [
                     {
                         id: 'winterwar',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/WinterWar> .',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/schema/warsa/conflicts/WinterWar> .',
                         label: 'WINTER_WAR'
                     },
                     {
                         id: 'interimpeace',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/InterimPeace> .',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/schema/warsa/conflicts/InterimPeace> .',
                         label: 'INTERIM_PEACE'
                     },
                     {
                         id: 'continationwar',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/ContinuationWar> .',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/schema/warsa/conflicts/ContinuationWar> .',
                         label: 'CONTINUATION_WAR'
                     },
                     {
                         id: 'laplandwar',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/LaplandWar> .',
+                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/schema/warsa/conflicts/LaplandWar> .',
                         label: 'LAPLAND_WAR'
                     }
                 ]
@@ -79,7 +79,7 @@
                 facetId: 'unit',
                 name: 'PHOTO_DEMO.UNIT',
                 predicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P11_had_participant>',
-                specifier: '?value a <http://ldf.fi/warsa/actors/actor_types/MilitaryUnit> .'
+                specifier: '?value a <http://ldf.fi/warsa/schema/MilitaryUnit> .'
             },
             photographer: {
                 facetId: 'photographer',
@@ -89,13 +89,13 @@
             theme: {
                 facetId: 'theme',
                 name: 'PHOTO_DEMO.THEME_CODE',
-                predicate: '<http://ldf.fi/warsa/photographs/theme>'
+                predicate: '<http://ldf.fi/warsa/schema/photographs/theme>'
             }
         };
 
         var cons =
         '?id <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?order . ' +
-        '?id <http://ldf.fi/warsa/photographs/is_color> ?color . ';
+        '?id <http://ldf.fi/schema/warsa/photographs/is_color> ?color . ';
 
         var facetOptions = {
             endpointUrl: SPARQL_ENDPOINT_URL,

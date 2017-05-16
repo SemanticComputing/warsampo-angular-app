@@ -11,28 +11,23 @@
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, medalMapperService);
 
         var prefixes =
-        ' PREFIX : <http://ldf.fi/warsa/actors/> ' +
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
-        ' PREFIX dcterms: <http://purl.org/dc/terms/> ' +
-        ' PREFIX warsa: <http://ldf.fi/warsa/> ' +
-        ' PREFIX atypes: <http://ldf.fi/warsa/actors/actor_types/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
-        ' PREFIX medal: <http://ldf.fi/warsa/medals/> ';
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ';
 
         var medalQry = prefixes +
         ' SELECT DISTINCT ?id ?label ?description WHERE {  ' +
         '  VALUES ?id { {0} } .   ' +
-        '  ?id a medal:Medal . ' +
+        '  ?id a wsc:Medal . ' +
         '  ?id skos:prefLabel ?label . ' +
         '  ?id a/skos:prefLabel ?type . ' +
-        '  OPTIONAL { ?id dc:description|dct:description ?description . } ' +
+        '  OPTIONAL { ?id dct:description ?description . } ' +
         ' } ';
 
         var relatedMedalQry = prefixes +
