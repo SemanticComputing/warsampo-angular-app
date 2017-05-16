@@ -68,6 +68,7 @@
         '{ ' +
         ' VALUES ?id { <ID> } ' +
         ' ?id skos:prefLabel [] . ' +
+        ' ?id a ?type_id . ' +
         ' OPTIONAL { ' +
         '   ?id skos:prefLabel ?label . ' +
         '   FILTER(langMatches(lang(?label), "FI")) ' +
@@ -75,6 +76,14 @@
         ' OPTIONAL { ' +
         '   ?id skos:prefLabel ?label . ' +
         '   FILTER(langMatches(lang(?label), "SV")) ' +
+        ' } ' +
+        ' OPTIONAL { ' +
+        '   ?type_id skos:prefLabel ?type . ' +
+        '   FILTER(langMatches(lang(?type), "FI")) ' +
+        ' } ' +
+        ' OPTIONAL { ' +
+        '   ?type_id skos:prefLabel ?type . ' +
+        '   FILTER(langMatches(lang(?type), "SV")) ' +
         ' } ' +
         ' OPTIONAL { ' +
         '   ?id geo:lat ?point__lat ; ' +
