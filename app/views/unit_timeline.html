@@ -10,7 +10,7 @@
       class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
     <select ng-model="ctrl.currentSelection" ng-change="ctrl.updateUnit()"
       size="32" class="form-control" id="unitselect"
-      ng-options="item.id as item.name for item in ctrl.items">
+      ng-options="item.id as item.name[0] for item in ctrl.items">
     </select>
 	</div>
 
