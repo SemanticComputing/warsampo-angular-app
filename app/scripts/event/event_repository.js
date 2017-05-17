@@ -62,7 +62,7 @@
         var singleEventQryResultSet =
         '   VALUES ?id { <ID> } ' +
         '   ?id a ?type_id . ' +
-        '   ?type_id rdfs:subClassOf* crm:E5_Event . ';
+        '   ?type_id rdfs:subClassOf* wsc:Event . ';
 
         var singleEventQry = prefixes + select +
         ' { ' +
@@ -187,7 +187,7 @@
         '     SELECT DISTINCT ?participant_id { ' +
         '       VALUES ?unit { <ID> } . ' +
         '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant_id . ' +
-        '       ?participant_id a wsc:MilitaryUnit . ' +
+        '       ?participant_id a wsc:Group . ' +
         '     } ' +
         '   } UNION { ' +
         '     VALUES ?participant_id { <ID> } ' +
@@ -256,9 +256,9 @@
         '  ?start_time ?end_time ?rank__label ?rank__id ?place_id ' +
         ' WHERE { ' +
         '  VALUES ?person { {0} } ' +
-        '  { ?id a crm:E67_Birth ; crm:P98_brought_into_life ?person . } ' +
+        '  { ?id a wsc:Birth ; crm:P98_brought_into_life ?person . } ' +
         '  UNION  ' +
-        '  { ?id a crm:E69_Death ; crm:P100_was_death_of ?person . } ' +
+        '  { ?id a wsc:Death ; crm:P100_was_death_of ?person . } ' +
         '  UNION  ' +
         '  { ?id a wsc:Disappearing ; crm:P11_had_participant ?person . } ' +
         '  UNION  ' +
@@ -268,6 +268,7 @@
         '   crm:P11_had_participant ?person ; ' +
         '   wacs:hasRank ?rank__id . ' +
         '   ?rank__id skos:prefLabel ?rank__label . ' +
+        '   FILTER(langMatches(lang(?rank__label), "FI")) ' +
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P4_has_time-span ?time_id .  ' +

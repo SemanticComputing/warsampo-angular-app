@@ -53,7 +53,7 @@
         '    	WHERE { 	' +
         '      		VALUES ?unit { <{2}> } .	' +
         '          ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
-        '          ?subunit a wsc:MilitaryUnit . 	' +
+        '          ?subunit a wsc:Group . 	' +
         '    	} 	' +
         '  	} UNION {	' +
         '    	VALUES ?subunit { <{2}> } .	' +
@@ -73,7 +73,7 @@
         '    	WHERE { 	' +
         '      		VALUES ?unit { <{2}> } .	' +
         '          ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?subunit .	' +
-        '          ?subunit a wsc:MilitaryUnit . 	' +
+        '          ?subunit a wsc:Group . 	' +
         '    	} 	' +
         '  	} UNION {	' +
         '    	VALUES ?subunit { <{2}> } .	' +

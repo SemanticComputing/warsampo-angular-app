@@ -61,7 +61,12 @@
         };
 
         self.getById = function(id) {
-            return rankRepository.getById(id);
+            return rankRepository.getById(id).then(function(rank) {
+                if (rank.length) {
+                    return rank[0];
+                }
+                return $q.reject('Does not exist');
+            });
         };
 
         self.getRelatedPersons = function(id) {

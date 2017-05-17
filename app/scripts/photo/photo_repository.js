@@ -78,11 +78,11 @@
         '   OPTIONAL { ?event_id crm:P7_took_place_at ?place_id . } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?unit_id . ' +
-        '    ?unit_id a wsc:MilitaryUnit . ' +
+        '    ?unit_id a wsc:Group . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?participant_id . ' +
-        '    ?participant_id a/rdfs:subClassOf* crm:E21_Person . ' +
+        '    ?participant_id a/rdfs:subClassOf* wsc:Person . ' +
         '   } ' +
         '  } ' +
         '  OPTIONAL { ' +

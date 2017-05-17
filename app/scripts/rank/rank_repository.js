@@ -19,7 +19,7 @@
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
-        ' PREFIX dct: <http://purl.org/dc/elements/1.1/> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX org: <http://rdf.muninn-project.org/ontologies/organization#> ' +
         ' PREFIX wra: <http://ldf.fi/warsa/actors/ranks/> ' +

@@ -84,7 +84,7 @@
 
             var places  =  [];
             events.forEach(function(e) {
-                var etype = e.type_id;
+                var etypes = _.castArray(e.type_id);
                 var edate;
                 if (e.start_time) {
                     edate = dateUtilService.formatExtremeDateRange(e.start_time, e.end_time);
@@ -96,33 +96,35 @@
                         places.push({ id: e.places[j].id, label: e.places[j].label });
                     }
                 }
-                if (etype === EVENT_TYPES.DEATH) {
-                    person.death = edate;
-                    if (eplace) person.death_place = eplace;
-                    person.deathEvent = e;
-                } else if (etype === EVENT_TYPES.BIRTH) {
-                    person.birth = edate;
-                    if (eplace) person.birth_place = eplace;
-                    person.birthEvent = e;
-                } else if (etype === EVENT_TYPES.WOUNDING) {
-                    person.wound = edate;
-                    if (eplace) {
-                        person.wound_place = eplace;
+                etypes.forEach(function(etype) {
+                    if (etype === EVENT_TYPES.DEATH) {
+                        person.death = edate;
+                        if (eplace) person.death_place = eplace;
+                        person.deathEvent = e;
+                    } else if (etype === EVENT_TYPES.BIRTH) {
+                        person.birth = edate;
+                        if (eplace) person.birth_place = eplace;
+                        person.birthEvent = e;
+                    } else if (etype === EVENT_TYPES.WOUNDING) {
+                        person.wound = edate;
+                        if (eplace) {
+                            person.wound_place = eplace;
+                        }
+                        person.woundEvent = e;
+                    } else if (etype === EVENT_TYPES.DISSAPEARING) {
+                        person.disapp = edate;
+                        if (eplace) {
+                            person.disapp_place = eplace;
+                        }
+                        person.disappearanceEvent = e;
+                    } else if (etype === EVENT_TYPES.PROMOTION) {
+                        if (edate) {
+                            e.rank.label = e.rank.label + ' ' + edate;
+                            person.promotions.push(e.rank.label);
+                        }
+                        person.ranks.unshift(e.rank);
                     }
-                    person.woundEvent = e;
-                } else if (etype === EVENT_TYPES.DISSAPEARING) {
-                    person.disapp = edate;
-                    if (eplace) {
-                        person.disapp_place = eplace;
-                    }
-                    person.disappearanceEvent = e;
-                } else if (etype === EVENT_TYPES.PROMOTION) {
-                    if (edate) {
-                        e.rank.label = e.rank.label + ' ' + edate;
-                        person.promotions.push(e.rank.label);
-                    }
-                    person.ranks.unshift(e.rank);
-                }
+                });
             });
             person.places = _.uniq(places, 'id');
             return person;
@@ -214,7 +216,7 @@
                 self.fetchPrisonerRecord(person),
                 self.fetchRelatedPhotos(person),
                 self.fetchDiaries(person),
-                self.fetchRelatedPersons(person) 
+                self.fetchRelatedPersons(person)
             ];
 
             return $q.all(related).then(function() {

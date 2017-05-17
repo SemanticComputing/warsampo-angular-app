@@ -17,6 +17,7 @@
         ' PREFIX owl: <http://www.w3.org/2002/07/owl#> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
+        ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
         ' PREFIX wsc: <http://ldf.fi/warsa/actors/actor_types/> ' +
@@ -35,7 +36,7 @@
         var minimalQry = select +
         ' {	' +
         '  <RESULT_SET> ' +
-        '   ?id a wsc:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
+        '   ?id a wsc:Group ; skos:prefLabel ?pLabel . ' +
         '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
         ' }	';
@@ -43,7 +44,7 @@
         var unitByIdQry = prefixes + select +
         ' { ' +
         '   VALUES ?id  { <ID> } ' +
-        '   ?id a wsc:MilitaryUnit ; skos:prefLabel ?preflabel . ' +
+        '   ?id a wsc:Group ; skos:prefLabel ?preflabel . ' +
         '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
         '   OPTIONAL { ?id dct:source ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
@@ -93,7 +94,7 @@
         '       BIND (1 AS ?level) ' +
         '       FILTER ( ?unit != ?id ) ' +
         '     } ' +
-        '     ?id a wsc:MilitaryUnit . ' +
+        '     ?id a wsc:Group . ' +
         '     ?s ?p ?id . ' +
         '     FILTER ( BOUND(?level) )  ' +
         '   } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 ' +
@@ -110,7 +111,7 @@
         ' { ' +
         '   VALUES ?person { <PERSON> } . ' +
         '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
-        '   ?id a wsc:MilitaryUnit ; skos:prefLabel ?pLabel . ' +
+        '   ?id a wsc:Group ; skos:prefLabel ?pLabel . ' +
         '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
         ' } ';
@@ -132,12 +133,12 @@
 		'        { ' +
 		'          SELECT DISTINCT ?id ' +
 		'            WHERE { ' +
-		'              VALUES ?nclass { wsc:UnitNaming crm:E66_Formation wsc:MilitaryUnit  } ' +
+		'              VALUES ?nclass { wsc:UnitNaming wsc:Formation wsc:Group  } ' +
 		'              ?evt a ?nclass ;  ' +
 		'                 skos:prefLabel|skos:altLabel ?name .  ' +
 		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
 		'              ?evt ^crm:P95i_was_formed_by|crm:P95_has_formed ?id . ' +
-		'              ?id a wsc:MilitaryUnit . ' +
+		'              ?id a wsc:Group . ' +
         '              <ADDITIONAL_FILTER> ' +
 		'          } LIMIT 50 ' +
 		'      	} ' +
@@ -151,7 +152,7 @@
         // Units that have (or their subunits have) participated in battles
         var selectorEventFilter =
         ' ?id (^crm:P144_joined_with/crm:P143_joined)* [ ' +
-        '    a wsc:MilitaryUnit ; ' +
+        '    a wsc:Group ; ' +
         '    ^crm:P11_had_participant [ ' +
         '      crm:P4_has_time-span [] ; ' +
         '      a wsc:Battle ' +
@@ -190,6 +191,9 @@
 
         this.getByIdList = function(ids) {
             ids = baseRepository.uriFy(ids);
+            if (!ids) {
+                return $q.when();
+            }
             var qry = unitByIdQry.replace('<ID>', ids);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {

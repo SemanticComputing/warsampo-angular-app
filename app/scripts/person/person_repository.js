@@ -104,9 +104,10 @@
         var selectorQuery = prefixes +
         'SELECT DISTINCT ?name ?id WHERE {	' +
         '  SELECT DISTINCT ?name ?id WHERE {	' +
-        '    GRAPH <http://ldf.fi/warsa/actors> {	' +
-        '      { ?id a crm:E21_Person } UNION { ?id a wsc:PoliticalPerson } UNION { ?id a wsc:MilitaryPerson . } ' +
-        '      ?id skos:prefLabel ?name .   	    	' +
+        '    { ?type rdfs:subClassOf* wsc:Person } ' +
+        '    GRAPH <http://ldf.fi/warsa/persons> {	' +
+        '      ?id a ?type .   	    	' +
+        '      ?id skos:prefLabel ?name . ' +
         '      FILTER (regex(?name, "^{0}$", "i"))	' +
         '    } 	' +
         '  } LIMIT 300 	' +
@@ -175,7 +176,7 @@
         '   ?evt wacs:hasRank ?rank . ' +
         '   ?evt crm:P11_had_participant ?id . ' +
         '   ?evt a wsc:Promotion .	' +
-        '   ?id a wsc:MilitaryPerson .	' +
+        '   ?id a/rdfs:subClassOf* wsc:Person .	' +
         '   ?s ?p ?id .	' +
         '  } GROUP BY ?id ' +
         ' }	';
@@ -190,10 +191,10 @@
 
         var byMedalQryResultSet =
         ' VALUES ?medal { {0} } .  ' +
-        ' ?evt a crm:E13_Attribute_Assignment ;	 ' +
+        ' ?evt a wsc:MedalAwarding ;	 ' +
         '   crm:P141_assigned ?medal ; ' +
         '   crm:P11_had_participant ?id .  ' +
-        ' ?id a wsc:MilitaryPerson .	 ' +
+        '   ?id a/rdfs:subClassOf* wsc:Person .	' +
         ' ?id foaf:familyName ?sname ; ' +
         '   foaf:firstName ?fname . ';
 
@@ -214,7 +215,7 @@
 
         var relatedPersonQryResultSet =
         ' SELECT DISTINCT ?id (sum(?score) AS ?totscore){ ' +
-        '  ?pclass rdfs:subClassOf* crm:E21_Person . ' +
+        '  ?pclass rdfs:subClassOf* wsc:Person . ' +
         '  { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person (^crm:P11_had_participant)/crm:P11_had_participant ?id . ' +
