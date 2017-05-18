@@ -56,7 +56,7 @@
                 if ($location.search().resultFormat) {
                     vm.resultFormat = $location.search().resultFormat;
                 } else {
-                    $location.search('resultFormat', 'map');
+                    $location.search('resultFormat', 'list');
                     vm.resultFormat = 'map';
                 }
             }

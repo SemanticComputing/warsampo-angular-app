@@ -32,7 +32,11 @@
             })
             .then(function(cemetery) {
                 vm.places = getDeathPlaces(cemetery);
-                vm.buriedPersons = addRankAndUnitLabel(cemetery.buriedPersons);
+                if (cemetery.buriedPersons.length > 10) {
+                    vm.buriedPersons = addRankAndUnitLabel(cemetery.buriedPersons);
+                } else {
+                    vm.buriedPersons = undefined;
+                }
                 vm.isLoadingCemetery = false;
                 return cemeteryService.getCemeteriesByPlaceId(vm.cemetery.place_id,
                     Settings.pageSize, vm.cemetery.id);
