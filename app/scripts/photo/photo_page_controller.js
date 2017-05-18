@@ -41,14 +41,14 @@
             };
             if (photo.created) {
                 promises.eventsByTime = eventService.getEventsLooselyWithinTimeSpanPager(photo.created,
-                            photo.created, Settings.pageSize);
+                            photo.created, { pageSize: Settings.pageSize });
             }
             return $q.all(promises)
             .then(function(related) {
                 if ((photo.places || []).length) {
                     return placeRepository.getNearbyPlaceIds(_.map(photo.places, 'id'))
                     .then(function(ids) {
-                        return eventService.getEventsByPlaceIdPager(ids, Settings.pageSize);
+                        return eventService.getEventsByPlaceIdPager(ids, { pageSize: Settings.pageSize });
                     })
                     .then(function(events) {
                         related.eventsByPlace = events;

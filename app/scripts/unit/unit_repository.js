@@ -36,7 +36,7 @@
         var minimalQry = select +
         ' {	' +
         '  <RESULT_SET> ' +
-        '   ?id a wsc:Group ; skos:prefLabel ?pLabel . ' +
+        '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?pLabel . ' +
         '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
         ' }	';
@@ -44,7 +44,7 @@
         var unitByIdQry = prefixes + select +
         ' { ' +
         '   VALUES ?id  { <ID> } ' +
-        '   ?id a wsc:Group ; skos:prefLabel ?preflabel . ' +
+        '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?preflabel . ' +
         '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
         '   OPTIONAL { ?id dct:source ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
@@ -94,7 +94,7 @@
         '       BIND (1 AS ?level) ' +
         '       FILTER ( ?unit != ?id ) ' +
         '     } ' +
-        '     ?id a wsc:Group . ' +
+        '     ?id a/rdfs:subClassOf* wsc:Group . ' +
         '     ?s ?p ?id . ' +
         '     FILTER ( BOUND(?level) )  ' +
         '   } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 ' +
@@ -133,12 +133,12 @@
 		'        { ' +
 		'          SELECT DISTINCT ?id ' +
 		'            WHERE { ' +
-		'              VALUES ?nclass { wsc:UnitNaming wsc:Formation wsc:Group  } ' +
+		'              VALUES ?nclass { wsc:UnitNaming wsc:Formation wsc:Group wsc:MilitaryUnit } ' +
 		'              ?evt a ?nclass ;  ' +
 		'                 skos:prefLabel|skos:altLabel ?name .  ' +
 		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
 		'              ?evt ^crm:P95i_was_formed_by|crm:P95_has_formed ?id . ' +
-		'              ?id a wsc:Group . ' +
+		'              ?id a/rdfs:subClassOf* wsc:Group . ' +
         '              <ADDITIONAL_FILTER> ' +
 		'          } LIMIT 50 ' +
 		'      	} ' +
@@ -152,7 +152,7 @@
         // Units that have (or their subunits have) participated in battles
         var selectorEventFilter =
         ' ?id (^crm:P144_joined_with/crm:P143_joined)* [ ' +
-        '    a wsc:Group ; ' +
+        '    a/rdfs:subClassOf* wsc:Group ; ' +
         '    ^crm:P11_had_participant [ ' +
         '      crm:P4_has_time-span [] ; ' +
         '      a wsc:Battle ' +

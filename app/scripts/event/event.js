@@ -49,6 +49,8 @@
                     event.hasLinks = true;
                 }
                 return event;
+            }).catch(function() {
+                return event;
             });
         }
 

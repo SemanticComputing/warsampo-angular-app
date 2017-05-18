@@ -17,7 +17,7 @@
         $rootScope.showHelp = null;
 
         var self = this;
-        self.images = [];
+        self.images = undefined;
 
         self.fetchImages = function() {
             fetchImages(self.event);
@@ -31,6 +31,7 @@
             if (!$routeParams.uri) {
                 return;
             }
+            self.error = undefined;
             self.isLoadingEvent = true;
             self.isLoadingLinks = true;
             eventService.getEventById($routeParams.uri)
@@ -61,7 +62,8 @@
                     self.relatedEventsByTime = events[1];
                     self.isLoadingLinks = false;
                 });
-            }).catch(function() {
+            }).catch(function(err) {
+                self.error = err;
                 self.isLoadingEvent = false;
                 self.isLoadingLinks = false;
             });
@@ -121,7 +123,7 @@
         function fetchImages(event) {
             self.isLoadingImages = true;
             var photoConfig = Settings.getPhotoConfig();
-            self.images = [];
+            self.images = undefined;
             photoService.getRelatedPhotosForEvent(event, photoConfig).then(function(imgs) {
                 self.images = imgs;
                 self.isLoadingImages = false;

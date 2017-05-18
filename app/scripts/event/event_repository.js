@@ -187,7 +187,7 @@
         '     SELECT DISTINCT ?participant_id { ' +
         '       VALUES ?unit { <ID> } . ' +
         '       ?unit (^crm:P144_joined_with/crm:P143_joined)+ ?participant_id . ' +
-        '       ?participant_id a wsc:Group . ' +
+        '       ?participant_id a/rdfs:subClassOf* wsc:Group . ' +
         '     } ' +
         '   } UNION { ' +
         '     VALUES ?participant_id { <ID> } ' +
@@ -293,8 +293,8 @@
 
         var eventFilterWithinTimeSpanRelaxed =
         'FILTER( ' +
-        '   ?start_time <= "{1}T00:00:00"^^xsd:dateTime && ' +
-        '   ?end_time >= "{0}T23:59:59"^^xsd:dateTime ' +
+        '   ?end_time >= "<DATE_START>T00:00:00"^^xsd:dateTime && ' +
+        '   ?start_time <= "<DATE_END>T23:59:59"^^xsd:dateTime ' +
         ')';
 
         var eventsWithinRelaxedTimeSpanResultSet = eventQryResultSet.format(eventTypeFilter,
@@ -325,7 +325,9 @@
             // Get events that at least partially occured between the dates start and end.
             // Returns a promise.
             options = options || {};
-            var resultSet = eventsWithinRelaxedTimeSpanResultSet.format(start, end);
+            var resultSet = eventsWithinRelaxedTimeSpanResultSet
+                .replace('<DATE_START>', dateUtilService.formatDate(start, 'yyyy-MM-dd'))
+                .replace('<DATE_END>', dateUtilService.formatDate(end, 'yyyy-MM-dd'));
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }

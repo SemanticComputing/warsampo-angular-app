@@ -63,7 +63,7 @@ angular.module('eventsApp')
 
     function formatDate(date, format) {
         format = format || 'dd.MM.yyyy';
-        return $filter('date')(date, format, 'Z');
+        return $filter('date')(date, format);
     }
 
 });

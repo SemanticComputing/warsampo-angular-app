@@ -78,7 +78,7 @@
         '   OPTIONAL { ?event_id crm:P7_took_place_at ?place_id . } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?unit_id . ' +
-        '    ?unit_id a wsc:Group . ' +
+        '    ?unit_id a/rdfs:subClassOf* wsc:Group . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '    ?event_id crm:P11_had_participant ?participant_id . ' +
@@ -284,6 +284,9 @@
         }
 
         function getByThemeId(id, pageSize) {
+            if (!id) {
+                return $q.when();
+            }
             var resultSet = photosByThemeResultSet.replace(/<VAL>/g, id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
