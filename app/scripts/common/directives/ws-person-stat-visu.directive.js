@@ -24,6 +24,7 @@
                 document.getElementById('person-stat-visu-container').style.visibility = "hidden";
                 return;
             }
+            document.getElementById('person-stat-visu-container').style.visibility = "visible";
             createVisualizations(val)
         });
 
