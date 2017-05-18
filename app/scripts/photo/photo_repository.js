@@ -270,8 +270,6 @@
             }
             var resultSet = photosByCemeteryResultSet.replace('<ID>', id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
-            //console.log("photorepo - getByCemeteryId - query:");
-            //console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 

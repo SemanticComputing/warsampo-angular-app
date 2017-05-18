@@ -111,7 +111,7 @@
         ' { ' +
         '   VALUES ?person { <PERSON> } . ' +
         '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
-        '   ?id a wsc:Group ; skos:prefLabel ?pLabel . ' +
+        '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?pLabel . ' +
         '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
         '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
         ' } ';
