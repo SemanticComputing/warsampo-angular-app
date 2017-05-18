@@ -6,8 +6,7 @@
         return {
             restrict:'E',
             scope: {
-                persons: '<',
-                units: '<'
+                persons: '<'
             },
             controller: PersonStatVisuContoller,
             controllerAs: 'vm',
@@ -22,6 +21,7 @@
 
         $scope.$watch('persons', function(val) {
             if (!val || _.isArray(val) && !val.length) {
+                document.getElementById('person-stat-visu-container').style.visibility = "hidden";
                 return;
             }
             createVisualizations(val)
