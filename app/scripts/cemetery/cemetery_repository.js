@@ -41,9 +41,9 @@
         ' PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
-        ' PREFIX cemeteries: <http://ldf.fi/schema/warsa/places/cemeteries/>' +
-        ' PREFIX cemeteries-schema: <http://ldf.fi/schema/warsa/cemeteries/> ' +
+        ' PREFIX cemeteries: <http://ldf.fi/schema/warsa/places/cemeteries/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wces: <http://ldf.fi/schema/warsa/cemeteries/> ' +
         ' PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
         ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
@@ -63,7 +63,7 @@
         ' SELECT DISTINCT ?id ?label ';
 
         var baseResultSet =
-        ' ?id a cemeteries:Cemetery . ' +
+        ' ?id a wsc:Cemetery . ' +
         ' ?id skos:prefLabel ?label . ';
 
         var singleResultSet =
@@ -73,7 +73,7 @@
         var byPlaceQryResultSet =
         ' VALUES ?place_id { <ID> } ' +
         ' <FILTER> ' +
-        ' ?id cemeteries:temporary_municipality ?place_id . ' +
+        ' ?id wces:temporary_municipality ?place_id . ' +
         baseResultSet;
 
         var relatedQry = relatedSelect +
@@ -90,22 +90,22 @@
         '  OPTIONAL { ?type_id skos:prefLabel ?type . } ' +
         '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
         '  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:status ?status . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:cemetery_type ?cemetery_type . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:cemetery_id ?cemetery_id . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:narc_name ?narc_name . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:current_municipality ?current_municipality . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:former_municipality ?former_municipality . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:camera_club ?camera_club . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:architect ?architect . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:number_of_graves ?number_of_graves . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:date_of_foundation ?date_of_foundation . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:memorial_unveiling_date ?memorial_unveiling_date . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:memorial ?memorial . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:memorial_sculptor ?memorial_sculptor . } ' +
+        '  OPTIONAL { ?id wces:status ?status . } ' +
+        '  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
+        '  OPTIONAL { ?id wces:cemetery_id ?cemetery_id . } ' +
+        '  OPTIONAL { ?id wces:narc_name ?narc_name . } ' +
+        '  OPTIONAL { ?id wces:current_municipality ?current_municipality . } ' +
+        '  OPTIONAL { ?id wces:former_municipality ?former_municipality . } ' +
+        '  OPTIONAL { ?id wces:camera_club ?camera_club . } ' +
+        '  OPTIONAL { ?id wces:architect ?architect . } ' +
+        '  OPTIONAL { ?id wces:number_of_graves ?number_of_graves . } ' +
+        '  OPTIONAL { ?id wces:date_of_foundation ?date_of_foundation . } ' +
+        '  OPTIONAL { ?id wces:memorial_unveiling_date ?memorial_unveiling_date . } ' +
+        '  OPTIONAL { ?id wces:memorial ?memorial . } ' +
+        '  OPTIONAL { ?id wces:memorial_sculptor ?memorial_sculptor . } ' +
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?long . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
+        '  OPTIONAL { ?id wces:address ?address . } ' +
         '  OPTIONAL { ' +
         '     ?death_record_id nsc:hautausmaa ?id . ' +
         '     ?death_record_id crm:P70_documents ?person_id . ' +
@@ -117,22 +117,22 @@
         '  <RESULT_SET> ' +
         '  ?id skos:prefLabel ?label . ' +
         '  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:status ?status . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:cemetery_type ?cemetery_type . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:cemetery_id ?cemetery_id . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:narc_name ?narc_name . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:current_municipality ?current_municipality . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:former_municipality ?former_municipality . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:camera_club ?camera_club . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:architect ?architect . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:number_of_graves ?number_of_graves . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:date_of_foundation ?date_of_foundation . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:memorial_unveiling_date ?memorial_unveiling_date . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:memorial ?memorial . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:memorial_sculptor ?memorial_sculptor . } ' +
+        '  OPTIONAL { ?id wces:status ?status . } ' +
+        '  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
+        '  OPTIONAL { ?id wces:cemetery_id ?cemetery_id . } ' +
+        '  OPTIONAL { ?id wces:narc_name ?narc_name . } ' +
+        '  OPTIONAL { ?id wces:current_municipality ?current_municipality . } ' +
+        '  OPTIONAL { ?id wces:former_municipality ?former_municipality . } ' +
+        '  OPTIONAL { ?id wces:camera_club ?camera_club . } ' +
+        '  OPTIONAL { ?id wces:architect ?architect . } ' +
+        '  OPTIONAL { ?id wces:number_of_graves ?number_of_graves . } ' +
+        '  OPTIONAL { ?id wces:date_of_foundation ?date_of_foundation . } ' +
+        '  OPTIONAL { ?id wces:memorial_unveiling_date ?memorial_unveiling_date . } ' +
+        '  OPTIONAL { ?id wces:memorial ?memorial . } ' +
+        '  OPTIONAL { ?id wces:memorial_sculptor ?memorial_sculptor . } ' +
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?lon . } ' +
-        '  OPTIONAL { ?id cemeteries-schema:address ?address . } ' +
+        '  OPTIONAL { ?id wces:address ?address . } ' +
         ' } ';
 
         /**
@@ -220,6 +220,7 @@
         function getByFacetSelections(facetSelections, options) {
             var resultSet = facetSelections.join(' ');
             var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet, '?name');
+            //console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, options.pageSize,
                     qryObj.resultSetQuery);
         }

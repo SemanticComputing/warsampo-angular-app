@@ -63,7 +63,7 @@
 
         var facetOptions = {
             endpointUrl: SPARQL_ENDPOINT_URL,
-            rdfClass: '<http://ldf.fi/schema/warsa/places/cemeteries/Cemetery>',
+            rdfClass: '<http://ldf.fi/schema/warsa/Cemetery>',
             constraint: cons,
             preferredLang : ['fi', 'sv']
         };
