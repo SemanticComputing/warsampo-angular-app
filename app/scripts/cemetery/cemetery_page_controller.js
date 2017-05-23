@@ -12,7 +12,7 @@
     .controller('CemeteryPageController', CemeteryPageController);
 
     /* @ngInject */
-    function CemeteryPageController($routeParams, $q, _, cemeteryService, Settings) {
+    function CemeteryPageController($routeParams, $scope, $timeout, $sce, $q, _, cemeteryService, Settings) {
 
         var vm = this;
 
@@ -34,6 +34,43 @@
                 vm.places = getDeathPlaces(cemetery);
                 if (cemetery.buriedPersons.length > 10) {
                     vm.buriedPersons = addRankAndUnitLabel(cemetery.buriedPersons);
+                    var distribution = countByProperty(vm.buriedPersons, 'unit_label', 'unit_id_picked');
+                    vm.labels = [];
+                    vm.data = [];
+                    vm.uris = [];
+                    distribution.forEach(function(item) {
+                          vm.labels.push(item.value);
+                          vm.data.push(item.count);
+                          vm.uris.push(item.uri);
+                    });
+                    vm.options = {
+                        legend: {
+                            display: false,
+                            labels: {
+                                generateLabels: function(chart){
+                                    var text = [];
+                                    text.push('<ul class="chartjs-legend-list">');
+                                    for (var i = 0; i < chart.data.datasets[0].data.length; i++) {
+                                      //console.log(chart.data.datasets[0].backgroundColor[i]);
+                                      text.push('<li><div class="circle" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '">');
+                                      text.push('</div>');
+                                      if (chart.data.labels[i]) {
+                                        text.push(chart.data.labels[i]);
+                                      }
+                                      text.push('</li>');
+                                    }
+                                    text.push('</ul>');
+                                    $timeout(function() {
+                                      $scope.$apply(function() {
+                                          vm.legendHtml = $sce.trustAsHtml(text.join(""));
+                                      });
+                                    });
+
+                                }
+                            }
+                        },
+                    };
+
                 } else {
                     vm.buriedPersons = undefined;
                 }
@@ -63,10 +100,11 @@
               }
 
               /* Persons from casulties may have 0, 1 or 2 units.
-                 Always choose the first (higest in the hierarchy) for the
+                 Always choose the first (highest in the hierarchy) for the
                  unit pie chart */
               if (person.unit && person.unit.length > 0) {
                 person.unit_label = person.unit[0].getLabel();
+                person.unit_id_picked = person.unit[0].id;
               }
 
           });
@@ -108,4 +146,28 @@
         });
         return result ? result : municipality;
       }
+
+      function countByProperty(data, prop, uriProp) {
+         return countProperties(data, prop, uriProp)
+         .sort(function(a, b){ return b.count-a.count });
+      }
+
+      function countProperties(data, prop, uriProp) {
+          var res = {};
+          data.forEach(function(item) {
+              if (item.hasOwnProperty(prop)) {
+                  var value = item[prop];
+                  if (res.hasOwnProperty(value)) {
+                    res[value].count += 1;
+                  } else {
+                      res[value] =  { uri: item[uriProp],
+                                      count: 1,
+                                      value: value
+                                    }
+                  }
+                }
+          });
+          return _.values(res);
+      }
+
 })();

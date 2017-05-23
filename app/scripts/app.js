@@ -34,7 +34,8 @@
         'pascalprecht.translate',
         'infinite-scroll',
         'sparql',
-        'seco.facetedSearch'
+        'seco.facetedSearch',
+        'chart.js'
     ])
     .constant('_', _)
     .constant('google', google)
@@ -42,6 +43,7 @@
     .constant('TimeMap', TimeMap)
     .constant('TimeMapTheme', TimeMapTheme)
     .constant('Timeline', Timeline)
+    .constant('Chart', Chart)
     .constant('supportedLocales', ['fi', 'en'])
     .constant('defaultLocale', 'fi')
     .constant('WAR_INFO',

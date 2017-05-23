@@ -50,6 +50,8 @@ module.exports = function(config) {
       'bower_components/sparql-faceter/dist/semantic-faceted-search.js',
       'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
       'bower_components/ng-table/dist/ng-table.min.js',
+      'bower_components/chart.js/dist/Chart.js',
+      'bower_components/angular-chart.js/dist/angular-chart.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",

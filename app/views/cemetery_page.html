@@ -35,13 +35,19 @@
 
       <ws-simple-photo-gallery images="vm.cemetery.images"></ws-simple-photo-gallery>
 
-      <h3>Menehtymispaikat</h3>
+      <!-- <h3>Menehtymispaikat</h3>
 
       <div id="simple-google-map-container">
         <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
+      </div> -->
+
+      <div class="chart-block">
+        <div class="chartjs-container">
+          <canvas id="pie" class="chart chart-pie" chart-data="vm.data" chart-labels="vm.labels" chart-options="vm.options"></canvas>
+        </div><div class="chartjs-legend" ng-bind-html="vm.legendHtml"></div>
       </div>
 
-      <ws-person-stat-visu persons="vm.buriedPersons"></ws-person-stat-visu>
+      <!-- <ws-person-stat-visu persons="vm.buriedPersons"></ws-person-stat-visu> -->
 
     </div>
   </div>
