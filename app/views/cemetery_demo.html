@@ -24,10 +24,11 @@
             <p translate>CEMETERY_DEMO.APP_DESCRIPTION</p>
         </div>
 
-        <div ng-show="vm.resultFormat == 'map'" id="cemetery-results-google-map-container">
+        <div ng-if="vm.resultFormat == 'map'" id="cemetery-results-google-map-container">
           <ws-google-map id="cemetery-results-google-map" places="vm.cemeteries" style="position: absolute;"></ws-google-map>
         </div>
-        <div ng-show="vm.resultFormat == 'list'" ng-include="'views/partials/cemetery_results_partial.html'"></div>
+
+        <div ng-if="vm.resultFormat == 'list'" ng-include="'views/partials/cemetery_results_partial.html'"></div>
       </div>
 
 

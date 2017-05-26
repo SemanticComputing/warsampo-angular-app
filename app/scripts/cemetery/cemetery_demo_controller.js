@@ -49,6 +49,12 @@
                     getData: getData
                 }
             );
+
+            /*  After updates to sparql faceter, table-pager element was not
+                visible when the table was loaded for the first time. Quick fix
+                for that is to reload tableParams here
+            */
+            vm.tableParams.reload();
         }
 
         function updateResultFormat() {
@@ -57,7 +63,7 @@
                     vm.resultFormat = $location.search().resultFormat;
                 } else {
                     $location.search('resultFormat', 'list');
-                    vm.resultFormat = 'map';
+                    vm.resultFormat = 'list';
                 }
             }
         }
