@@ -25,7 +25,7 @@
     </span> -->
     <img ng-show="ctrl.isLoadingMoreImages" src="images/loading.gif" />
   </p>
-  <div ng-if="ctrl.imageCount">
+  <div ng-if="ctrl.imageCount" class="simple-photo-gallery-container">
     <div id="photo-thumbs-{{ ctrl.galleryId }}" class="simple-collapse-with-teaser photo-gallery" >
       <div id="photo-container-{{ ctrl.galleryId }}">
         <a ng-repeat="img in ctrl.photos"

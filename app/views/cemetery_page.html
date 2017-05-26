@@ -33,18 +33,33 @@
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.cemetery.id }}</small>
       </p>
 
-      <ws-simple-photo-gallery images="vm.cemetery.images"></ws-simple-photo-gallery>
+      <ws-simple-photo-gallery images="vm.cemetery.images" class="cemetery-info-page-gallery"></ws-simple-photo-gallery>
 
-      <!-- <h3>Menehtymispaikat</h3>
+      <h3>Menehtymispaikat</h3>
 
-      <div id="simple-google-map-container">
+      <div id="simple-google-map-container" class="cemetery-info-page-map-container">
         <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
-      </div> -->
+      </div>
 
+      <h3>Sankarivainajien joukko-osastot</h3>
       <div class="chart-block">
         <div class="chartjs-container">
-          <canvas id="pie" class="chart chart-pie" chart-data="vm.data" chart-labels="vm.labels" chart-options="vm.options"></canvas>
-        </div><div class="chartjs-legend" ng-bind-html="vm.legendHtml"></div>
+          <canvas class="chart chart-pie" chart-data="vm.unitChart.data" chart-labels="vm.unitChart.labels" chart-options="vm.chartOptions.unitChart"></canvas>
+        </div><div class="chartjs-legend" ng-bind-html="vm.unitChart.legendHtml"></div>
+      </div>
+
+      <h3>Sankarivainajien sotilasarvot</h3>
+      <div class="chart-block">
+        <div class="chartjs-container">
+          <canvas class="chart chart-pie" chart-data="vm.rankChart.data" chart-labels="vm.rankChart.labels" chart-options="vm.chartOptions.rankChart"></canvas>
+        </div><div class="chartjs-legend" ng-bind-html="vm.rankChart.legendHtml"></div>
+      </div>
+
+      <h3>Sankarivainajien menehtymisluokat</h3>
+      <div class="chart-block">
+        <div class="chartjs-container">
+          <canvas class="chart chart-pie" chart-data="vm.wayChart.data" chart-labels="vm.wayChart.labels" chart-options="vm.chartOptions.wayChart"></canvas>
+        </div><div class="chartjs-legend" ng-bind-html="vm.wayChart.legendHtml"></div>
       </div>
 
       <!-- <ws-person-stat-visu persons="vm.buriedPersons"></ws-person-stat-visu> -->

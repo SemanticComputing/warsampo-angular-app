@@ -63,7 +63,7 @@ body {
 
 .simple-gallery-thumbnail-container {
     display: inline-block;
-    height: 228px;  // image height 220px + caption 20px + padding
+    height: 229px;  // image height 220px + caption 20px + padding
     width: 300px;
     overflow: hidden;
     padding: 8px;
@@ -105,6 +105,16 @@ a.no-decoration {
 
 .modal-open {
     overflow-y: scroll;
+}
+
+.modal-body {
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+.list-group-persons  {
+    padding-left:15px;
+    padding-right:15px;
 }
 
 .prisoner-video {
@@ -199,35 +209,42 @@ table.faceter-results .ng-table-header {
 }
 
 .chart-pie {
-  // max-height: 500px;
+    max-height: 500px;
+    max-width: 500px;
+}
 
+.simple-photo-gallery-container {
+    margin-bottom:50px;
+}
+
+.chart-block, .cemetery-info-page-map-container {
+    margin-top:30px;
+    margin-bottom:50px;
 }
 
 .chart-block {
-  margin-top:40px;
-  margin-bottom:100px;
-  // position:relative;
-  max-width: 1215px;
-  max-height: 500px;
-  display: flex;
-  align-items: center;
+    max-width: 1215px;
+    max-height: 500px;
+    display: flex;
+    align-items: center;
 }
 
 .chartjs-container {
-  width:50%;
-  max-height: 500px;
+    width:50%;
+    max-height: 500px;
 }
 
 .chartjs-legend {
-  width:50%;
-  max-height: 500px;
-  overflow:auto;
+    width:50%;
+    max-height: 500px;
+    overflow:auto;
 }
 
 .chartjs-legend-list {
-  // height: 100%;
-  margin-bottom: 0px;
-  list-style-type: none;
+    // height: 100%;
+    padding-left:40px;
+    margin-bottom: 0px;
+    list-style-type: none;
 }
 
 .chartjs-legend-list li {
@@ -235,13 +252,12 @@ table.faceter-results .ng-table-header {
 }
 
 .circle {
-	border-radius: 50%;
-	width: 20px;
-	height: 20px;
-  display:inline-block;
-  margin-right:10px;
-  margin-bottom: -4px;
-	/* width and height can be anything, as long as they're equal */
+    border-radius: 50%;
+	  width: 20px;
+	  height: 20px;
+    display:inline-block;
+    margin-right:10px;
+    margin-bottom: -4px;
 }
 
 .blueimp-gallery {
