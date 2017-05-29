@@ -24,6 +24,8 @@
               }
               vm.isLoadingCemetery = true;
               vm.isLoadingLinks = true;
+              vm.hasVisualizableData = false;
+              vm.hasDeathPlaces = false;
               self.err = undefined;
               vm.chartObjs = {};
               vm.chartOptions = {};
@@ -35,11 +37,20 @@
                   return cemeteryService.fetchRelated(vm.cemetery);
               })
               .then(function(cemetery) {
-                  vm.places = getDeathPlaces(cemetery);
+                  //console.log(cemetery.buriedPersons);
+                  var deathPlaces = getDeathPlaces(cemetery);
+                  if (deathPlaces.length > 0) {
+                      vm.places = deathPlaces;
+                      vm.hasDeathPlaces = true;
+                  }
+
                   if (cemetery.buriedPersons.length > 10) {
+                      vm.hasPersons = true;
+                      vm.hasVisualizableData = true;
                       vm.buriedPersons = addRankAndUnitLabel(cemetery.buriedPersons);
                       createCharts(vm.buriedPersons);
-                  } else {
+                  }
+                  else {
                       vm.buriedPersons = undefined;
                   }
                   vm.isLoadingCemetery = false;
