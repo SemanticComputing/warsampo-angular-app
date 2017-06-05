@@ -30,7 +30,13 @@
 
         <div ng-if="vm.resultFormat == 'list'" ng-include="'views/partials/cemetery_results_partial.html'"></div>
 
-        <!-- <canvas id="bar" class="chart chart-bar" chart-data="vm.data" chart-labels="vm.labels" chart-series="vm.series"></canvas> -->
+        <br>
+        <br>
+
+        <h3>Hautojen lukumäärä</h3>
+        <br>
+        <br>
+        <canvas id="bar" class="chart chart-horizontal-bar" chart-data="vm.barChart.data" chart-labels="vm.barChart.labels"></canvas>
 
       </div>
 

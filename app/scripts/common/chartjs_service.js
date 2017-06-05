@@ -10,8 +10,20 @@
         self.createPersonPieChart = createPersonPieChart;
         self.createBarChart = createBarChart;
 
-        function createBarChart(data) {
-            console.log(data);
+        function createBarChart(points) {
+            points.sort(function(a, b){ return b.value-a.value });
+            console.log(points);
+            var chart = {   data: [],
+                            labels: [],
+                        };
+            points.forEach(function(point) {
+                if (point.value) {
+                  chart.data.push(point.value);
+                  chart.labels.push(point.label);
+                }
+
+            });
+            return chart;
         }
 
         function createPersonPieChart(persons, prop, uriProp) {

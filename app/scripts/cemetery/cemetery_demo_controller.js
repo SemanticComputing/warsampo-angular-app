@@ -20,14 +20,6 @@
 
         var vm = this;
 
-        vm.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-        //vm.series = ['Series A', 'Series B'];
-
-        vm.data = [
-          [65, 59, 80, 81, 56, 55, 40],
-          [28, 48, 40, 19, 86, 27, 90]
-        ];
-
         var initListener = $scope.$on('sf-initial-constraints', function(event, config) {
             updateResultFormat();
             updateResults(event, config);
@@ -114,18 +106,17 @@
             .then(function(cemeteries) {
                 vm.cemeteries = cemeteries;
                 var barChartData = [];
+                //console.log(vm.cemeteries);
                 vm.cemeteries.forEach(function(cemetery) {
-                    barChartData.push({ value: cemetery.number_of_graves,
-                                        label: cemetery.label });
+                    if (cemetery.number_of_graves) {
+                      barChartData.push({ value: cemetery.number_of_graves,
+                                          label: cemetery.label });
+                    }
+
                 });
-                chartjsService.createBarChart(barChartData);
-
-
+                vm.barChart = chartjsService.createBarChart(barChartData);
             });
         }
-
-
-        //function crea
 
     }
 })();
