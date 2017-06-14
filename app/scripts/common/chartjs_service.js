@@ -12,7 +12,7 @@
 
         function createBarChart(points) {
             points.sort(function(a, b){ return b.value-a.value });
-            console.log(points);
+            //console.log(points);
             var chart = {   data: [],
                             labels: [],
                         };
