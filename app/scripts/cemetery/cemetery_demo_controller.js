@@ -16,7 +16,7 @@
 
     /* @ngInject */
     function CemeteryDemoController($scope, $translate, $location, $uibModal, _, cemeteryFacetService,
-            NgTableParams, FacetHandler, facetUrlStateHandlerService, Settings) {
+            NgTableParams, FacetHandler, facetUrlStateHandlerService, chartjsService, Settings) {
 
         var vm = this;
 
@@ -105,7 +105,18 @@
             })
             .then(function(cemeteries) {
                 vm.cemeteries = cemeteries;
+                var barChartData = [];
+                //console.log(vm.cemeteries);
+                vm.cemeteries.forEach(function(cemetery) {
+                    if (cemetery.number_of_graves) {
+                      barChartData.push({ value: cemetery.number_of_graves,
+                                          label: cemetery.label });
+                    }
+
+                });
+                vm.barChart = chartjsService.createBarChart(barChartData);
             });
         }
+
     }
 })();

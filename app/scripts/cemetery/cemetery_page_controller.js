@@ -12,7 +12,7 @@
     .controller('CemeteryPageController', CemeteryPageController);
 
     /* @ngInject */
-    function CemeteryPageController($routeParams, $scope, $timeout, $sce, $uibModal, $q, _, cemeteryService, Settings) {
+    function CemeteryPageController($routeParams, $scope, $timeout, $sce, $uibModal, $q, _, cemeteryService, chartjsService, Settings) {
 
           var vm = this;
 
@@ -31,6 +31,7 @@
               vm.chartOptions = {};
 
               setChartOptions(['unitChart', 'rankChart', 'wayChart']);
+
               cemeteryService.getSingleCemeteryById($routeParams.uri)
               .then(function(cemetery) {
                   vm.cemetery = cemetery;
@@ -48,7 +49,9 @@
                       vm.hasPersons = true;
                       vm.hasVisualizableData = true;
                       vm.buriedPersons = addRankAndUnitLabel(cemetery.buriedPersons);
-                      createCharts(vm.buriedPersons);
+                      vm.unitChart = chartjsService.createPersonPieChart(vm.buriedPersons, 'unit_label', 'unit_id_picked');
+                      vm.rankChart = chartjsService.createPersonPieChart(vm.buriedPersons, 'rank_label', 'rank_id');
+                      vm.wayChart = chartjsService.createPersonPieChart(vm.buriedPersons, 'way_to_die', '');
                   }
                   else {
                       vm.buriedPersons = undefined;
@@ -196,31 +199,6 @@
           return result ? result : municipality;
         }
 
-        function countByProperty(data, prop, uriProp) {
-           return countProperties(data, prop, uriProp)
-           .sort(function(a, b){ return b.instances.length-a.count });
-        }
-
-        function countProperties(data, prop, uriProp) {
-            var res = {};
-            data.forEach(function(item) {
-                if (item.hasOwnProperty(prop)) {
-                    var value = item[prop];
-                    if (res.hasOwnProperty(value)) {
-                      res[value].count += 1;
-                      res[value].instances.push({ label: item.label, uri: item.id });
-                    } else {
-                        res[value] =  { uri: item[uriProp],
-                                        count : 1,
-                                        instances: [ { label: item.label, uri: item.id } ],
-                                        value: value
-                                      }
-                    }
-                  }
-            });
-            return _.values(res);
-        }
-
         function openModal(cemetery, group, groupId, persons) {
             $uibModal.open({
                 component: 'personGroupModal',
@@ -233,31 +211,6 @@
                 }
             });
         }
-
-        function createCharts(buriedPersons) {
-            vm.unitChart = createChart(buriedPersons, 'unit_label', 'unit_id_picked');
-            vm.rankChart = createChart(buriedPersons, 'rank_label', 'rank_id');
-            vm.wayChart = createChart(buriedPersons, 'way_to_die', '');
-        }
-
-        function createChart(buriedPersons, prop, uriProp) {
-            var distribution = countByProperty(buriedPersons, prop, uriProp);
-            var chart = {   data: [],
-                            labels: [],
-                            uris: [],
-                            groups: []
-                        };
-            distribution.forEach(function(item) {
-                  chart.data.push(item.count);
-                  chart.labels.push(item.value);
-                  chart.uris.push(item.uri);
-                  chart.groups.push(item.instances);
-            });
-            return chart;
-        }
-
-
-
 
     }
 })();
