@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .factory('translateableObjectMapperService', function(_, objectMapperService, defaultLocale, TranslateableObject) {
+    .factory('translateableObjectMapperService', function(_, objectMapperService, TranslateableObject) {
         function TranslateableObjectMapper() { }
 
         function reviseObject(obj, orig) {

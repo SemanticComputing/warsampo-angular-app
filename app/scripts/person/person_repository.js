@@ -264,14 +264,15 @@
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
-        this.getByIdList = function(ids, pageSize) {
+        this.getByIdList = function(ids, options) {
             ids = baseRepository.uriFy(ids);
             if (!ids) {
                 return $q.when();
             }
+            options = options || {};
             var resultSet = personQryResultSet.format(ids);
-            var qryObj = queryBuilder.buildQuery(personQry, resultSet);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            var qryObj = queryBuilder.buildQuery(personQry, resultSet, options.orderBy);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         };
 
         this.getById = this.getByIdList;
