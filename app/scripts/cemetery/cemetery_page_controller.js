@@ -38,7 +38,6 @@
                   return cemeteryService.fetchRelated(vm.cemetery);
               })
               .then(function(cemetery) {
-                  //console.log(cemetery.buriedPersons);
                   var deathPlaces = getDeathPlaces(cemetery);
                   if (deathPlaces.length > 0) {
                       vm.places = deathPlaces;
@@ -125,6 +124,11 @@
                     var persons = vm[chartTitle].groups[i];
                     var group = vm[chartTitle].labels[i];
                     var groupId = vm[chartTitle].uris[i];
+                    if (chartTitle == 'ageChart') {
+                      // TODO: translation
+                      //group =  'CEMETERY_DEMO.AGE_AT_DEATH' + ': ' + group;
+                      group =  'Kuolinikä: ' + group;
+                    }
                     openModal(vm.cemetery.label, group, groupId, persons);
                 },
                 tooltips: {
@@ -162,23 +166,6 @@
 
           });
         }
-
-        // vm.chartOptions['ageChart'] = {
-        //   title: {
-        //     text: 'ageChart'
-        //   },
-        //   scales: {
-        //       xAxes: [{
-        //           ticks: {
-        //               maxRotation: 0,
-        //               autoSkipPadding: 3
-        //           }
-        //       }]
-        //   },
-        //
-        //
-        // }
-
 
         function addRankAndUnitLabel(buriedPersons) {
             buriedPersons.forEach(function(person) {
