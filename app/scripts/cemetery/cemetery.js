@@ -16,7 +16,7 @@
     /* @ngInject */
     function cemeteryService($q, _, baseService, cemeteryRepository,
           personRepository, photoRepository, eventRepository, placeRepository,
-          unitRepository, rankRepository, Settings) {
+          unitRepository, rankRepository) {
         var self = this;
 
         /* Public API */
@@ -59,25 +59,28 @@
         * @returns {promise} A promise of the modified cemetery object.
         */
         function fetchPeople(cemetery) {
-              return personRepository.getById(cemetery.person_id, 10)
-              .then(function(buriedPersons) {
-                  cemetery.buriedPersonsPager = buriedPersons;
-                  return buriedPersons.getAll();
-              })
-              .then(function(buriedPersons) {
-                  cemetery.buriedPersons = buriedPersons;
-                  return baseService.getRelated(buriedPersons, 'death_id', 'deathEvent', eventRepository); // return list of persons
-              })
-              .then(function(buriedPersons) {
-                  return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
-              })
-              .then(function(buriedPersons) {
-                  return baseService.getRelated(buriedPersons, 'unit_id', 'unit', unitRepository); // return list of persons
-              })
-              .then(function(buriedPersons) {
-                  var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
-                  return baseService.getRelated(events, 'place_id', 'place', placeRepository); // return list of events
-              });
+            var options = {
+                pageSize: 10,
+                orderBy: '?sname'
+            };
+            return personRepository.getById(cemetery.person_id, options).then(function(buriedPersons) {
+                cemetery.buriedPersonsPager = buriedPersons;
+                return buriedPersons.getAll();
+            })
+            .then(function(buriedPersons) {
+                cemetery.buriedPersons = buriedPersons;
+                return baseService.getRelated(buriedPersons, 'death_id', 'deathEvent', eventRepository); // return list of persons
+            })
+            .then(function(buriedPersons) {
+                return baseService.getRelated(buriedPersons, 'rank_id', 'rank', rankRepository); // return list of persons
+            })
+            .then(function(buriedPersons) {
+                return baseService.getRelated(buriedPersons, 'unit_id', 'unit', unitRepository); // return list of persons
+            })
+            .then(function(buriedPersons) {
+                var events = _.flatten(_.map(buriedPersons, 'deathEvent'));
+                return baseService.getRelated(events, 'place_id', 'place', placeRepository); // return list of events
+            });
         }
 
         function fetchRelatedUnits(cemetery) {

@@ -1,7 +1,5 @@
-(function() {
+(function(_, google, SimileAjax, TimeMap, TimeMapTheme, Timeline, Chart) {
     'use strict';
-
-    /* global _, google, SimileAjax, TimeMap, TimeMapTheme, Timeline */
 
     /**
     * @ngdoc overview
@@ -35,6 +33,7 @@
         'infinite-scroll',
         'sparql',
         'seco.facetedSearch',
+        'seco.translateableObjectMapper',
         'chart.js'
     ])
     .constant('_', _)
@@ -271,4 +270,4 @@
         }
         return $q.when();
     }
-})();
+})(_, google, SimileAjax, TimeMap, TimeMapTheme, Timeline, Chart); // eslint-disable-line no-undef
