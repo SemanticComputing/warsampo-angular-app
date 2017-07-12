@@ -10,13 +10,17 @@
 
         if ($routeParams.uri) {
             self.isLoadingEvent = true;
+            self.isLoadingRelated = true;
             self.isLoadingLinks = false;
             personService.getById($routeParams.uri)
             .then(function(person) {
                 self.person = person;
                 self.isLoadingEvent = false;
-
                 return personService.fetchRelated(person);
+            })
+            .then(function(person) {
+                self.isLoadingRelated = false;
+
             }).catch(function() {
                 self.isLoadingEvent = false;
                 self.isLoadingLinks = false;
