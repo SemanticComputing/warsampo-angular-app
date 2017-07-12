@@ -59,12 +59,19 @@
             </div><div class="chartjs-legend" ng-bind-html="vm.rankChart.legendHtml"></div>
           </div>
 
+          <h3>Sankarivainajien ikä kuolinhetkellä</h3>
+          <div class="chart-block">
+              <canvas class="chart chart-bar" chart-data="vm.ageChart.data" chart-labels="vm.ageChart.labels" chart-options="vm.chartOptions.ageChart"></canvas>    
+          </div>
+
           <h3>Sankarivainajien menehtymisluokat</h3>
           <div class="chart-block">
             <div class="chartjs-container">
               <canvas class="chart chart-pie" chart-data="vm.wayChart.data" chart-labels="vm.wayChart.labels" chart-options="vm.chartOptions.wayChart"></canvas>
             </div><div class="chartjs-legend" ng-bind-html="vm.wayChart.legendHtml"></div>
           </div>
+
+
 
         </div>
 

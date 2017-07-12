@@ -7,12 +7,11 @@
 
         var self = this;
 
-        self.createPersonPieChart = createPersonPieChart;
+        self.createPersonDistribution = createPersonDistribution;
         self.createBarChart = createBarChart;
 
         function createBarChart(points) {
             points.sort(function(a, b){ return b.value-a.value });
-            //console.log(points);
             var chart = {   data: [],
                             labels: [],
                         };
@@ -26,8 +25,33 @@
             return chart;
         }
 
-        function createPersonPieChart(persons, prop, uriProp) {
-            var distribution = countByProperty(persons, prop, uriProp);
+        function createPersonDistribution(persons, prop, uriProp, sorted) {
+
+            var distribution = countByProperty(persons, prop, uriProp, sorted);
+            if (sorted) {
+              distribution = distribution.sort(function(a, b){ return b.instances.length-a.count });
+            }
+
+            // Fill the missing gaps for age chart
+            if (prop == 'age') {
+                var ageDistribution = [];
+                var j = 0;
+                for (var i = 0; i < 91; i++ ) {
+                    if (j < distribution.length && distribution[j].value == i) {
+                        ageDistribution.push(distribution[j]);
+                        j = j+1;
+                    }
+                    else {
+                        ageDistribution.push({  value: i,
+                                                count: 0,
+                                                uri: '',
+                                                instances: [],
+                                             });
+                    }
+                }
+                distribution = ageDistribution;
+            }
+
             var chart = {   data: [],
                             labels: [],
                             uris: [],
@@ -40,14 +64,11 @@
                   chart.groups.push(item.instances);
             });
             return chart;
+
         }
 
         function countByProperty(data, prop, uriProp) {
-           return countProperties(data, prop, uriProp)
-           .sort(function(a, b){ return b.instances.length-a.count });
-        }
-
-        function countProperties(data, prop, uriProp) {
+            //console.log(data);
             var res = {};
             data.forEach(function(item) {
                 if (item.hasOwnProperty(prop)) {
@@ -62,10 +83,12 @@
                                         value: value
                                       }
                     }
-                  }
+                }
             });
             return _.values(res);
         }
+
+
 
 
     });

@@ -30,7 +30,7 @@
               vm.chartObjs = {};
               vm.chartOptions = {};
 
-              setChartOptions(['unitChart', 'rankChart', 'wayChart']);
+              setChartOptions(['unitChart', 'rankChart', 'ageChart', 'wayChart']);
 
               cemeteryService.getSingleCemeteryById($routeParams.uri)
               .then(function(cemetery) {
@@ -48,10 +48,17 @@
                   if (cemetery.buriedPersons.length > 10) {
                       vm.hasPersons = true;
                       vm.hasVisualizableData = true;
+
+                      // Calculate some extra info for visualizations
                       vm.buriedPersons = addRankAndUnitLabel(cemetery.buriedPersons);
-                      vm.unitChart = chartjsService.createPersonPieChart(vm.buriedPersons, 'unit_label', 'unit_id_picked');
-                      vm.rankChart = chartjsService.createPersonPieChart(vm.buriedPersons, 'rank_label', 'rank_id');
-                      vm.wayChart = chartjsService.createPersonPieChart(vm.buriedPersons, 'way_to_die', '');
+                      vm.buriedPersons.forEach(function(person) {
+                          person.age = getAge(person.cas_date_of_birth, person.cas_date_of_death);
+                      });
+
+                      vm.unitChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'unit_label', 'unit_id_picked', true);
+                      vm.rankChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'rank_label', 'rank_id', true);
+                      vm.ageChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'age', '', false);
+                      vm.wayChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'way_to_die', '', true);
                   }
                   else {
                       vm.buriedPersons = undefined;
@@ -138,10 +145,40 @@
                 },
                 legend: {
                     display: false
-                }
+                },
             };
+
+            if (chartTitle == 'ageChart') {
+                vm.chartOptions[chartTitle]['scales'] = {
+                                                            xAxes: [{
+                                                              ticks: {
+                                                                  maxRotation: 0,
+                                                                  autoSkipPadding: 3
+                                                              }
+                                                            }]
+                                                        }
+            }
+
+
           });
         }
+
+        // vm.chartOptions['ageChart'] = {
+        //   title: {
+        //     text: 'ageChart'
+        //   },
+        //   scales: {
+        //       xAxes: [{
+        //           ticks: {
+        //               maxRotation: 0,
+        //               autoSkipPadding: 3
+        //           }
+        //       }]
+        //   },
+        //
+        //
+        // }
+
 
         function addRankAndUnitLabel(buriedPersons) {
             buriedPersons.forEach(function(person) {
@@ -197,6 +234,17 @@
               }
           });
           return result ? result : municipality;
+        }
+
+        function getAge(birthDateString, deathDateString) {
+            var deatDate = new Date(deathDateString);
+            var birthDate = new Date(birthDateString);
+            var age = deatDate.getFullYear() - birthDate.getFullYear();
+            var m = deatDate.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && deatDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
         }
 
         function openModal(cemetery, group, groupId, persons) {

@@ -33,7 +33,7 @@
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
         '  ?natiobib ?wikilink ?casualty ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
-        '  ?sid ?source ?death_id ';
+        '  ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ';
 
         var personQryResultSet =
         ' VALUES ?id { {0} }' +
@@ -63,16 +63,18 @@
         '  OPTIONAL { ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
         '   ?casualty a casualties:DeathRecord . ' +
+        '   OPTIONAL { ?casualty casualties:syntymaeaika ?cas_date_of_birth . } ' +
+        '   OPTIONAL { ?casualty casualties:kuolinaika ?cas_date_of_death . } ' +
         '   OPTIONAL { ' +
         '    ?casualty casualties:hautauskunta ?bury_place_uri . ' +
         '    ?bury_place_uri skos:prefLabel ?bury_place . ' +
         '   } ' +
         '   OPTIONAL { ' +
         '    ?casualty casualties:asuinkunta ?living_place_uri . ' +
-        '    ?living_place_uri skos:prefLabel ?living_place . }' +
-        '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . }' +
+        '    ?living_place_uri skos:prefLabel ?living_place . } ' +
+        '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . } ' +
         '   OPTIONAL { ?casualty casualties:osasto ?unit_id . } ' +
-        '   OPTIONAL { ?casualty casualties:sotilasarvo ?rank_id . }' +
+        '   OPTIONAL { ?casualty casualties:sotilasarvo ?rank_id . } ' +
         '   OPTIONAL { ' +
         '    ?casualty casualties:menehtymisluokka ?way_id . ' +
         '    ?way_id skos:prefLabel ?way_to_die . ' +
