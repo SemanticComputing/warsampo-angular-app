@@ -18,16 +18,16 @@
         {{ vm.cemetery.getLabel() }}
       </h2>
       <p ng-if="vm.cemetery.date_of_foundation">
-        Perustamisvuosi: {{ vm.cemetery.date_of_foundation }}
+        {{ 'CEMETERY_DEMO.FOUNDATION_YEAR' | translate }} {{ vm.cemetery.date_of_foundation }}
       </p>
       <p ng-if="vm.cemetery.number_of_graves">
-        Hautojen lukumäärä: {{ vm.cemetery.number_of_graves }}
+        {{ 'CEMETERY_DEMO.NUMBER_OF_GRAVES' | translate }} {{ vm.cemetery.number_of_graves }}
       </p>
       <p ng-if="vm.cemetery.memorial">
-        Muistomerkki: {{ vm.cemetery.memorial }} (kuvanveistäjä: {{ vm.cemetery.memorial_sculptor }}, paljastettu {{ vm.cemetery.memorial_unveiling_date }})
+        {{ 'CEMETERY_DEMO.MEMORIAL' | translate }} {{ vm.cemetery.memorial }} (kuvanveistäjä: {{ vm.cemetery.memorial_sculptor }}, paljastettu {{ vm.cemetery.memorial_unveiling_date }})
       </p>
       <p ng-if="vm.cemetery.address">
-        Katusoite: {{ vm.cemetery.address }}
+        {{ 'CEMETERY_DEMO.STREET_ADDRESS' | translate }} {{ vm.cemetery.address }}
       </p>
       <p>
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.cemetery.id }}</small>
@@ -37,7 +37,7 @@
 
 
         <div id="cemetery-death-places-map" ng-if="vm.hasDeathPlaces">
-          <h3>Menehtymispaikat</h3>
+          <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_DEATH_PLACES' | translate }}</h3>
           <div id="simple-google-map-container" class="cemetery-info-page-map-container">
             <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
           </div>
@@ -45,26 +45,26 @@
 
         <div id="cemetery-visualizations" ng-if="vm.hasVisualizableData">
 
-          <h3>Sankarivainajien joukko-osastot</h3>
+          <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_UNITS' | translate }}</h3>
           <div class="chart-block">
             <div class="chartjs-container">
               <canvas class="chart chart-pie" chart-data="vm.unitChart.data" chart-labels="vm.unitChart.labels" chart-options="vm.chartOptions.unitChart"></canvas>
             </div><div class="chartjs-legend" ng-bind-html="vm.unitChart.legendHtml"></div>
           </div>
 
-          <h3>Sankarivainajien sotilasarvot</h3>
+          <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_RANKS' | translate }}</h3>
           <div class="chart-block">
             <div class="chartjs-container">
               <canvas class="chart chart-pie" chart-data="vm.rankChart.data" chart-labels="vm.rankChart.labels" chart-options="vm.chartOptions.rankChart"></canvas>
             </div><div class="chartjs-legend" ng-bind-html="vm.rankChart.legendHtml"></div>
           </div>
 
-          <h3>Sankarivainajien ikä kuolinhetkellä</h3>
+          <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_AGES' | translate }}</h3>
           <div class="chart-block">
-              <canvas class="chart chart-bar" chart-data="vm.ageChart.data" chart-labels="vm.ageChart.labels" chart-options="vm.chartOptions.ageChart"></canvas>    
+              <canvas class="chart chart-bar" chart-data="vm.ageChart.data" chart-labels="vm.ageChart.labels" chart-options="vm.chartOptions.ageChart"></canvas>
           </div>
 
-          <h3>Sankarivainajien menehtymisluokat</h3>
+          <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_WAY_TO_DIE' | translate }}</h3>
           <div class="chart-block">
             <div class="chartjs-container">
               <canvas class="chart chart-pie" chart-data="vm.wayChart.data" chart-labels="vm.wayChart.labels" chart-options="vm.chartOptions.wayChart"></canvas>

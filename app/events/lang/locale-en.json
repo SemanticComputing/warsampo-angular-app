@@ -53,9 +53,29 @@
         "RELATED_MEDALS": "Other medals"
     },
     "CEMETERY_DEMO": {
+        "TITLE": "War cemeteries",
+        "HEADER": "War cemeteries",
+        "APP_DESCRIPTION": "Voit tehdä hakuja hautausmaan nimellä ja lisäksi voit rajata hakutulosta tekemällä valintoja vasemmalta löytyvistä suodattimista. Hautausmaan tarkempiin tietoihin voit tutustua hautasmaan tietosivulla. Tällä hetkellä aineisto koostuu 802 hautausmaasta/muistomerkistä, joihin Kansallisarkiston Suomen sodissa 1939-1945 menehtyneet -tietokannassa on viitattu nimellä. Näistä 26 hautausmaalle lisätty Suomen sankarivainajahautausmaiden kuvausprojektilta saadut lisätiedot ja kuvat. Loput lisätiedot ja kuvat saadaan kuvausprojektilta kesän 2017 aikana.",
+        "TEXT_SEARCH_EXCEPTION": "The text search terms are not valid. Please try again with another set of search terms.",
         "OTHER_CEMETERIES_CLOSE": "Other cemeteries nearby",
+        "NAME": "Name",
+        "CEMETERY_TYPE": "Cemetery type",
+        "CURRENT_MUNICIPALITY": "Current municipality",
+        "FORMER_MUNICIPALITY": "Former municipality",
+        "CAMERA_CLUB": "Camera club",
+        "FOUNDATION_YEAR": "Foundation year",
+        "AGE_AT_DEATH": "Age at death",
+        "ARCHITECT": "Architect",
+        "MEMORIAL": "Memorial",
+        "STREET_ADDRESS": "Street address",
         "PEOPLE_BURIED": "Buried people",
-        "PEOPLE_BURIED_UNITS": "Units of buried people"
+        "PEOPLE_BURIED_DEATH_PLACES": "Place of deaths",
+        "PEOPLE_BURIED_UNITS": "Units of buried people",
+        "PEOPLE_BURIED_RANKS": "Ranks of buried people",
+        "PEOPLE_BURIED_AGES": "Ages at death",
+        "PEOPLE_BURIED_WAY_TO_DIE": "Deaths of buried people",
+        "MAP": "Map",
+        "LIST": "List"
     },
     "TIME_DEMO": {
         "TITLE": "Time Span",
