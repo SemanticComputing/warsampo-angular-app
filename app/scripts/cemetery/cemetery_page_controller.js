@@ -154,13 +154,16 @@
 
             if (chartTitle == 'ageChart') {
                 vm.chartOptions[chartTitle]['scales'] = {
-                                                            xAxes: [{
-                                                              ticks: {
-                                                                  maxRotation: 0,
-                                                                  autoSkipPadding: 3
-                                                              }
-                                                            }]
-                                                        }
+                    xAxes: [{
+                      ticks: {
+                          maxRotation: 0,
+                          autoSkipPadding: 3
+                      }
+                    }],
+                    options: {
+                        maintainAspectRatio: false,
+                    }
+                }
             }
 
 

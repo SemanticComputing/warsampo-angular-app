@@ -36,7 +36,7 @@
             if (prop == 'age') {
                 var ageDistribution = [];
                 var j = 0;
-                for (var i = 0; i < 91; i++ ) {
+                for (var i = 0; i < 81; i++ ) {
                     if (j < distribution.length && distribution[j].value == i) {
                         ageDistribution.push(distribution[j]);
                         j = j+1;
