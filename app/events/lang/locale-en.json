@@ -60,6 +60,7 @@
         "OTHER_CEMETERIES_CLOSE": "Other cemeteries nearby",
         "NAME": "Name",
         "CEMETERY_TYPE": "Cemetery type",
+        "NUMBER_OF_GRAVES": "Number of graves",
         "CURRENT_MUNICIPALITY": "Current municipality",
         "FORMER_MUNICIPALITY": "Former municipality",
         "CAMERA_CLUB": "Camera club",
@@ -73,7 +74,7 @@
         "PEOPLE_BURIED_UNITS": "Units of buried people",
         "PEOPLE_BURIED_RANKS": "Ranks of buried people",
         "PEOPLE_BURIED_AGES": "Ages at death",
-        "PEOPLE_BURIED_WAY_TO_DIE": "Deaths of buried people",
+        "PEOPLE_BURIED_WAY_TO_DIE": "Cause of death",
         "MAP": "Map",
         "LIST": "List"
     },

@@ -18,16 +18,16 @@
         {{ vm.cemetery.getLabel() }}
       </h2>
       <p ng-if="vm.cemetery.date_of_foundation">
-        {{ 'CEMETERY_DEMO.FOUNDATION_YEAR' | translate }} {{ vm.cemetery.date_of_foundation }}
+        {{ 'CEMETERY_DEMO.FOUNDATION_YEAR' | translate }}: {{ vm.cemetery.date_of_foundation }}
       </p>
       <p ng-if="vm.cemetery.number_of_graves">
-        {{ 'CEMETERY_DEMO.NUMBER_OF_GRAVES' | translate }} {{ vm.cemetery.number_of_graves }}
+        {{ 'CEMETERY_DEMO.NUMBER_OF_GRAVES' | translate }}: {{ vm.cemetery.number_of_graves }}
       </p>
       <p ng-if="vm.cemetery.memorial">
-        {{ 'CEMETERY_DEMO.MEMORIAL' | translate }} {{ vm.cemetery.memorial }} (kuvanveistäjä: {{ vm.cemetery.memorial_sculptor }}, paljastettu {{ vm.cemetery.memorial_unveiling_date }})
+        {{ 'CEMETERY_DEMO.MEMORIAL' | translate }}: {{ vm.cemetery.memorial }} (kuvanveistäjä: {{ vm.cemetery.memorial_sculptor }}, paljastettu {{ vm.cemetery.memorial_unveiling_date }})
       </p>
       <p ng-if="vm.cemetery.address">
-        {{ 'CEMETERY_DEMO.STREET_ADDRESS' | translate }} {{ vm.cemetery.address }}
+        {{ 'CEMETERY_DEMO.STREET_ADDRESS' | translate }}: {{ vm.cemetery.address }}
       </p>
       <p>
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.cemetery.id }}</small>

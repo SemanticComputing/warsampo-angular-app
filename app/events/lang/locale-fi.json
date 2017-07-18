@@ -60,6 +60,7 @@
         "OTHER_CEMETERIES_CLOSE": "Muita hautausmaita samalla alueella",
         "NAME": "Nimi",
         "CEMETERY_TYPE": "Hautausmaan tyyppi",
+        "NUMBER_OF_GRAVES": "Hautojen lukumäärä",
         "CURRENT_MUNICIPALITY": "Nykyinen kunta",
         "FORMER_MUNICIPALITY": "Entinen kunta",
         "CAMERA_CLUB": "Kuvaukset toteuttanut kameraseura",
