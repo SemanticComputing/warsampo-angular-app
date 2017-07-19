@@ -26,11 +26,11 @@
                 name: 'CEMETERY_DEMO.NAME',
                 enabled: true,
             },
-            cemetery_type: {
-                facetId: 'cemetery_type',
-                predicate: '<http://ldf.fi/schema/warsa/cemeteries/cemetery_type>',
-                name: 'CEMETERY_DEMO.CEMETERY_TYPE'
-            },
+            // cemetery_type: {
+            //     facetId: 'cemetery_type',
+            //     predicate: '<http://ldf.fi/schema/warsa/cemeteries/cemetery_type>',
+            //     name: 'CEMETERY_DEMO.CEMETERY_TYPE'
+            // },
             current_municipality: {
                 facetId: 'current_municipality',
                 predicate: '<http://ldf.fi/schema/warsa/cemeteries/current_municipality>',
@@ -51,11 +51,11 @@
                 predicate: '<http://ldf.fi/schema/warsa/cemeteries/architect>',
                 name: 'CEMETERY_DEMO.ARCHITECT'
             },
-            memorial: {
-                facetId: 'memorial',
-                predicate: '<http://ldf.fi/schema/warsa/cemeteries/memorial>',
-                name: 'CEMETERY_DEMO.MEMORIAL'
-            },
+            // memorial: {
+            //     facetId: 'memorial',
+            //     predicate: '<http://ldf.fi/schema/warsa/cemeteries/memorial>',
+            //     name: 'CEMETERY_DEMO.MEMORIAL'
+            // },
         };
 
         var cons =
@@ -65,7 +65,7 @@
             endpointUrl: SPARQL_ENDPOINT_URL,
             rdfClass: '<http://ldf.fi/schema/warsa/Cemetery>',
             constraint: cons,
-            preferredLang : ['fi', 'sv']
+            preferredLang : ['fi', 'en']
         };
 
         var fetchOptions = { pageSize: PHOTO_PAGE_SIZE };

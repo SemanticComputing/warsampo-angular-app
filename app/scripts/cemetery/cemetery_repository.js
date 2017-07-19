@@ -118,7 +118,7 @@
         '  ?id skos:prefLabel ?label . ' +
         '  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
         '  OPTIONAL { ?id wces:status ?status . } ' +
-        '  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
+        //'  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
         '  OPTIONAL { ?id wces:cemetery_id ?cemetery_id . } ' +
         '  OPTIONAL { ?id wces:narc_name ?narc_name . } ' +
         '  OPTIONAL { ?id wces:current_municipality ?current_municipality . } ' +
