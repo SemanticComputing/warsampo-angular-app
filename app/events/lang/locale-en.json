@@ -68,6 +68,8 @@
         "AGE_AT_DEATH": "Age at death",
         "ARCHITECT": "Architect",
         "MEMORIAL": "Memorial",
+        "SCULPTOR": "sculptor",
+        "UNVEILING_DATE": "unveiling date",
         "STREET_ADDRESS": "Street address",
         "PEOPLE_BURIED": "Buried people",
         "PEOPLE_BURIED_DEATH_PLACES": "Place of deaths",
@@ -76,7 +78,8 @@
         "PEOPLE_BURIED_AGES": "Ages at death",
         "PEOPLE_BURIED_WAY_TO_DIE": "Cause of death",
         "MAP": "Map",
-        "LIST": "List"
+        "LIST": "List",
+        "CASUALTIES_LINK": "Examine the buried people with the faceted browser and visualizations of casualties perspective"
     },
     "TIME_DEMO": {
         "TITLE": "Time Span",

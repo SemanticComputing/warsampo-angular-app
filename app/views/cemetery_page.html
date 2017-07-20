@@ -1,4 +1,4 @@
-<div> <a id="pageTypeURL" href="cemeteries/"><h1 id="pageType" translate>CEMETERY</h1></a></div>
+<!-- <div> <a id="pageTypeURL" href="cemeteries/"><h1 id="pageType" translate>CEMETERY</h1></a></div> -->
 
 <!-- Each page has metadata column on the left and link column on the right -->
 <div class="row">
@@ -24,7 +24,7 @@
         {{ 'CEMETERY_DEMO.NUMBER_OF_GRAVES' | translate }}: {{ vm.cemetery.number_of_graves }}
       </p>
       <p ng-if="vm.cemetery.memorial">
-        {{ 'CEMETERY_DEMO.MEMORIAL' | translate }}: {{ vm.cemetery.memorial }} (kuvanveistäjä: {{ vm.cemetery.memorial_sculptor }}, paljastettu {{ vm.cemetery.memorial_unveiling_date }})
+        {{ 'CEMETERY_DEMO.MEMORIAL' | translate }}: {{ vm.cemetery.memorial }} ({{ 'CEMETERY_DEMO.SCULPTOR' | translate }}: {{ vm.cemetery.memorial_sculptor }}, {{ 'CEMETERY_DEMO.UNVEILING_DATE' | translate }} {{ vm.cemetery.memorial_unveiling_date }})
       </p>
       <p ng-if="vm.cemetery.address">
         {{ 'CEMETERY_DEMO.STREET_ADDRESS' | translate }}: {{ vm.cemetery.address }}
@@ -71,7 +71,7 @@
             </div><div class="chartjs-legend" ng-bind-html="vm.wayChart.legendHtml"></div>
           </div>
 
-
+          <h3><a ng-href="{{vm.casualtiesLink}}">{{ 'CEMETERY_DEMO.CASUALTIES_LINK' | translate }}</a></h3>
 
         </div>
 

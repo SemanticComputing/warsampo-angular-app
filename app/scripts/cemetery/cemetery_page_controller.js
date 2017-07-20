@@ -35,6 +35,7 @@
               cemeteryService.getSingleCemeteryById($routeParams.uri)
               .then(function(cemetery) {
                   vm.cemetery = cemetery;
+                  vm.casualtiesLink = '/en/casualties/vis/path?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/narc-menehtyneet1939-45/hautausmaa> <'+ cemetery.id +'> . "}}';
                   return cemeteryService.fetchRelated(vm.cemetery);
               })
               .then(function(cemetery) {
