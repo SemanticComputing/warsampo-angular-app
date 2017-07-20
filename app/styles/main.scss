@@ -61,9 +61,14 @@ body {
     padding: 5px;
 }
 
+.simple-gallery-thumbnail {
+    width: 300px;
+    height: 200px;
+}
+
 .simple-gallery-thumbnail-container {
     display: inline-block;
-    height: 229px;  // image height 220px + caption 20px + padding
+    height: 231px;  // image height 220px + caption 20px + padding
     width: 300px;
     overflow: hidden;
     padding: 8px;

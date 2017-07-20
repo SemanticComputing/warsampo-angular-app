@@ -30,12 +30,12 @@
       <div id="photo-container-{{ ctrl.galleryId }}">
         <a ng-repeat="img in ctrl.photos"
           data-gallery="#blueimp-gallery-{{ ::ctrl.galleryId }}"
-          title="{{ ::img.description }}"
+          title="{{ ::img.getDescription() }}"
           data-id="{{ ::img.id }}"
           ng-href="{{ ::img.url }}">
           <div class="simple-gallery-thumbnail-container">
-            <img ws-fallback-img-for-gallery class="gallery-thumbnail" ng-src="{{ ::img.thumbnail_url }}" />
-            <p class="simple-gallery-caption">{{ ::img.description }}</p>
+            <img ws-fallback-img-for-gallery class="simple-gallery-thumbnail" ng-src="{{ ::img.thumbnail_url }}" />
+            <p class="simple-gallery-caption">{{ ::img.getDescription() }}</p>
           </div>
 
         </a>
