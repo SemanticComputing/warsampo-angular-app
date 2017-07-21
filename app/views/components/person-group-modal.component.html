@@ -14,7 +14,8 @@
 <div class="modal-body">
   <ul class="list-group row list-group-persons" ng-if="vm.persons">
     <li class="list-group-item col-xs-6" ng-repeat="person in vm.persons">
-    <a ng-click="vm.close()" ws-page-link="person.uri">{{ person.label }}</a>
+    <a ng-click="vm.close()" ws-page-link="person.uri">{{ person.label }}</a><br>
+    <a ng-if="vm.others" ng-click="vm.close()" ws-page-link="person.groupUri">{{ person.groupLabel }}</a>
     </li>
   </ul>
 </div>

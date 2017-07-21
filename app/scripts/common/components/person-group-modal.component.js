@@ -13,6 +13,12 @@
             if (vm.resolve.groupId != '') {
                 vm.groupId = vm.resolve.groupId;
             }
+            if (vm.resolve.group == 'Other') {
+                vm.others = true;
+            } else {
+              vm.others = false;
+            }
+
         };
         vm.close = close;
 
