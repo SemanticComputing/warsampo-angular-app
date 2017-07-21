@@ -4,13 +4,13 @@
       <h3 class="modal-title">
         <div ng-switch="!!(vm.photo.created || vm.photo.places.length)">
           <span ng-switch-when="true">
-            <span ng-if="vm.photo.period">{{ vm.photo.getPeriod() }}</span>
+            <span ng-if="vm.photo.period">{{ vm.photo.period }}</span>
             <span>{{ vm.photo.created | date:'dd.MM.yyyy' }}</span>
             <span ng-repeat="place in vm.photo.places">
               <a ng-click="vm.close()" ws-page-link="place.id">{{ place.label }}</a>
             </span>
           </span>
-          <span ng-switch-when="false">{{ vm.photo.getPeriod() || 'PHOTO' | translate }}</span>
+          <span ng-switch-when="false">{{ vm.photo.period || 'PHOTO' | translate }}</span>
       </h3>
     </div>
     <div class="col-xs-2">

@@ -12,7 +12,7 @@
         <span ng-if="vm.photo.created">
           <a ws-page-link="vm.photo.time_id">{{ vm.photo.created | date:'dd.MM.yyyy' }}</a>
         </span>
-        <span ng-if="vm.photo.period">({{ vm.photo.getPeriod() }})</span>
+        <span ng-if="vm.photo.period">({{ vm.photo.period }})</span>
       </h2>
       <p>
         {{ vm.photo.description }}

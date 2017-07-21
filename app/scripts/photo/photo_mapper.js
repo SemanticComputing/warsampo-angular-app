@@ -24,15 +24,10 @@
     /* @ngInject */
     function Photo(TranslateableObject) {
         Photo.prototype = angular.extend({}, TranslateableObject.prototype);
-        Photo.prototype.getPeriod = getPeriod;
 
         return Photo;
 
         function Photo() { }
-
-        function getPeriod() {
-            return this.getLangAttr('period');
-        }
     }
 
 })();
