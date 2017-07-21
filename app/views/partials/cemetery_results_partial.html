@@ -8,7 +8,7 @@
   <tr ng-show="!vm.isLoadingResults" ng-repeat="cemetery in $data">
 
     <td data-title="'CEMETERY_DEMO.NAME' | translate">
-      <a ws-page-link ng-href="/cemeteries/page?uri={{::cemetery.id}}">
+      <a ws-page-link="::cemetery.id">
         {{::cemetery.label}}
       </a>
     </td>
