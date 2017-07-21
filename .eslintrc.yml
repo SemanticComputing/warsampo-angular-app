@@ -3,6 +3,11 @@ rules:
     - 2
     - 4
     - SwitchCase: 1
+      MemberExpression: off
+      FunctionDeclaration:
+          parameters: off
+      FunctionExpression:
+          parameters: off
   quotes:
     - 2
     - single
