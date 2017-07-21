@@ -6,7 +6,7 @@
   {{ 'PERSONS_DEMO.DISAPPEARED' | translate }}  {{ ctrl.person.disapp || '?' }} {{ ctrl.person.disapp_place }}
 </p>
 <p ng-if="ctrl.person.way_to_die">
-  {{ ctrl.person.way_to_die | capitalizeFirst }}.
+  {{ ctrl.person.getLangAttr('way_to_die') | capitalizeFirst }}.
   <span ng-if="ctrl.person.bury_place">{{ 'PERSONS_DEMO.BURIED_IN' | translate }} {{ ctrl.person.bury_place }}</span>
 </p>
 <p ng-if="ctrl.person.cas_unit">{{ 'PERSONS_DEMO.SERVED_IN_UNIT' | translate }} {{ ctrl.person.cas_unit }}</p>
