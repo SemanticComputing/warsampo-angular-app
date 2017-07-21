@@ -9,18 +9,18 @@
                 images: '<',
                 config: '<'
             },
-            controller: PhotoGalleryContoller,
+            controller: PhotoGalleryController,
             controllerAs: 'ctrl',
             templateUrl: 'views/directive/ws-photo-gallery.directive.html'
         };
     });
 
     /* @ngInject */
-    function PhotoGalleryContoller($scope, $q, $timeout, $window, _, $translate) {
+    function PhotoGalleryController($scope, $q, $timeout, $window, _, $translate) {
         var self = this;
 
         self.isCollapsed = true;
-        self.imageCount;
+        self.imageCount = 0;
         self.isLoadingImages;
         self.photos = [];
         self.galleryId = _.uniqueId();
