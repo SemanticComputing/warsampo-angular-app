@@ -6,9 +6,9 @@
     * Service that provides an interface for fetching casualty data.
     */
     angular.module('eventsApp')
-    .service('casualtyRepository', function($q, _, SparqlService, objectMapperService,
-            ENDPOINT_CONFIG) {
-        var endpoint = new SparqlService(ENDPOINT_CONFIG);
+    .service('casualtyRepository', function($q, _, AdvancedSparqlService, baseRepository,
+            translateableObjectMapperService, ENDPOINT_CONFIG) {
+        var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
 
         var prefixes =
         ' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
@@ -28,13 +28,6 @@
         '        ?id casualties:kuolinaika ?death_date . ' +
         '        FILTER(?death_date >= "{0}"^^xsd:date && ?death_date <= "{1}"^^xsd:date) ' +
         '        ?id casualties:kuolinkunta [ geo:lat ?lat ; geo:long ?lon ] . ' +
-        ' } ';
-
-        var casualtyCountByTimeQry = prefixes +
-        ' SELECT (COUNT(?id) AS ?count) ' +
-        ' WHERE { ' +
-        '        ?id casualties:kuolinaika ?death_date . ' +
-        '        FILTER(?death_date >= "{0}"^^xsd:date && ?death_date <= "{1}"^^xsd:date) ' +
         ' } ';
 
         var casualtyCountsByTimeGroupByTypeQry = prefixes +
@@ -85,26 +78,23 @@
         '  	?id casualties:osasto ?subunit .	' +
         '}	';
 
+        // ?id is predicate
         var personDeathRecordQry = prefixes +
-        'SELECT ?id ?pred_lbl ?obj_text ?obj_link WHERE {'  +
-        '   ?id crm:P70_documents <{0}> . ' +
-        '   ?id a casualties:DeathRecord . ' +
-        '   ?id ?pred ?obj .'  +
-        '   ?pred sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?pred_lbl) .'  +
-        '   OPTIONAL {' +
-        '   	?obj sf:preferredLanguageLiteral (skos:prefLabel rdfs:label "{1}" "fi" "" ?obj_lbl) .'  +
-        '   }' +
+        'SELECT ?id ?label ?description ?obj_link WHERE {'  +
+        '   ?person crm:P70_documents <ID> . ' +
+        '   ?person a casualties:DeathRecord . ' +
+        '   ?person ?id ?obj .'  +
+        '   ?id skos:prefLabel ?label .'  +
+        '   OPTIONAL { ?obj skos:prefLabel ?obj_lbl . }' +
         '   BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) '  +
-        '   BIND(COALESCE(?obj_lbl, ?obj) as ?obj_text) '  +
-        '} ORDER BY ?pred_lbl';
+        '   BIND(COALESCE(?obj_lbl, ?obj) as ?description) '  +
+        '} ORDER BY ?label';
 
         this.getCasualtyLocationsByTime = function(start, end) {
             start = formatDate(start);
             end = formatDate(end);
             var qry = casualtyLocationsByTimeQry.format(start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry);
         };
 
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
@@ -112,9 +102,7 @@
             start = formatDate(start);
             end = formatDate(end);
             var qry = casualtyLocationsByTimeAndUnitQry.format(start, end, unit);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectListNoGrouping(data);
-            });
+            return endpoint.getObjectsNoGrouping(qry);
         };
 
         this.getCasualtyCountsByTimeGroupByUnitAndType = function(start, end, unit) {
@@ -122,34 +110,19 @@
             start = formatDate(start);
             end = formatDate(end);
             var qry = casualtyCountsByTimeGroupByUnitAndTypeQry.format(start, end, unit);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
-            });
-        };
-
-        this.getCasualtyCountByTime = function(start, end) {
-            start = formatDate(start);
-            end = formatDate(end);
-            var qry = casualtyCountByTimeQry.format(start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                return data[0].count.value;
-            });
+            return endpoint.getObjects(qry);
         };
 
         this.getCasualtyCountsByTimeGroupByType = function(start, end) {
             start = formatDate(start);
             end = formatDate(end);
             var qry = casualtyCountsByTimeGroupByTypeQry.format(start, end);
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectList(data);
-            });
+            return endpoint.getObjects(qry);
         };
 
-        this.getPersonDeathRecord = function(id, lang) {
-            var qry = personDeathRecordQry.format(id, lang || 'fi');
-            return endpoint.getObjects(qry).then(function(data) {
-                return objectMapperService.makeObjectListNoGrouping(data);
-            });
+        this.getPersonDeathRecord = function(id) {
+            var qry = personDeathRecordQry.replace('<ID>', baseRepository.uriFy(id));
+            return endpoint.getObjects(qry);
         };
 
         function formatDate(date) {

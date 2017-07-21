@@ -7,7 +7,7 @@
   <div class="row" ng-repeat="casualtyClass in ctrl.getCasualtyStats()">
     <div ng-if="::casualtyClass.id">
       <div class="col-xs-10 casualtyCount">
-        {{ ::casualtyClass.description }}
+        {{ ::casualtyClass.getDescription() }}
       </div>
       <div class="col-xs-2 casualtyCount">
         {{ ::casualtyClass.count }}

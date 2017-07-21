@@ -2,9 +2,9 @@
   <h3 translate="DEATH_RECORD"></h3>
   <table class="table person-record">
     <tr ng-repeat="prop in ctrl.person.deathRecord">
-      <td>{{ prop.pred_lbl }}</td>
-      <td class="person-record-property" ng-if="prop.obj_link"><a ws-page-link="prop.obj_link">{{ prop.obj_text }}</a></td>
-      <td class="person-record-value" ng-if="!prop.obj_link">{{ prop.obj_text }}</td>
+      <td>{{ prop.getLabel() }}</td>
+      <td class="person-record-property" ng-if="prop.obj_link"><a ws-page-link="prop.obj_link">{{ prop.getDescription() }}</a></td>
+      <td class="person-record-value" ng-if="!prop.obj_link">{{ prop.getDescription() }}</td>
     </tr>
   </table>
 </div>
