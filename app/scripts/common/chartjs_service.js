@@ -25,7 +25,7 @@
             return chart;
         }
 
-        function createPersonDistribution(persons, prop, uriProp, sorted) {
+        function createPersonDistribution(persons, prop, uriProp, sorted, lang) {
 
             var distribution = countByProperty(persons, prop, uriProp, sorted);
             if (sorted) {
@@ -58,8 +58,16 @@
                             groups: []
                         };
             distribution.forEach(function(item) {
+                  if (prop == 'way_to_die') {
+                      if (lang == 'fi') {
+                          chart.labels.push(item.value[0]);
+                      } else {
+                          chart.labels.push(item.value[1]);
+                      }                  
+                  } else {
+                      chart.labels.push(item.value);
+                  }
                   chart.data.push(item.count);
-                  chart.labels.push(item.value);
                   chart.uris.push(item.uri);
                   chart.groups.push(item.instances);
             });

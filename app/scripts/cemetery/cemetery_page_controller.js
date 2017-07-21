@@ -55,10 +55,10 @@
                           person.age = getAge(person.cas_date_of_birth, person.cas_date_of_death);
                       });
 
-                      vm.unitChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'unit_label', 'unit_id_picked', true);
-                      vm.rankChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'rank_label', 'rank_id', true);
-                      vm.ageChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'age', '', false);
-                      vm.wayChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'way_to_die', '', true);
+                      vm.unitChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'unit_label', 'unit_id_picked', true, $routeParams.lang);
+                      vm.rankChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'rank_label', 'rank_id', true, $routeParams.lang);
+                      vm.ageChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'age', '', false, $routeParams.lang);
+                      vm.wayChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'way_to_die', '', true, $routeParams.lang);
                   }
                   else {
                       vm.buriedPersons = undefined;
