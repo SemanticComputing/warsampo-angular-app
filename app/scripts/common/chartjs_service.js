@@ -25,11 +25,41 @@
             return chart;
         }
 
-        function createPersonDistribution(persons, prop, uriProp, sorted) {
-
+        function createPersonDistribution(persons, prop, uriProp, sorted, lang) {
             var distribution = countByProperty(persons, prop, uriProp, sorted);
+
+            var sliceVisibilityThreshold = 0.01;
+
+            if (prop == 'unit_label' || prop == 'rank_label') {
+                var others = {  value: 'Other',
+                              count: 0,
+                              uri: '',
+                              instances: [],
+                };
+                var modified = [];
+                for (var i = 0; i < distribution.length; i++) {
+                    var portion = distribution[i].count / persons.length;
+                    if (portion < sliceVisibilityThreshold) {
+                        others.count += distribution[i].count;
+                        var instances = distribution[i].instances;
+                        instances.forEach(function(instance) {
+                            instance.groupLabel = distribution[i].value;
+                            instance.groupUri = distribution[i].uri;
+                        });
+                        others.instances = others.instances.concat(instances);
+                    } else {
+                        modified.push(distribution[i]);
+                    }
+                }
+                distribution = modified;
+            }
+
             if (sorted) {
-              distribution = distribution.sort(function(a, b){ return b.instances.length-a.count });
+                distribution = distribution.sort(function(a, b){ return b.instances.length-a.count });
+            }
+
+            if (prop == 'unit_label' || prop == 'rank_label') {
+                distribution.push(others);
             }
 
             // Fill the missing gaps for age chart
@@ -55,11 +85,20 @@
             var chart = {   data: [],
                             labels: [],
                             uris: [],
-                            groups: []
+                            groups: [],
+                            total: 0
                         };
             distribution.forEach(function(item) {
+                  if (prop == 'way_to_die') {
+                      if (lang == 'fi') {
+                          chart.labels.push(item.value[0]);
+                      } else {
+                          chart.labels.push(item.value[1]);
+                      }
+                  } else {
+                      chart.labels.push(item.value);
+                  }
                   chart.data.push(item.count);
-                  chart.labels.push(item.value);
                   chart.uris.push(item.uri);
                   chart.groups.push(item.instances);
             });
@@ -68,10 +107,13 @@
         }
 
         function countByProperty(data, prop, uriProp) {
-            //console.log(data);
+            //console.log(data.length);
+            //var counter = 0;
+
             var res = {};
             data.forEach(function(item) {
                 if (item.hasOwnProperty(prop)) {
+
                     var value = item[prop];
                     if (res.hasOwnProperty(value)) {
                       res[value].count += 1;
@@ -85,6 +127,12 @@
                     }
                 }
             });
+            // if (prop == 'unit_label') {
+            //     Object.keys(res).forEach(function(key) {
+            //           counter += res[key].count;
+            //     });
+            //
+            // }
             return _.values(res);
         }
 

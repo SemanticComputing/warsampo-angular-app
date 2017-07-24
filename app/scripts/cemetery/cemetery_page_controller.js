@@ -35,7 +35,7 @@
               cemeteryService.getSingleCemeteryById($routeParams.uri)
               .then(function(cemetery) {
                   vm.cemetery = cemetery;
-                  vm.casualtiesLink = '/en/casualties/vis/path?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/narc-menehtyneet1939-45/hautausmaa> <'+ cemetery.id +'> . "}}';
+                  vm.casualtiesLink = '/' + $routeParams.lang  +'/casualties/?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/narc-menehtyneet1939-45/hautausmaa> <'+ cemetery.id +'> . "}}';
                   return cemeteryService.fetchRelated(vm.cemetery);
               })
               .then(function(cemetery) {
@@ -55,10 +55,10 @@
                           person.age = getAge(person.cas_date_of_birth, person.cas_date_of_death);
                       });
 
-                      vm.unitChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'unit_label', 'unit_id_picked', true);
-                      vm.rankChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'rank_label', 'rank_id', true);
-                      vm.ageChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'age', '', false);
-                      vm.wayChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'way_to_die', '', true);
+                      vm.unitChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'unit_label', 'unit_id_picked', true, $routeParams.lang);
+                      vm.rankChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'rank_label', 'rank_id', true, $routeParams.lang);
+                      vm.ageChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'age', '', false, $routeParams.lang);
+                      vm.wayChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'way_to_die', '', true, $routeParams.lang);
                   }
                   else {
                       vm.buriedPersons = undefined;
@@ -134,14 +134,17 @@
                 },
                 tooltips: {
                     callbacks: {
+                      // http://blog.cryst.co.uk/2016/06/03/adding-percentages-chart-js-pie-chart-tooltips/
                       label: function(tooltipItem, data) {
                         var allData = data.datasets[tooltipItem.datasetIndex].data;
+                        console.log(allData);
                         var tooltipLabel = data.labels[tooltipItem.index];
                         var tooltipData = allData[tooltipItem.index];
                         var total = 0;
                         for (var i in allData) {
                           total += allData[i];
                         }
+                        console.log(total);
                         var tooltipPercentage = Math.round((tooltipData / total) * 100);
                         return tooltipLabel + ': ' + tooltipData + ' (' + tooltipPercentage + '%)';
                       }
