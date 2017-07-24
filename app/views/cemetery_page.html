@@ -26,6 +26,12 @@
       <p ng-if="vm.cemetery.memorial">
         {{ 'CEMETERY_DEMO.MEMORIAL' | translate }}: {{ vm.cemetery.memorial }} ({{ 'CEMETERY_DEMO.SCULPTOR' | translate }}: {{ vm.cemetery.memorial_sculptor }}, {{ 'CEMETERY_DEMO.UNVEILING_DATE' | translate }} {{ vm.cemetery.memorial_unveiling_date }})
       </p>
+      <p ng-if="vm.cemetery.current_municipality">
+        {{ 'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate }}: {{ vm.cemetery.current_municipality }}
+      </p>
+      <p ng-if="vm.cemetery.former_municipality">
+        {{ 'CEMETERY_DEMO.FORMER_MUNICIPALITY' | translate }}: {{ vm.cemetery.former_municipality }}
+      </p>
       <p ng-if="vm.cemetery.address">
         {{ 'CEMETERY_DEMO.STREET_ADDRESS' | translate }}: {{ vm.cemetery.address }}
       </p>
@@ -36,12 +42,12 @@
       <ws-simple-photo-gallery images="vm.cemetery.images" class="cemetery-info-page-gallery"></ws-simple-photo-gallery>
 
 
-        <!-- <div id="cemetery-death-places-map" ng-if="vm.hasDeathPlaces">
+        <div id="cemetery-death-places-map" ng-if="vm.hasDeathPlaces">
           <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_DEATH_PLACES' | translate }}</h3>
           <div id="simple-google-map-container" class="cemetery-info-page-map-container">
             <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
           </div>
-        </div> -->
+        </div>
 
         <div id="cemetery-visualizations" ng-if="vm.hasVisualizableData">
 
