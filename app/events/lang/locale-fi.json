@@ -55,7 +55,7 @@
     "CEMETERY_DEMO": {
         "TITLE": "Sankarihautausmaat Suomessa",
         "HEADER": "Sankarihautausmaat Suomessa",
-        "APP_DESCRIPTION": "Voit tehdä hakuja hautausmaan nimellä ja lisäksi voit rajata hakutulosta tekemällä valintoja vasemmalta löytyvistä suodattimista. Hautausmaan tarkempiin tietoihin voit tutustua hautasmaan tietosivulla. Tällä hetkellä aineisto koostuu 802 hautausmaasta/muistomerkistä, joihin Kansallisarkiston Suomen sodissa 1939-1945 menehtyneet -tietokannassa on viitattu nimellä. Näistä 26 hautausmaalle lisätty Suomen sankarivainajahautausmaiden kuvausprojektilta saadut lisätiedot ja kuvat. Loput lisätiedot ja kuvat saadaan kuvausprojektilta kesän 2017 aikana.",
+        "APP_DESCRIPTION": "Voit tehdä hakuja hautausmaan nimellä ja lisäksi voit rajata hakutulosta tekemällä valintoja vasemmalta löytyvistä suodattimista. Hautausmaan tarkempiin tietoihin voit tutustua hautasmaan tietosivulla. Tällä hetkellä aineisto koostuu 802 hautausmaasta/muistomerkistä, joihin Kansallisarkiston Suomen sodissa 1939-1945 menehtyneet -tietokannassa on viitattu nimellä. Toistaiseksi 218 hautausmaalle lisätty Suomen sankarivainajahautausmaiden kuvausprojektilta saadut lisätiedot ja kuvat. Loput lisätiedot ja kuvat saadaan kuvausprojektilta kesän 2017 aikana.",
         "TEXT_SEARCH_EXCEPTION": "Virheelliset tekstihakuehdot. Muuta hakuehtoja ja yritä uudelleen.",
         "OTHER_CEMETERIES_CLOSE": "Muita hautausmaita samalla alueella",
         "NAME": "Nimi",

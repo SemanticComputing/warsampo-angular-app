@@ -55,7 +55,7 @@
     "CEMETERY_DEMO": {
         "TITLE": "War cemeteries",
         "HEADER": "War cemeteries",
-        "APP_DESCRIPTION": "Voit tehdä hakuja hautausmaan nimellä ja lisäksi voit rajata hakutulosta tekemällä valintoja vasemmalta löytyvistä suodattimista. Hautausmaan tarkempiin tietoihin voit tutustua hautasmaan tietosivulla. Tällä hetkellä aineisto koostuu 802 hautausmaasta/muistomerkistä, joihin Kansallisarkiston Suomen sodissa 1939-1945 menehtyneet -tietokannassa on viitattu nimellä. Näistä 26 hautausmaalle lisätty Suomen sankarivainajahautausmaiden kuvausprojektilta saadut lisätiedot ja kuvat. Loput lisätiedot ja kuvat saadaan kuvausprojektilta kesän 2017 aikana.",
+        "APP_DESCRIPTION": "You can search the cemeteries by name and narrow the results by using the filters on the left. The details of an individual cemetery can be studied by clicking the name of the cemetery. The data consists of 802 cemeteries originating from the The National Archives war casualty database. Details and photos have been added to 218 cemeteries, the rest will be added when The Central Organization of Finnish Camera Clubs delivers the final data from their information collection project.",
         "TEXT_SEARCH_EXCEPTION": "The text search terms are not valid. Please try again with another set of search terms.",
         "OTHER_CEMETERIES_CLOSE": "Other cemeteries nearby",
         "NAME": "Name",
