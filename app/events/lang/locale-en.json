@@ -85,7 +85,8 @@
         "MAP": "Map",
         "LIST": "List",
         "OTHER": "Muu",
-        "CASUALTIES_LINK": "Examine the buried people with the faceted browser and visualizations of casualties perspective"
+        "CLICK_HERE": "Click here",
+        "CASUALTIES_LINK": "to examine the buried people with the faceted browser and visualizations of the casualties perspective."
     },
     "TIME_DEMO": {
         "TITLE": "Time Span",
