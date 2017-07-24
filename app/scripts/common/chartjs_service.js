@@ -102,18 +102,12 @@
             distribution.forEach(function(item) {
                   if (prop == 'way_to_die') {
                       //console.log(item.value);
-                      if (lang == 'fi') {
-                          if (item.value == 'tuntematon') {
-                              chart.labels.push('tuntematon');
-                          } else {
-                              chart.labels.push(item.value[0]);
-                          }
+                      if (lang == 'fi' && item.value == 'tuntematon') {
+                          chart.labels.push('tuntematon');
+                      } else if (lang == 'en' && item.value == 'tuntematon')  {
+                          chart.labels.push('Unknown');
                       } else {
-                          if (item.value == 'tuntematon') {
-                              chart.labels.push('Unknown');
-                          } else {
-                              chart.labels.push(item.value[1]);
-                          }
+                          chart.labels.push(item.value);
                       }
                   } else {
                       chart.labels.push(item.value);
@@ -128,8 +122,14 @@
         function countByProperty(data, prop, uriProp) {
             var res = {};
             data.forEach(function(item) {
-                if (item.hasOwnProperty(prop)) {
 
+                if (item.hasOwnProperty(prop)) {
+                    //console.log(item);
+                    // if (prop =='rank_label') {
+                    //   console.log(item);
+                    //   console.log(item.rank_label);
+                    //   console.log(item[prop]);
+                    // }
                     var value = item[prop];
                     if (res.hasOwnProperty(value)) {
                       res[value].count += 1;
