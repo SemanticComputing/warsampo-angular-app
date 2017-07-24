@@ -26,15 +26,21 @@
         }
 
         function createPersonDistribution(persons, prop, uriProp, sorted, lang) {
+            //console.log(persons)
             var distribution = countByProperty(persons, prop, uriProp, sorted);
 
-            var sliceVisibilityThreshold = 0.01;
+            var sliceVisibilityThreshold;
+            if (persons.length < 800) {
+                sliceVisibilityThreshold = 0.01;
+            } else {
+                sliceVisibilityThreshold = 0.005;
+            }
 
             if (prop == 'unit_label' || prop == 'rank_label') {
-                var others = {  value: 'Other',
-                              count: 0,
-                              uri: '',
-                              instances: [],
+                var others = { value: 'Other',
+                               count: 0,
+                               uri: 'other',
+                               instances: [],
                 };
                 var modified = [];
                 for (var i = 0; i < distribution.length; i++) {
@@ -74,7 +80,7 @@
                     else {
                         ageDistribution.push({  value: i,
                                                 count: 0,
-                                                uri: '',
+                                                uri: 'empty_age',
                                                 instances: [],
                                              });
                     }
@@ -90,10 +96,19 @@
                         };
             distribution.forEach(function(item) {
                   if (prop == 'way_to_die') {
+                      //console.log(item.value);
                       if (lang == 'fi') {
-                          chart.labels.push(item.value[0]);
+                          if (item.value == 'tuntematon') {
+                              chart.labels.push('tuntematon');
+                          } else {
+                              chart.labels.push(item.value[0]);
+                          }
                       } else {
-                          chart.labels.push(item.value[1]);
+                          if (item.value == 'tuntematon') {
+                              chart.labels.push('Unknown');
+                          } else {
+                              chart.labels.push(item.value[1]);
+                          }
                       }
                   } else {
                       chart.labels.push(item.value);
@@ -103,13 +118,9 @@
                   chart.groups.push(item.instances);
             });
             return chart;
-
         }
 
         function countByProperty(data, prop, uriProp) {
-            //console.log(data.length);
-            //var counter = 0;
-
             var res = {};
             data.forEach(function(item) {
                 if (item.hasOwnProperty(prop)) {
@@ -127,12 +138,6 @@
                     }
                 }
             });
-            // if (prop == 'unit_label') {
-            //     Object.keys(res).forEach(function(key) {
-            //           counter += res[key].count;
-            //     });
-            //
-            // }
             return _.values(res);
         }
 

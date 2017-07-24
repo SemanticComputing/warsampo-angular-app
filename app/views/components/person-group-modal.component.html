@@ -1,9 +1,19 @@
 <div class="modal-header">
   <div class="row">
     <div class="col-xs-10 text-left">
-      <h3 class="modal-title">Sankarivainajat <br> {{ vm.cemetery}} <br>
+      <h3 class="modal-title">{{ 'CEMETERY_DEMO.PEOPLE_BURIED' | translate }}
+        <br>
+        {{ 'CEMETERY_DEMO.CEMETERY_NAME' | translate }}: {{ vm.cemetery}}
+        <br>
+        <span ng-if="vm.unitChart">{{ 'CEMETERY_DEMO.UNIT' | translate }}:</span>
+        <span ng-if="vm.rankChart">{{ 'CEMETERY_DEMO.RANK' | translate }}:</span>
+
         <a ng-if="vm.groupId" ng-click="vm.close()" ws-page-link="vm.groupId">{{ vm.group }}</a>
-        <p ng-if="!vm.groupId">{{ vm.group }}</p>
+        <p ng-if="!vm.groupId">
+          <span ng-if="vm.wayChart">{{ 'CEMETERY_DEMO.CAUSE_OF_DEATH' | translate }}:</span>
+          <span ng-if="vm.ageChart">{{ 'CEMETERY_DEMO.AGE_AT_DEATH' | translate }}:</span>
+          {{ vm.group }}
+        </p>
       </h3>
     </div>
     <div class="col-xs-2">

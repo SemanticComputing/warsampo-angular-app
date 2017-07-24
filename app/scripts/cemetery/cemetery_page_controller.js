@@ -125,26 +125,19 @@
                     var persons = vm[chartTitle].groups[i];
                     var group = vm[chartTitle].labels[i];
                     var groupId = vm[chartTitle].uris[i];
-                    if (chartTitle == 'ageChart') {
-                      // TODO: translation
-                      //group =  'CEMETERY_DEMO.AGE_AT_DEATH' + ': ' + group;
-                      group =  'Kuolinikä: ' + group;
-                    }
-                    openModal(vm.cemetery.label, group, groupId, persons);
+                    openModal(vm.cemetery.label, group, groupId, persons, chartTitle);
                 },
                 tooltips: {
                     callbacks: {
                       // http://blog.cryst.co.uk/2016/06/03/adding-percentages-chart-js-pie-chart-tooltips/
                       label: function(tooltipItem, data) {
                         var allData = data.datasets[tooltipItem.datasetIndex].data;
-                        console.log(allData);
                         var tooltipLabel = data.labels[tooltipItem.index];
                         var tooltipData = allData[tooltipItem.index];
                         var total = 0;
                         for (var i in allData) {
                           total += allData[i];
                         }
-                        console.log(total);
                         var tooltipPercentage = Math.round((tooltipData / total) * 100);
                         return tooltipLabel + ': ' + tooltipData + ' (' + tooltipPercentage + '%)';
                       }
@@ -241,7 +234,7 @@
             return age;
         }
 
-        function openModal(cemetery, group, groupId, persons) {
+        function openModal(cemetery, group, groupId, persons, chartTitle) {
             $uibModal.open({
                 component: 'personGroupModal',
                 size: 'lg',
@@ -249,7 +242,8 @@
                     cemetery: function() { return cemetery; },
                     group: function() { return group; },
                     groupId: function() { return groupId; },
-                    persons: function() { return persons; }
+                    persons: function() { return persons; },
+                    chartTitle: function() { return chartTitle}
                 }
             });
         }
