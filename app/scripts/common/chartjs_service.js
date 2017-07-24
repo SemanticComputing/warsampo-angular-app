@@ -37,7 +37,12 @@
             }
 
             if (prop == 'unit_label' || prop == 'rank_label') {
-                var others = { value: 'Other',
+                var ot = 'Other'
+                if (lang == 'fi') {
+                    ot = 'Muu'
+                }
+
+                var others = { value: ot,
                                count: 0,
                                uri: 'other',
                                instances: [],

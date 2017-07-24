@@ -11,11 +11,13 @@
             vm.rankChart = false;
             vm.wayChart = false;
             vm.ageChart = false;
-            vm.others = false;
+            vm.other = false;
             vm.persons = vm.resolve.persons;
             vm.cemetery = vm.resolve.cemetery;
             vm.group = vm.resolve.group;
             vm.chartTitle = vm.resolve.chartTitle;
+
+
 
             if (vm.chartTitle == 'unitChart') {
                 vm.unitChart = true;
@@ -31,6 +33,9 @@
                 vm.groupId = '';
             } else {
                 vm.groupId = vm.resolve.groupId;
+                if (vm.groupId == 'other') {
+                    vm.other = true;
+                }
             }
         };
 

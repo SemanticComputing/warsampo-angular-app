@@ -8,12 +8,12 @@
         <span ng-if="vm.unitChart">{{ 'CEMETERY_DEMO.UNIT' | translate }}:</span>
         <span ng-if="vm.rankChart">{{ 'CEMETERY_DEMO.RANK' | translate }}:</span>
 
-        <a ng-if="vm.groupId" ng-click="vm.close()" ws-page-link="vm.groupId">{{ vm.group }}</a>
-        <p ng-if="!vm.groupId">
+        <a ng-if="vm.groupId && !vm.other" ng-click="vm.close()" ws-page-link="vm.groupId">{{ vm.group }}</a>
+        <span ng-if="!vm.groupId || vm.other">
           <span ng-if="vm.wayChart">{{ 'CEMETERY_DEMO.CAUSE_OF_DEATH' | translate }}:</span>
           <span ng-if="vm.ageChart">{{ 'CEMETERY_DEMO.AGE_AT_DEATH' | translate }}:</span>
           {{ vm.group }}
-        </p>
+        </span>
       </h3>
     </div>
     <div class="col-xs-2">
@@ -25,7 +25,9 @@
   <ul class="list-group row list-group-persons" ng-if="vm.persons">
     <li class="list-group-item col-xs-6" ng-repeat="person in vm.persons">
     <a ng-click="vm.close()" ws-page-link="person.uri">{{ person.label }}</a><br>
-    <a ng-if="vm.others" ng-click="vm.close()" ws-page-link="person.groupUri">{{ person.groupLabel }}</a>
+    <span ng-if="vm.rankChart">{{ 'CEMETERY_DEMO.RANK' | translate }}:</span>
+    <span ng-if="vm.unitChart">{{ 'CEMETERY_DEMO.UNIT' | translate }}:</span>
+    <a ng-if="vm.other" ng-click="vm.close()" ws-page-link="person.groupUri">{{ person.groupLabel }}</a>
     </li>
   </ul>
 </div>
