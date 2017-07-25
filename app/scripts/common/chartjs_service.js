@@ -124,11 +124,11 @@
             data.forEach(function(item) {
 
                 if (item.hasOwnProperty(prop)) {
-                    //console.log(item);
-                    // if (prop =='rank_label') {
+
+                    // if (prop =='rank_label' && item.id == 'http://ldf.fi/warsa/actors/person_p689') {
                     //   console.log(item);
-                    //   console.log(item.rank_label);
-                    //   console.log(item[prop]);
+                    //   console.log(item['rank_label'];
+                    //   console.log(item['way_to_die']);
                     // }
                     var value = item[prop];
                     if (res.hasOwnProperty(value)) {

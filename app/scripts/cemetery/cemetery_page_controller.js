@@ -170,9 +170,16 @@
         function addRankAndUnitLabel(buriedPersons) {
             buriedPersons.forEach(function(person) {
 
-                // Persons from casulties have only one rank
+                // if (person.id == 'http://ldf.fi/warsa/actors/person_p689') {
+                //     console.log(person);
+                //     console.log(person.rank);
+                //     console.log(person.rank[0].label);
+                // }
+
+
+                //Persons from casulties have only one rank
                 if (person.rank && person.rank.length > 0) {
-                  person.rank_label = person.rank[0].getLabel();
+                  person.rank_label = person.rank[0].label;
                 }
 
                 /* Persons from casulties may have 0, 1 or 2 units.
