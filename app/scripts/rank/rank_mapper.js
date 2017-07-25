@@ -18,6 +18,8 @@
         function RankMapper() { }
 
         function postProcess(ranks) {
+            ranks = translateableObjectMapperService.postProcess(ranks);
+          
             ranks.forEach(function(rank) {
                 if (rank.wikilink) {
                     rank.wikilink = [{
