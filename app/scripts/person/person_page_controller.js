@@ -18,7 +18,7 @@
                 self.isLoadingEvent = false;
                 return personService.fetchRelated(person);
             })
-            .then(function(person) {
+            .then(function() {
                 self.isLoadingRelated = false;
 
             }).catch(function() {
