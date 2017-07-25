@@ -123,13 +123,13 @@
                 rx = '^.*'+rx+'.*$';
             }
 
-            self.items = [{ id:'#', name: ['Etsitään...'] }];
+            self.items = [{ id:'#', label: 'Etsitään...' }];
 
             return unitService.getItems(rx, withEventsOnly).then(function(data) {
                 if (data.length) {
                     self.items = data;
                 } else {
-                    self.items = [{ id:'#', name:['Ei hakutuloksia.'] }];
+                    self.items = [{ id:'#', label: 'Ei hakutuloksia.' }];
                 }
                 return self.items;
             });

@@ -30,33 +30,38 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?name ?label ?abbrev ?note ?description ' +
+        ' SELECT DISTINCT ?id ?label ?abbrev ?altName ?note ?description ' +
         '  ?sid ?source ?level ';
 
-        var minimalQry = select +
-        ' {	' +
-        '  <RESULT_SET> ' +
-        '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?pLabel . ' +
-        '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
-        '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
-        ' }	';
+        var conflictPart =
+        '   OPTIONAL { ' +
+        '     SELECT DISTINCT ?id (GROUP_CONCAT(DISTINCT ?conf; separator=", ") AS ?conflict) ?confLang { ' +
+        '      ?id wacs:hasConflict/skos:prefLabel ?conf . ' +
+        '      BIND(LANG(?conf) AS ?confLang) ' +
+        '     } GROUP BY ?id ?confLang ' +
+        '   } ' +
+        '   BIND (IF(bound(?conflict), STRLANG(CONCAT(?preflabel," (", ?conflict, ")"), ?confLang), ?preflabel) AS ?label)  ';
 
         var unitByIdQry = prefixes + select +
         ' { ' +
-        '   VALUES ?id  { <ID> } ' +
+        '   <RESULT_SET> ' +
         '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?preflabel . ' +
-        '   OPTIONAL {?id skos:altLabel ?abbrev . } ' +
+        '   OPTIONAL { ?id skos:altLabel ?abbrev . } ' +
+        '   OPTIONAL { ' +
+        '    ?id (crm:P95i_was_formed_by|^crm:P95_has_formed) ?naming . ' +
+        '    ?naming a wsc:UnitNaming ; skos:prefLabel ?altName . ' +
+        '    FILTER(STR(?altName) != STR(?preflabel)) ' +
+        '   } ' +
         '   OPTIONAL { ?id dct:source ?sid . ' +
         '     OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '   } ' +
         '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
-        '   OPTIONAL { ?id dct:description ?description . }  '+
-        '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") }  ' +
-        '   BIND (IF(bound(?conf), concat(?preflabel," (",?conf,")"), ?preflabel) AS ?label)  ' +
+        '   OPTIONAL { ?id dct:description ?description . }  ' +
+            conflictPart +
         ' } ';
 
         var relatedUnitQry = prefixes +
-        ' SELECT DISTINCT  ?id ?level (SAMPLE(?name) AS ?label) WHERE { ' +
+        ' SELECT DISTINCT  ?id ?level ?label { ' +
         ' { ' +
         '  SELECT DISTINCT ?id ?level WHERE { ' +
         '    VALUES ?unit  { <ACTOR> } ' +
@@ -100,20 +105,16 @@
         '   } GROUP BY ?id ?level ORDER BY DESC(?no) LIMIT 50 ' +
         ' }  ' +
         ' FILTER BOUND(?id) ' +
-        ' ?id skos:prefLabel ?pLabel . ' +
-        ' ' +
-        ' OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
-        ' BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?name) ' +
-
-        ' } GROUP BY ?id ?level ORDER BY ?level ';
+        ' ?id skos:prefLabel ?preflabel . ' +
+          conflictPart +
+        ' } ';
 
         var byPersonIdQry = prefixes + select +
         ' { ' +
         '   VALUES ?person { <PERSON> } . ' +
         '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
-        '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?pLabel . ' +
-        '   OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
-        '   BIND (IF(bound(?conf), concat(?pLabel," (",?conf,")"), ?pLabel) AS ?label) ' +
+        '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?preflabel . ' +
+            conflictPart +
         ' } ';
 
         var byCemeteryIdQryResultSet =
@@ -125,29 +126,22 @@
         '   GROUP BY ?id ';
 
         var selectorQuery = prefixes +
-		'SELECT DISTINCT ?id ?name  ' +
-		'WHERE {  ' +
-		'  { ' +
-		'    SELECT DISTINCT ?id ?label (GROUP_CONCAT(distinct ?conf; separator=", ") AS ?conflict) ' +
-		'        WHERE {  ' +
-		'        { ' +
-		'          SELECT DISTINCT ?id ' +
-		'            WHERE { ' +
-		'              VALUES ?nclass { wsc:UnitNaming wsc:Formation wsc:Group wsc:MilitaryUnit } ' +
-		'              ?evt a ?nclass ;  ' +
-		'                 skos:prefLabel|skos:altLabel ?name .  ' +
-		'              FILTER (regex(?name,"<REGEX>","i"))  ' +
-		'              ?evt ^crm:P95i_was_formed_by|crm:P95_has_formed ?id . ' +
-		'              ?id a/rdfs:subClassOf* wsc:Group . ' +
-        '              <ADDITIONAL_FILTER> ' +
-		'          } LIMIT 50 ' +
-		'      	} ' +
-		'      ?id skos:prefLabel ?label . ' +
-		'      OPTIONAL { ?id wacs:hasConflict/skos:prefLabel ?conf . FILTER (lang(?conf)="fi") } ' +
-		'      } GROUP BY ?id ?label ' +
-		'  } ' +
-		'  BIND (IF(bound(?conflict), concat(?label," (",?conflict,")"), ?label) AS ?name) ' +
-		'} ORDER BY lcase(?name) ';
+        'SELECT DISTINCT ?id ?label {  ' +
+        ' { ' +
+        '  SELECT DISTINCT ?id ' +
+        '    WHERE { ' +
+        '      VALUES ?nclass { wsc:UnitNaming wsc:Formation wsc:Group wsc:MilitaryUnit } ' +
+        '      ?evt a ?nclass ;  ' +
+        '         skos:prefLabel|skos:altLabel ?label .  ' +
+        '      FILTER (regex(?label,"<REGEX>","i"))  ' +
+        '      ?evt ^crm:P95i_was_formed_by|crm:P95_has_formed ?id . ' +
+        '      ?id a/rdfs:subClassOf* wsc:Group . ' +
+        '      <ADDITIONAL_FILTER> ' +
+        '  } LIMIT 50 ' +
+        ' } ' +
+        ' ?id skos:prefLabel ?preflabel . ' +
+          conflictPart +
+        '} GROUP BY ?id ?label ORDER BY lcase(?label) ';
 
         // Units that have (or their subunits have) participated in battles
         var selectorEventFilter =
@@ -189,13 +183,15 @@
         '  } ' +
         '} ORDER BY ?label ';
 
-        this.getByIdList = function(ids) {
+        this.getByIdList = function(ids, options) {
+            options = options || {};
             ids = baseRepository.uriFy(ids);
             if (!ids) {
                 return $q.when();
             }
-            var qry = unitByIdQry.replace('<ID>', ids);
-            return endpoint.getObjects(qry).then(function(data) {
+            var resultSet = 'VALUES ?id { ' + ids + ' }';
+            var qryObj = queryBuilder.buildQuery(unitByIdQry, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery).then(function(data) {
                 if (data.length) {
                     return data;
                 }
@@ -220,7 +216,7 @@
                 return $q.when();
             }
             var resultSet = byCemeteryIdQryResultSet.replace('<CEMETERY>', id);
-            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, 'DESC(?unit_count)');
+            var qryObj = queryBuilder.buildQuery(unitByIdQry, resultSet, 'DESC(?unit_count)');
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 

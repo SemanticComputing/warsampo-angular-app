@@ -1,5 +1,5 @@
-<p ng-if="ctrl.unit.altNames.length">
-  <span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.unit.altNames | concatList }}
+<p ng-if="ctrl.unit.altName">
+  <span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.unit.altName | concatList }}
 </p>
 <p ng-switch="!!ctrl.unit.getDescription()">
   <span ng-switch-when="true">{{ ctrl.unit.getDescription() }} (Wikipedia)</span>
