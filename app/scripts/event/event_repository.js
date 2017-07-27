@@ -345,7 +345,8 @@
             var resultSet = eventQryResultSet
                 .replace('<TYPE_FILTER>', eventTypeFilter + 'FILTER(?id != <' + id + '>)')
                 .replace('<TIME_FILTER>', eventFilterWithinTimeSpanRelaxed
-                    .replace('<DATE_START>', start).replace('<DATE_END>', end));
+                    .replace('<DATE_START>', dateUtilService.formatDate(start, 'yyyy-MM-dd'))
+                    .replace('<DATE_END>', dateUtilService.formatDate(end, 'yyyy-MM-dd')));
             var qryObj = queryBuilder.buildQuery(eventQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
