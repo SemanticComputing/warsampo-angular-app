@@ -79,7 +79,9 @@
                 facetId: 'unit',
                 name: 'PHOTO_DEMO.UNIT',
                 predicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P11_had_participant>',
-                specifier: '?value a/rdfs:subClassOf* <http://ldf.fi/schema/warsa/Group> .'
+                hierarchy: '^<http://www.cidoc-crm.org/cidoc-crm/P143_joined>/<http://www.cidoc-crm.org/cidoc-crm/P144_joined_with>',
+                specifier: '?value a/rdfs:subClassOf* <http://ldf.fi/schema/warsa/Group> .',
+                depth: 10
             },
             photographer: {
                 facetId: 'photographer',
