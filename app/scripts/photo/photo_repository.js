@@ -118,7 +118,8 @@
 
         var photosByUnitResultSet =
         ' VALUES ?unit_id { <ID> } ' +
-        ' ?id ^crm:P94_has_created/crm:P11_had_participant ?unit_id . ' +
+        ' ?unit_id (^crm:P144_joined_with/crm:P143_joined)* ?subunit . ' +
+        ' ?id ^crm:P94_has_created/crm:P11_had_participant ?subunit . ' +
         ' ?id a wsc:Photograph . ';
 
         var photosByPersonResultSet =
