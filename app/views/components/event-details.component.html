@@ -6,7 +6,7 @@
     </span>
     <span><a ws-page-link="$ctrl.event.time_id">{{ $ctrl.event.timeSpanString }}</a></span>
   </h2>
-  <p>{{ $ctrl.event.getDescription() }}</p>
+  <p>{{ $ctrl.event.description || $ctrl.event.label }}</p>
   <div ng-show="$ctrl.event.photos">
     <ws-photo-gallery data-images="$ctrl.event.photos" data-config="$ctrl.config"></ws-photo-gallery>
   </div>

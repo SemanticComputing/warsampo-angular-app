@@ -47,7 +47,7 @@
         var orderBy = ' ?start_time ?end_time ';
 
         var select =
-        ' SELECT DISTINCT ?id ?type ?type_id ?description (?description AS ?label) ?time_id ' +
+        ' SELECT DISTINCT ?id ?type ?type_id ?description ?label ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
         '  ?title ?place_id ?medal__id ?medal__label ?source ?photo_id ';
 
@@ -71,7 +71,8 @@
         '   <RESULT_SET> ' +
         '   ?id a ?type_id . ' +
         '   ?type_id skos:prefLabel ?type . ' +
-        '   ?id skos:prefLabel ?description . ' +
+        '   ?id skos:prefLabel ?label . ' +
+        '   OPTIONAL { ?id dct:description ?description . } ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         '     ?id ?part_pred ?participant_id . ' +
@@ -108,7 +109,7 @@
         ' BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
         ' BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
         ' <TIME_FILTER> ' +
-        ' ?id skos:prefLabel ?description . ';
+        ' ?id skos:prefLabel ?label . ';
 
         var eventQry = select +
         ' { ' +
@@ -120,7 +121,8 @@
         '      crm:P82b_end_of_the_end ?end_t . ' +
         '   BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
         '   BIND(xsd:dateTime(?end_t) AS ?end_time) ' +
-        '   ?id skos:prefLabel ?description . ' +
+        '   ?id skos:prefLabel ?label . ' +
+        '   OPTIONAL { ?id dct:description ?description . } ' +
         '   OPTIONAL { ' +
         '    ?id dct:source ?source_id . ' +
         '    ?source_id skos:prefLabel ?source . ' +
@@ -211,7 +213,8 @@
         '  { ' +
         '   GRAPH <http://ldf.fi/warsa/events> { ' +
         '    ?id crm:P11_had_participant ?person ; ' +
-        '    	skos:prefLabel ?description . ' +
+        '    	skos:prefLabel ?label . ' +
+        '       OPTIONAL { ?id dct:description ?description } . ' +
         '    	OPTIONAL { ?id wevs:hadUnit ?unit . } ' +
         '   }' +
         '  }' +
@@ -219,13 +222,15 @@
         '  { ?id a wsc:PersonJoining . ?id crm:P143_joined ?person . ' +
         '    ?id crm:P107_1_kind_of_member ?participant_role .  ' +
         '    ?id crm:P144_joined_with ?unit . ' +
-        '    ?unit skos:prefLabel ?description . '+
+        '    ?unit skos:prefLabel ?label . '+
+        '    BIND(?label AS ?description) . '+
         '  }  '+
         '  UNION '+
         '  { '+
         '   ?id a wsc:Article ; '+
         '    dct:hasFormat ?link ; '+
-        '    dc:title|dct:title ?description ; '+
+        '    dc:title|dct:title ?label ; '+
+        '    BIND(?label AS ?description) . '+
         '   { ?id dct:subject ?person . }  '+
         '   UNION  '+
         '   { ?id wars:mentionsPerson ?person . }  '+
@@ -254,7 +259,7 @@
 
         // TODO: harmonize
         var personLifeEventsQry = prefixes +
-        ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description (?description AS ?label) ' +
+        ' SELECT DISTINCT ?id ?type ?type_id ?time_id ?description ?label ' +
         '  ?start_time ?end_time ?rank__label ?rank__id ?place_id ' +
         ' { ' +
         '  VALUES ?person { <PERSON> } ' +
@@ -280,7 +285,8 @@
         '  } ' +
         '  OPTIONAL { ?id crm:P7_took_place_at ?place_id . } ' +
         '  ?id a ?type_id . ' +
-        '  OPTIONAL { ?id skos:prefLabel ?description . } ' +
+        '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
+        '  OPTIONAL { ?id dct:description ?description . } ' +
         '  OPTIONAL { ' +
         '    ?type_id skos:prefLabel ?type . ' +
         '  } ' +

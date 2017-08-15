@@ -11,7 +11,7 @@
             .then(function(unit) {
                 self.unit = unit;
                 self.isLoadingEvent = false;
-                return unitService.fetchRelated(unit).then(function() {
+                return unitService.fetchRelated(unit, true).then(function() {
                     self.isLoadingLinks = false;
                 });
             }).catch(function() {

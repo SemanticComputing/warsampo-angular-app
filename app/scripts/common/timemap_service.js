@@ -293,18 +293,18 @@
         }
 
         function createEventObject(e, distinctPhotoData) {
-            var description = e.getDescription();
+            var label = e.label;
             var start = _.isArray(e.start_time) ? e.start_time[0] : e.start_time;
             start = isFinite(new Date(start)) ? start + 'Z' : undefined;
             var end = _.isArray(e.end_time) ? e.end_time[0] : e.end_time;
             end = isFinite(new Date(end)) ? end + 'Z' : undefined;
             var entry = {
                 start: start || end,
-                title: description.length < 50 ? description : description.substr(0, 47) + '...',
+                title: label.length < 50 ? label : label.substr(0, 47) + '...',
                 options: {
                     theme: eventTypeThemes[e.type_id] || 'orange',
                     descTitle: e.timeSpanString,
-                    description: description,
+                    description: e.description || label,
                     event: e
                 }
             };
