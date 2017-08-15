@@ -43,9 +43,9 @@
                 self.isLoadingEvent = false;
 
                 var placeEventPromise = eventService.getEventsByPlaceIdPager(
-                    _.map(self.event.places, 'id'), { pageSize: Settings.pageSize }, self.event.id);
+                    _.map(self.event.places, 'id'), { pageSize: Settings.pageSize, idFilter: self.event.id });
                 var timeEventPromise = eventService.getEventsLooselyWithinTimeSpanPager(
-                    self.event.start_time, self.event.end_time, { pageSize: Settings.pageSize }, self.event.id);
+                    self.event.start_time, self.event.end_time, { pageSize: Settings.pageSize, idFilter: self.event.id });
                 return $q.all([
                     placeEventPromise,
                     timeEventPromise,

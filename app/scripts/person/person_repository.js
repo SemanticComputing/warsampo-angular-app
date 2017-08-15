@@ -129,12 +129,13 @@
 
         var byUnitQryResultSet =
         ' SELECT ?id (COUNT(?s) AS ?no) { ' +
+        '  ?unit_id (^crm:P143_joined/crm:P144_joined_with)* {0} . ' +
         '  ?evt a wsc:PersonJoining ; ' +
-        '  crm:P143_joined ?id . ' +
-        '  ?evt  crm:P144_joined_with {0} .  ' +
+        '   crm:P144_joined_with ?unit_id ; ' +
+        '   crm:P143_joined ?id . ' +
+        '  ?id foaf:familyName ?sname . ' +
         '  ?s ?p ?id . ' +
         '  ?id skos:prefLabel ?label . ' +
-        '  ?id foaf:familyName ?sname . ' +
         ' } GROUP BY ?id ';
 
         var byUnitQry =
