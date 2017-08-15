@@ -116,6 +116,11 @@
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id skos:prefLabel ?label . ' +
+
+        // cemeteries that have a label ending in a digit have been generated from
+        // "hautauskunta" property, so do not include them
+        '  FILTER (!regex(?label, "[0-9]$"))' +
+
         '  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
         '  OPTIONAL { ?id wces:status ?status . } ' +
         //'  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
