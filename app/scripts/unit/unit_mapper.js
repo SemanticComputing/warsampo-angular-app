@@ -17,10 +17,19 @@
         function UnitMapper() { }
     })
     .factory('Unit', function(TranslateableObject) {
-        Unit.prototype = TranslateableObject.prototype;
+        Object.defineProperty(Unit.prototype, 'wikiLinkList', { get: getWikiList });
+
+        Unit.prototype = angular.extend(Unit.prototype, TranslateableObject.prototype);
 
         return Unit;
 
         function Unit() { }
+
+        function getWikiList() {
+            if (!this._wikiList && this.wikilink) {
+                this._wikiList = [{ id: this.wikilink, label: this.getLabel() }];
+            }
+            return this._wikiList;
+        }
     });
 })();

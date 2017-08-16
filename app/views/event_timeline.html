@@ -1,4 +1,5 @@
-<ws-title>{{ ctrl.getCurrent().getDescription() || (ctrl.title | translate) }}</ws-title>
+<ws-title>{{ ctrl.getCurrent().label || (ctrl.title | translate) }}</ws-title>
+<update-meta name="description" content="{{ ctrl.title | translate }}. {{ ctrl.getCurrent() ? (ctrl.getCurrent().timeSpanString + ': ' + ctrl.getCurrent().description) : 'EVENT_DEMO.META_DESCRIPTION' | translate }}"></update-meta>
 <div ng-if="ctrl.err">
   <p class="error-msg bg-danger">
   {{ 'ERROR_OCCURED' | translate }} <br /><br />

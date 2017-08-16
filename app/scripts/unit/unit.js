@@ -18,28 +18,18 @@
             var battles = [], formations = [], other = [], description = [], places = [];
             events = events || [];
             events.forEach(function(e) {
-                var etype = e.type_id,
-                    edate = '', eplace = '';
-                if (e.start_time && e.end_time) {
-                    edate = dateUtilService.formatExtremeDateRange(e.start_time, e.end_time);
-                }
-                if (e.places) {
-                    eplace = ', ' + _.map(e.places, 'label').join(', ');
-                }
-                if (edate !== '') {
-                    edate = edate + ': ';
-                }
+                var etype = e.type_id;
 
                 switch (etype) {
                     case EVENT_TYPES.BATTLE:
-                        battles.push({ label: e.getLabel(), id: e.id });
+                        battles.push(e);
                         break;
                     case EVENT_TYPES.UNIT_FORMATION:
-                        formations.push(edate + 'Perustaminen: ' + e.getLabel() + eplace);
+                        formations.push(e);
                         break;
                     case EVENT_TYPES.TROOP_MOVEMENT:
                     case EVENT_TYPES.DISSOLUTION:
-                        description.push(edate + e.getLabel() + eplace);
+                        description.push(e);
                         break;
                     case EVENT_TYPES.MILITARY_ACTIVITY:
                     case EVENT_TYPES.BOMBARDMENT:
@@ -62,7 +52,7 @@
                 description = formations.concat(description);
             }
             if (description.length) {
-                unit.descriptions = description;
+                unit.descriptions = _.filter(description, function(e) { return e.participant_id === unit.id; });
             }
             if (other.length) {
                 unit.events = other;
@@ -94,7 +84,6 @@
                 self.fetchRelatedUnits(unit),
                 self.fetchRelatedPersons(unit),
                 self.fetchCommanders(unit),
-                self.fetchWikipediaArticles(unit),
                 self.fetchRelatedArticles(unit),
                 self.fetchRelatedPhotos(unit),
                 self.fetchUnitDiaries(unit)
@@ -158,18 +147,7 @@
 
         self.fetchCommanders = function(unit) {
             return personRepository.getUnitCommanders(unit.id).then(function(persons) {
-                unit.commanders = [];
-                persons.forEach(function(p) {
-                    var pname = p.role + ' ' + p.label;
-                    if (p.join_start) {
-                        var edate = dateUtilService.getExtremeDate(p.join_start, true);
-                        var edate2 = dateUtilService.getExtremeDate(p.join_end, false);
-                        edate = dateUtilService.formatDateRange(edate,edate2);
-                        unit.commanders.push(pname + ', ' + edate);
-                    } else {
-                        unit.commanders.push(pname);
-                    }
-                });
+                unit.commanders = persons;
                 return unit;
             });
         };
@@ -190,16 +168,6 @@
             return unitRepository.getUnitArticles(unit.id).then(function(articles) {
                 if (articles && articles.length) {
                     unit.articles = articles;
-                    unit.hasLinks = true;
-                }
-            });
-        };
-
-        self.fetchWikipediaArticles = function(unit) {
-            return unitRepository.getUnitWikipedia(unit.id).then(function(data) {
-                if (data && data.length) {
-                    unit.wikilink = data;
-                    data[0].label = unit.getLabel();
                     unit.hasLinks = true;
                 }
             });

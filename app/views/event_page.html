@@ -1,5 +1,6 @@
 <ws-settings></ws-settings>
-<ws-title>{{ ctrl.event.getDescription() }}</ws-title>
+<ws-title>{{ ctrl.event.description }}</ws-title>
+<update-meta name="description" content="{{ ctrl.event.type + (ctrl.event.timeSpanString ? (' ' + ctrl.event.timeSpanString) : '') }}: {{ ctrl.event.description }}"></update-meta>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">

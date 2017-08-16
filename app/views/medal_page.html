@@ -1,4 +1,5 @@
 <ws-title>{{ 'MEDAL_DEMO.TITLE' | translate }}</ws-title>
+<update-meta name="description" content="{{ vm.medal.description || ('MEDAL' | translate) + ' ' + vm.medal.getLabel() }}"></update-meta>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">

@@ -1,4 +1,5 @@
-<ws-title>{{ vm.photo.description }}</ws-title>
+<ws-title>{{ 'PHOTO' | translate }}: {{ vm.photo.label | words:10 }}</ws-title>
+<update-meta name="description" content="{{ vm.photo.description }}"></update-meta>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">

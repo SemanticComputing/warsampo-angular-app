@@ -1,5 +1,6 @@
 <ws-settings></ws-settings>
 <ws-title>{{ ctrl.person.label }}</ws-title>
+<update-meta name="description" content="{{ ctrl.person.description || ctrl.person.label }}"></update-meta>
 <ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <div class="col-sm-3">
@@ -19,10 +20,6 @@
   </div>
   <div class="col-sm-9">
     <h1>{{ ctrl.person.getLabel() }}</h1>
-    <p ng-if="ctrl.person.birth || ctrl.person.death">
-      {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
-      {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}
-    </p>
     <img ng-show="ctrl.isLoadingObject" src="images/loading.gif" />
     <div ng-if="ctrl.err">
       <p class="error-msg bg-danger">
@@ -52,16 +49,15 @@
 
                   <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
 
+                  <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
                   <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
                   <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>
+                  <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.person.diaries"></ws-related-links>
                   <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
                   <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
                   <ws-related-links data-title="'RELATED_MEDALS' | translate" data-related="ctrl.person.medals"></ws-related-links>
                   <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.person.relatedPersons"></ws-related-links-paged>
-      
                   <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
-                  <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
-                  <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.person.diaries"></ws-related-links>
                   <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
                 </div>
               </div>

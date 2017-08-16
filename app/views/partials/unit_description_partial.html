@@ -1,12 +1,12 @@
 <p ng-if="ctrl.unit.altName">
   <span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.unit.altName | concatList }}
 </p>
-<p ng-switch="!!ctrl.unit.getDescription()">
-  <span ng-switch-when="true">{{ ctrl.unit.getDescription() }} (Wikipedia)</span>
+<p ng-switch="!!ctrl.unit.description">
+  <span ng-switch-when="true">{{ ctrl.unit.description }} (<a ng-href="{{ ctrl.unit.wikilink }}">Wikipedia</a>)</span>
   <span ng-switch-when="false" translate>UNIT</span>
 </p>
-<p ng-repeat="cmd in ctrl.unit.commanders">{{ cmd }}</p>
-<p ng-repeat="desc in ctrl.unit.descriptions">{{ desc }}</p>
+<p ng-repeat="cmd in ctrl.unit.commanders"><a ws-page-link="cmd.id">{{ 'COMMANDER' | translate }} {{ cmd.label }}</a></p>
+<p ng-repeat="desc in ctrl.unit.descriptions"><a ws-page-link="desc.id">{{ desc.verboseLabel }}</a></p>
 <p ng-if="ctrl.unit.note"><span translate>NOTE</span>: {{ ctrl.unit.note | concatList }}</p>
 <p>
   <small ng-if="ctrl.unit.source || ctrl.unit.sid">{{ 'SOURCE' | translate }}: {{ ctrl.unit.source || ctrl.unit.sid | concatList }} | </small>

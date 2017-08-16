@@ -34,7 +34,8 @@
         'sparql',
         'seco.facetedSearch',
         'seco.translateableObjectMapper',
-        'chart.js'
+        'chart.js',
+        'updateMeta'
     ])
     .constant('_', _)
     .constant('google', google)

@@ -1,4 +1,5 @@
 <ws-title>{{ ctrl.currentObject.getLabel() }}</ws-title>
+<update-meta name="description" content="{{ ctrl.currentObject.description || (('UNIT' | translate) + ' ' + ctrl.unit.getLabel()) }}"></update-meta>
 <ws-settings></ws-settings>
 <div class="row">
   <div class="col-sm-3">

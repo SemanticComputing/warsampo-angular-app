@@ -1,3 +1,7 @@
+<p ng-if="ctrl.person.birth || ctrl.person.death">
+  {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
+  {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}
+</p>
 <p class="preserve-whitespace" ng-if="ctrl.person.getDescription()">{{ ctrl.person.getDescription() }}</p>
 <p ng-if="ctrl.person.wound">
   {{ 'PERSONS_DEMO.WOUNDED' | translate }} {{ ctrl.person.wound || '?' }} {{ ctrl.person.wound_place }}

@@ -212,7 +212,8 @@
         '  VALUES ?person { <PERSON> } . ' +
         '  { ' +
         '   GRAPH <http://ldf.fi/warsa/events> { ' +
-        '    ?id crm:P11_had_participant ?person ; ' +
+        '    ?pred rdfs:subClassOf* crm:P11_had_participant . ' +
+        '    ?id ?pred ?person ; ' +
         '    	skos:prefLabel ?label . ' +
         '       OPTIONAL { ?id dct:description ?description } . ' +
         '    	OPTIONAL { ?id wevs:hadUnit ?unit . } ' +

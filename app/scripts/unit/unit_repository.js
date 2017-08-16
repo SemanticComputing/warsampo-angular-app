@@ -31,7 +31,7 @@
 
         var select =
         ' SELECT DISTINCT ?id ?label ?abbrev ?altName ?note ?description ' +
-        '  ?sid ?source ?level ';
+        '  ?sid ?source ?level ?wikilink';
 
         var conflictPart =
         '   OPTIONAL { ' +
@@ -57,6 +57,7 @@
         '   } ' +
         '   OPTIONAL { ?id crm:P3_has_note ?note . } ' +
         '   OPTIONAL { ?id dct:description ?description . }  ' +
+        '   OPTIONAL { ?id foaf:page ?wikilink . } ' +
             conflictPart +
         ' } ';
 
@@ -114,6 +115,7 @@
         '   VALUES ?person { <PERSON> } . ' +
         '   ?person ^crm:P143_joined/crm:P144_joined_with ?id . ' +
         '   ?id a/rdfs:subClassOf* wsc:Group ; skos:prefLabel ?preflabel . ' +
+        '   OPTIONAL { ?id foaf:page ?wikilink . } ' +
             conflictPart +
         ' } ';
 
@@ -164,13 +166,6 @@
         '    OPTIONAL { ?uri crm:P4_has_time-span ?time . } ' +
         '    } ' +
         '} ORDER BY ?time ';
-
-        var wikipediaQry = prefixes +
-        'SELECT ?id ' +
-        'WHERE { ' +
-        '    VALUES ?unit { <ID> } . ' +
-        '    ?unit foaf:page ?id . ' +
-        '} ';
 
         var articleQry = prefixes +
         'SELECT ?id ?label ' +
@@ -236,12 +231,6 @@
         this.getUnitDiaries = function(unit) {
             unit = baseRepository.uriFy(unit);
             var qry = wardiaryQry.replace('<ID>', unit);
-            return endpoint.getObjectsNoGrouping(qry);
-        };
-
-        this.getUnitWikipedia = function(unit) {
-            unit = baseRepository.uriFy(unit);
-            var qry = wikipediaQry.replace('<ID>', unit);
             return endpoint.getObjectsNoGrouping(qry);
         };
 

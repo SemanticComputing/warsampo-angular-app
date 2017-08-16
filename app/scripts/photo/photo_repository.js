@@ -55,7 +55,7 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?url ?thumbnail_url ?description ?note ?created ' +
+        ' SELECT DISTINCT ?id ?url ?thumbnail_url ?label ?description ?note ?created ' +
         '  ?time_id ?period ?participant_id ?unit_id ?place_id ?place_string ' +
         '  ?source ?creator_id ?photographer_string ?theme ';
 
@@ -65,6 +65,7 @@
         '  ?id sch:contentUrl ?url ; ' +
         '    sch:thumbnailUrl ?thumbnail_url . ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
+        '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
         '  OPTIONAL { ?id crm:P3_has_note ?note . } ' +
         '  OPTIONAL { ?id wphs:theme ?theme . } ' +
         '  OPTIONAL { ' +
