@@ -46,9 +46,10 @@
                 '@type': 'Person',
                 '@id': person.id,
                 'givenName': person.fname,
+                'familyName': person.sname,
+                'name': person.label,
                 'birthDate': person.birth,
                 'deathDate': person.death,
-                'familyName': person.sname,
                 'birthPlace': person.birth_place,
                 'deathPlace': person.death_place,
                 'description': person.getDescription()
