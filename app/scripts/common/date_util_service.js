@@ -42,7 +42,7 @@ angular.module('eventsApp')
         var startStr = this.formatDate(start);
         var endStr = this.formatDate(end);
         if (endStr !== startStr) {
-            return startStr + '-' + endStr;
+            return startStr + '\u2013' + endStr;
         }
         return startStr;
     }
