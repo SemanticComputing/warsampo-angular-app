@@ -1,6 +1,6 @@
 <ws-settings></ws-settings>
-<ws-title>{{ ctrl.person.label }}</ws-title>
-<update-meta name="description" content="{{ ctrl.person.description || ctrl.person.label }}"></update-meta>
+<update-title title="{{ 'TITLE' | translate }} | {{ ctrl.person.label }}"></update-title>
+<update-meta name="description" content="{{ 'PERSONS_DEMO.DEMO_META_DESCRIPTION_PREFIX' | translate }}: {{ ctrl.person.getMetaDescription() }}"></update-meta>
 <ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <div class="col-sm-3">
@@ -13,9 +13,11 @@
       ng-model-options="{ debounce: 500 }"
       placeholder="{{ 'PERSONS_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
       ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
-    <select ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
-      size="32" class="form-control" id="personselect"
-      ng-options="item as item.name for item in ctrl.items">
+    <select class="hidden-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
+      size="32" ng-options="item as item.name for item in ctrl.items">
+    </select>
+    <select class="visible-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
+      size="10" ng-options="item as item.name for item in ctrl.items">
     </select>
   </div>
   <div class="col-sm-9">
@@ -41,14 +43,18 @@
               </div>
               <div ng-class="{ 'col-md-8 col-md-pull-4 col-sm-12': ctrl.person.nationals, 'col-md-12': !ctrl.person.nationals }">
                 <div ng-include="'views/partials/person_description_partial.html'"></div>
+
                 <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
+
+                <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
+
+                <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
+                <div ng-include="'views/partials/person_death_record_partial.html'"></div>
+
                 <!-- Links -->
                 <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>
                 <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
                 <div id="linkContent">
-
-                  <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
-
                   <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
                   <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
                   <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>

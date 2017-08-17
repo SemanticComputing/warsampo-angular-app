@@ -30,10 +30,29 @@
 
     })
     .factory('Person', function(TranslateableObject) {
-        Person.prototype = TranslateableObject.prototype;
+        Person.prototype.getMetaDescription = getMetaDescription;
+
+        Person.prototype = angular.extend({}, TranslateableObject.prototype, Person.prototype);
 
         return Person;
 
         function Person() { }
+
+        function getMetaDescription() {
+            if (this.description) {
+                return this.description;
+            }
+            var lifeSpan = '';
+
+            if (this.birth || this.death) {
+                lifeSpan = ', ' + (this.birth ? this.birth : '?') +
+                    (this.birth_place ? ' ' + this.birth_place : '') + ' \u2013 ' +
+                    (this.death ? this.death : '?') +
+                    (this.death_place ? ' ' + this.death_place : '');
+            }
+            var unit = this.cas_unit ? ', ' + this.cas_unit : '';
+
+            return this.label + unit + lifeSpan;
+        }
     });
 })();

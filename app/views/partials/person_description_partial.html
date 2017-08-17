@@ -1,5 +1,5 @@
 <p ng-if="ctrl.person.birth || ctrl.person.death">
-  {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} -
+  {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} &ndash;
   {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}
 </p>
 <p class="preserve-whitespace" ng-if="ctrl.person.getDescription()">{{ ctrl.person.getDescription() }}</p>

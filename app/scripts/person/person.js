@@ -22,7 +22,6 @@
         self.fetchDeathRecord = fetchDeathRecord;
         self.fetchPrisonerRecord = fetchPrisonerRecord;
         self.fetchRelated = fetchRelated;
-        self.fetchRelatedForDemo = fetchRelatedForDemo;
         self.fetchRelatedUnits = fetchRelatedUnits;
         self.fetchRelatedPhotos = fetchRelatedPhotos;
         self.fetchRelatedPersons = fetchRelatedPersons;
@@ -214,24 +213,6 @@
                 self.fetchNationalBib(person),
                 self.fetchDeathRecord(person),
                 self.fetchPrisonerRecord(person),
-                self.fetchRelatedPhotos(person),
-                self.fetchDiaries(person),
-                self.fetchRelatedPersons(person)
-            ];
-
-            return $q.all(related).then(function() {
-                person.jsonLd = self.getJsonLd(person);
-                return person;
-            });
-        }
-
-        // for demo page:
-        function fetchRelatedForDemo(person) {
-            var related = [
-                self.fetchLifeEvents(person),
-                self.fetchRelatedEvents(person),
-                self.fetchRelatedUnits(person),
-                self.fetchNationalBib(person),
                 self.fetchRelatedPhotos(person),
                 self.fetchDiaries(person),
                 self.fetchRelatedPersons(person)

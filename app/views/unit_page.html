@@ -1,5 +1,5 @@
-<ws-title>{{ ctrl.unit.getLabel() }}</ws-title>
-<update-meta name="description" content="{{ ctrl.unit.description || (('UNIT' | translate) + ' ' + ctrl.unit.getLabel()) }}"></update-meta>
+<update-title title="{{ 'TITLE' | translate }} | {{ ctrl.unit.getLabel() }}"></update-title>
+<update-meta name="description" content="{{ ctrl.unit.description || (('UNIT_DEMO.PAGE_TITLE' | translate) + ': ' + ctrl.unit.getLabel()) }}"></update-meta>
 <div class="row">
   <!-- Metadata -->
   <div class="col-sm-8">

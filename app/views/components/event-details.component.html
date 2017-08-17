@@ -1,10 +1,10 @@
 <div>
   <h2>
-    <span>{{ $ctrl.event.getTypeLabel() }} - </span>
+    <span>{{ $ctrl.event.getTypeLabel() }}</span>
+    <span><a ws-page-link="$ctrl.event.time_id">{{ $ctrl.event.timeSpanString }}</a></span>
     <span ng-repeat="place in $ctrl.event.places">
       <a ws-page-link="place.id">{{ ::place.label | concatList }}</a>{{ $last ? ' ' : ', ' }}
     </span>
-    <span><a ws-page-link="$ctrl.event.time_id">{{ $ctrl.event.timeSpanString }}</a></span>
   </h2>
   <p>{{ $ctrl.event.description || $ctrl.event.label }}</p>
   <div ng-show="$ctrl.event.photos">

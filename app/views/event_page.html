@@ -1,5 +1,5 @@
 <ws-settings></ws-settings>
-<ws-title>{{ ctrl.event.description }}</ws-title>
+<update-title title="{{ 'TITLE' | translate }} | {{ (ctrl.event.verboseLabel || ctrl.event.getLabel()) | words:10 }}"></update-title>
 <update-meta name="description" content="{{ ctrl.event.type + (ctrl.event.timeSpanString ? (' ' + ctrl.event.timeSpanString) : '') }}: {{ ctrl.event.description }}"></update-meta>
 <div class="row">
   <!-- Metadata -->

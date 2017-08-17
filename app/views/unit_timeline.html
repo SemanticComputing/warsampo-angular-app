@@ -1,5 +1,5 @@
-<ws-title>{{ ctrl.currentObject.getLabel() }}</ws-title>
-<update-meta name="description" content="{{ ctrl.currentObject.description || (('UNIT' | translate) + ' ' + ctrl.unit.getLabel()) }}"></update-meta>
+<update-title title="{{ 'TITLE' | translate }} | {{ 'UNIT_DEMO.PAGE_TITLE' | translate }} | {{ ctrl.currentObject.getLabel() }}"></update-title>
+<update-meta name="description" content="{{ ctrl.currentObject.description || (('UNIT_DEMO.PAGE_TITLE' | translate) + ' ' + ctrl.currentObject.getLabel()) }}"></update-meta>
 <ws-settings></ws-settings>
 <div class="row">
   <div class="col-sm-3">
@@ -30,6 +30,8 @@
 
                 <ws-photo-gallery images="ctrl.currentObject.images"></ws-photo-gallery>
 
+                <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.currentObject.wikiLinkList"></ws-related-links>
+                <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentObject.diaries"></ws-related-links>
                 <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.currentObject.relatedPersons"></ws-related-links-paged>
                 <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.currentObject.superUnits"></ws-related-links>
                 <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.currentObject.subUnits"></ws-related-links>
@@ -37,8 +39,6 @@
                 <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.currentObject.battles"></ws-related-links>
                 <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.currentObject.places"></ws-related-links>
                 <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.currentObject.articles"></ws-related-links>
-                <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.currentObject.wikilink"></ws-related-links>
-                <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentObject.diaries"></ws-related-links>
 
               </div>
               <div ng-switch-default>

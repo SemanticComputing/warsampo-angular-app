@@ -32,7 +32,7 @@
     }
 
     /* @ngInject */
-    function Event(TranslateableObject, _) {
+    function Event(TranslateableObject) {
         Object.defineProperty(Event.prototype, 'verboseLabel', { get: getVerboseLabel });
 
         Event.prototype = angular.extend(Event.prototype, TranslateableObject.prototype);
@@ -42,9 +42,8 @@
         function Event() { }
 
         function getVerboseLabel() {
-            var place = this.places ? _.map(_.castArray(this.places), 'label').join(', ') + ' ' : '';
             var time = this.timeSpanString ? this.timeSpanString + ' ' : '';
-            return time + place + this.type + ': ' + this.label;
+            return (time ? time + ' \u2014 ' : '') + this.type + ': ' + this.label;
         }
     }
 })();

@@ -1,6 +1,5 @@
-<!-- <div> <a id="pageTypeURL" href="cemeteries/"><h1 id="pageType" translate>CEMETERY</h1></a></div> -->
-
-<!-- Each page has metadata column on the left and link column on the right -->
+<update-title title="{{ 'TITLE' | translate }} | {{ 'CEMETERY_DEMO.TITLE' | translate }}: {{ vm.cemetery.getLabel() }}"></update-title>
+<update-meta name="description" content="{{ 'CEMETERY_DEMO.PAGE_META_DESCRIPTION_PREFIX' | translate }}: {{ vm.cemetery.getLabel() }}"></update-meta>
 <div class="row">
 
   <div ng-if="vm.err">

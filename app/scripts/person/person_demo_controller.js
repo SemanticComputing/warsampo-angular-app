@@ -178,7 +178,7 @@
             .then(function(person) {
                 self.person = person;
                 self.isLoadingObject = false;
-                return personService.fetchRelatedForDemo(person);
+                return personService.fetchRelated(person);
             }).then(function(person) {
                 return demoService.getEventTypes(person, self.options);
             }).then(function(types) {
