@@ -33,22 +33,22 @@
             // },
             current_municipality: {
                 facetId: 'current_municipality',
-                predicate: '<http://ldf.fi/schema/warsa/cemeteries/current_municipality>',
+                predicate: '<http://ldf.fi/schema/warsa/current_municipality>',
                 name: 'CEMETERY_DEMO.CURRENT_MUNICIPALITY'
             },
             former_municipality: {
                 facetId: 'former_municipality',
-                predicate: '<http://ldf.fi/schema/warsa/cemeteries/former_municipality>',
+                predicate: '<http://ldf.fi/schema/warsa/former_municipality>',
                 name: 'CEMETERY_DEMO.FORMER_MUNICIPALITY'
             },
             camera_club: {
                 facetId: 'camera_club',
-                predicate: '<http://ldf.fi/schema/warsa/cemeteries/camera_club>',
+                predicate: '<http://ldf.fi/schema/warsa/camera_club>',
                 name: 'CEMETERY_DEMO.CAMERA_CLUB'
             },
             architect: {
                 facetId: 'architect',
-                predicate: '<http://ldf.fi/schema/warsa/cemeteries/architect>',
+                predicate: '<http://ldf.fi/schema/warsa/architect>',
                 name: 'CEMETERY_DEMO.ARCHITECT'
             },
             // memorial: {
