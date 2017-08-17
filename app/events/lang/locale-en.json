@@ -38,6 +38,8 @@
     "UNIT_DEMO": {
         "TITLE": "Units",
         "PAGE_TITLE": "Finnish military units of the Winter War, Continuation War, and Lapland War",
+        "PAGE_META_DESCRIPTION": "Finnish military unit {{unit}}: people, war diaries, battles, and other information.",
+        "DEMO_META_DESCRIPTION": "Search and browse Finnish Military unit {{unit}}: people, war diaries, battles, and other information.",
         "DESCRIPTION": "<p>Search for military units of the Winter War, Continuation War, and Lapland War by writing their name in the text input below and/or selecting one from the list below.  Events linked to the unit will appear on the map and timeline in the center of the page (in so far as there are events available for the unit), and other information and recommendation links will be displayed on the right.</p>",
         "HELP_TEXT_TITLE": "Choose a unit from the menu.",
         "HELP_TEXT": "<p>There are two timelines beneath the map. The upper one is an overview of the war (one month between each vertical line).  In the middle of this timeline is a time frame shown as a black box.  Events that occured within this time frame are shown in the lower timeline.  The vertical lines in the lower timeline represent days.  You can move the timelines by dragging them with your mouse.  </p> <p> Click on an event on the timeline or map to get more information regarding it.  Events with <span style=\"color: blue\">blue</span> text have related photographs.  </p> <p> The map displays events that fall within the time frame of the upper timeline, if the place of the event is available.  The events are linked to places programmatically so there may be errors in event placements.  The map also displays a heatmap of casualties of the selected unit during the selected time frame.  </p> <p> Settings, such as the date range of photos retrieved for events, can be modified by clicking on \"Settings\" in the navigation bar on the top of the page.  Clicking on \"View Help\" on the navigation bar displays this information.  </p> <p> Possible errors can be reported by <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">sending feedback</a>.</p>",
@@ -60,7 +62,6 @@
     "CEMETERY_DEMO": {
         "TITLE": "War cemeteries",
         "HEADER": "War cemeteries",
-        "PAGE_META_DESCRIPTION_PREFIX": "Sankarihautausmaan tiedot, vainajat ja valokuvat",
         "PAGE_META_DESCRIPTION_PREFIX": "Information on, soldiers buried in, and photographs of war cemetery",
         "APP_DESCRIPTION": "You can search the cemeteries by name and narrow the results by using the filters on the left. The details of an individual cemetery can be studied by clicking the name of the cemetery. The data consists of 713 cemeteries originating from the The National Archives war casualty database. Details and photos have been added to 218 cemeteries, the rest will be added when The Central Organization of Finnish Camera Clubs delivers the final data from their information collection project.",
         "TEXT_SEARCH_EXCEPTION": "The text search terms are not valid. Please try again with another set of search terms.",
