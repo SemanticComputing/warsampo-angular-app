@@ -10,7 +10,7 @@
         "HELP_TEXT": "<p>Kartan alla on kaksi yhdessä liikkuvaa aikajanaa. Ylempi on yleiskuva sodasta (pystyviivojen väli on yksi kuukausi). Tämän janan keskellä on mustana laatikkona aikaikkuna, jonka sisään osuvat tapahtumat näkyvät alemmalla janalla. Alemmassa aikajanassa pystyviivojen väli on yksi päivä. Aikajanoja voi liikuttaa vetämällä niitä hiirellä sivuttaissuunnassa. </p> <p> Valitsemalla tapahtuman aikajanalta tai kartalta saat lisätietoja siitä. Tekstiltään <span style=\"color: blue\">sinisiin</span> tapahtumiin liittyy valokuvia. </p> <p> Kartalla näkyvät aikaikkunan tapahtumat, jos niiden paikka on tiedossa. Tapahtumat on linkitetty paikkoihin automaattisesti, joten tapahtumien sijainneissa saattaa esiintyä virheitä. Lisäksi kartalla näkyy lämpökartta aikaikkunan sisällä sodassa menehtyneistä suomalaisista. </p> <p> Asetuksia, kuten valokuvien haun aikahaarukkaa, voi muuttaa valitsemalla yläpalkista \"Asetukset\". Tämän ohjeen saat näkyviin valitsemalla yläpalkista \"Näkymän ohjeet\". </p> <p> Mahdollisista virheistä voi raportoida <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">lähettämällä palautetta</a>.</p>",
         "OTHER_EVENTS_AT_THE_SAME_TIME": "Muita tapahtumia samaan aikaan",
         "OTHER_EVENTS_CLOSE": "Muita tapahtumia samalla alueella",
-        "META_DESCRIPTION": "Tutki sodan tapahtumia aikajanan ja kartan avulla."
+        "META_DESCRIPTION": "Tutki sodan tapahtumia ja niihin liittyviä valokuvia, henkilöitä ja joukko-osastoja aikajanan ja kartan avulla."
     },
     "PERSONS_DEMO": {
         "INCLUDE_UNIT_EVENTS": "Näytä henkilön joukko-osastojen tapahtumat",

@@ -9,7 +9,7 @@
         "HELP_TEXT": "<p>There are two timelines beneath the map. The upper one is an overview of the war (one month between each vertical line).  In the middle of this timeline is a time frame shown as a black box. Events that occured within this time frame are shown in the lower timeline.  The vertical lines in the lower timeline represent days.  You can move the timelines by dragging them with your mouse.  </p> <p> Click on an event on the timeline or map to get more information regarding it.  Events with <span style=\"color: blue\">blue</span> text have related photographs.  </p> <p> The map displays events that fall within the time frame of the upper timeline, if the place of the event is available.  The events are linked to places programmatically so there may be errors in event placements.  The map also displays a heatmap of Finnish casualties during the selected time frame.  </p> <p> Settings, such as the date range of photos retrieved for events, can be modified by clicking on \"Settings\" in the navigation bar on the top of the page.  Clicking on \"View Help\" on the navigation bar displays this information.  </p> <p> Possible errors can be reported by <a target=\"_self\" href=\"http://www.sotasampo.fi/palaute.html\">sending feedback</a>.</p>",
         "OTHER_EVENTS_AT_THE_SAME_TIME": "Other events at the same time",
         "OTHER_EVENTS_CLOSE": "Other events in the same region",
-        "META_DESCRIPTION": "Study the events of the war on a timeline and map."
+        "META_DESCRIPTION": "Study the events of the war, and related photographs, people, and military units on a timeline and map."
     },
     "PERSONS_DEMO": {
         "INCLUDE_UNIT_EVENTS": "Show person's military units' events",
