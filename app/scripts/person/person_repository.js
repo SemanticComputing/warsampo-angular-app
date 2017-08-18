@@ -8,10 +8,10 @@
     */
     angular.module('eventsApp')
     .service('personRepository', function($q, _, AdvancedSparqlService, SparqlService,
-                baseRepository, personMapperService, QueryBuilderService, ENDPOINT_CONFIG) {
+                baseRepository, personMapperService, QueryBuilderService, ENDPOINT_CONFIG, HISTORY_ENDPOINT_URL) {
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, personMapperService);
-        var historyEndpoint = new SparqlService('http://ldf.fi/history/sparql');
+        var historyEndpoint = new SparqlService(HISTORY_ENDPOINT_URL);
 
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +

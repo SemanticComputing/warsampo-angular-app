@@ -10,11 +10,12 @@
     * Main module of the application.
     */
 
-    var server = 'http://ldf.fi';
+    var server = 'https://ldf.fi';
     //var server = 'http://localhost:3030';
     var PNR_SERVICE_URI = '<' + server + '/pnr/sparql>';
     var PNR_ENDPOINT_URL = server + '/pnr/sparql';
     var SPARQL_ENDPOINT_URL = server + '/warsa/sparql';
+    var HISTORY_ENDPOINT_URL = server + '/history/sparql';
 
     angular
     .module('eventsApp', [
@@ -99,6 +100,7 @@
     .constant('SPARQL_ENDPOINT_URL', SPARQL_ENDPOINT_URL)
     .constant('PNR_SERVICE_URI', PNR_SERVICE_URI)
     .constant('PNR_ENDPOINT_URL', PNR_ENDPOINT_URL)
+    .constant('HISTORY_ENDPOINT_URL', HISTORY_ENDPOINT_URL)
     .constant('ENDPOINT_CONFIG', { endpointUrl: SPARQL_ENDPOINT_URL, usePost: true })
     .constant('PNR_ENDPOINT_CONFIG', { endpointUrl: PNR_ENDPOINT_URL, usePost: true })
     .config(function($routeProvider, defaultLocale) {
