@@ -37,29 +37,8 @@
             period: {
                 facetId: 'period',
                 name: 'PHOTO_DEMO.PERIOD',
+                predicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period>',
                 enabled: true,
-                choices: [
-                    {
-                        id: 'winterwar',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/WinterWar> .',
-                        label: 'WINTER_WAR'
-                    },
-                    {
-                        id: 'interimpeace',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/InterimPeace> .',
-                        label: 'INTERIM_PEACE'
-                    },
-                    {
-                        id: 'continationwar',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/ContinuationWar> .',
-                        label: 'CONTINUATION_WAR'
-                    },
-                    {
-                        id: 'laplandwar',
-                        pattern: '?id ^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://ldf.fi/schema/warsa/events/related_period> <http://ldf.fi/warsa/conflicts/LaplandWar> .',
-                        label: 'LAPLAND_WAR'
-                    }
-                ]
             },
             place: {
                 facetId: 'spatial',
@@ -99,14 +78,14 @@
         '?id <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?order . ' +
         '?id <http://ldf.fi/schema/warsa/photographs/is_color> ?color . ';
 
+        var fetchOptions = { pageSize: PHOTO_PAGE_SIZE };
+
         var facetOptions = {
             endpointUrl: SPARQL_ENDPOINT_URL,
             rdfClass: '<http://ldf.fi/schema/warsa/Photograph>',
-            constraint: cons,
-            preferredLang : ['fi', 'sv']
+            constraint: cons
         };
 
-        var fetchOptions = { pageSize: PHOTO_PAGE_SIZE };
 
         function getResults(facetSelections) {
             var selections = facetSelections.constraint;
@@ -115,16 +94,7 @@
 
         function getFacets() {
             var facetClone = _.cloneDeep(facets);
-            return $translate(_.map(facets.period.choices, 'label'))
-            .then(function(translations) {
-                facetClone.period.choices.forEach(function(choice) {
-                    var trans = translations[choice.label];
-                    if (trans) {
-                        choice.label = trans;
-                    }
-                });
-                return $translate(_.map(facets, 'name'));
-            }).then(function(translations) {
+            return $translate(_.map(facets, 'name')).then(function(translations) {
                 _.forOwn(facetClone, function(val) {
                     var trans = translations[val.name];
                     if (trans) {
@@ -136,6 +106,9 @@
         }
 
         function getFacetOptions() {
+            var prefLang = $translate.use();
+            facetOptions.preferredLang = [prefLang, prefLang === 'en' ? 'fi' : 'en', 'sv'];
+
             return facetOptions;
         }
 
