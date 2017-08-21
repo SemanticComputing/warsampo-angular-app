@@ -55,7 +55,7 @@ var
     // events
     E_ITEMS_LOADED = 'itemsloaded',
     // Google icon path
-    GIP = "http://www.google.com/intl/en_us/mapfiles/ms/icons/",
+    GIP = "https://www.google.com/intl/en_us/mapfiles/ms/icons/",
     // aliases for class names, allowing munging
     TimeMap, TimeMapFilterChain, TimeMapDataset, TimeMapTheme, TimeMapItem;
 
