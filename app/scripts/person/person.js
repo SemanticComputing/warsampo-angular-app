@@ -249,7 +249,11 @@
         function fetchNationalBib(person) {
             return personRepository.getNationalBibliography(person).then(function(nb) {
                 if (nb && nb.length && nb[0].id) {
-                    person.nationals = nb[0];
+                    nb = nb[0];
+                    if (nb.images) {
+                        nb.images = nb.images.replace(/^http:\/\//, 'https://ldf.fi/corsproxy/');
+                    }
+                    person.nationals = nb;
                     person.hasLinks = true;
                 }
             });
