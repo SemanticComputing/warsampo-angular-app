@@ -43,8 +43,24 @@
         }
 
         function fetchRelatedPhotos(photo) {
-            return photoRepository.getByThemeId(photo.theme, PHOTO_PAGE_SIZE)
+            var opts = { pageSize: PHOTO_PAGE_SIZE };
+            return photoRepository.getByThemeId(photo.theme, opts)
             .then(function(photos) {
+                if (_.isEmpty(photos)) {
+                    if (photo.created && photo.place_id) {
+                        return photoRepository.getByPlaceAndTimeSpan(photo.place_id,
+                            photo.created, photo.created, opts);
+                    }
+                }
+                return photos;
+            }).then(function(photos) {
+                if (_.isEmpty(photos)) {
+                    if (photo.created) {
+                        return photoRepository.getByTimeSpan(photo.created, photo.created, opts);
+                    }
+                }
+                return photos;
+            }).then(function(photos) {
                 photo.relatedPhotos = photos;
                 return photo;
             });

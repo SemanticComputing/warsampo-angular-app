@@ -189,7 +189,7 @@
             var resultSet = facetSelections.join(' ');
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet, 'DESC(?score) DESC(?color) ?order');
             return endpoint.getObjects(qryObj.query, options.pageSize,
-                    qryObj.resultSetQuery);
+                qryObj.resultSetQuery);
         }
 
         function getByTimeSpan(start, end, options) {
@@ -199,7 +199,7 @@
             var query =  options.extended ? photoQry : photoQry;
             var qryObj = queryBuilder.buildQuery(query, resultSet);
             return endpoint.getObjects(qryObj.query, options.pageSize,
-                    qryObj.resultSetQuery);
+                qryObj.resultSetQuery);
         }
 
         function getByPlaceAndTimeSpan(placeId, start, end, options) {
@@ -285,13 +285,13 @@
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         }
 
-        function getByThemeId(id, pageSize) {
+        function getByThemeId(id, options) {
             if (!id) {
                 return $q.when();
             }
             var resultSet = photosByThemeResultSet.replace(/<VAL>/g, id);
             var qryObj = queryBuilder.buildQuery(photoQry, resultSet);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         }
 
         function getMinimalDataWithPlaceByTimeSpan(start, end) {
