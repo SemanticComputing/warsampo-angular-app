@@ -10,15 +10,21 @@
         {{ ctrl.obj.getLabel() }}
       </h2>
       <p>{{ ctrl.obj.getDescription() }}</p>
-      <img ng-if="ctrl.obj.imageUrl" ng-src="{{ ctrl.obj.imageUrl }}" />
+      <div class="row">
+        <div class="col-sm-12">
+          <div ng-repeat="img in ctrl.obj.imageUrl | castArray">
+            <img class="pull-left img-small img img-responsive" ng-src="{{ img }}" />
+          </div>
+        </div>
+      </div>
       <img ng-if="ctrl.obj.lat"
       ng-src="https://maps.googleapis.com/maps/api/staticmap?size=600x300&zoom=5&markers=color:red%7C{{ ctrl.obj.lat }},{{ ctrl.obj.lon }}" />
-      <div ng-repeat="(key, v) in ctrl.obj.properties">
-        <h2>{{ v[0].pred_label }}</h2>
+      <div ng-repeat="(key, prop) in ctrl.obj.properties">
+        <h2>{{ prop.getLangAttr('pred_label') || prop.labelFromUri }}</h2>
         <ul class="list-group">
-          <li class="list-group-item" ng-repeat="val in v">
-            <a ng-if="val.type === 'uri'" ws-page-link="val.value">{{ val.label }}</a>
-            <p ng-if="val.type !== 'uri'">{{ val.value }}</p>
+          <li class="list-group-item" ng-repeat="val in prop.value | castArray">
+            <a ng-if="val.type === 'uri'" ws-page-link="val.value">{{ val.getLabel() || val.getLangAttr('value') }}</a>
+            <p ng-if="val.type !== 'uri'">{{ val.getLangAttr('value') }}</p>
           </li>
         </ul>
       </div>
@@ -31,7 +37,7 @@
     <p ng-if="!ctrl.isLoadingLinks && !(ctrl.obj && ctrl.obj.hasLinks)" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
       <div ng-repeat="rel in ctrl.obj.related">
-        <ws-related-links-paged data-title="rel.link.label" data-paginator="rel.related"></ws-related-links-paged>
+        <ws-related-links-paged data-title="rel.link.getLangAttr('label') || rel.link.labelFromUri" data-paginator="rel.related"></ws-related-links-paged>
       </div>
     </div>
   </div>

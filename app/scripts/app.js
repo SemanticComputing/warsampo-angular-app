@@ -16,6 +16,9 @@
     var PNR_ENDPOINT_URL = server + '/pnr/sparql';
     var SPARQL_ENDPOINT_URL = server + '/warsa/sparql';
     var HISTORY_ENDPOINT_URL = server + '/history/sparql';
+    var DBPEDIA_FI_ENDPOINT_URL = server + '/dbpedia-fi/sparql';
+
+    var DBPEDIA_ENDPOINT_URL = 'https://dbpedia.org/sparql';
 
     angular
     .module('eventsApp', [
@@ -102,6 +105,8 @@
     .constant('PNR_ENDPOINT_URL', PNR_ENDPOINT_URL)
     .constant('HISTORY_ENDPOINT_URL', HISTORY_ENDPOINT_URL)
     .constant('ENDPOINT_CONFIG', { endpointUrl: SPARQL_ENDPOINT_URL, usePost: true })
+    .constant('DBPEDIA_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_ENDPOINT_URL, usePost: true })
+    .constant('DBPEDIA_FI_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_FI_ENDPOINT_URL, usePost: true })
     .constant('PNR_ENDPOINT_CONFIG', { endpointUrl: PNR_ENDPOINT_URL, usePost: true })
     .config(function($routeProvider, defaultLocale) {
         var lang = '/:lang';

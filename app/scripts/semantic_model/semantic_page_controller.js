@@ -39,9 +39,6 @@ angular.module('eventsApp')
             return semanticModelService.fetchRelated(self.obj);
         }).then(function() {
             self.isLoadingLinks = false;
-        }).catch(function() {
-            self.isLoadingObject = false;
-            self.isLoadingLinks = false;
         });
     }
 });
