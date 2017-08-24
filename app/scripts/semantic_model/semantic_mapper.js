@@ -25,13 +25,14 @@
             'langAttrs'];
         SemanticModel.prototype.descriptionProperties = descriptionAttrs;
         SemanticModel.prototype.getDescription = getDescription;
+        SemanticModel.prototype.getLabel = getLabel;
+        SemanticModel.prototype.getLangAttr = getLangAttr;
 
         var proto = Object.getPrototypeOf(translateableObjectMapperService);
         SemanticModelMapper.prototype = angular.extend({}, proto, SemanticModelMapper.prototype);
 
         SemanticModelMapper.prototype.postProcess = postProcess;
         SemanticModelMapper.prototype.makeObject = makeObject;
-        SemanticModelMapper.prototype.getLabel = getLabel;
 
         return new SemanticModelMapper();
 
@@ -46,12 +47,19 @@
                     return false;
                 }
             });
-            return desc ? desc.getLangAttr('value') : self.getLabel();
+            return desc ? first(desc.getLangAttr('value', 'en')) : self.getLabel();
         }
 
         function getLabel() {
-            var lbl = this.getLangAttr('label');
-            return _.isArray(lbl) ? lbl[0] : lbl;
+            return this.getLangAttr('label', 'en');
+        }
+
+        function getLangAttr(attr, fallbackLang) {
+            return first(TranslateableObject.prototype.getLangAttr.call(this, attr, fallbackLang));
+        }
+
+        function first(arr) {
+            return _.isArray(arr) ? arr[0] : arr;
         }
 
         function SemanticModelMapper() { }
@@ -73,23 +81,9 @@
             var o = new SemanticModel();
 
             o.id = obj.id.value;
-            if (obj.type) {
-                o.type = {
-                    id: obj.type.value,
-                };
-                setLangAttribute(o.type, 'type_label', obj.type_label);
-            }
 
             if (obj.label) {
                 o.label = obj.label.value;
-            }
-
-            if (obj.link) {
-                o.link = {
-                    id: obj.link.value,
-                    labelFromUri: getLabelFromUri(obj.link.value)
-                };
-                setLangAttribute(o.link, 'label', obj.link_label);
             }
 
             if (!obj.pred) {
@@ -143,7 +137,7 @@
         }
 
         function getLabelFromUri(value) {
-            return _.kebabCase(value.match(/[#/]([\w-()]+?)$/)[1]).replace(/-/g, ' ');
+            return _.kebabCase(value.match(/.+[#/](.+?)$/)[1]).replace(/-/g, ' ');
         }
     }
 })();

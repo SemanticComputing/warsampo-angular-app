@@ -4,7 +4,7 @@
 
     /*
     * Service that provides an interface for fetching arbitrary resources
-    * from the WarSa SPARQL endpoint.
+    * from the WarSampo or DBpedia SPARQL endpoints.
     */
     angular.module('eventsApp')
     .service('semanticModelRepository', semanticModelRepository);
@@ -16,18 +16,23 @@
         /* Public API */
 
         this.getById = getById;
+        this.getLinksById = getLinksById;
         this.getRelated = getRelated;
+        this.getRelatedWarsa = getRelatedWarsa;
+        this.getRelatedDbpedia = getRelatedDbpedia;
+        this.getRelatedDbpediaFi = getRelatedDbpediaFi;
 
         /* Implementation */
 
-        var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, semanticModelMapperService);
+        var warsaEndpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, semanticModelMapperService);
         var dbpediaEndpoint = new AdvancedSparqlService(DBPEDIA_ENDPOINT_CONFIG,
             semanticModelMapperService);
         var dbpediaFiEndpoint = new AdvancedSparqlService(DBPEDIA_FI_ENDPOINT_CONFIG,
             semanticModelMapperService);
 
-        var relatedEndpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
+        var relatedWarsaEndpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
         var relatedDbPediaEndpoint = new AdvancedSparqlService(DBPEDIA_ENDPOINT_CONFIG, translateableObjectMapperService);
+        var relatedDbPediaFiEndpoint = new AdvancedSparqlService(DBPEDIA_FI_ENDPOINT_CONFIG, translateableObjectMapperService);
 
         var prefixes =
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
@@ -37,25 +42,25 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var byIdQry = prefixes +
-        ' SELECT DISTINCT ?id  ?label ?link ?link_label ?type ?type_label ?pred ?pred_label ?obj ?obj_label { ' +
+        ' SELECT DISTINCT ?id  ?label ?link ?link_label ?type_id ?type_label ?pred ?pred_label ?obj ?obj_label { ' +
         '  { ' +
-        '    VALUES ?id { <ID> } ' +
-        '    ?id a ?type_id . ' +
-        '    OPTIONAL { ?type_id rdfs:label|skos:prefLabel ?type . } ' +
-        '  } UNION { ' +
         '    VALUES ?id { <ID> } ' +
         '    ?id rdfs:label|skos:prefLabel ?label . ' +
         '  } UNION { ' +
         '    VALUES ?id { <ID> } ' +
         '    ?id ?pred ?obj . ' +
-        '    FILTER(?pred != rdf:type) ' +
         '    OPTIONAL { ?pred rdfs:label|skos:prefLabel ?pred_label . } ' +
         '    OPTIONAL { ?obj rdfs:label|skos:prefLabel ?obj_label . } ' +
-        '  } UNION { ' +
-        '    VALUES ?id { <ID> } ' +
-        '    ?o ?link ?id . ' +
-        '    OPTIONAL { ?link rdfs:label|skos:prefLabel ?link_label . } ' +
         '  } ' +
+        ' } ';
+
+        var linkQry = prefixes +
+        ' SELECT DISTINCT ?id ?label { ' +
+        '  VALUES ?res { <ID> } ' +
+        '  [] ?id ?res . ' +
+        '  OPTIONAL { ?id rdfs:label ?lbl . } ' +
+        '  OPTIONAL { ?id skos:prefLabel ?lbl . } ' +
+        '  BIND(COALESCE(?lbl, REPLACE(REPLACE(STR(?id), "^.+[/#](.+?)$", "$1"), "_", " ")) as ?label) ' +
         ' } ';
 
         var relatedQryResultSet =
@@ -67,13 +72,9 @@
         var relatedQry = prefixes +
         ' SELECT DISTINCT ?id ?label { ' +
         '  <RESULT_SET> ' +
-        '  OPTIONAL { ' +
-        '   ?id rdfs:label ?lbl . ' +
-        '  } ' +
-        '  OPTIONAL { ' +
-        '   ?id skos:prefLabel ?lbl . ' +
-        '  } ' +
-        '  BIND(COALESCE(?lbl, REPLACE(STR(?id), "^.+[/#](.+?)$", "$1")) as ?label)' +
+        '  OPTIONAL { ?id rdfs:label ?lbl . } ' +
+        '  OPTIONAL { ?id skos:prefLabel ?lbl . } ' +
+        '  BIND(COALESCE(?lbl, REPLACE(REPLACE(STR(?id), "^.+[/#](.+?)$", "$1"), "_", " ")) as ?label) ' +
         ' } ';
 
         function getById(id) {
@@ -82,7 +83,7 @@
             if (id.match('fi.dbpedia.org')) {
                 ep = dbpediaFiEndpoint;
             } else {
-                ep = id.match('dbpedia.org') ? dbpediaEndpoint : endpoint;
+                ep = id.match('dbpedia.org') ? dbpediaEndpoint : warsaEndpoint;
             }
             return ep.getObjects(qry).then(function(data) {
                 if (data.length) {
@@ -92,17 +93,32 @@
             });
         }
 
-        function getRelated(id, link) {
+        function getLinksById(id) {
+            var qry = linkQry.replace(/<ID>/g, baseRepository.uriFy(id));
+            return $q.all([relatedWarsaEndpoint.getObjects(qry),
+                relatedDbPediaEndpoint.getObjects(qry),
+                relatedDbPediaFiEndpoint.getObjects(qry)]);
+        }
+
+        function getRelatedWarsa(id, link) {
+            return this.getRelated(id, link, relatedWarsaEndpoint);
+        }
+
+        function getRelatedDbpedia(id, link) {
+            return this.getRelated(id, link, relatedDbPediaEndpoint);
+        }
+
+        function getRelatedDbpediaFi(id, link) {
+            return this.getRelated(id, link, relatedDbPediaFiEndpoint);
+        }
+
+        function getRelated(id, link, endpoint) {
             id = baseRepository.uriFy(id);
             link = baseRepository.uriFy(link);
             var orderBy = '?label';
             var resultSet = relatedQryResultSet.replace(/<ID>/g, id).replace(/<LINK>/g, link);
             var qryObj = queryBuilder.buildQuery(relatedQry, resultSet, orderBy);
-            return relatedEndpoint.getObjects(qryObj.query, 10, qryObj.resultSetQuery, 5).then(function(data) {
-                return data.getTotalCount().then(function(count) {
-                    return count ? data : relatedDbPediaEndpoint.getObjects(qryObj.query, 10, qryObj.resultSetQuery, 5);
-                });
-            });
+            return endpoint.getObjects(qryObj.query, 10, qryObj.resultSetQuery, 5);
         }
     }
 })();
