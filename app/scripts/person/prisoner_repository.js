@@ -5,10 +5,18 @@
     /*
     * Service that provides an interface for fetching prisoner data.
 
-      ldf.fi fuseki has one test prisoner:
-      http://ldf.fi/warsa/actors/person_753249 <--> http://ldf.fi/warsa/prisoners/prisoner_860
-      info page url:
+      Added one link to ldf.fi Fuseki from a prisoner record to a person instance:
+      PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+      INSERT DATA
+      {
+        GRAPH <http://ldf.fi/warsa/prisoners> {
+          <http://ldf.fi/warsa/prisoners/prisoner_860> crm:P70_documents <http://ldf.fi/warsa/actors/person_p753249> .
+        }
+      }
+      
+      info page url for testing:
       http://localhost:9000/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
+      https://dev.sotasampo.fi/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
     */
     angular.module('eventsApp')
     .service('prisonerRepository', function($q, _, AdvancedSparqlService, prisonerMapperService,
