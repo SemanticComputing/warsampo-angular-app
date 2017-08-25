@@ -6,5 +6,6 @@
       <td class="person-record-property" ng-if="prop.obj_link"><a ws-page-link="prop.obj_link">{{ prop.getDescription() }}</a></td>
       <td class="person-record-value" ng-if="!prop.obj_link">{{ prop.getDescription() }}</td>
     </tr>
+    <caption>{{ 'SOURCE' | translate }}: {{ ctrl.person.deathRecord[0].source }}</caption>
   </table>
 </div>

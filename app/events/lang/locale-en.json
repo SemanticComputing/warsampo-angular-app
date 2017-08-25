@@ -197,5 +197,6 @@
     "PRISONER_RECORD": "Prisoner Record",
     "LOADING": "Loading...",
     "COMMANDER": "Commander",
-    "NOTE": "Note"
+    "NOTE": "Note",
+    "NAME": "Name"
 }

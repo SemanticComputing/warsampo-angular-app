@@ -197,5 +197,6 @@
     "PRISONER_RECORD": "Sotavankeuden tiedot",
     "LOADING": "Ladataan...",
     "COMMANDER": "Komentaja",
-    "NOTE": "Muistiinpano"
+    "NOTE": "Muistiinpano",
+    "NAME": "Nimi"
 }

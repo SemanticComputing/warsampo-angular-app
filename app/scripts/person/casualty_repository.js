@@ -20,6 +20,7 @@
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
         ' PREFIX sf: <http://ldf.fi/functions#>'  +
+        ' PREFIX wso: <http://ldf.fi/warsa/sources/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ';
 
         var casualtyLocationsByTimeQry = prefixes +
@@ -76,7 +77,7 @@
 
         // ?id is predicate
         var personDeathRecordQry = prefixes +
-        'SELECT ?id ?label ?description ?obj_link {'  +
+        'SELECT ?id ?label ?description ?obj_link ?source {'  +
         ' ?person crm:P70_documents <ID> . ' +
         ' ?person a casualties:DeathRecord . ' +
         ' ?person ?id ?obj .'  +
@@ -84,6 +85,7 @@
         ' OPTIONAL { ?obj skos:prefLabel ?obj_lbl . }' +
         ' BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) '  +
         ' BIND(COALESCE(?obj_lbl, ?obj) as ?description) '  +
+        ' wso:source9 skos:prefLabel ?source . ' +
         '} ORDER BY ?label';
 
         this.getCasualtyLocationsByTime = function(start, end) {

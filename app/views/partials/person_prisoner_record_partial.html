@@ -9,7 +9,7 @@
   <h3 translate="PRISONER_RECORD"></h3>
   <table class="table person-record">
     <tr>
-      <td>Nimi</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
+      <td translate>NAME</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
     </tr>
     <tr ng-repeat="(key, property) in ctrl.person.prisonerRecord.properties">
       <td class="person-record-property">{{ property.propertyLabel || property[0].propertyLabel }}</td>
