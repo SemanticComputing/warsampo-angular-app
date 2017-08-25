@@ -50,9 +50,7 @@
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
         '  OPTIONAL { ?id dct:source ?sid . ' +
-        '  OPTIONAL { ?sid skos:prefLabel ?source . ' +
-        '               FILTER( lang(?source)="fi" ) ' +
-        '   } ' +
+        '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
         '  OPTIONAL { ' +
         '   ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +
