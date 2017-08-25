@@ -13,7 +13,7 @@
           <http://ldf.fi/warsa/prisoners/prisoner_860> crm:P70_documents <http://ldf.fi/warsa/actors/person_p753249> .
         }
       }
-      
+
       info page url for testing:
       http://localhost:9000/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
       https://dev.sotasampo.fi/fi/persons/page?uri=http:%2F%2Fldf.fi%2Fwarsa%2Factors%2Fperson_p753249
@@ -76,10 +76,9 @@
 
         var select = 'SELECT DISTINCT ?id ?name ?properties__id ';
         var qryBody =
-        ' ?id crm:P70_documents <ID> . ' +
+        ' { ?id crm:P70_documents <ID> . ' +
         ' ?id a prisoners:PrisonerOfWar . ' +
-        ' ?id skos:prefLabel ?name . ' +
-        ' BIND("properties" AS ?properties__id ) ';
+        ' ?id skos:prefLabel ?name . }';
 
         prisonerRecordProperties.forEach(function(prop) {
             select += generatePrisonerSelectRow(prop);
@@ -89,11 +88,8 @@
         var prisonerRecordQry = prefixes + select + '{' + qryBody + '}';
 
 
-        this.getPersonPrisonerRecord = function(id, lang) {
-            lang = lang || 'fi';
-            var qry = prisonerRecordQry
-                .replace(/<ID>/g, '<' + id + '>')
-                .replace(/<LANG>/g, lang);
+        this.getPersonPrisonerRecord = function(id) {
+            var qry = prisonerRecordQry.replace(/<ID>/g, '<' + id + '>');
             return endpoint.getObjects(qry).then(function(data) {
                 return data[0];
             });
@@ -103,23 +99,24 @@
             var namespace = property === 'has_occupation' ? 'bioc:' : 'prisoners:';
 
             var qry =
-            ' OPTIONAL { ' +
-            '  ?rei_<PROPERTY> rdf:subject ?id . ' +
-            '  ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
-            '  OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
-            //'  ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . ' +
-            '  <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
-            '  FILTER(lang(?properties__<PROPERTY>__propertyLabel)="<LANG>") . ' +
-            '  ?rei_<PROPERTY> rdf:predicate <NAMESPACE><PROPERTY> . ' +
-            '  ?rei_<PROPERTY> rdf:object ?properties__<PROPERTY>__id . ' +
-            '  ?rei_<PROPERTY> dct:source ?properties__<PROPERTY>__source . ' +
-            ' } ' +
-            ' OPTIONAL { ' +
-            '  ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
-            '  OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
-            //' { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
-            '  <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
-            '  FILTER(lang(?properties__<PROPERTY>__propertyLabel)="<LANG>") . ' +
+            ' UNION { ' +
+            '  ?id crm:P70_documents <ID> . ' +
+            '  ?id a prisoners:PrisonerOfWar . ' +
+            '  BIND(1 AS ?properties__id) ' +
+            '  OPTIONAL { ' +
+            '   ?rei_<PROPERTY> rdf:subject ?id . ' +
+            '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
+            '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
+            '   ?rei_<PROPERTY> rdf:predicate <NAMESPACE><PROPERTY> . ' +
+            '   ?rei_<PROPERTY> rdf:object ?properties__<PROPERTY>__id . ' +
+            '   ?rei_<PROPERTY> dct:source ?properties__<PROPERTY>__source . ' +
+            '  } ' +
+            '  OPTIONAL { ' +
+            '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
+            '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
+            '  } ' +
             ' } ';
 
             return qry.replace(/<PROPERTY>/g, property).replace(/<NAMESPACE>/g, namespace);

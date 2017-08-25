@@ -5,7 +5,7 @@
     .controller('PersonPageController', PersonPageController);
 
     /* @ngInject */
-    function PersonPageController($routeParams, $q, $rootScope, personService) {
+    function PersonPageController($log, $routeParams, personService) {
         var self = this;
 
         if ($routeParams.uri) {
@@ -20,8 +20,8 @@
             })
             .then(function() {
                 self.isLoadingRelated = false;
-
-            }).catch(function() {
+            }).catch(function(err) {
+                $log.error(err);
                 self.isLoadingEvent = false;
                 self.isLoadingLinks = false;
             });

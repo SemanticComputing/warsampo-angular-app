@@ -2,14 +2,32 @@
     'use strict';
 
     angular.module('eventsApp')
-    .factory('prisonerMapperService', function(_, objectMapperService, dateUtilService,
-            PrisonerRecord) {
-        var proto = Object.getPrototypeOf(objectMapperService);
+    /* ngInject */
+    .factory('prisonerMapperService', function(_, translateableObjectMapperService, TranslateableObject,
+            dateUtilService, PrisonerRecord) {
+        var proto = Object.getPrototypeOf(translateableObjectMapperService);
 
-        PrisonerMapper.prototype.reviseObject = reviseObject;
-        PrisonerMapper.prototype.postProcess = postProcess;
         PrisonerMapper.prototype = angular.extend({}, proto, PrisonerMapper.prototype);
+        PrisonerMapper.prototype.postProcess = postProcess;
         PrisonerMapper.prototype.objectClass = PrisonerRecord;
+
+        return new PrisonerMapper();
+
+        function PrisonerMapper() { }
+
+        function postProcess(objects) {
+            objects = translateableObjectMapperService.postProcess(objects);
+            return _.map(objects, function(obj) {
+                delete obj.properties.id;
+                return obj;
+            });
+        }
+
+    })
+    /* ngInject */
+    .factory('PrisonerRecord', function(_, TranslateableObject) {
+        PrisonerRecord.prototype = angular.extend({}, TranslateableObject.prototype);
+        PrisonerRecord.prototype.isDateValue = isDateValue;
 
         var dateVals = [
             'birth_date',
@@ -18,31 +36,12 @@
             'death_date'
         ];
 
-        return new PrisonerMapper();
-
-        function PrisonerMapper() { }
-
-        function reviseObject(obj) {
-            dateVals.forEach(function(key) {
-                var date = _.get(obj, 'properties[' + key + '].id');
-                if (date) {
-                    obj.properties[key].id = dateUtilService.formatDate(date);
-                }
-            });
-            return obj;
-        }
-
-        function postProcess(objects) {
-            return _.map(objects, function(obj) {
-                delete obj.properties.id;
-                return obj;
-            });
-        }
-    })
-    .factory('PrisonerRecord', function() {
-
         return PrisonerRecord;
 
         function PrisonerRecord() { }
+
+        function isDateValue(attr) {
+            return _.includes(dateVals, attr);
+        }
     });
 })();
