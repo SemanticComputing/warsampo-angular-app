@@ -20,6 +20,7 @@
 
         this.fetchRelated = function(obj) {
             return semanticModelRepository.getLinksById(obj.id).then(function(links) {
+                var relatedPromises = [];
                 _.forEach(related, function(r) {
                     var promises = _.map(_.uniqBy(_.flatten(links), 'id'), function(link) {
                         return r.getRelated(obj.id, link.id).then(function(rel) {
@@ -27,7 +28,7 @@
                         });
                     });
                     obj.related = {};
-                    return $q.all(promises).then(function(related) {
+                    var promise = $q.all(promises).then(function(related) {
                         return $q.all(_.map(related, function(r) {
                             return r.related.getTotalCount().then(function(count) { r.hasLinks = !!count; });
                         })).then(function() {
@@ -40,7 +41,10 @@
                             });
                         });
                     });
+                    relatedPromises.push(promise);
                 });
+                return $q.all(relatedPromises);
+            }).then(function() {
                 return obj;
             });
         };

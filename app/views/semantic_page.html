@@ -9,6 +9,9 @@
         {{ ctrl.obj.getLabel() }}
       </h1>
       <p>{{ ctrl.obj.getDescription() }}</p>
+      <p>
+        <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ ctrl.obj.id }}</small>
+      </p>
       <div class="row">
         <div class="col-sm-12">
           <div ng-repeat="img in ctrl.obj.imageUrl | castArray">
