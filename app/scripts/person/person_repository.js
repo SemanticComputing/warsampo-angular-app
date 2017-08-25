@@ -31,7 +31,7 @@
 
         var select =
         ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
-        '  ?natiobib ?wikilink ?casualty ?bury_place ?bury_place_uri ?living_place ' +
+        '  ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
         '  ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ';
 
@@ -56,6 +56,9 @@
         '  }' +
         '  OPTIONAL { ' +
         '   ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   ?id owl:sameAs ?sameAs . ' +
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id foaf:page ?wikilink . FILTER(REGEX(STR(?wikilink),"wikipedia","i")) ' +

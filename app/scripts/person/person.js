@@ -40,7 +40,7 @@
         self.getJsonLd = getJsonLd;
 
         function getJsonLd(person) {
-            return {
+            var json = {
                 '@context': 'http://schema.org',
                 '@type': 'Person',
                 '@id': person.id,
@@ -53,6 +53,10 @@
                 'deathPlace': person.death_place,
                 'description': person.getDescription()
             };
+            if (person.sameAs) {
+                json.sameAs = person.sameAs;
+            }
+            return json;
         }
 
         function fetchTimelineEvents(person, options) {
