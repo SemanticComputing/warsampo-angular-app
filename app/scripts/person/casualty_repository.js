@@ -7,7 +7,7 @@
     */
     angular.module('eventsApp')
     .service('casualtyRepository', function($q, _, AdvancedSparqlService, baseRepository,
-            translateableObjectMapperService, ENDPOINT_CONFIG) {
+            translateableObjectMapperService, ENDPOINT_CONFIG, dateUtilService) {
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
 
         var prefixes =
@@ -87,8 +87,8 @@
         '} ORDER BY ?label';
 
         this.getCasualtyLocationsByTime = function(start, end) {
-            start = formatDate(start);
-            end = formatDate(end);
+            start = dateUtilService.toISODateString(start);
+            end = dateUtilService.toISODateString(end);
             var qry = casualtyLocationsByTimeQry
                 .replace(/<START>/g, start)
                 .replace(/<END>/g, end);
@@ -97,8 +97,8 @@
 
         this.getCasualtyLocationsByTimeAndUnit = function(start, end, unit) {
             unit = baseRepository.uriFy(unit);
-            start = formatDate(start);
-            end = formatDate(end);
+            start = dateUtilService.toISODateString(start);
+            end = dateUtilService.toISODateString(end);
             var qry = casualtyLocationsByTimeAndUnitQry
                 .replace(/<START>/g, start)
                 .replace(/<END>/g, end)
@@ -108,8 +108,8 @@
 
         this.getCasualtyCountsByTimeGroupByUnitAndType = function(start, end, unit) {
             unit = baseRepository.uriFy(unit);
-            start = formatDate(start);
-            end = formatDate(end);
+            start = dateUtilService.toISODateString(start);
+            end = dateUtilService.toISODateString(end);
             var qry = casualtyCountsByTimeGroupByUnitAndTypeQry
                 .replace(/<START>/g, start)
                 .replace(/<END>/g, end)
@@ -118,8 +118,8 @@
         };
 
         this.getCasualtyCountsByTimeGroupByType = function(start, end) {
-            start = formatDate(start);
-            end = formatDate(end);
+            start = dateUtilService.toISODateString(start);
+            end = dateUtilService.toISODateString(end);
             var qry = casualtyCountsByTimeGroupByTypeQry
                 .replace(/<START>/g, start)
                 .replace(/<END>/g, end);
@@ -130,12 +130,5 @@
             var qry = personDeathRecordQry.replace('<ID>', baseRepository.uriFy(id));
             return endpoint.getObjects(qry);
         };
-
-        function formatDate(date) {
-            if (date.toISODateString) {
-                return date.toISODateString();
-            }
-            return date;
-        }
     });
 })();

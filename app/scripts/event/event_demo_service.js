@@ -248,8 +248,7 @@
 
         function getCasualtyLocations() {
             var dates = this.getVisibleDateRange();
-            return casualtyRepository.getCasualtyLocationsByTime(dates.start.toISODateString(),
-                    dates.end.toISODateString());
+            return casualtyRepository.getCasualtyLocationsByTime(dates.start, dates.end);
         }
 
         function updateHeatmap() {

@@ -36,7 +36,7 @@
         '  ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ';
 
         var personQryResultSet =
-        ' VALUES ?id { {0} }' +
+        ' VALUES ?id { <ID> }' +
         ' ?id foaf:familyName ?sname .' +
         ' ?id skos:prefLabel ?label .';
 
@@ -87,7 +87,7 @@
         '  ?placeOfBirth ?dateOfBirth ' +
         '  ?placeOfDeath ?dateOfDeath ' +
         ' WHERE {' +
-        '  VALUES ?id { <{0}> }' +
+        '  VALUES ?id { <ID> }' +
         '  ?id rdfs:label ?name .' +
         '  ?id sch:birthDate ?dateOfBirth .' +
         '  ?id sch:deathDate ?dateOfDeath .' +
@@ -110,26 +110,27 @@
         '    GRAPH <http://ldf.fi/warsa/persons> {	' +
         '      ?id a ?type .   	    	' +
         '      ?id skos:prefLabel ?name . ' +
-        '      FILTER (regex(?name, "^{0}$", "i"))	' +
+        '      FILTER (regex(?name, "^<REGEX>$", "i"))	' +
         '    } 	' +
         '  } LIMIT 300 	' +
         '} ORDER BY ?name 	';
 
         var wardiaryQry = prefixes +
-        'SELECT ?label ?id ?time	' +
-        'WHERE {	' +
-        '  GRAPH <http://ldf.fi/warsa/diaries> {	' +
-        '    VALUES ?actor { {0} } .	' +
-        '    ?uri crm:P70_documents ?actor .	' +
+        'SELECT ?label ?id ?time ' +
+        'WHERE { ' +
+        '  GRAPH <http://ldf.fi/warsa/diaries> { ' +
+        '    VALUES ?actor { <ID> } . ' +
+        '    ?uri crm:P70_documents ?actor . ' +
         '    ?uri skos:prefLabel ?label .	' +
-        '    ?uri dct:hasFormat ?id .	' +
+        '    ?uri dct:hasFormat ?id . ' +
         '    OPTIONAL { ?uri crm:P4_has_time-span ?time . }	' +
-        '    }	' +
-        '} ORDER BY ?time	';
+        '  } ' +
+        '} ORDER BY ?time ';
 
         var byUnitQryResultSet =
         ' SELECT ?id (COUNT(?s) AS ?no) { ' +
-        '  ?unit_id (^crm:P143_joined/crm:P144_joined_with)* {0} . ' +
+        '  VALUES ?actor { <ID> } . ' +
+        '  ?unit_id (^crm:P143_joined/crm:P144_joined_with)* ?actor . ' +
         '  ?evt a wsc:PersonJoining ; ' +
         '   crm:P144_joined_with ?unit_id ; ' +
         '   crm:P143_joined ?id . ' +
@@ -158,9 +159,10 @@
 
         var commandersByUnitQry = prefixes +
         'SELECT ?id ?sname ?fname ?label ?role ?join_start ?join_end WHERE { ' +
+        ' VALUES ?unit { <ID> } . ' +
         ' ?evt a wsc:PersonJoining ; ' +
         '   crm:P143_joined ?id . ' +
-        ' ?evt  crm:P144_joined_with {0} .  ' +
+        ' ?evt  crm:P144_joined_with ?unit .  ' +
         ' ?evt crm:P107_1_kind_of_member ?role . ' +
         ' OPTIONAL { ' +
         '  ?evt crm:P4_has_time-span ?join_time_id . ' +
@@ -175,7 +177,7 @@
         var byRankQryResultSet =
         ' { ' +
         '  SELECT DISTINCT ?id (COUNT(?s) AS ?no) WHERE { ' +
-        '   VALUES ?rank { {0} } . ' +
+        '   VALUES ?rank { <ID> } . ' +
         '   ?evt wacs:hasRank ?rank . ' +
         '   ?evt crm:P11_had_participant ?id . ' +
         '   ?evt a wsc:Promotion .	' +
@@ -193,7 +195,7 @@
         ' } ORDER BY ?sname ?fname ';
 
         var byMedalQryResultSet =
-        ' VALUES ?medal { {0} } .  ' +
+        ' VALUES ?medal { <ID> } .  ' +
         ' ?evt a wsc:MedalAwarding ;	 ' +
         '   crm:P141_assigned ?medal ; ' +
         '   crm:P11_had_participant ?id .  ' +
@@ -203,7 +205,7 @@
 
         var casualtiesByTimeSpanQryResultSet =
         '   ?casualty casualties:kuolinaika ?death_time . ' +
-        '   FILTER(?death_time >= "{0}"^^xsd:date && ?death_time <= "{1}"^^xsd:date) ' +
+        '   FILTER(?death_time >= "<START>"^^xsd:date && ?death_time <= "<END>"^^xsd:date) ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
         '   ?id skos:prefLabel ?label . ';
 
@@ -243,26 +245,26 @@
 
         this.getByUnitId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
-            var resultSet = byUnitQryResultSet.format('<{0}>'.format(id));
+            var resultSet = byUnitQryResultSet.replace(/<ID>/g, baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(byUnitQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
         this.getUnitCommanders = function(unitId) {
-            var qry = commandersByUnitQry.format('<{0}>'.format(unitId));
+            var qry = commandersByUnitQry.replace(/<ID>/g, baseRepository.uriFy(unitId));
             return endpoint.getObjects(qry);
         };
 
         this.getByRankId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
-            var resultSet = byRankQryResultSet.format('<{0}>'.format(id));
+            var resultSet = byRankQryResultSet.replace(/<ID>/g, baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
         this.getByMedalId = function(id, pageSize) {
             var orderBy = ' ?sname ?fname ';
-            var resultSet = byMedalQryResultSet.format('<{0}>'.format(id));
+            var resultSet = byMedalQryResultSet.replace(/<ID>/g, baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
@@ -273,7 +275,7 @@
                 return $q.when();
             }
             options = options || {};
-            var resultSet = personQryResultSet.format(ids);
+            var resultSet = personQryResultSet.replace(/<ID>/g, ids);
             var qryObj = queryBuilder.buildQuery(personQry, resultSet, options.orderBy);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         };
@@ -281,7 +283,7 @@
         this.getById = this.getByIdList;
 
         this.getCasualtiesByTimeSpan = function(start, end, pageSize) {
-            var resultSet = casualtiesByTimeSpanQryResultSet.format(start, end);
+            var resultSet = casualtiesByTimeSpanQryResultSet.replace(/<START>/g, start).replace(/<END>/g, end);
             var qryObj = queryBuilder.buildQuery(casualtiesByTimeSpanQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
@@ -289,7 +291,7 @@
         this.getNationalBibliography = function(person) {
             if (person.natiobib) {
                 // Direct link by owl:sameAs
-                var qry = nationalBibliographyQry.format(person.natiobib);
+                var qry = nationalBibliographyQry.replace(/<ID>/g, baseRepository.uriFy(person.natiobib));
                 return historyEndpoint.getObjects(qry).then(function(data) {
                     return personMapperService.makeObjectList(data);
                 });
@@ -298,12 +300,12 @@
         };
 
         this.getDiaries = function(person) {
-            var qry = wardiaryQry.format('<{0}>'.format(person));
+            var qry = wardiaryQry.replace(/<ID>/g, baseRepository.uriFy(person));
             return endpoint.getObjects(qry);
         };
 
         this.getItems = function(regx) {
-            var qry = selectorQuery.format('{0}'.format(regx));
+            var qry = selectorQuery.replace(/<REGEX>/g, regx);
             return endpoint.getObjects(qry).then(function(data) {
                 var arr = data;
                 if (!arr.length) {

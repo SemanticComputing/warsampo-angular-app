@@ -7,14 +7,14 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('rankRepository', function($q, baseRepository, SparqlService, rankMapperService, ENDPOINT_CONFIG) {
+    .service('rankRepository', function($q, baseRepository, AdvancedSparqlService, rankMapperService, ENDPOINT_CONFIG) {
 
         var self = this;
 
         self.getById = getById;
         self.getRelatedRanks = getRelatedRanks;
 
-        var endpoint = new SparqlService(ENDPOINT_CONFIG);
+        var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, rankMapperService);
 
         var prefixes =
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
@@ -28,7 +28,7 @@
         var rankQry = prefixes  +
         'SELECT DISTINCT ?id ?label ?abbrev ?comment ?wikilink ?description ' +
         'WHERE { ' +
-        '  VALUES ?id { {0} } . ' +
+        '  VALUES ?id { <ID> } . ' +
         '  ?id a wsc:Rank .  ' +
         '  ?id skos:prefLabel ?label . '  +
         '  OPTIONAL { ?id rdfs:comment ?comment }  ' +
@@ -40,7 +40,7 @@
 
         var relatedRankQry = prefixes +
         'SELECT ?id ?label ?level WHERE {' +
-        '    VALUES ?rank { {0}  } .   ' +
+        '    VALUES ?rank { <ID>  } .   ' +
         '    ?id a wsc:Rank . ' +
         '    { ?id org:rankSeniorTo ?rank . ' +
         '     BIND (2 AS ?level) .' +
@@ -59,20 +59,17 @@
             if (!ids) {
                 return $q.when();
             }
-            var qry = rankQry.format(ids);
-            return endpoint.getObjects(qry).then(function(data) {
-                if (data.length) {
-                    return rankMapperService.makeObjectList(data);
-                }
-                return $q.reject('Does not exist');
-            });
+            var qry = rankQry.replace(/<ID>/g, ids);
+            return endpoint.getObjects(qry);
         }
 
         function getRelatedRanks(id) {
-            var qry = relatedRankQry.format('<{0}>'.format(id));
-            return endpoint.getObjects(qry).then(function(data) {
-                return rankMapperService.makeObjectList(data);
-            });
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var qry = relatedRankQry.replace(/<ID>/g, id);
+            return endpoint.getObjects(qry);
         }
     });
 })();

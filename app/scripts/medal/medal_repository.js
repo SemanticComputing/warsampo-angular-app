@@ -6,7 +6,7 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('medalRepository', function($q, AdvancedSparqlService, medalMapperService, ENDPOINT_CONFIG) {
+    .service('medalRepository', function($q, AdvancedSparqlService, baseRepository, medalMapperService, ENDPOINT_CONFIG) {
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, medalMapperService);
 
@@ -18,12 +18,11 @@
         ' PREFIX sch: <http://schema.org/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
-        ' PREFIX events: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ';
 
         var medalQry = prefixes +
         ' SELECT DISTINCT ?id ?label ?description WHERE {  ' +
-        '  VALUES ?id { {0} } .   ' +
+        '  VALUES ?id { <ID> } .   ' +
         '  ?id a wsc:Medal . ' +
         '  ?id skos:prefLabel ?label . ' +
         '  ?id a/skos:prefLabel ?type . ' +
@@ -34,10 +33,11 @@
         ' SELECT DISTINCT ?id ?label WHERE {  ' +
         '  { ' +
         '   SELECT DISTINCT ?id (COUNT(?actor) AS ?no) WHERE {  ' +
-        '    VALUES ?medal { {0} } .  ' +
+        '    VALUES ?medal { <ID> } .  ' +
         '    { ' +
         '     SELECT DISTINCT ?actor { ' +
-        '      ?evt crm:P141_assigned {0} ; ' +
+        '      VALUES ?medal { <ID> } .  ' +
+        '      ?evt crm:P141_assigned ?medal ; ' +
         '        crm:P11_had_participant ?actor ; ' +
         '        a wsc:MedalAwarding . ' +
         '     } LIMIT 50 ' +
@@ -52,7 +52,11 @@
         ' } ORDER BY desc(?no) ';
 
         this.getById = function(id) {
-            var qry = medalQry.format('<{0}>'.format(id));
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var qry = medalQry.replace(/<ID>/g, id);
             return endpoint.getObjects(qry).then(function(data) {
                 if (data.length) {
                     return data[0];
@@ -62,7 +66,11 @@
         };
 
         this.getRelatedMedals = function(id) {
-            var qry = relatedMedalQry.format('<{0}>'.format(id));
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            var qry = relatedMedalQry.replace(/<ID>/g, id);
             return endpoint.getObjects(qry);
         };
     });

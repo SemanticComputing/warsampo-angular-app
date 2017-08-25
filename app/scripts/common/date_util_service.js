@@ -9,6 +9,7 @@ angular.module('eventsApp')
     this.formatDateRange = formatDateRange;
     this.formatExtremeDateRange = formatExtremeDateRange;
     this.changeDateAndFormat = changeDateAndFormat;
+    this.toISODateString = toISODateString;
 
     function getExtremeDate(dates, min) {
         if (_.isArray(dates)) {
@@ -58,12 +59,19 @@ angular.module('eventsApp')
     function changeDateAndFormat(date, days) {
         var d = new Date(date);
         d.setDate(d.getDate() + days);
-        return d.toISODateString();
+        return toISODateString(d);
     }
 
     function formatDate(date, format) {
         format = format || 'dd.MM.yyyy';
         return $filter('date')(date, format);
+    }
+
+    function toISODateString(date) {
+        if (date.toISOString) {
+            return date.toISOString().slice(0, 10);
+        }
+        return date;
     }
 
 });

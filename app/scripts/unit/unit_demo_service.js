@@ -86,8 +86,8 @@
         function calculateCasualties() {
             var self = this;
             var dates = self.getVisibleDateRange();
-            return casualtyRepository.getCasualtyCountsByTimeGroupByUnitAndType(dates.start.toISODateString(),
-                    dates.end.toISODateString(), self.currentUnitId)
+            return casualtyRepository.getCasualtyCountsByTimeGroupByUnitAndType(dates.start,
+                dates.end, self.currentUnitId)
             .then(function(counts) {
                 self.casualtyStats = counts;
                 var count = 0;
@@ -102,8 +102,8 @@
         function getCasualtyLocations() {
             var self = this;
             var dates = self.getVisibleDateRange();
-            return casualtyRepository.getCasualtyLocationsByTimeAndUnit(dates.start.toISODateString(),
-                    dates.end.toISODateString(), self.currentUnitId);
+            return casualtyRepository.getCasualtyLocationsByTimeAndUnit(dates.start,
+                dates.end, self.currentUnitId);
         }
     }
 })();
