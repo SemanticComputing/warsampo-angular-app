@@ -172,6 +172,7 @@
         // Get person details, and update timemap if needed.
         function updateByUri(uri, eventId) {
             self.isLoadingObject = true;
+            self.isLoadingLinks = true;
             self.isLoadingTimeline = true;
             self.personId = uri;
             return personService.getById(uri)
@@ -180,6 +181,7 @@
                 self.isLoadingObject = false;
                 return personService.fetchRelated(person);
             }).then(function(person) {
+                self.isLoadingLinks = false;
                 return demoService.getEventTypes(person, self.options);
             }).then(function(types) {
                 self.options.types = types;
@@ -209,6 +211,7 @@
                     self.err = err;
                 }
                 self.isLoadingObject = false;
+                self.isLoadingLinks = false;
                 self.isLoadingEvent = false;
                 self.isLoadingTimeline = false;
             });

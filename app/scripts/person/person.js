@@ -208,7 +208,6 @@
             });
         }
 
-        // for info page:
         function fetchRelated(person) {
             var related = [
                 self.fetchLifeEvents(person),

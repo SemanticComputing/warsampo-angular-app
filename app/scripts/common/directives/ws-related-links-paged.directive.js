@@ -7,6 +7,7 @@
             restrict:'E',
             scope: {
                 title: '<',
+                additionalText: '<',
                 pager: '<paginator'
             },
             link: function(scope, element, attrs) {

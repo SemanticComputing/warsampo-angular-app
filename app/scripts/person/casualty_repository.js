@@ -81,7 +81,9 @@
         ' ?person crm:P70_documents <ID> . ' +
         ' ?person a casualties:DeathRecord . ' +
         ' ?person ?id ?obj .'  +
-        ' ?id skos:prefLabel ?label .'  +
+        // Optimization, because Fuseki
+        ' OPTIONAL { ?id skos:prefLabel ?label . }' +
+        ' FILTER(BOUND(?label)) ' +
         ' OPTIONAL { ?obj skos:prefLabel ?obj_lbl . }' +
         ' BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) '  +
         ' BIND(COALESCE(?obj_lbl, ?obj) as ?description) '  +

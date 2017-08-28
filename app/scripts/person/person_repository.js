@@ -225,16 +225,11 @@
         '  { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person (^crm:P11_had_participant)/crm:P11_had_participant ?id . ' +
-        '    BIND (20 AS ?score) ' +
-        '  } UNION { ' +
-        '    VALUES ?person { <ACTOR> } ' +
-        '    ?person ^crm:P11_had_participant/wacs:hasRank ?rank . ' +
-        '    ?rank ^wacs:hasRank/crm:P11_had_participant ?id ; ' +
-        '     wacs:level ?score . ' +
+        '    BIND (30 AS ?score) ' +
         '  } UNION { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' +
-        '    BIND (30 AS ?score) ' +
+        '    BIND (10 AS ?score) ' +
         '  } UNION { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person ^crm:P11_had_participant/crm:P141_assigned/^crm:P141_assigned/crm:P11_had_participant ?id . ' +

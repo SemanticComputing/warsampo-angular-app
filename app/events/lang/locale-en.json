@@ -33,7 +33,8 @@
         "NUMBER_OF_CHILDREN": "{NUM, plural, =0{no children} one{one child} other{# children}}",
         "BORN_ON_IN": "Born on {{date}} in {{place}}",
         "DIED_ON_IN": "Died on {{date}} in {{place}}",
-        "RELATED_PEOPLE": "Related people"
+        "RELATED_PEOPLE": "Related people",
+        "RELATED_PEOPLE_DESCRIPTION": "People related to this person via events, military units, or medals."
     },
     "UNIT_DEMO": {
         "TITLE": "Units",
