@@ -225,17 +225,24 @@
         '  { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person (^crm:P11_had_participant)/crm:P11_had_participant ?id . ' +
+        '    FILTER(?person != ?id) ' +
         '    BIND (30 AS ?score) ' +
         '  } UNION { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person ^crm:P143_joined/crm:P144_joined_with/^crm:P144_joined_with/crm:P143_joined ?id . ' +
+        '    FILTER(?person != ?id) ' +
         '    BIND (10 AS ?score) ' +
         '  } UNION { ' +
         '    VALUES ?person { <ACTOR> } ' +
         '    ?person ^crm:P11_had_participant/crm:P141_assigned/^crm:P141_assigned/crm:P11_had_participant ?id . ' +
+        '    FILTER(?person != ?id) ' +
         '    BIND (30 AS ?score) ' +
+        '  } UNION { ' +
+        '    VALUES ?person { <ACTOR> } ' +
+            ' ?person foaf:familyName/^foaf:familyName ?id . ' +
+            ' FILTER(?person != ?id) ' +
+        '    BIND (20 AS ?score) ' +
         '  } ' +
-        '  FILTER(?person != ?id) ' +
         '  ?id a ?pclass . ' +
         ' } GROUP BY ?id ';
 

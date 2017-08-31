@@ -35,7 +35,7 @@
         "BORN_ON_IN": "Syntynyt {{date}} paikassa {{place}}",
         "DIED_ON_IN": "Kuollut {{date}} paikassa {{place}}",
         "RELATED_PEOPLE": "Muita henkilöitä",
-        "RELATED_PEOPLE_DESCRIPTION": "Tähän henkilöön tapahtumien, joukko-osastojen tai mitalien kautta liittyviä henkilöitä."
+        "RELATED_PEOPLE_DESCRIPTION": "Tähän henkilöön tapahtumien, joukko-osastojen, mitalien tai sukunimen kautta liittyviä henkilöitä."
     },
     "UNIT_DEMO": {
         "TITLE": "Joukko-osastot",
