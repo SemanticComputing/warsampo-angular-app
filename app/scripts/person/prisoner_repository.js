@@ -100,30 +100,33 @@
 
             var qry =
             ' UNION { ' +
-            '  ?id crm:P70_documents <ID> . ' +
-            '  ?id a prisoners:PrisonerOfWar . ' +
-            '  BIND(1 AS ?properties__id) ' +
-            '  OPTIONAL { ' +
-            '   ?rei_<PROPERTY> rdf:subject ?id . ' +
+            '  SELECT DISTINCT * { ' +
+            '   ?id crm:P70_documents <ID> . ' +
+            '   ?id a prisoners:PrisonerOfWar . ' +
+            '   BIND(1 AS ?properties__id) ' +
             '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
             '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
-            '   ?rei_<PROPERTY> rdf:predicate <NAMESPACE><PROPERTY> . ' +
-            '   ?rei_<PROPERTY> rdf:object ?properties__<PROPERTY>__id . ' +
-            '   ?rei_<PROPERTY> dct:source ?properties__<PROPERTY>__source . ' +
-            '  } ' +
-            '  OPTIONAL { ' +
-            '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
-            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
-            '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
-            '  } ' +
+            '   OPTIONAL { ' +
+            '    ?rei_<PROPERTY> rdf:subject ?id . ' +
+            '    ?rei_<PROPERTY> rdf:predicate <NAMESPACE><PROPERTY> . ' +
+            '    ?rei_<PROPERTY> rdf:object ?properties__<PROPERTY>__id . ' +
+            '    OPTIONAL { ?rei_<PROPERTY> prisoners:order ?properties__<PROPERTY>__order . } ' +
+            '    { ?rei_<PROPERTY> dct:source ?properties__<PROPERTY>__source . } ' +
+            '    UNION { ?rei_<PROPERTY> prisoners:date_begin ?properties__<PROPERTY>__date_begin . } ' +
+            '    UNION { ?rei_<PROPERTY> prisoners:date_end ?properties__<PROPERTY>__date_end . } ' +
+            '   } ' +
+            '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
 
             return qry.replace(/<PROPERTY>/g, property).replace(/<NAMESPACE>/g, namespace);
         }
 
         function generatePrisonerSelectRow(property) {
-            return '?properties__' + property + '__id ?properties__' + property + '__propertyLabel ?properties__' + property + '__valueLabel ?properties__' + property + '__source ';
+            return '?properties__' + property + '__id ?properties__' + property +
+                '__propertyLabel ?properties__' + property + '__valueLabel ?properties__' +
+                property + '__source ' + '?properties__' + property +
+                '__date_begin ?properties__' + property + '__date_end';
         }
     });
 })();
