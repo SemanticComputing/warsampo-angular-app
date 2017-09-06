@@ -10,7 +10,7 @@
       INSERT DATA
       {
         GRAPH <http://ldf.fi/warsa/prisoners> {
-          <http://ldf.fi/warsa/prisoners/prisoner_860> crm:P70_documents <http://ldf.fi/warsa/actors/person_p753249> .
+          <http://ldf.fi/warsa/prisoners/prisoner_858> crm:P70_documents <http://ldf.fi/warsa/actors/person_p753249> .
         }
       }
 
