@@ -3,7 +3,6 @@
   <div class="slides"></div>
   <!-- Controls for the borderless lightbox -->
   <h3 class="title"></h3>
-  <!-- <a class="description" target="_self" translate>SHOW_INFO_PAGE</a> -->
   <a class="prev">‹</a>
   <a class="next">›</a>
   <a class="close">×</a>
@@ -13,16 +12,6 @@
     {{ 'FETCHING_PHOTOS' | translate }} <img src="images/loading.gif" />
   </div>
   <p ng-show="!ctrl.isLoadingImages">
-    <!-- <span translate="{{ ctrl.nPhotosText || 'N_PHOTOS'}}"
-        translate-value-for-resource="{{ (ctrl.resourceType || 'FOR_THIS_RESOURCE') | translate }}"
-        translate-values="{ NUM: ctrl.imageCount }"
-        translate-interpolation="messageformat"></span>
-    <span ng-show="ctrl.hasMore || !ctrl.isCollapsed"> |
-      <a href="" ng-click="ctrl.toggleCollapse()">
-        <span ng-show="ctrl.isCollapsed" translate>SHOW_ALL_PHOTOS</span>
-        <span ng-show="!ctrl.isCollapsed" translate>SHOW_LESS_PHOTOS</span>
-      </a>
-    </span> -->
     <img ng-show="ctrl.isLoadingMoreImages" src="images/loading.gif" />
   </p>
   <div ng-if="ctrl.imageCount" class="simple-photo-gallery-container">
@@ -32,7 +21,7 @@
           data-gallery="#blueimp-gallery-{{ ::ctrl.galleryId }}"
           title="{{ ::img.getDescription() }}"
           data-id="{{ ::img.id }}"
-          ng-href="{{ ::img.url }}">
+          ng-href="{{ ::img.full_size_url }}">
           <div class="simple-gallery-thumbnail-container">
             <img ws-fallback-img-for-gallery class="simple-gallery-thumbnail" ng-src="{{ ::img.thumbnail_url }}" />
             <p class="simple-gallery-caption">{{ ::img.getDescription() }}</p>

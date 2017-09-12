@@ -27,7 +27,7 @@
         </span>
         <span ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</span>
       </p>
-      <p><img class="img img-responsive" alt="{{ vm.photo.description }}" title="{{ vm.photo.description }}" ng-src="{{ vm.photo.url }}" /></p>
+      <p><img class="img img-responsive" alt="{{ vm.photo.description }}" title="{{ vm.photo.description }}" ng-src="{{ vm.photo.full_size_url }}" /></p>
       <p>
         <small ng-if="vm.photo.source">{{ 'SOURCE' | translate }}: {{ vm.photo.source }} | </small>
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.photo.id }}</small>

@@ -41,7 +41,7 @@
             };
             if (photo.created) {
                 promises.eventsByTime = eventService.getEventsLooselyWithinTimeSpanPager(photo.created,
-                            photo.created, { pageSize: Settings.pageSize });
+                    photo.created, { pageSize: Settings.pageSize });
             }
             return $q.all(promises)
             .then(function(related) {

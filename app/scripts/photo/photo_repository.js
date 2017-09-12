@@ -55,15 +55,31 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?url ?thumbnail_url ?label ?description ?note ?created ' +
+        ' SELECT DISTINCT ?id ?url ?thumbnail_url ?full_size_url ?label ?description ?note ?created ' +
         '  ?time_id ?period ?participant_id ?unit_id ?place_id ?place_string ' +
         '  ?source ?creator_id ?photographer_string ?theme ';
 
         var photoQry = select +
         ' { ' +
         '  <RESULT_SET> ' +
-        '  ?id sch:contentUrl ?url ; ' +
-        '    sch:thumbnailUrl ?thumbnail_url . ' +
+        '  OPTIONAL { ' +
+        '   ?id crm:P138i_has_representation [ ' +
+        '     wphs:size wphs:md ; ' +
+        '     sch:contentUrl ?url ' +
+        '   ] . ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   ?id crm:P138i_has_representation [ ' +
+        '     wphs:size wphs:sm ; ' +
+        '     sch:contentUrl ?thumbnail_url ' +
+        '   ] . ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   ?id crm:P138i_has_representation [ ' +
+        '     wphs:size wphs:lg ; ' +
+        '     sch:contentUrl ?full_size_url ' +
+        '   ] . ' +
+        '  } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
         '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
         '  OPTIONAL { ?id crm:P3_has_note ?note . } ' +
@@ -97,7 +113,7 @@
 
         var photoByIdResultSet =
         '  VALUES ?id { <ID> } ' +
-        '  ?id sch:contentUrl ?url . ';
+        '  ?id a wsc:Photograph . ';
 
         var photosByThemeResultSet =
         '  BIND("<VAL>" AS ?theme) ' +
