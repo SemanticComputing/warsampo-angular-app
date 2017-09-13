@@ -26,8 +26,8 @@
     <img ng-show="ctrl.isLoadingMoreImages" src="images/loading.gif" />
   </p>
   <div ng-if="ctrl.imageCount">
-    <div id="photo-thumbs-{{ ctrl.galleryId }}" class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed">
-      <div id="photo-container-{{ ctrl.galleryId }}">
+    <div id="photo-thumbs-{{ ::ctrl.galleryId }}" class="collapse-with-teaser photo-gallery" uib-collapse="ctrl.isCollapsed">
+      <div id="photo-container-{{ ::ctrl.galleryId }}">
         <a ng-repeat="img in ctrl.photos"
           data-gallery="#blueimp-gallery-{{ ::ctrl.galleryId }}"
           title="{{ ::img.description }} ({{ ::img.created }} {{ ::img.source }})"
