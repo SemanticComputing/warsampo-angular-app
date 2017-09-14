@@ -14,12 +14,18 @@
     <tr ng-repeat="(key, property) in ctrl.person.prisonerRecord.properties">
       <td class="person-record-property">{{ property.propertyLabel || property[0].propertyLabel }}</td>
       <td class="person-record-value">
-          <div ng-repeat="v in (property | castArray)">
+        <div ng-repeat="v in (property | castArray)">
+          <span ng-switch="!!v.valueLabel">
+            <span ng-switch-when="true">
+              <a ws-page-link="v.id">{{ v.valueLabel }}</a>
+            </span>
+            <span ng-switch-when="false">
               {{ v.valueLabel || (ctrl.person.prisonerRecord.isDateValue(key) ? (v.id | date:'dd.MM.yyyy') : v.id) }}
-              <span ng-if="v.date_begin">({{ v.date_begin }} &ndash; {{ v.date_end }})</span>
-              <span ng-if="v.source">(lähde: {{ v.source | concatList }})</span>
-              <hr ng-if="key=='other_information' && !$last">
-          </div>
+            </span>
+          <span ng-if="v.date_begin">({{ v.date_begin }} &ndash; {{ v.date_end }})</span>
+          <span ng-if="v.source">(lähde: {{ v.source | concatList }})</span>
+          <hr ng-if="key=='other_information' && !$last">
+        </div>
       </td>
     </tr>
   </table>
