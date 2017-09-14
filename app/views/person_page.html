@@ -17,7 +17,7 @@
 
       <img ng-show="ctrl.isLoadingRelated" src="images/loading.gif" />
 
-      <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
+      <div ng-if="ctrl.showPrisonerRecord" ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
       <div ng-include="'views/partials/person_death_record_partial.html'"></div>
     </div>
   </div>

@@ -5,8 +5,14 @@
     .controller('PersonPageController', PersonPageController);
 
     /* @ngInject */
-    function PersonPageController($log, $routeParams, personService) {
+    function PersonPageController($log, $location, $routeParams, personService) {
         var self = this;
+
+        if ($location.host() === 'www.sotasampo.fi') {
+            self.showPrisonerRecord = false;
+        } else {
+            self.showPrisonerRecord = true;
+        }
 
         if ($routeParams.uri) {
             self.isLoadingPerson = true;
