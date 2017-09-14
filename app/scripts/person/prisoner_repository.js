@@ -39,7 +39,8 @@
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX bioc: <http://ldf.fi/schema/bioc/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
-        ' PREFIX prisoners: <http://ldf.fi/schema/warsa/prisoners/> ';
+        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX psc: <http://ldf.fi/schema/warsa/prisoners/> ';
 
         var prisonerRecordProperties = [
             'birth_date',
@@ -88,7 +89,7 @@
         var select = 'SELECT DISTINCT ?id ?name ?properties__id ';
         var qryBody =
         ' { ?id crm:P70_documents <ID> . ' +
-        ' ?id a prisoners:PrisonerOfWar . ' +
+        ' ?id a wsc:PrisonerRecord . ' +
         ' ?id skos:prefLabel ?name . }';
 
         prisonerRecordProperties.forEach(function(prop) {
@@ -107,13 +108,13 @@
         };
 
         function generatePrisonerPropertyQry(property) {
-            var namespace = property === 'has_occupation' ? 'bioc:' : 'prisoners:';
+            var namespace = property === 'has_occupation' ? 'bioc:' : 'psc:';
 
             var qry =
             ' UNION { ' +
             '  SELECT DISTINCT * { ' +
             '   ?id crm:P70_documents <ID> . ' +
-            '   ?id a prisoners:PrisonerOfWar . ' +
+            '   ?id a wsc:PrisonerRecord . ' +
             '   BIND(1 AS ?properties__id) ' +
             '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
@@ -122,10 +123,10 @@
             '    ?rei_<PROPERTY> rdf:subject ?id . ' +
             '    ?rei_<PROPERTY> rdf:predicate <NAMESPACE><PROPERTY> . ' +
             '    ?rei_<PROPERTY> rdf:object ?properties__<PROPERTY>__id . ' +
-            '    OPTIONAL { ?rei_<PROPERTY> prisoners:order ?properties__<PROPERTY>__order . } ' +
+            '    OPTIONAL { ?rei_<PROPERTY> psc:order ?properties__<PROPERTY>__order . } ' +
             '    { ?rei_<PROPERTY> dct:source ?properties__<PROPERTY>__source . } ' +
-            '    UNION { ?rei_<PROPERTY> prisoners:date_begin ?properties__<PROPERTY>__date_begin . } ' +
-            '    UNION { ?rei_<PROPERTY> prisoners:date_end ?properties__<PROPERTY>__date_end . } ' +
+            '    UNION { ?rei_<PROPERTY> psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
+            '    UNION { ?rei_<PROPERTY> psc:date_end ?properties__<PROPERTY>__date_end . } ' +
             '   } ' +
             '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
