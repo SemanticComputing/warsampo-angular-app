@@ -28,12 +28,7 @@
         <span ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</span>
       </p>
       <p>
-        <!-- Gallery for displaying this photograph in full screen -->
-        <div id="blueimp-gallery-photo-page" class="blueimp-gallery blueimp-gallery-controls">
-          <div class="slides"></div>
-          <a class="close">×</a>
-        </div>
-        <a data-gallery="#blueimp-gallery-photo-page" ng-href="{{ vm.photo.full_size_url }}">
+        <a data-gallery="#blueimp-gallery-photo-single" ng-href="{{ vm.photo.full_size_url }}">
           <img class="img img-responsive" ws-fallback-img alt="{{ vm.photo.description }}" title="{{ vm.photo.description }}" ng-src="{{ vm.photo.full_size_url }}" />
         </a>
       </p>

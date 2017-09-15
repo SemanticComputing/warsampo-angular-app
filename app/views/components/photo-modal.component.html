@@ -21,8 +21,9 @@
 <div class="modal-body">
   <div class="row">
     <div class="col-md-7">
-      <img ws-fallback-img class="img img-responsive" ng-src="{{ ::vm.photo.url }}"
-      title="{{::vm.photo.description}} | {{ ::vm.photo.source }} {{ ::vm.photo.created }}" />
+        <a data-gallery="#blueimp-gallery-photo-single" ng-href="{{ vm.photo.full_size_url }}">
+          <img class="img img-responsive" ws-fallback-img alt="{{ vm.photo.description }}" title="{{ vm.photo.description }}" ng-src="{{ vm.photo.url }}" />
+        </a>
     </div>
     <div class="col-md-5">
       <p>
