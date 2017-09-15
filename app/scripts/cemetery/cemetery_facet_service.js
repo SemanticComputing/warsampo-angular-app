@@ -6,7 +6,7 @@
     angular.module('eventsApp')
 
     /*
-     * Photo facet service
+     * Cemetery facet service
      */
     .service('cemeteryFacetService', cemeteryFacetService);
 
@@ -87,30 +87,14 @@
             });
         }
 
-        // function getFacets() {
-        //     var facetClone = _.cloneDeep(facets);
-        //     return $translate(_.map(facets.period.choices, 'label'))
-        //     .then(function(translations) {
-        //         facetClone.period.choices.forEach(function(choice) {
-        //             var trans = translations[choice.label];
-        //             if (trans) {
-        //                 choice.label = trans;
-        //             }
-        //         });
-        //         return $translate(_.map(facets, 'name'));
-        //     }).then(function(translations) {
-        //         _.forOwn(facetClone, function(val) {
-        //             var trans = translations[val.name];
-        //             if (trans) {
-        //                 val.name = trans;
-        //             }
-        //         });
-        //         return facetClone;
-        //     });
-        // }
-
         function getFacetOptions() {
-            return facetOptions;
+            return $translate('NO_SELECTION').then(function(noSelection) {
+                var prefLang = $translate.use();
+                facetOptions.preferredLang = [prefLang, prefLang === 'en' ? 'fi' : 'en', 'sv'];
+                facetOptions.noSelectionString = noSelection;
+
+                return facetOptions;
+            });
         }
 
         function getErrorMessage(error) {

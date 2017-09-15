@@ -199,5 +199,6 @@
     "LOADING": "Ladataan...",
     "COMMANDER": "Komentaja",
     "NOTE": "Muistiinpano",
-    "NAME": "Nimi"
+    "NAME": "Nimi",
+    "NO_SELECTION": "-- Ei valintaa --"
 }

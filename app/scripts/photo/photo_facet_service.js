@@ -106,10 +106,13 @@
         }
 
         function getFacetOptions() {
-            var prefLang = $translate.use();
-            facetOptions.preferredLang = [prefLang, prefLang === 'en' ? 'fi' : 'en', 'sv'];
+            return $translate('NO_SELECTION').then(function(noSelection) {
+                var prefLang = $translate.use();
+                facetOptions.preferredLang = [prefLang, prefLang === 'en' ? 'fi' : 'en', 'sv'];
+                facetOptions.noSelectionString = noSelection;
 
-            return facetOptions;
+                return facetOptions;
+            });
         }
 
         function getErrorMessage(error) {

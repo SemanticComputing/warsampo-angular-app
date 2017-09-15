@@ -199,5 +199,6 @@
     "LOADING": "Loading...",
     "COMMANDER": "Commander",
     "NOTE": "Note",
-    "NAME": "Name"
+    "NAME": "Name",
+    "NO_SELECTION": "-- No Selection --"
 }

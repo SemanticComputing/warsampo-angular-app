@@ -39,7 +39,9 @@
                 Settings.clearEventSettings();
             });
 
-            photoFacetService.getFacets().then(function(facets) {
+            vm.photos = [];
+
+            return photoFacetService.getFacets().then(function(facets) {
                 var initListener = $scope.$on('sf-initial-constraints', function(event, config) {
                     updateResults(event, config);
                     initListener();
@@ -47,10 +49,10 @@
                 $scope.$on('sf-facet-constraints', updateResults);
 
                 vm.facets = facets;
-                vm.handler = new FacetHandler(getFacetOptions());
+                return getFacetOptions().then(function(options) {
+                    vm.handler = new FacetHandler(options);
+                });
             });
-
-            vm.photos = [];
         }
 
         function showHelp() {
@@ -76,10 +78,11 @@
         }
 
         function getFacetOptions() {
-            var options = photoFacetService.getFacetOptions();
-            options.initialState = facetUrlStateHandlerService.getFacetValuesFromUrlParams();
-            options.scope = $scope;
-            return options;
+            return photoFacetService.getFacetOptions().then(function(options) {
+                options.initialState = facetUrlStateHandlerService.getFacetValuesFromUrlParams();
+                options.scope = $scope;
+                return options;
+            });
         }
 
         function disableFacets() {

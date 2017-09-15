@@ -1,44 +1,43 @@
-/*
- * Semantic faceted search
- *
- */
-
 (function() {
 
     'use strict';
 
     angular.module('eventsApp')
 
-    /*
-    * Controller for the results view.
-    */
     .controller('CemeteryDemoController', CemeteryDemoController);
 
     /* @ngInject */
-    function CemeteryDemoController($scope, $translate, $location, $uibModal, _, cemeteryFacetService,
-            NgTableParams, FacetHandler, facetUrlStateHandlerService, chartjsService, Settings) {
+    function CemeteryDemoController($scope, $translate, $location, $routeParams, _, cemeteryFacetService,
+            NgTableParams, FacetHandler, facetUrlStateHandlerService, chartjsService) {
 
         var vm = this;
 
-        var initListener = $scope.$on('sf-initial-constraints', function(event, config) {
-            updateResultFormat();
-            updateResults(event, config);
-            initListener();
-        });
+        init();
 
-        // URL to controller
-        $scope.$on('$locationChangeSuccess', function(event) {
-            updateResultFormat();
-        });
+        function init() {
+            // URL to controller
+            $scope.$on('$locationChangeSuccess', function() {
+                updateResultFormat();
+            });
 
-        $scope.$on('sf-facet-constraints', updateResults);
+            return cemeteryFacetService.getFacets().then(function(facets) {
+                vm.facets = facets;
 
-        cemeteryFacetService.getFacets().then(function(facets) {
-            vm.facets = facets;
-            vm.facetOptions = getFacetOptions();
-            vm.facetOptions.scope = $scope;
-            vm.handler = new FacetHandler(vm.facetOptions);
-        });
+                $scope.$on('sf-facet-constraints', updateResults);
+
+                var initListener = $scope.$on('sf-initial-constraints', function(event, config) {
+                    updateResultFormat();
+                    updateResults(event, config);
+                    initListener();
+                });
+
+                return getFacetOptions().then(function(options) {
+                    vm.facetOptions = options;
+                    vm.facetOptions.scope = $scope;
+                    vm.handler = new FacetHandler(vm.facetOptions);
+                });
+            });
+        }
 
         function initializeTable() {
             vm.tableParams = new NgTableParams(
@@ -58,20 +57,19 @@
         }
 
         function updateResultFormat() {
-            if ( _.includes($location.url(), '/cemeteries') && !_.includes($location.url(), '/page') ) {
-                if ($location.search().resultFormat) {
-                    vm.resultFormat = $location.search().resultFormat;
-                } else {
-                    $location.search('resultFormat', 'list');
-                    vm.resultFormat = 'list';
-                }
+            if ($routeParams.resultFormat) {
+                vm.resultFormat = $routeParams.resultFormat;
+            } else {
+                $location.search('resultFormat', 'list');
+                vm.resultFormat = 'list';
             }
         }
 
         function getFacetOptions() {
-            var options = cemeteryFacetService.getFacetOptions();
-            options.initialState = facetUrlStateHandlerService.getFacetValuesFromUrlParams();
-            return options;
+            return cemeteryFacetService.getFacetOptions().then(function(options) {
+                options.initialState = facetUrlStateHandlerService.getFacetValuesFromUrlParams();
+                return options;
+            });
         }
 
         function getData($defer, params) {
@@ -89,10 +87,15 @@
         }
 
         function updateResults(event, facetSelections) {
+            if (vm.previousSelections && _.isEqual(facetSelections.constraint, vm.previousSelections)) {
+                return;
+            }
+            vm.previousSelections = _.clone(facetSelections.constraint);
+
             facetUrlStateHandlerService.updateUrlParams(facetSelections);
             vm.isLoadingResults = true;
-            cemeteryFacetService.getResults( facetSelections )
-            .then( function ( pager ) {
+            cemeteryFacetService.getResults(facetSelections)
+            .then(function(pager) {
                 vm.pager = pager;
                 if (vm.tableParams) {
                     vm.tableParams.page(1);
@@ -106,11 +109,10 @@
             .then(function(cemeteries) {
                 vm.cemeteries = cemeteries;
                 var barChartData = [];
-                //console.log(vm.cemeteries);
                 vm.cemeteries.forEach(function(cemetery) {
                     if (cemetery.number_of_graves) {
-                      barChartData.push({ value: cemetery.number_of_graves,
-                                          label: cemetery.label });
+                        barChartData.push({ value: cemetery.number_of_graves,
+                            label: cemetery.label });
                     }
 
                 });
