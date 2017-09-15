@@ -36,7 +36,7 @@
         <small ng-if="vm.photo.source">{{ 'SOURCE' | translate }}: {{ vm.photo.source }} | </small>
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.photo.id }}</small>
       </p>
-      <p><a ws-page-link="vm.photo.id" demo translate>SHOW_IN_DEMO</a></p>
+      <p><a ng-href="{{ vm.getDemoLink() }}" translate>SHOW_IN_DEMO</a></p>
       <ws-photo-gallery data-images="vm.photo.relatedPhotos"></ws-photo-gallery>
     </div>
   </div>

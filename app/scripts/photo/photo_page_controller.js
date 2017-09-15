@@ -4,12 +4,14 @@
     angular.module('eventsApp')
     .controller('PhotoPageController', PhotoPageController);
 
-    function PhotoPageController($routeParams, $q, $rootScope, _, photoService, eventService,
-            placeRepository, Settings) {
+    function PhotoPageController($routeParams, $q, $rootScope, $translate, _, photoService,
+            eventService, placeRepository, Settings) {
 
         $rootScope.showSettings = null;
         $rootScope.showHelp = null;
         var vm = this;
+
+        vm.getDemoLink = getDemoLink;
 
         init();
 
@@ -32,6 +34,14 @@
                     vm.isLoadingObj = false;
                     vm.isLoadingLinks = false;
                 });
+        }
+
+        function getDemoLink() {
+            var url = ($translate.use() + '/photographs?facets=%7B%22description%22:%7B%22value%22:%22<VALUE>%22,' +
+                '%22constraint%22:%22GRAPH%20%3Chttp:%2F%2Fldf.fi%2Fwarsa%2Fphotographs%3E%20%7B%20' +
+                '(%3Fid%20%3Fscore)%20%3Chttp:%2F%2Fjena.apache.org%2Ftext%23query%3E%20(%5C%22<VALUE>%5C%22%20100000)%20.%20%7D%22%7D%7D')
+                .replace(/<VALUE>/g, vm.photo.description);
+            return url;
         }
 
         function fetchRelated(photo) {
