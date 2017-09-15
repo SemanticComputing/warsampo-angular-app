@@ -1,3 +1,4 @@
+/* global require module */
 // Generated on 2015-07-03 using generator-angular 0.12.0
 'use strict';
 
@@ -488,6 +489,11 @@ module.exports = function (grunt) {
                     cwd: '.',
                     src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
                     dest: '<%= yeoman.dist %>/styles/'
+                }, {
+                    expand: true,
+                    cwd: 'bower_components/blueimp-gallery/img/',
+                    src: ['*'],
+                    dest: '<%= yeoman.dist %>/styles/img/'
                 }]
             },
             styles: {
