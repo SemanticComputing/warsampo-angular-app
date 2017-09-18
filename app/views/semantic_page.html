@@ -3,7 +3,10 @@
   <!-- Metadata -->
   <div class="col-sm-8">
     <img ng-show="ctrl.isLoadingObject" src="images/loading.gif" />
-    <p ng-if="!ctrl.obj && !ctrl.isLoadingObject" translate>METADATA_NOT_FOUND</p>
+    <div ng-if="!ctrl.obj && !ctrl.isLoadingObject">
+      <h1>{{ ctrl.uri }}</h1>
+      <div class="alert alert-danger" translate>NO_METADATA_FOUND</div>
+    </div>
     <div id="dataContent" ng-if="ctrl.obj">
       <h1>
         {{ ctrl.obj.getLabel() }}
