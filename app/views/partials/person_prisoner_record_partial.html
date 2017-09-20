@@ -24,7 +24,7 @@
             </span>
           <span ng-if="v.date_begin">({{ v.date_begin }} &ndash; {{ v.date_end }})</span>
           <span ng-if="v.source">(lähde: {{ v.source | concatList }})</span>
-          <hr ng-if="key=='other_information' && !$last">
+          <hr ng-if="ctrl.showHr(key) && !$last">
         </div>
       </td>
     </tr>

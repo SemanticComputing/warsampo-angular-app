@@ -129,12 +129,18 @@ a.no-decoration {
 }
 
 .person-record {
-    // font-family: "Courier New", Courier, monospace;
     width: 100%;
     border: 1px solid #ddd;
     max-width: 700px;
     caption {
         caption-side: bottom;
+    }
+    div:first-letter {
+        text-transform: capitalize;
+    }
+    tbody > tr > td {
+        border-top: 1px solid #ddd;
+        padding: 4px !important;
     }
 }
 
@@ -145,12 +151,6 @@ a.no-decoration {
 .person-record-value {
     width:60%;
 }
-
-.person-record > tbody > tr > td {
-    border-top: 1px solid #ddd;
-    padding: 4px !important;
-}
-
 table.person-record tr:nth-child(even), table.faceter-results tr:nth-child(even) {
     background-color: #f8f6f4;
 }
