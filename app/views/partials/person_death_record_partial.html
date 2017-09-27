@@ -1,5 +1,5 @@
 <div ng-if="ctrl.person.deathRecord.length">
-  <h3 translate="DEATH_RECORD"></h3>
+  <h3 class="death-record-title" translate="DEATH_RECORD"></h3>
   <table class="table person-record">
     <tr ng-repeat="prop in ctrl.person.deathRecord">
       <td>{{ prop.getLabel() }}</td>
