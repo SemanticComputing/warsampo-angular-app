@@ -1,5 +1,6 @@
 <update-title title="{{ 'TITLE' | translate }} | {{ 'UNIT_DEMO.PAGE_TITLE' | translate }} | {{ ctrl.currentObject.getLabel() }}"></update-title>
 <update-meta name="description" content="{{ 'UNIT_DEMO.DEMO_META_DESCRIPTION' | translate }} {{ ctrl.currentObject.description || ('UNIT_DEMO.PAGE_META_DESCRIPTION' | translate:{ unit:ctrl.currentObject.getLabel() }) }}"></update-meta>
+<update-meta name="robots" content="index, follow"></update-meta>
 <ws-settings></ws-settings>
 <div class="row">
   <div class="col-sm-3">

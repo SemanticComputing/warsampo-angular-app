@@ -1,6 +1,7 @@
 <ws-settings></ws-settings>
 <update-title title="{{ 'TITLE' | translate }} | {{ ctrl.person.label }}"></update-title>
 <update-meta name="description" content="{{ 'PERSONS_DEMO.DEMO_META_DESCRIPTION_PREFIX' | translate }}: {{ ctrl.person.getMetaDescription() }}"></update-meta>
+<update-meta name="robots" content="index, follow"></update-meta>
 <ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <div class="col-sm-3">

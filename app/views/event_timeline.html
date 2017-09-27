@@ -1,5 +1,6 @@
 <update-title title="{{ 'TITLE' | translate }} | {{ ctrl.title | translate }}{{ ctrl.getCurrent() ? ' | ' + ((ctrl.getCurrent().verboseLabel || ctrl.event.getLabel()) | words:10) : '' }}"></update-title>
 <update-meta name="description" content="{{ ctrl.title | translate }}. {{ ctrl.getCurrent() ? (ctrl.getCurrent().timeSpanString + ': ' + ctrl.getCurrent().description) : 'EVENT_DEMO.META_DESCRIPTION' | translate }}"></update-meta>
+<update-meta name="robots" content="index, follow"></update-meta>
 <div ng-if="ctrl.err">
   <p class="error-msg bg-danger">
   {{ 'ERROR_OCCURED' | translate }} <br /><br />
