@@ -10,7 +10,7 @@
 
     /* @ngInject */
     function photoService($q, _, baseService, photoRepository, personRepository,
-            eventRepository, unitRepository, placeRepository, dateUtilService, PHOTO_PAGE_SIZE) {
+            eventRepository, unitRepository, placeRepository, dateUtilService, Settings, PHOTO_PAGE_SIZE) {
 
         var self = this;
 
@@ -86,23 +86,24 @@
         }
 
         function fetchPeople(photo) {
-            var people = [
+            var promises = [
                 personRepository.getByIdList(photo.creator_id),
-                personRepository.getByIdList(photo.participant_id)
+                personRepository.getByIdList(photo.participant_id, { pageSize: Settings.pageSize })
             ];
-            return $q.all(people)
-            .then(function(people) {
-                var creators = people[0];
-                var participants = people[1];
-                if (participants && participants.length) {
-                    photo.people = participants;
+            return $q.all(promises).then(function(people) {
+                if (people[0]) {
+                    photo.creators = people[0];
                     photo.hasLinks = true;
                 }
-                if (creators && creators.length) {
-                    photo.creators = creators;
-                    photo.hasLinks = true;
-                }
-                return photo;
+                return people[1];
+            }).then(function(people) {
+                return people.getTotalCount().then(function(count) {
+                    if (count) {
+                        photo.people = people;
+                        photo.hasLinks = true;
+                    }
+                    return photo;
+                });
             });
         }
 

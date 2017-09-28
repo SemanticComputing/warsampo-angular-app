@@ -12,10 +12,10 @@
       <ul class="list-group">
         <li class="list-group-item" ng-repeat="thing in vm.related">
           <span ng-if="!external">
-            <a ws-page-link="thing.id">{{ thing.verboseLabel || thing.getLabel() || thing.label | words:10 }}</a>
+            <a ws-page-link="thing.id">{{ vm.getLabel(thing) | words:10 }}</a>
           </span>
           <span ng-if="external">
-            <a ng-href="{{ thing.id }}">{{ thing.getLabel() || thing.label | words:10 }}</a>
+            <a ng-href="{{ thing.id }}">{{ vm.getLabel(thing) | words:10 }}</a>
           </span->
         </li>
         <li class="list-group-item" ng-if="vm.totalItems > vm.pageSize">

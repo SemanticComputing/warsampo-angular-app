@@ -29,6 +29,7 @@
         vm.pageSize = Settings.pageSize;
 
         vm.updatePage = updatePage;
+        vm.getLabel = getLabel;
 
         $scope.$watch('pager', function(val) {
             if (val) {
@@ -45,6 +46,10 @@
                 vm.related = null;
             }
         });
+
+        function getLabel(thing) {
+            return thing.listLabel || thing.verboseLabel || thing.getLabel() || thing.label;
+        }
 
         function updatePage() {
             vm.isLoadingPage = true;

@@ -26,7 +26,7 @@
 
         self.fetchPhotos = function(time) {
             return photoRepository.getByTimeSpan(time.bob, time.eoe,
-                    { pageSize: PHOTO_PAGE_SIZE })
+                { pageSize: PHOTO_PAGE_SIZE })
             .then(function(photos) {
                 time.photos = photos;
                 if (photos && photos.length) {

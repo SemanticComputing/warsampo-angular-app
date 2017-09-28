@@ -30,7 +30,7 @@
         var queryBuilder = new QueryBuilderService(prefixes);
 
         var select =
-        ' SELECT DISTINCT ?id ?label ?sname ?fname ?description ?rank ?rank_id ' +
+        ' SELECT DISTINCT ?id ?label ?listLabel ?sname ?fname ?description ?rank ?rank_id ' +
         '  ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ?living_place ' +
         '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
         '  ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ';
@@ -47,6 +47,7 @@
         '  ?id skos:prefLabel ?lbl .' +
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
+        '  BIND(IF(BOUND(?fname), CONCAT(?sname, ", ", ?fname), ?lbl) AS ?listLabel) ' +
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
         '  OPTIONAL { ?id dct:source ?sid . ' +
@@ -129,7 +130,7 @@
         '} ORDER BY ?time ';
 
         var byUnitQryResultSet =
-        ' SELECT ?id (COUNT(?s) AS ?no) { ' +
+        ' SELECT DISTINCT ?id (COUNT(?s) AS ?no) { ' +
         '  VALUES ?actor { <ID> } . ' +
         '  ?unit_id (^crm:P143_joined/crm:P144_joined_with)* ?actor . ' +
         '  ?evt a wsc:PersonJoining ; ' +
@@ -139,24 +140,6 @@
         '  ?s ?p ?id . ' +
         '  ?id skos:prefLabel ?label . ' +
         ' } GROUP BY ?id ';
-
-        var byUnitQry =
-        'SELECT ?id ?sname ?fname ?label ?rank ?role ?join_start ?join_end WHERE { ' +
-        '   <RESULT_SET> ' +
-        ' 	OPTIONAL { ' +
-        ' 	  ?evt a wsc:PersonJoining ; ' +
-        ' 	  crm:P143_joined ?id . ' +
-        '     OPTIONAL { ?evt crm:P107_1_kind_of_member ?role . } ' +
-        '     OPTIONAL { ' +
-        '         ?evt crm:P4_has_time-span ?join_time_id . ' +
-        '         ?join_time_id crm:P82a_begin_of_the_begin ?join_start ; ' +
-        '             crm:P82b_end_of_the_end ?join_end . ' +
-        '     } ' +
-        '	} ' +
-        '   ?id skos:prefLabel ?label . ' +
-        '   ?id foaf:familyName ?sname .	' +
-        '   OPTIONAL { ?id foaf:firstName ?fname .	} ' +
-        '}';
 
         var commandersByUnitQry = prefixes +
         'SELECT ?id ?sname ?fname ?label ?role ?join_start ?join_end WHERE { ' +
@@ -179,10 +162,10 @@
         ' { ' +
         '  SELECT DISTINCT ?id (COUNT(?s) AS ?no) WHERE { ' +
         '   VALUES ?rank { <ID> } . ' +
-        '   ?evt wacs:hasRank ?rank . ' +
-        '   ?evt crm:P11_had_participant ?id . ' +
-        '   ?evt a wsc:Promotion .	' +
-        '   ?id a/rdfs:subClassOf* wsc:Person .	' +
+        '   ?evt wacs:hasRank ?rank ; ' +
+        '    a wsc:Promotion ; ' +
+        '    crm:P11_had_participant ?id . ' +
+        '   ?id a wsc:Person . ' +
         '   ?s ?p ?id .	' +
         '  } GROUP BY ?id ' +
         ' }	';
@@ -192,6 +175,7 @@
         '  <RESULT_SET> ' +
         '  ?id foaf:familyName ?sname .	' +
         '  OPTIONAL { ?id foaf:firstName ?fname . } ' +
+        '  BIND(IF(BOUND(?fname), CONCAT(?sname, ", ", ?fname), ?lbl) AS ?listLabel) ' +
         '  ?id skos:prefLabel ?label . ' +
         ' } ORDER BY ?sname ?fname ';
 
@@ -205,19 +189,10 @@
         '   foaf:firstName ?fname . ';
 
         var casualtiesByTimeSpanQryResultSet =
-        '   ?casualty casualties:kuolinaika ?death_time . ' +
-        '   FILTER(?death_time >= "<START>"^^xsd:date && ?death_time <= "<END>"^^xsd:date) ' +
-        '   ?id crm:P70i_is_documented_in ?casualty . ' +
-        '   ?id skos:prefLabel ?label . ';
-
-        var casualtiesByTimeSpanQry =
-        ' SELECT DISTINCT ?id ?label ?death_time ?casualty ' +
-        ' WHERE { ' +
-        '   <RESULT_SET> ' +
-        '   ?id skos:prefLabel ?label . ' +
-        '   ?id crm:P70i_is_documented_in ?casualty . ' +
-        '   ?casualty casualties:kuolinaika ?death_time . ' +
-        ' } ';
+        ' ?casualty casualties:kuolinaika ?death_time . ' +
+        ' FILTER(?death_time >= "<START>"^^xsd:date && ?death_time <= "<END>"^^xsd:date) ' +
+        ' ?id crm:P70i_is_documented_in ?casualty . ' +
+        ' ?id foaf:familyName ?sname . ';
 
         var relatedPersonQryResultSet =
         ' SELECT DISTINCT ?id (sum(?score) AS ?totscore){ ' +
@@ -249,7 +224,7 @@
         this.getByUnitId = function(id, pageSize) {
             var orderBy = ' DESC(?no) ';
             var resultSet = byUnitQryResultSet.replace(/<ID>/g, baseRepository.uriFy(id));
-            var qryObj = queryBuilder.buildQuery(byUnitQry, resultSet, orderBy);
+            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, orderBy);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
@@ -262,14 +237,14 @@
             var orderBy = ' DESC(?no) ';
             var resultSet = byRankQryResultSet.replace(/<ID>/g, baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery, 10);
         };
 
         this.getByMedalId = function(id, pageSize) {
             var orderBy = ' ?sname ?fname ';
             var resultSet = byMedalQryResultSet.replace(/<ID>/g, baseRepository.uriFy(id));
             var qryObj = queryBuilder.buildQuery(minimalQry, resultSet, orderBy);
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery, 10);
         };
 
         this.getByIdList = function(ids, options) {
@@ -287,7 +262,7 @@
 
         this.getCasualtiesByTimeSpan = function(start, end, pageSize) {
             var resultSet = casualtiesByTimeSpanQryResultSet.replace(/<START>/g, start).replace(/<END>/g, end);
-            var qryObj = queryBuilder.buildQuery(casualtiesByTimeSpanQry, resultSet);
+            var qryObj = queryBuilder.buildQuery(minimalQry, resultSet);
             return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
         };
 
