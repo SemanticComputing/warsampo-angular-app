@@ -21,4 +21,8 @@ angular.module('eventsApp')
     return function(input) {
         return _.isArray(input) ? input[0] : input;
     };
+}).filter('dateLike', function(dateFilter) {
+    return function(input, format, timezone) {
+        return input.match(/\d{4}-\d\d-\d\d/) ? dateFilter(input, format, timezone) : input;
+    };
 });

@@ -4,7 +4,7 @@
     <tr ng-repeat="prop in ctrl.person.deathRecord">
       <td>{{ prop.getLabel() }}</td>
       <td class="person-record-property" ng-if="prop.obj_link"><a ws-page-link="prop.obj_link">{{ prop.getDescription() }}</a></td>
-      <td class="person-record-value" ng-if="!prop.obj_link">{{ prop.getDescription() }}</td>
+      <td class="person-record-value" ng-if="!prop.obj_link">{{ prop.getDescription() | dateLike:'dd.MM.yyyy' }}</td>
     </tr>
     <caption>{{ 'SOURCE' | translate }}: {{ ctrl.person.deathRecord[0].source }}</caption>
   </table>
