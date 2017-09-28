@@ -22,7 +22,7 @@
             <span ng-switch-when="false">
               {{ v.valueLabel || (ctrl.person.prisonerRecord.isDateValue(key) ? (v.id | date:'dd.MM.yyyy') : v.id) }}
             </span>
-          <span ng-if="v.date_begin">({{ v.date_begin }} &ndash; {{ v.date_end }})</span>
+          <span ng-if="v.date_begin">({{ v.date_begin | date:'dd.MM.yyyy' }} &ndash; {{ v.date_end | date:'dd.MM.yyyy' }})</span>
           <span ng-if="v.source">(lähde: {{ v.source | concatList }})</span>
           <hr ng-if="ctrl.showHr(key) && !$last">
         </div>
