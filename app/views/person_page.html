@@ -4,7 +4,7 @@
 <ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <!-- Metadata -->
-  <div class="col-sm-8">
+  <div class="col-md-8">
     <img ng-show="ctrl.isLoadingPerson" src="images/loading.gif" />
     <p ng-if="!ctrl.person && !ctrl.isLoadingPerson" translate>NO_METADATA_FOUND</p>
     <div id="dataContent" ng-if="ctrl.person">
@@ -23,7 +23,7 @@
     </div>
   </div>
   <!-- Links -->
-  <div class="col-sm-4">
+  <div class="col-md-4">
     <h2 id="links-header" class="links-header-class" translate>LINKS</h2>
     <img ng-show="ctrl.isLoadingRelated" src="images/loading.gif" />
     <p ng-if="!ctrl.person.hasLinks" translate>NO_LINKS_FOUND</p>
@@ -33,11 +33,11 @@
       <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
       <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.person.diaries"></ws-related-links>
       <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>
-      <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
-      <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
-      <ws-related-links data-title="'RELATED_MEDALS' | translate" data-related="ctrl.person.medals"></ws-related-links>
       <ws-related-links-paged data-additional-text="'PERSONS_DEMO.RELATED_PEOPLE_DESCRIPTION' | translate" data-title="'PERSONS_DEMO.RELATED_PEOPLE' | translate" data-paginator="ctrl.person.relatedPersons"></ws-related-links-paged>
-      <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
+      <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
+      <ws-related-links-paged data-title="'RELATED_MEDALS' | translate" data-paginator="ctrl.person.medals"></ws-related-links-paged>
       <ws-related-links title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
+      <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
+      <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
   </div>
 </div>

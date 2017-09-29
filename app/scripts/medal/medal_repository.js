@@ -6,7 +6,12 @@
     * Service that provides an interface for fetching actor data.
     */
     angular.module('eventsApp')
-    .service('medalRepository', function($q, AdvancedSparqlService, baseRepository, medalMapperService, ENDPOINT_CONFIG) {
+    .service('medalRepository', function($q, AdvancedSparqlService, QueryBuilderService,
+        baseRepository, medalMapperService, ENDPOINT_CONFIG) {
+
+        this.getById = getById;
+        this.getByPersonId = getByPersonId;
+        this.getRelatedMedals = getRelatedMedals;
 
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, medalMapperService);
 
@@ -20,14 +25,26 @@
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ';
 
-        var medalQry = prefixes +
-        ' SELECT DISTINCT ?id ?label ?description WHERE {  ' +
+        var queryBuilder = new QueryBuilderService(prefixes);
+
+        var medalQryResultSet =
         '  VALUES ?id { <ID> } .   ' +
         '  ?id a wsc:Medal . ' +
+        '  ?id skos:prefLabel ?label . ' +
+        '  ?id a/skos:prefLabel ?type . ';
+
+        var medalQry = prefixes +
+        ' SELECT DISTINCT ?id ?label ?description WHERE {  ' +
+        '  <RESULT_SET> ' +
         '  ?id skos:prefLabel ?label . ' +
         '  ?id a/skos:prefLabel ?type . ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
         ' } ';
+
+        var byPersonQryResultSet =
+        ' ?evt crm:P141_assigned ?id ; ' +
+        '   crm:P11_had_participant <ID>; ' +
+        '   a wsc:MedalAwarding . ';
 
         var relatedMedalQry = prefixes +
         ' SELECT DISTINCT ?id ?label WHERE {  ' +
@@ -51,27 +68,40 @@
         '  ?id skos:prefLabel ?label . ' +
         ' } ORDER BY desc(?no) ';
 
-        this.getById = function(id) {
+        function getById(id) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
             }
-            var qry = medalQry.replace(/<ID>/g, id);
-            return endpoint.getObjects(qry).then(function(data) {
+            var resultSet = medalQryResultSet.replace(/<ID>/g, id);
+            var qryObj = queryBuilder.buildQuery(medalQry, resultSet);
+            return endpoint.getObjects(qryObj.query).then(function(data) {
                 if (data.length) {
                     return data[0];
                 }
                 return $q.reject('Does not exist');
             });
-        };
+        }
 
-        this.getRelatedMedals = function(id) {
+        function getByPersonId(id, options) {
+            id = baseRepository.uriFy(id);
+            if (!id) {
+                return $q.when();
+            }
+            options = options || {};
+            var resultSet = byPersonQryResultSet.replace(/<ID>/g, id);
+            var qryObj = queryBuilder.buildQuery(medalQry, resultSet);
+            return endpoint.getObjects(qryObj.query, options.pageSize,
+                qryObj.resultSetQuery, options.pagesPerQuery || 2);
+        }
+
+        function getRelatedMedals(id) {
             id = baseRepository.uriFy(id);
             if (!id) {
                 return $q.when();
             }
             var qry = relatedMedalQry.replace(/<ID>/g, id);
             return endpoint.getObjects(qry);
-        };
+        }
     });
 })();

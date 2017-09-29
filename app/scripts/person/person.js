@@ -10,8 +10,9 @@
 
     /* @ngInject */
     function personService($q, _, baseService, personRepository, eventRepository,
-                    placeRepository, unitRepository, photoRepository, casualtyRepository,
-                    prisonerRepository, dateUtilService, Settings, EVENT_TYPES, WAR_INFO) {
+                placeRepository, unitRepository, photoRepository, casualtyRepository,
+                prisonerRepository, medalRepository, dateUtilService, Settings,
+                EVENT_TYPES, WAR_INFO) {
         var self = this;
 
         self.processLifeEvents = processLifeEvents;
@@ -21,6 +22,7 @@
         self.fetchDiaries = fetchDiaries;
         self.fetchDeathRecord = fetchDeathRecord;
         self.fetchPrisonerRecord = fetchPrisonerRecord;
+        self.fetchMedals = fetchMedals;
         self.fetchRelated = fetchRelated;
         self.fetchRelatedUnits = fetchRelatedUnits;
         self.fetchRelatedPhotos = fetchRelatedPhotos;
@@ -138,7 +140,6 @@
             var eventlist = [];
             var battles = [];
             var articles = [];
-            var medals = [];
             events = events || [];
 
             events.forEach(function(e) {
@@ -147,8 +148,6 @@
                     battles.push(e);
                 } else if (etype.indexOf('Article')>-1 ) {
                     articles.push(e);
-                } else if (_.get(e, 'medal.id')) {
-                    medals.push(e.medal);
                 } else if (etype !== EVENT_TYPES.PERSON_JOINING) {
                     eventlist.push(e);
                 }
@@ -165,10 +164,6 @@
             if (articles.length) {
                 person.hasLinks = true;
                 person.articles = articles;
-            }
-            if (medals.length) {
-                person.hasLinks = true;
-                person.medals = medals;
             }
             return person;
         }
@@ -191,6 +186,14 @@
                     person.diaries = diaries;
                     person.hasLinks = true;
                 }
+                return person;
+            });
+        }
+
+        function fetchMedals(person) {
+            return medalRepository.getByPersonId(person.id, { pageSize: Settings.pageSize }).then(function(medals) {
+                person.medals = medals;
+                return person;
             });
         }
 
@@ -218,7 +221,8 @@
                 self.fetchPrisonerRecord(person),
                 self.fetchRelatedPhotos(person),
                 self.fetchDiaries(person),
-                self.fetchRelatedPersons(person)
+                self.fetchRelatedPersons(person),
+                self.fetchMedals(person)
             ];
 
             return $q.all(related).then(function() {

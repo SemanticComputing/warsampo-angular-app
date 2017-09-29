@@ -81,6 +81,7 @@
         ' ?person crm:P70_documents <ID> . ' +
         ' ?person a casualties:DeathRecord . ' +
         ' ?person ?id ?obj .'  +
+        ' FILTER(?id != crm:P70_documents) ' +
         // Optimization, because Fuseki
         ' OPTIONAL { ?id skos:prefLabel ?label . }' +
         ' FILTER(BOUND(?label)) ' +

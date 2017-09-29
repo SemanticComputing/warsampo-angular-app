@@ -297,7 +297,7 @@
             id = baseRepository.uriFy(id);
             var resultSet = relatedPersonQryResultSet.replace(/<ACTOR>/g, id);
             var qryObj = queryBuilder.buildQuery(personQry, resultSet, 'DESC(?totscore)');
-            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery);
+            return endpoint.getObjects(qryObj.query, pageSize, qryObj.resultSetQuery, 5);
         };
     });
 })();

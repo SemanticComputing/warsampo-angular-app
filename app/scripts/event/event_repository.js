@@ -238,12 +238,6 @@
         '   UNION  '+
         '   { ?author skos:relatedMatch ?person . ?id wars:author ?author . } '+
         '  } ' +
-        '  UNION  '+
-        '  { ' +
-        '    ?id crm:P11_had_participant ?person ; ' +
-        '     crm:P141_assigned ?medal__id . ' +
-        '    ?medal__id skos:prefLabel ?medal__label . ' +
-        '  } ' +
         '  ?id a ?type_id . ' +
         '  OPTIONAL { ' +
         '    ?type_id skos:prefLabel ?type . ' +
