@@ -2,7 +2,8 @@
   {{ ctrl.person.birth || '?' }} {{ ctrl.person.birth_place }} &ndash;
   {{ ctrl.person.death || '?' }} {{ ctrl.person.death_place }}
 </p>
-<p class="preserve-whitespace" ng-if="ctrl.person.getDescription()">{{ ctrl.person.getDescription() }}</p>
+<p class="preserve-whitespace" ng-if="::ctrl.person.getDescription()">{{ ctrl.person.getDescription() }} <span ng-if="::ctrl.person.wikilink">(<a ng-href="{{ ::ctrl.person.wikilink[0].id }}">Wikipedia</a>)</span>
+</p>
 <p ng-if="ctrl.person.wound">
   {{ 'PERSONS_DEMO.WOUNDED' | translate }} {{ ctrl.person.wound || '?' }} {{ ctrl.person.wound_place }}
 </p>

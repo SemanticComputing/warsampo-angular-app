@@ -23,6 +23,7 @@
     <img ng-show="ctrl.unit.isLoadingLinks" src="images/loading.gif" />
     <p ng-if="!ctrl.isLoadingLinks && !ctrl.unit.hasLinks" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
+      <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
       <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.unit.wikiLinkList"></ws-related-links>
       <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.unit.diaries"></ws-related-links>
 			<ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.unit.superUnits"></ws-related-links>
@@ -30,7 +31,6 @@
 			<ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.unit.relatedUnits"></ws-related-links>
       <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.unit.battles"></ws-related-links>
       <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.unit.events"></ws-related-links>
-      <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
       <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.unit.places"></ws-related-links>
       <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.unit.articles"></ws-related-links>
     </div>
