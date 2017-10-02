@@ -48,7 +48,7 @@
     <p ng-if="(!vm.photo || !vm.photo.hasLinks) && !vm.isLoadingLinks" translate>NO_LINKS_FOUND</p>
     <div id="linkContent">
       <ws-related-links-paged data-title="'PHOTO_DEMO.RELATED_PEOPLE' | translate"
-        data-paginator="vm.photo.people"></ws-related-links-paged>
+        data-paginator="vm.photo.peoplePager"></ws-related-links-paged>
       <ws-related-links data-title="'PHOTO_DEMO.RELATED_UNITS' | translate"
         data-related="vm.photo.units"></ws-related-links>
       <ws-related-links-paged data-title="'PHOTO_DEMO.EVENTS_AT_THE_SAME_TIME' | translate"

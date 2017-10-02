@@ -32,7 +32,7 @@
       </p>
       <p ng-if="vm.photo.note"><small>{{ vm.photo.note }}</small></p>
       <div class="row">
-        <div class="col-md-6">
+        <div ng-class="{ 'col-md-6': vm.photo.people, 'col-md-12': !vm.photo.people }">
           <div ng-if="vm.photo.creators || vm.photo.photographer_string">
             <h5><span translate>PHOTOGRAPHER</span>:</h5>
             <ul class="list-unstyled" ng-if="vm.photo.creators">
@@ -43,7 +43,7 @@
             <p ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</p>
           </div>
         </div>
-        <div class="col-md-6">
+        <div ng-class="{ 'col-md-6': vm.photo.creators, 'col-md-12': !vm.photo.creators }">
           <div ng-if="vm.photo.people">
             <h5><span translate>PHOTO_DEMO.RELATED_PEOPLE</span>:</h5>
             <ul class="list-unstyled" ng-if="vm.photo.people">

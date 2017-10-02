@@ -97,10 +97,17 @@
                 }
                 return people[1];
             }).then(function(people) {
+                if (!people) {
+                    return photo;
+                }
                 return people.getTotalCount().then(function(count) {
                     if (count) {
-                        photo.people = people;
+                        photo.peoplePager = people;
                         photo.hasLinks = true;
+                        return people.getAll().then(function(people) {
+                            photo.people = people;
+                            return photo;
+                        });
                     }
                     return photo;
                 });
