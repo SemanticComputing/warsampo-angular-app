@@ -6,6 +6,7 @@
     */
 
     angular.module('eventsApp')
+    /* @ngInject */
     .factory('unitMapperService', function(_, translateableObjectMapperService, Unit) {
         var proto = Object.getPrototypeOf(translateableObjectMapperService);
 
@@ -16,7 +17,8 @@
 
         function UnitMapper() { }
     })
-    .factory('Unit', function(TranslateableObject) {
+    /* @ngInject */
+    .factory('Unit', function(_, TranslateableObject) {
         Object.defineProperty(Unit.prototype, 'wikiLinkList', { get: getWikiList });
 
         Unit.prototype = angular.extend(Unit.prototype, TranslateableObject.prototype);
@@ -25,11 +27,22 @@
 
         function Unit() { }
 
+        function getWikiLabel(wikilink) {
+            return decodeURIComponent(wikilink.replace(/^.+?\/([^/]+)$/, '$1').replace(/_/g, ' '));
+        }
+
         function getWikiList() {
-            if (!this._wikiList && this.wikilink) {
-                this._wikiList = [{ id: this.wikilink, label: this.getLabel() }];
+            var self = this;
+            if (!self._wikiList && self.wikilink) {
+                if (_.isArray(self.wikilink)) {
+                    self._wikiList =  _.map(self.wikilink, function(link) {
+                        return { id: link, label: getWikiLabel(link) };
+                    });
+                } else {
+                    self._wikiList = [{ id: self.wikilink, label: getWikiLabel(self.wikilink) }];
+                }
             }
-            return this._wikiList;
+            return self._wikiList;
         }
     });
 })();
