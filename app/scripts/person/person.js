@@ -9,7 +9,7 @@
     .service('personService', personService);
 
     /* @ngInject */
-    function personService($q, _, baseService, personRepository, eventRepository,
+    function personService($q, $location, _, baseService, personRepository, eventRepository,
                 placeRepository, unitRepository, photoRepository, casualtyRepository,
                 prisonerRepository, medalRepository, dateUtilService, Settings,
                 EVENT_TYPES, WAR_INFO) {
@@ -205,6 +205,9 @@
         }
 
         function fetchPrisonerRecord(person) {
+            if ($location.host() === 'www.sotasampo.fi') {
+                return person;
+            }
             return prisonerRepository.getPersonPrisonerRecord(person.id).then(function(prisonerRecord) {
                 person.prisonerRecord = prisonerRecord;
                 return person;

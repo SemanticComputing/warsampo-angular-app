@@ -15,12 +15,6 @@
         var hrProps = ['other_information', 'memoirs'];
 
         function init() {
-            if ($location.host() === 'www.sotasampo.fi') {
-                self.showPrisonerRecord = false;
-            } else {
-                self.showPrisonerRecord = true;
-            }
-
             if ($routeParams.uri) {
                 self.isLoadingPerson = true;
                 self.isLoadingRelated = true;

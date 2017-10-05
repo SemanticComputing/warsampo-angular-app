@@ -18,7 +18,7 @@
 
       <img ng-show="ctrl.isLoadingRelated" src="images/loading.gif" />
 
-      <div ng-if="ctrl.showPrisonerRecord" ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
+      <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
       <div ng-include="'views/partials/person_death_record_partial.html'"></div>
     </div>
   </div>
@@ -39,5 +39,6 @@
       <ws-related-links title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
       <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
       <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
+    </div>
   </div>
 </div>
