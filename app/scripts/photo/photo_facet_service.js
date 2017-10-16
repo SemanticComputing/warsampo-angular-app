@@ -76,7 +76,8 @@
 
         var cons =
         '?id <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?order . ' +
-        '?id <http://ldf.fi/schema/warsa/photographs/is_color> ?color . ';
+        '?id <http://ldf.fi/schema/warsa/photographs/is_color> ?color . ' +
+        '?id <http://purl.org/dc/terms/source> <http://ldf.fi/warsa/sources/source13> . ';
 
         var fetchOptions = { pageSize: PHOTO_PAGE_SIZE };
 
