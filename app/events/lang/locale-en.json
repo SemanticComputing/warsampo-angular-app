@@ -64,7 +64,7 @@
         "TITLE": "War cemeteries",
         "HEADER": "War cemeteries",
         "PAGE_META_DESCRIPTION_PREFIX": "Information on, soldiers buried in, and photographs of war cemetery",
-        "APP_DESCRIPTION": "You can search the cemeteries by name and narrow the results by using the filters on the left. The details of an individual cemetery can be studied by clicking the name of the cemetery. The data consists of 713 cemeteries originating from the The National Archives war casualty database. Details and photos have been added to 218 cemeteries, the rest will be added when The Central Organization of Finnish Camera Clubs delivers the final data from their information collection project.",
+        "APP_DESCRIPTION": "You can search the cemeteries by name and narrow the results by using the filters on the left. The details of an individual cemetery can be studied by clicking the name of the cemetery. The cemetery data cleaning is in progress, The Central Organization of Finnish Camera Clubs delivers the final data from their information collection project in Autumn 2017.",
         "TEXT_SEARCH_EXCEPTION": "The text search terms are not valid. Please try again with another set of search terms.",
         "OTHER_CEMETERIES_CLOSE": "Other cemeteries nearby",
         "NAME": "Name",
