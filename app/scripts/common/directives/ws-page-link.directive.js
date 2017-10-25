@@ -25,7 +25,7 @@
                 var path, target, params;
                 var objId = value;
                 if (_.includes(objId, '/times/')) {
-                    path = isDemoLink ? 'time/' : 'times/page';
+                    path = 'times/page';
                 } else if (_.includes(objId, '/events/')) {
                     path = isDemoLink ? 'events/' : 'events/page';
                 } else if (_.includes(objId, '/photographs/')) {
@@ -35,9 +35,9 @@
                 } else if (_.includes(objId, '/actor_')) {
                     path = isDemoLink ? 'units/' : 'units/page';
                 } else if (_.includes(objId, '/ranks/')) {
-                    path = isDemoLink ? 'ranks/' : 'ranks/page';
+                    path = 'ranks/page';
                 } else if (_.includes(objId, '/medals/')) {
-                    path = isDemoLink ? 'medals/' : 'medals/page';
+                    path = 'medals/page';
                 } else if (_.includes(objId, '/places/') || _.includes(objId, '/pnr/')) {
                     if (_.includes(objId, '/cemeteries/')) {
                         path = isDemoLink ? 'cemeteries/' : 'cemeteries/page';

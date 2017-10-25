@@ -48,12 +48,12 @@
             'home_place',
             'residence_place',
             'has_occupation',
+            'located_in',
             'amount_children',
             'rank',
             'warsa_rank',
             'unit',
             'warsa_unit',
-            'camps_and_hospitals',
             'time_captured',
             'place_captured',
             'place_captured_battle',
@@ -117,16 +117,16 @@
             '   ?id a wsc:PrisonerRecord . ' +
             '   BIND(1 AS ?properties__id) ' +
             '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
-            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel|psc:place ?properties__<PROPERTY>__valueLabel . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id psc:order ?properties__<PROPERTY>__order . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_end ?properties__<PROPERTY>__date_end . } ' +
             '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
             '   OPTIONAL { ' +
-            '    ?rei_<PROPERTY> rdf:subject ?id . ' +
-            '    ?rei_<PROPERTY> rdf:predicate <NAMESPACE><PROPERTY> . ' +
-            '    ?rei_<PROPERTY> rdf:object ?properties__<PROPERTY>__id . ' +
-            '    OPTIONAL { ?rei_<PROPERTY> psc:order ?properties__<PROPERTY>__order . } ' +
-            '    { ?rei_<PROPERTY> dct:source ?properties__<PROPERTY>__source . } ' +
-            '    UNION { ?rei_<PROPERTY> psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
-            '    UNION { ?rei_<PROPERTY> psc:date_end ?properties__<PROPERTY>__date_end . } ' +
+            '    [] rdf:subject ?id ; ' +
+            '     rdf:predicate <NAMESPACE><PROPERTY> ; ' +
+            '     rdf:object ?properties__<PROPERTY>__id ; ' +
+            '     dct:source ?properties__<PROPERTY>__source . ' +
             '   } ' +
             '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
