@@ -25,15 +25,17 @@
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
         ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX text: <http://jena.apache.org/text#> ' +
         ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
-        var select =
-        ' SELECT DISTINCT ?id ?label ?listLabel ?sname ?fname ?description ?rank ?rank_id ' +
-        '  ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ?living_place ' +
-        '  ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
-        '  ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ';
+        var props = '?id ?label ?rank__id ?rank__label ?listLabel ?sname ?fname ?description ?rank ?rank_id ' +
+        ' ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ?living_place ' +
+        ' ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
+        ' ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ';
+
+        var select = ' SELECT DISTINCT ' + props;
 
         var personQryResultSet =
         ' VALUES ?id { <ID> }' +
@@ -50,6 +52,11 @@
         '  BIND(IF(BOUND(?fname), CONCAT(?sname, ", ", ?fname), ?lbl) AS ?listLabel) ' +
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
+        '  OPTIONAL { ' +
+        '   ?id ^crm:P11_had_participant/wacs:hasRank ?rank__id . ' +
+        '   ?rank__id wacs:level ?rl ; skos:prefLabel ?rank__label . ' +
+        '   ?id ^crm:P11_had_participant/wacs:hasRank/wacs:level ?rl2 . ' +
+        '  } ' +
         '  OPTIONAL { ?id dct:source ?sid . ' +
         '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
         '  }' +
@@ -82,7 +89,8 @@
         '    ?way_id skos:prefLabel ?way_to_die . ' +
         '   } '+
         '  }' +
-        ' } ';
+        ' } GROUP BY ' + props +
+        ' HAVING (MAX(COALESCE(?rl, 1)) >= MAX(COALESCE(?rl2, 1))) ';
 
         var nationalBibliographyQry = prefixes +
         ' SELECT DISTINCT ?id ?name ?images ?shortDescription ?description' +
@@ -106,16 +114,26 @@
 
         //	Query for searching people with matching names: 'La' -> 'Laine','Laaksonen' etc
         var selectorQuery = prefixes +
-        'SELECT DISTINCT ?name ?id WHERE {	' +
+        'SELECT DISTINCT ?name ?rank ?id WHERE {	' +
+        ' { ' +
         '  SELECT DISTINCT ?name ?id WHERE {	' +
-        '    { ?type rdfs:subClassOf* wsc:Person } ' +
-        '    GRAPH <http://ldf.fi/warsa/persons> {	' +
-        '      ?id a ?type .   	    	' +
-        '      ?id skos:prefLabel ?name . ' +
-        '      FILTER (regex(?name, "^<REGEX>$", "i"))	' +
-        '    } 	' +
-        '  } LIMIT 300 	' +
-        '} ORDER BY ?name 	';
+        '   GRAPH <http://ldf.fi/warsa/persons> {	' +
+        '    ?id text:query "<QUERY>" . ' +
+        '    ?id a wsc:Person . ' +
+        '    ?id foaf:familyName ?familyName . ' +
+        '    OPTIONAL { ?id foaf:firstName ?firstName . } ' +
+        '    BIND(CONCAT(?familyName, ", ", COALESCE(?firstName, "?")) AS ?name) ' +
+        '    FILTER (regex(?name, "<REGEX>", "i"))	' +
+        '   } 	' +
+        '  } LIMIT 1000	' +
+        ' } ' +
+        ' OPTIONAL { ' +
+        '  ?id ^crm:P11_had_participant/wacs:hasRank [ wacs:level ?rl ; skos:prefLabel ?rank ] . ' +
+        '  ?id ^crm:P11_had_participant/wacs:hasRank/wacs:level ?rl2 . ' +
+        ' } ' +
+        '} GROUP BY ?name ?rank ?id ' +
+        ' HAVING (MAX(COALESCE(?rl, 1)) >= MAX(COALESCE(?rl2, 1))) ' +
+        ' ORDER BY ?name ';
 
         var wardiaryQry = prefixes +
         'SELECT ?label ?id ?time ' +
@@ -282,15 +300,23 @@
             return endpoint.getObjects(qry);
         };
 
-        this.getItems = function(regx) {
-            var qry = selectorQuery.replace(/<REGEX>/g, regx);
-            return endpoint.getObjects(qry).then(function(data) {
-                var arr = data;
-                if (!arr.length) {
-                    arr = [ {id:'#', name:'Ei hakutuloksia.'} ];
-                }
-                return arr;
-            });
+        this.getItems = function(text) {
+            var textQry = text.trim().replace(/-|\s+/g, '* ') + '*';
+
+            if (text.match(/\s/)) {
+                var arr = text.split(/\s+/);
+                text = '';
+                arr.forEach(function(word) {
+                    text += '(?=.*'+ word +')';
+                });
+            }
+
+            text = _.endsWith(text, '.*') ? text : text + '.*';
+
+            var qry = selectorQuery
+                .replace(/<REGEX>/g, text)
+                .replace(/<QUERY>/g, textQry);
+            return endpoint.getObjects(qry);
         };
 
         this.getRelatedPersons = function(id, pageSize) {

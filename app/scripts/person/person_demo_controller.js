@@ -251,25 +251,18 @@
         }
 
         function getItems() {
-            var rx='', n=self.queryregex.length;
-            if (n<1) {
-                rx= '^AA.*$';
-            } else if (n<2) {
-                rx= '^'+self.queryregex+'A.*$';
+            var query = '';
+            var n = self.queryregex.length;
+            if (n < 1) {
+                query = 'AA';
+            } else if (n < 2) {
+                query = self.queryregex + 'A';
             } else {
-                rx= self.queryregex;
-                if (rx.indexOf(' ')>0) {
-                    var arr=rx.split(' ');
-                    rx='';
-                    for (var i=0; i<arr.length; i++) {
-                        rx += '(?=.*'+arr[i]+')';
-                    }
-                }
-                rx= '(^|^.* )'+rx+'.*$';
+                query = self.queryregex;
             }
             self.items = [ {id:'#', name:'Etsitään ...'} ];
-            return personService.getItems(rx).then(function(data) {
-                self.items = data;
+            return personService.getItems(query).then(function(data) {
+                self.items = data.length ? data : [ {id:'#', name:'Ei hakutuloksia.'} ];
             });
         }
     }

@@ -40,19 +40,21 @@
 
         var relatedRankQry = prefixes +
         'SELECT ?id ?label ?level WHERE {' +
-        '    VALUES ?rank { <ID>  } .   ' +
-        '    ?id a wsc:Rank . ' +
-        '    { ?id org:rankSeniorTo ?rank . ' +
-        '     BIND (2 AS ?level) .' +
-        '    } UNION { ' +
-        '     ?rank org:rankSeniorTo ?id . ' +
-        '     BIND (0 AS ?level)' +
-        '    } UNION {' +
-        '     { ?id org:equalTo ?rank } UNION { ?rank dct:isPartOf ?id } UNION { ?id dct:isPartOf ?rank }' +
-        '     BIND (1 AS ?level)' +
-        '  }' +
-        '  ?id skos:prefLabel ?label . ' +
-        '}  GROUP BY ?id ?label ?level ORDER BY ?label' ;
+        ' { ' +
+        '  VALUES ?rank { <ID>  } . ' +
+        '  ?id org:rankSeniorTo ?rank . ' +
+        '  BIND (2 AS ?level) .' +
+        ' } UNION { ' +
+        '  VALUES ?rank { <ID>  } . ' +
+        '  ?rank org:rankSeniorTo ?id . ' +
+        '  BIND (0 AS ?level)' +
+        ' } UNION {' +
+        '  VALUES ?rank { <ID>  } . ' +
+        '  { ?id org:equalTo ?rank } UNION { ?rank dct:isPartOf ?id } UNION { ?id dct:isPartOf ?rank }' +
+        '  BIND (1 AS ?level)' +
+        ' }' +
+        ' ?id skos:prefLabel ?label . ' +
+        '} GROUP BY ?id ?label ?level ORDER BY ?label' ;
 
         function getById(ids) {
             ids = baseRepository.uriFy(ids);

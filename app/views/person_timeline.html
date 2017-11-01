@@ -15,7 +15,7 @@
       placeholder="{{ 'PERSONS_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
       ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
     <select class="hidden-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
-      size="32" ng-options="item as item.name for item in ctrl.items">
+      size="32" ng-options="item as (item.name + (item.rank ? ' (' + item.rank + ')' : '')) for item in ctrl.items">
     </select>
     <select class="visible-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
       size="10" ng-options="item as item.name for item in ctrl.items">
