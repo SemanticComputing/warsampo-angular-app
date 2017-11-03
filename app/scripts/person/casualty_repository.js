@@ -7,7 +7,7 @@
     */
     angular.module('eventsApp')
     .service('casualtyRepository', function($q, _, AdvancedSparqlService, baseRepository,
-            translateableObjectMapperService, ENDPOINT_CONFIG, dateUtilService) {
+            translateableObjectMapperService, ENDPOINT_CONFIG, PNR_ENDPOINT_URL, dateUtilService) {
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
 
         var prefixes =
@@ -86,6 +86,7 @@
         ' OPTIONAL { ?id skos:prefLabel ?label . }' +
         ' FILTER(BOUND(?label)) ' +
         ' OPTIONAL { ?obj skos:prefLabel ?obj_lbl . }' +
+        ' OPTIONAL { SERVICE <PNR> { ?obj skos:prefLabel ?obj_lbl . } }' +
         ' BIND(IF(isIRI(?obj), ?obj, "") as ?obj_link) '  +
         ' BIND(COALESCE(?obj_lbl, ?obj) as ?description) '  +
         ' wso:source9 skos:prefLabel ?source . ' +
@@ -132,7 +133,9 @@
         };
 
         this.getPersonDeathRecord = function(id) {
-            var qry = personDeathRecordQry.replace('<ID>', baseRepository.uriFy(id));
+            var qry = personDeathRecordQry
+                .replace('<ID>', baseRepository.uriFy(id))
+                .replace('<PNR>', baseRepository.uriFy(PNR_ENDPOINT_URL));
             return endpoint.getObjects(qry);
         };
     });
