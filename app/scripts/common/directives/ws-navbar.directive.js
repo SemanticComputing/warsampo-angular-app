@@ -17,7 +17,7 @@
         function link(scope, elem) {
             scope.$watch('ctrl.lang', function(lang) {
                 if (lang) {
-                    return $templateRequest('/page-templates/navbar-' + lang + '.html')
+                    return $templateRequest('/page-templates/navbar-' + lang + '.html.partial')
                     .then(function(template) {
                         elem.html(template);
                         return $templateRequest('events/views/subnav.html');
