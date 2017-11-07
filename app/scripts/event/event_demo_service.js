@@ -7,7 +7,7 @@
 
     /* @ngInject */
     function EventDemoService($location, $timeout, $q, _, timemapService, googleMapsService, Settings,
-            eventService, photoService, casualtyRepository) {
+            eventService, photoService, casualtyRepository, baseService) {
 
         EventDemoServiceConstructor.prototype.getTimemap = getTimemap;
         EventDemoServiceConstructor.prototype.getMap = getMap;
@@ -18,6 +18,8 @@
         EventDemoServiceConstructor.prototype.clearCurrent = clearCurrent;
         EventDemoServiceConstructor.prototype.clear = clear;
         EventDemoServiceConstructor.prototype.getImages = getImages;
+
+        EventDemoServiceConstructor.prototype.getIdFromUri = baseService.getIdFromUri;
 
         EventDemoServiceConstructor.prototype.createTimemap = createTimemapByTimeSpan;
         EventDemoServiceConstructor.prototype.setupTimemap = setupTimemap;

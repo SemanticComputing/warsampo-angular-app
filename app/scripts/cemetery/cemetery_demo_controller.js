@@ -7,7 +7,7 @@
     .controller('CemeteryDemoController', CemeteryDemoController);
 
     /* @ngInject */
-    function CemeteryDemoController($scope, $translate, $location, $routeParams, _, cemeteryFacetService,
+    function CemeteryDemoController($scope, $translate, $location, $route, $routeParams, _, cemeteryFacetService,
             NgTableParams, FacetHandler, facetUrlStateHandlerService, chartjsService) {
 
         var vm = this;

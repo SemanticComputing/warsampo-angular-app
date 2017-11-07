@@ -5,13 +5,13 @@
     .controller('RankPageController', RankPageController);
     
     /* @ngInject */
-    function RankPageController($routeParams, rankService) {
+    function RankPageController($route, rankService) {
         var self = this;
 
-        if ($routeParams.uri) {
+        if ($route.current.locals.uri) {
             self.isLoadingRank = true;
             self.isLoadingPersons = false;
-            rankService.getById($routeParams.uri)
+            rankService.getById($route.current.locals.uri)
             .then(function(rank) {
                 self.rank = rank;
                 self.isLoadingRank = false;

@@ -5,7 +5,7 @@
     .controller('PersonDemoController', PersonDemoController);
 
     /* @ngInject */
-    function PersonDemoController($q, $scope, $routeParams, $location, $uibModal,
+    function PersonDemoController($q, $scope, $route, $routeParams, $location, $uibModal,
             $translate, _, personService, PersonDemoService, eventService, Settings) {
 
         var self = this;
@@ -13,7 +13,7 @@
 
         var INFO_TAB = 1;
         var TIMELINE_TAB = 2;
-        var DEFAULT_PERSON = 'http://ldf.fi/warsa/actors/person_50';
+        var DEFAULT_PERSON = 'person_50';
 
         // Person selection list
         self.items = [];
@@ -72,9 +72,9 @@
 
             self.getItems();
 
-            if (!$routeParams.uri) {
+            if (!$routeParams.id) {
                 // Redirect to default person.
-                return $location.search('uri', DEFAULT_PERSON).replace();
+                return $route.updateParams({ 'id': DEFAULT_PERSON });
             }
             return updateState();
         }
@@ -91,8 +91,8 @@
         }
 
         // Update state based on url
-        function updateState() {
-            var uri = $routeParams.uri;
+        function updateState(uri) {
+            uri = uri || $route.current.locals.uri;
             if (!uri) {
                 // This shouldn't happen.
                 return;
@@ -222,7 +222,9 @@
             if (self.selectedItem && self.selectedItem.id) {
                 demoService.clear();
                 $location.search('event', null);
-                $location.search('uri', self.selectedItem.id);
+                $location.path($route.current.params.lang
+                    + '/persons/' + demoService.getIdFromUri(self.selectedItem.id), false);
+                updateState(self.selectedItem.id);
             }
         }
 

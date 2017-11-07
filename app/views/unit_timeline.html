@@ -1,5 +1,5 @@
-<update-title title="{{ 'TITLE' | translate }} | {{ 'UNIT_DEMO.PAGE_TITLE' | translate }} | {{ ctrl.currentObject.getLabel() }}"></update-title>
-<update-meta name="description" content="{{ 'UNIT_DEMO.DEMO_META_DESCRIPTION' | translate }} {{ ctrl.currentObject.description || ('UNIT_DEMO.PAGE_META_DESCRIPTION' | translate:{ unit:ctrl.currentObject.getLabel() }) }}"></update-meta>
+<update-title title="{{ 'TITLE' | translate }} | {{ 'UNIT_DEMO.PAGE_TITLE' | translate }} | {{ ctrl.unit.getLabel() }}"></update-title>
+<update-meta name="description" content="{{ 'UNIT_DEMO.DEMO_META_DESCRIPTION' | translate }} {{ ctrl.unit.description || ('UNIT_DEMO.PAGE_META_DESCRIPTION' | translate:{ unit:ctrl.unit.getLabel() }) }}"></update-meta>
 <update-meta name="robots" content="index, follow"></update-meta>
 <ws-settings></ws-settings>
 <div class="row">
@@ -24,22 +24,21 @@
             <div ng-switch="ctrl.showUnitDetails()">
               <div ng-switch-when="true">
                 <!-- Unit details -->
-                <h3>{{ ctrl.currentObject.getLabel() }} <span ng-if="ctrl.currentObject.abbrev.length"> – {{ ctrl.currentObject.abbrev | concatList }}</span></h3>
-                <p ng-if="ctrl.currentObject.altNames.length"><span translate>UNIT_DEMO.UNIT_AKA</span> {{ ctrl.currentObject.altNames.join('; ') }}</p>
-                <p ng-if="ctrl.currentObject.getDescription()">{{ ctrl.currentObject.getDescription() }} (Wikipedia)</p>
-                <p><a ws-page-link="ctrl.currentObject.id" translate>SHOW_INFO_PAGE</a></p>
+                <h3>{{ ctrl.unit.getLabel() }} <span ng-if="ctrl.unit.abbrev.length"> – {{ ctrl.unit.abbrev | concatList }}</span></h3>
+                <div ng-include="'views/partials/unit_description_partial.html'"></div>
+                <p><a ws-page-link="ctrl.unit.id" translate>SHOW_INFO_PAGE</a></p>
 
-                <ws-photo-gallery images="ctrl.currentObject.images"></ws-photo-gallery>
+                <ws-photo-gallery images="ctrl.unit.images"></ws-photo-gallery>
 
-                <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.currentObject.wikiLinkList"></ws-related-links>
-                <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.currentObject.diaries"></ws-related-links>
-                <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.currentObject.relatedPersons"></ws-related-links-paged>
-                <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.currentObject.superUnits"></ws-related-links>
-                <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.currentObject.subUnits"></ws-related-links>
-                <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.currentObject.relatedUnits"></ws-related-links>
-                <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.currentObject.battles"></ws-related-links>
-                <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.currentObject.places"></ws-related-links>
-                <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.currentObject.articles"></ws-related-links>
+                <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.unit.wikiLinkList"></ws-related-links>
+                <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.unit.diaries"></ws-related-links>
+                <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
+                <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.unit.superUnits"></ws-related-links>
+                <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.unit.subUnits"></ws-related-links>
+                <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.unit.relatedUnits"></ws-related-links>
+                <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.unit.battles"></ws-related-links>
+                <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.unit.places"></ws-related-links>
+                <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.unit.articles"></ws-related-links>
 
               </div>
               <div ng-switch-default>
@@ -47,7 +46,7 @@
                   <h3>{{ 'LOADING' | translate}} <img src="images/loading.gif" /></h3>
                 </div>
                 <div ng-show="!ctrl.isLoadingEvent">
-                  <h3><a href="" ng-click="ctrl.clearEvent()">{{ ctrl.currentObject.getLabel() }}</a></h3>
+                  <h3><a href="" ng-click="ctrl.clearEvent()">{{ ctrl.unit.getLabel() }}</a></h3>
                   <event-details data-event=ctrl.getCurrent()></event-details>
                   <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
                   <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
