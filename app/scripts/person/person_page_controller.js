@@ -5,7 +5,7 @@
     .controller('PersonPageController', PersonPageController);
 
     /* @ngInject */
-    function PersonPageController($log, $location, $route, _, personService) {
+    function PersonPageController($log, $location, $routeParams, _, personService) {
         var self = this;
 
         self.showHr = showHr;
@@ -15,10 +15,10 @@
         var hrProps = ['other_information', 'memoirs'];
 
         function init() {
-            if ($route.current.locals.uri) {
+            if ($routeParams.uri) {
                 self.isLoadingPerson = true;
                 self.isLoadingRelated = true;
-                personService.getById($route.current.locals.uri)
+                personService.getById($routeParams.uri)
                 .then(function(person) {
                     self.person = person;
                     self.isLoadingPerson = false;

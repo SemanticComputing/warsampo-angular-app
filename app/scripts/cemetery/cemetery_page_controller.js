@@ -12,15 +12,14 @@
     .controller('CemeteryPageController', CemeteryPageController);
 
     /* @ngInject */
-    function CemeteryPageController($route, $routeParams, $scope, $timeout, $sce,
-            $uibModal, $q, _, cemeteryService, chartjsService, Settings, baseService) {
+    function CemeteryPageController($routeParams, $scope, $timeout, $sce, $uibModal, $q, _, cemeteryService, chartjsService, Settings) {
 
           var vm = this;
 
           init();
 
           function init() {
-              if (!$route.current.locals.uri) {
+              if (!$routeParams.uri) {
                   return;
               }
               vm.isLoadingCemetery = true;
@@ -33,7 +32,7 @@
 
               setChartOptions(['unitChart', 'rankChart', 'ageChart', 'wayChart']);
 
-              cemeteryService.getSingleCemeteryById($route.current.locals.uri)
+              cemeteryService.getSingleCemeteryById($routeParams.uri)
               .then(function(cemetery) {
                   vm.cemetery = cemetery;
                   vm.casualtiesLink = '/' + $routeParams.lang  +'/casualties/?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/narc-menehtyneet1939-45/hautausmaa> <'+ cemetery.id +'> . "}}';
@@ -104,10 +103,10 @@
                             if (labels[i]) {
                                 switch (chartTitle) {
                                   case 'unitChart':
-                                      text.push('<a href="/units/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + chart.data.labels[i] + '</a>');
+                                      text.push('<a href="/units/page?uri=' + vm[chartTitle].uris[i] + '">' + chart.data.labels[i] + '</a>');
                                       break;
                                   case 'rankChart':
-                                      text.push('<a href="/ranks/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + chart.data.labels[i] + '</a>');
+                                      text.push('<a href="/ranks/page?uri=' + vm[chartTitle].uris[i] + '">' + chart.data.labels[i] + '</a>');
                                       break;
                                   case 'wayChart':
                                       text.push(chart.data.labels[i]);

@@ -6,7 +6,7 @@
     .controller('EventDemoController', EventDemoController);
 
     /* @ngInject */
-    function EventDemoController($route, $routeParams, $location, $scope, $q, $translate,
+    function EventDemoController($routeParams, $location, $scope, $q, $translate,
             $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
             googleMapsService, EventDemoService) {
 
@@ -89,7 +89,7 @@
 
         // Update state based on url
         function updateState() {
-            var uri = $route.current.locals.uri;
+            var uri = $routeParams.uri;
             if (!uri) {
                 self.promise = self.promise.then(function() {
                     return demoService.clearCurrent();
@@ -108,7 +108,7 @@
             self.err = undefined;
             self.isLoadingTimeline = true;
             var era = $routeParams.era;
-            var event_uri = $route.current.locals.uri;
+            var event_uri = $routeParams.uri;
             var promise;
             if (event_uri) {
                 // Single event given as parameter

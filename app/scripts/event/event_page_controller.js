@@ -11,7 +11,7 @@
     angular.module('eventsApp')
     .controller('EventPageController', EventPageController);
 
-    function EventPageController($route, $q, $rootScope, $translate,
+    function EventPageController($routeParams, $q, $rootScope, $translate,
             _, eventService, photoService, Settings, EVENT_TYPES) {
 
         $rootScope.showHelp = null;
@@ -28,13 +28,13 @@
         function init() {
             Settings.setApplyFunction(self.fetchImages);
 
-            if (!$route.current.locals.uri) {
+            if (!$routeParams.uri) {
                 return;
             }
             self.error = undefined;
             self.isLoadingEvent = true;
             self.isLoadingLinks = true;
-            eventService.getEventById($route.current.locals.uri)
+            eventService.getEventById($routeParams.uri)
             .then(function(event) {
                 self.event = event;
                 return eventService.fetchRelated(self.event);

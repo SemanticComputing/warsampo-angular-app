@@ -5,12 +5,12 @@
     .controller('MedalPageController', MedalPageController);
 
     /* @ngInject */
-    function MedalPageController($route, medalService) {
+    function MedalPageController($routeParams, medalService) {
         var vm = this;
 
-        if ($route.current.locals.uri) {
+        if ($routeParams.uri) {
             vm.isLoadingMedal = true;
-            medalService.getById($route.current.locals.uri)
+            medalService.getById($routeParams.uri)
             .then(function(medal) {
                 vm.medal = medal;
                 vm.isLoadingMedal = false;

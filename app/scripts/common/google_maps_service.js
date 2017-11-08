@@ -3,8 +3,7 @@
     /* eslint-disable angular/no-service-method */
 
     angular.module('eventsApp')
-    /* @ngInject */
-    .service('googleMapsService', function(google, baseService) {
+    .service('googleMapsService', function(google) {
 
         var self = this;
 
@@ -20,21 +19,20 @@
             var markers = [];
             objects.forEach(function(obj) {
                 var infoWindowHtml = '';
-                var objId = baseService.getIdFromUri(obj.id);
                 if (obj.id.startsWith('http://ldf.fi/warsa/actors/')) {
                     infoWindowHtml = '<div id="content">'+
-                      '<a href="/persons/page/' + objId + '"><h3>' + obj.description + '</h3></a>'+
+                      '<a href="/persons/page?uri=' + obj.id + '"><h3>' + obj.description + '</h3></a>'+
                       '<div id="bodyContent">'+
                       '<p>Paikka: ' + obj.label + ' (' + obj.type + ')</p>' +
                       '</div>'+
                       '</div>';
-                } else if (obj.id.startsWith('http://ldf.fi/warsa/places/cemeteries/')) {
+               } else if (obj.id.startsWith('http://ldf.fi/warsa/places/cemeteries/')) {
                     var fMun = '';
                     if (obj.hasOwnProperty('former_municipality')) {
                         fMun = '<p>Entinen kunta: ' + obj.former_municipality + '</p>';
                     }
                     infoWindowHtml = '<div id="content">'+
-                      '<a href="/cemeteries/page/' + objId + '"><h3>' + obj.label + '</h3></a>'+
+                      '<a href="/cemeteries/page?uri=' + obj.id + '"><h3>' + obj.label + '</h3></a>'+
                       '<div id="bodyContent">'+
                       '<p>Kunta: ' + obj.current_municipality + '</p>' +
                       fMun +
