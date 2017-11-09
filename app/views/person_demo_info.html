@@ -1,0 +1,31 @@
+<div class="row">
+  <div ng-if="ctrl.person.nationals" class="col-md-4 col-md-push-8 col-sm-12">
+    <div ng-include="'views/partials/national_bibliography_partial.html'"></div>
+  </div>
+  <div ng-class="{ 'col-md-8 col-md-pull-4 col-sm-12': ctrl.person.nationals, 'col-md-12': !ctrl.person.nationals }">
+    <div ng-include="'views/partials/person_description_partial.html'"></div>
+
+    <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
+
+    <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
+
+    <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
+    <div ng-include="'views/partials/person_death_record_partial.html'"></div>
+
+    <!-- Links -->
+    <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>
+    <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
+    <div id="linkContent">
+      <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
+      <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
+      <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>
+      <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.person.diaries"></ws-related-links>
+      <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
+      <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
+      <ws-related-links data-title="'RELATED_MEDALS' | translate" data-related="ctrl.person.medals"></ws-related-links>
+      <ws-related-links-paged data-additional-text="'PERSONS_DEMO.RELATED_PEOPLE_DESCRIPTION' | translate" data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.person.relatedPersons"></ws-related-links-paged>
+      <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
+      <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
+    </div>
+  </div>
+</div>

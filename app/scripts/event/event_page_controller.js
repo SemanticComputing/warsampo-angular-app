@@ -11,8 +11,8 @@
     angular.module('eventsApp')
     .controller('EventPageController', EventPageController);
 
-    function EventPageController($route, $q, $rootScope, $translate,
-            _, eventService, photoService, Settings, EVENT_TYPES) {
+    function EventPageController($q, $rootScope, $state, $translate,
+            _, eventService, baseService, photoService, Settings, EVENT_TYPES, uri) {
 
         $rootScope.showHelp = null;
 
@@ -28,13 +28,13 @@
         function init() {
             Settings.setApplyFunction(self.fetchImages);
 
-            if (!$route.current.locals.uri) {
+            if (!uri) {
                 return;
             }
             self.error = undefined;
             self.isLoadingEvent = true;
             self.isLoadingLinks = true;
-            eventService.getEventById($route.current.locals.uri)
+            eventService.getEventById(uri)
             .then(function(event) {
                 self.event = event;
                 return eventService.fetchRelated(self.event);
@@ -70,8 +70,12 @@
         }
 
         function getDemoLink(event) {
-            var base = '/' + $translate.use() + '/';
-            var app, id;
+            var state;
+            var personsState = 'app.lang.persons.demo.page.timeline';
+            var unitsState = 'app.lang.units.demo.timeline';
+            var stateParams = {
+                lang: $translate.use()
+            };
             switch(event.type_id) {
                 case EVENT_TYPES.BATTLE:
                 case EVENT_TYPES.TROOP_MOVEMENT:
@@ -79,8 +83,8 @@
                 case EVENT_TYPES.UNIT_FORMATION:
                 case EVENT_TYPES.UNIT_NAMING:
                 case EVENT_TYPES.DISSOLUTION:
-                    app = 'units';
-                    id = getUnitId(event);
+                    state = unitsState;
+                    stateParams.id = getUnitId(event);
                     break;
                 case EVENT_TYPES.PROMOTION:
                 case EVENT_TYPES.PERSON_JOINING:
@@ -88,36 +92,42 @@
                 case EVENT_TYPES.DEATH:
                 case EVENT_TYPES.DISSAPEARING:
                 case EVENT_TYPES.MEDAL_ASSIGNMENT:
-                    app = 'persons';
-                    id = getParticipantId(event);
+                    state = personsState;
+                    stateParams.id = getParticipantId(event);
+                    stateParams.tab = 2;
                     break;
                 case EVENT_TYPES.PHOTOGRAPHY:
-                    app = event.participant_id ? 'persons' : (event.units ? 'units' : undefined);
-                    id = app === 'persons' ? getParticipantId(event) : getUnitId(event);
+                    if (event.participant_id) {
+                        state = personsState;
+                        stateParams.id = getParticipantId(event);
+                        stateParams.tab = 2;
+                    } else if (event.units) {
+                        state = unitsState;
+                        stateParams.id = getUnitId(event);
+                    } else {
+                        state = undefined;
+                    }
                     break;
                 default:
-                    id = event.id;
-                    app = 'events';
+                    stateParams.uri = event.id;
+                    state = 'app.lang.events.demo';
             }
-            if (!app) {
+            if (!state) {
                 return undefined;
             }
-            var url = base + app + '?uri=' + encodeURIComponent(id);
-            if (_.includes(['units', 'persons'], app)) {
-                url += '&event=' + encodeURIComponent(event.id);
-                if (app === 'persons') {
-                    url += '&tab=2';
-                }
+            if (_.includes([personsState, unitsState], state)) {
+                stateParams.event = event.id;
             }
-            return url;
+            return $state.href(state, stateParams);
         }
 
         function getParticipantId(event) {
-            return _.isArray(event.participant_id) ? event.participant_id[0] : event.participant_id;
+            return baseService.getIdFromUri(
+                _.isArray(event.participant_id) ? event.participant_id[0] : event.participant_id);
         }
 
         function getUnitId(event) {
-            return ((event.units || [])[0] || {}).id;
+            return baseService.getIdFromUri(((event.units || [])[0] || {}).id);
         }
 
         function fetchImages(event) {

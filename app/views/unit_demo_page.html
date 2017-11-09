@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-sm-3">
+  	<h2 translate>UNIT_DEMO.TITLE</h2>
+    <translate>UNIT_DEMO.DESCRIPTION</translate>
+    <input type="text"
+      ng-model-options="{ debounce: 500 }"
+      placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
+      class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
+    <select ng-model="ctrl.currentSelection" ng-change="ctrl.updateUnit()"
+      size="32" class="form-control" id="unitselect"
+      ng-options="item.id as item.label for item in ctrl.items">
+    </select>
+	</div>
+
+  <div class="col-sm-9">
+    <ui-view></ui-view>
+  </div>
+</div>

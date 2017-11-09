@@ -5,8 +5,8 @@
     .directive('wsNavbar', wsNavbarDirective);
 
     /* @ngInject */
-    function wsNavbarDirective($templateRequest, $compile, $translate, $route,
-            $location, $routeParams, _, supportedLocales, Settings) {
+    function wsNavbarDirective($templateRequest, $compile, $translate,
+            $location, $state, _, supportedLocales, Settings) {
 
         return {
             link: link,
@@ -30,10 +30,9 @@
         }
 
         /* @ngInject */
-        function NavbarController($scope) {
+        function NavbarController($scope, $state) {
             var self = this;
 
-            self.changeLocale = changeLocale;
             self.getEventLinksVisibility = getEventLinksVisibility;
             self.getCemeteryLinksVisibility = getCemeteryLinksVisibility;
             self.setCemeteryResultFormat = setCemeteryResultFormat;
@@ -54,9 +53,6 @@
             function init() {
                 return $translate.onReady().then(function() {
                     self.lang = $translate.use();
-                    var base = self.lang + '/events/';
-                    self.winterWarLink = base + 'winterwar';
-                    self.continuationWarLink = base + 'continuationwar';
                 });
             }
 
@@ -71,16 +67,6 @@
             function setCemeteryResultFormat(resultFormat) {
                 $location.search('resultFormat', resultFormat);
             }
-
-            function changeLocale(lang) {
-                if (_.includes(supportedLocales, lang)) {
-                    $translate.use(lang).then(function() {
-                        init();
-                        $route.updateParams({ lang: lang, uri: undefined });
-                    });
-                }
-            }
-
         }
     }
 })();
