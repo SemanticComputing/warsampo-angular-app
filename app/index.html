@@ -47,7 +47,7 @@
   </div>
 
   <div class="container-fluid">
-    <div ng-view=""></div>
+    <ui-view></ui-view>
   </div>
 
   <div ng-include="'/page-templates/footer.html.partial'"></div>
@@ -96,6 +96,7 @@
   <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
   <script src="bower_components/sparql-result-mapper-with-translate/src/translateable_object_mapper.js"></script>
   <script src="bower_components/angular-update-meta/dist/update-meta.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <!-- endbower -->
   <!-- endbuild -->
 
@@ -153,6 +154,8 @@
   <script src="scripts/person/person_demo_service.js"></script>
   <script src="scripts/person/person_page_controller.js"></script>
   <script src="scripts/person/person_demo_controller.js"></script>
+  <script src="scripts/person/person_demo_page_controller.js"></script>
+  <script src="scripts/person/person_timeline_controller.js"></script>
   <script src="scripts/rank/rank_mapper.js"></script>
   <script src="scripts/rank/rank_page_controller.js"></script>
   <script src="scripts/medal/medal_mapper.js"></script>

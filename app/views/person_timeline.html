@@ -1,103 +1,27 @@
-<ws-settings></ws-settings>
-<update-title title="{{ 'TITLE' | translate }} | {{ ctrl.person.label }}"></update-title>
-<update-meta name="description" content="{{ 'PERSONS_DEMO.DEMO_META_DESCRIPTION_PREFIX' | translate }}: {{ ctrl.person.getMetaDescription() }}"></update-meta>
-<update-meta name="robots" content="index, follow"></update-meta>
-<ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
-<div class="row">
-  <div class="col-sm-3">
-    <h2 translate>PERSONS_DEMO.TITLE</h2>
-    <translate>PERSONS_DEMO.SEARCH_HELP_TEXT</translate>
-    <input
-      type="text"
-      value=""
-      class="form-control"
-      ng-model-options="{ debounce: 500 }"
-      placeholder="{{ 'PERSONS_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
-      ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
-    <select class="hidden-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
-      size="32" ng-options="item as (item.name + (item.rank ? ' (' + item.rank + ')' : '')) for item in ctrl.items">
-    </select>
-    <select class="visible-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
-      size="10" ng-options="item as item.name for item in ctrl.items">
-    </select>
-  </div>
-  <div class="col-sm-9">
-    <h1>{{ ctrl.person.getLabel() }}</h1>
-    <img ng-show="ctrl.isLoadingObject" src="images/loading.gif" />
-    <div ng-if="ctrl.err">
-      <p class="error-msg bg-danger">
-      {{ 'ERROR_OCCURED' | translate }} <br /><br />
-      <b>{{ ctrl.err }}</b> <br /><br />
-      </p>
-    </div>
-    <p ng-if="!ctrl.person && !ctrl.isLoadingObject" translate>NO_METADATA_FOUND</p>
-    <div class="tabset-container">
-      <uib-tabset active="ctrl.activeTab">
-        <uib-tab select="ctrl.selectTab(1)" index="1" classes="person-timeline-tab">
-          <uib-tab-heading>
-            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> {{ 'PERSONS_DEMO.INFO_TAB' | translate }}
-          </uib-tab-heading>
-          <div id="dataContent" ng-if="ctrl.person">
-            <div class="row">
-              <div ng-if="ctrl.person.nationals" class="col-md-4 col-md-push-8 col-sm-12">
-                <div ng-include="'views/partials/national_bibliography_partial.html'"></div>
-              </div>
-              <div ng-class="{ 'col-md-8 col-md-pull-4 col-sm-12': ctrl.person.nationals, 'col-md-12': !ctrl.person.nationals }">
-                <div ng-include="'views/partials/person_description_partial.html'"></div>
-
-                <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
-
-                <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
-
-                <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
-                <div ng-include="'views/partials/person_death_record_partial.html'"></div>
-
-                <!-- Links -->
-                <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>
-                <img ng-show="ctrl.isLoadingLinks" src="images/loading.gif" />
-                <div id="linkContent">
-                  <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.person.wikilink"></ws-related-links>
-                  <ws-related-links data-title="'RELATED_EVENTS' | translate" data-related="ctrl.person.events"></ws-related-links>
-                  <ws-related-links data-title="'RELATED_UNITS' | translate" data-related="ctrl.person.units"></ws-related-links>
-                  <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.person.diaries"></ws-related-links>
-                  <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.person.battles"></ws-related-links>
-                  <ws-related-links data-title="'RELATED_RANKS' | translate" data-related="ctrl.person.ranks"></ws-related-links>
-                  <ws-related-links data-title="'RELATED_MEDALS' | translate" data-related="ctrl.person.medals"></ws-related-links>
-                  <ws-related-links-paged data-additional-text="'PERSONS_DEMO.RELATED_PEOPLE_DESCRIPTION' | translate" data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.person.relatedPersons"></ws-related-links-paged>
-                  <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.person.places"></ws-related-links>
-                  <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.person.articles"></ws-related-links>
-                </div>
-              </div>
-            </div>
-          </div>
-        </uib-tab> 
-        <uib-tab index="2" select="ctrl.selectTab(2)" classes="person-timeline-tab">
-          <uib-tab-heading>
-          <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> {{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}
-          </uib-tab-heading>
-          <div class="event-type-selection form-inline">
-            <div ng-show="ctrl.person.units" class="checkbox" ng-class="{ 'bg-success': ctrl.options.includeUnitEvents }">
-              <label>
-                <input type="checkbox"
-                ng-model="ctrl.options.includeUnitEvents"
-                ng-change="ctrl.changeIncludeUnits()" />
-                {{ 'PERSONS_DEMO.INCLUDE_UNIT_EVENTS' | translate }}
-              </label>
-            </div>
-            <div
-              ng-repeat="typ in ctrl.options.types"
-              ng-class="{ 'bg-success': typ.selected }"
-              class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="typ.selected" ng-change="ctrl.createTimemap()" />
-                {{ typ.getLabel() }}
-              </label>
-            </div>
-          </div>
-          <div ng-include="'views/partials/event_timeline_partial.html'"></div>
-        </uib-tab>
-      </uib-tabset>
-    </div>
-  </div>
+<img ng-show="ctrl.isLoadingObject" src="images/loading.gif" />
+<div ng-if="ctrl.err">
+  <p class="error-msg bg-danger">
+    {{ 'ERROR_OCCURED' | translate }} <br /><br />
+    <b>{{ ctrl.err }}</b> <br /><br />
+  </p>
 </div>
-
+<div class="event-type-selection form-inline">
+  <div ng-show="ctrl.person.units" class="checkbox" ng-class="{ 'bg-success': ctrl.options.includeUnitEvents }">
+    <label>
+      <input type="checkbox"
+      ng-model="ctrl.options.includeUnitEvents"
+      ng-change="ctrl.changeIncludeUnits()" />
+    {{ 'PERSONS_DEMO.INCLUDE_UNIT_EVENTS' | translate }}
+  </label>
+</div>
+<div
+  ng-repeat="typ in ctrl.options.types"
+  ng-class="{ 'bg-success': typ.selected }"
+  class="checkbox">
+  <label>
+    <input type="checkbox" ng-model="typ.selected" ng-change="ctrl.createTimemap()" />
+    {{ typ.getLabel() }}
+  </label>
+</div>
+  </div>
+  <div ng-include="'views/partials/event_timeline_partial.html'"></div>

@@ -156,7 +156,7 @@
                 // This shouldn't happen.
                 return;
             }
-            var eventId = $routeParams.event;
+            var eventId = $location.search().event;
             if (uri !== self.unitId) {
                 // Unit selection has changed.
                 self.promise = self.promise.then(function() {
@@ -187,7 +187,7 @@
             self.err = undefined;
             self.isLoadingTimeline = true;
             self.unitId = uri;
-            var eventId = $routeParams.event;
+            var eventId = $location.search().event;
             if (angular.isString(eventId)) {
                 self.isLoadingEvent = true;
             }

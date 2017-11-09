@@ -89,7 +89,7 @@
 
         // Update state based on url
         function updateState() {
-            var uri = $route.current.locals.uri;
+            var uri = $location.search().uri;
             if (!uri) {
                 self.promise = self.promise.then(function() {
                     return demoService.clearCurrent();
@@ -108,7 +108,7 @@
             self.err = undefined;
             self.isLoadingTimeline = true;
             var era = $routeParams.era;
-            var event_uri = $route.current.locals.uri;
+            var event_uri = $location.search().uri;
             var promise;
             if (event_uri) {
                 // Single event given as parameter
@@ -152,15 +152,15 @@
         function showWinterWar() {
             self.title = 'EVENT_DEMO.WINTER_WAR_EVENT_TITLE';
             return demoService.createTimemap(WAR_INFO.winterWarTimeSpan.start,
-                    WAR_INFO.winterWarTimeSpan.end,
-                    WAR_INFO.winterWarHighlights);
+                WAR_INFO.winterWarTimeSpan.end,
+                WAR_INFO.winterWarHighlights);
         }
 
         function showContinuationWar() {
             self.title = 'EVENT_DEMO.CONTINUATION_WAR_EVENT_TITLE';
             return demoService.createTimemap(WAR_INFO.continuationWarTimeSpan.start,
-                    WAR_INFO.continuationWarTimeSpan.end,
-                    WAR_INFO.continuationWarHighlights);
+                WAR_INFO.continuationWarTimeSpan.end,
+                WAR_INFO.continuationWarHighlights);
         }
 
         function getCreateFunction(start) {

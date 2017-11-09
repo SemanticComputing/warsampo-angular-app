@@ -5,8 +5,8 @@
     .directive('wsNavbar', wsNavbarDirective);
 
     /* @ngInject */
-    function wsNavbarDirective($templateRequest, $compile, $translate, $route,
-            $location, $routeParams, _, supportedLocales, Settings) {
+    function wsNavbarDirective($templateRequest, $compile, $translate,
+            $location, _, supportedLocales, Settings) {
 
         return {
             link: link,
@@ -76,7 +76,7 @@
                 if (_.includes(supportedLocales, lang)) {
                     $translate.use(lang).then(function() {
                         init();
-                        $route.updateParams({ lang: lang, uri: undefined });
+                        //$route.updateParams({ lang: lang, uri: undefined });
                     });
                 }
             }
