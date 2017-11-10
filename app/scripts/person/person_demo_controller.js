@@ -56,7 +56,7 @@
             if (self.selectedItem && self.selectedItem.id) {
                 demoService.clear();
                 $location.search('event', null);
-                $state.go('app.persons.demo.page.info', { id: demoService.getIdFromUri(self.selectedItem.id) });
+                $state.go('app.lang.persons.demo.page.info', { id: demoService.getIdFromUri(self.selectedItem.id) });
             }
         }
 

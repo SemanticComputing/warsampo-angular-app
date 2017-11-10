@@ -33,7 +33,6 @@
         function NavbarController($scope) {
             var self = this;
 
-            self.changeLocale = changeLocale;
             self.getEventLinksVisibility = getEventLinksVisibility;
             self.getCemeteryLinksVisibility = getCemeteryLinksVisibility;
             self.setCemeteryResultFormat = setCemeteryResultFormat;
@@ -71,16 +70,6 @@
             function setCemeteryResultFormat(resultFormat) {
                 $location.search('resultFormat', resultFormat);
             }
-
-            function changeLocale(lang) {
-                if (_.includes(supportedLocales, lang)) {
-                    $translate.use(lang).then(function() {
-                        init();
-                        //$route.updateParams({ lang: lang, uri: undefined });
-                    });
-                }
-            }
-
         }
     }
 })();

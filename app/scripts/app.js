@@ -112,61 +112,69 @@
         $stateProvider
         .state('app', {
             abstract: true,
+            url: '',
+            redirectTo: { state: 'app.lang.events.demo', params: { era: 'winterwar', lang: defaultLocale } }
+        })
+        .state('app.lang', {
+            abstract: true,
             url: '/{lang}',
             resolve: { checkLang: checkLang }
         })
         // Events
-        .state('app.events', {
+        .state('app.lang.events', {
             url: '/events',
-            templateUrl: 'views/event_timeline.html',
-            controller: 'EventPageController',
-            controllerAs: 'ctrl',
-            reloadOnSearch: false
+            abstract: true
         })
-        .state('app.events.winterwar', {
-            url: '/events/winterwar',
-            templateUrl: 'views/event_timeline.html',
-            controller: 'EventPageController',
-            controllerAs: 'ctrl',
-            reloadOnSearch: false,
-            resolve: { war: 'winterwar' }
-        })
-        .state('app.events.continuationwar', {
-            url: '/events/continuationwar',
-            templateUrl: 'views/event_timeline.html',
-            controller: 'EventPageController',
-            controllerAs: 'ctrl',
-            reloadOnSearch: false,
-            resolve: { war: 'continuationwar' }
-        })
-        .state('app.events.page', {
-            url: '/events/page/:id?',
+        .state('app.lang.events.page', {
+            url: '/page/:id?',
             templateUrl: 'views/event_page.html',
             controller: 'EventPageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
+        .state('app.lang.events.demo', {
+            url: '?uri',
+            reloadOnSearch: false,
+            onEnter: function($transition$, $state) {
+                var uri = $transition$.params().uri;
+                var war = $transition$.params().war;
+                if (!$transition$.params().id) {
+                    if (!war && !uri) {
+                        return $state.target('app.lang.events.demo.war', { war: 'winterwar', lang: $transition$.params().lang });
+                    } else if (uri && angular.isUndefined(war)) {
+                        return $state.target('app.lang.events.demo.war', { uri: uri, war: '', lang: $transition$.params().lang });
+                    }
+                }
+            }
+        })
+        .state('app.lang.events.demo.war', {
+            url: '/:war',
+            templateUrl: 'views/event_timeline.html',
+            reloadOnSearch: false,
+            controller: 'EventDemoController',
+            controllerAs: 'ctrl',
+        })
         // Persons
-        .state('app.persons', {
+        .state('app.lang.persons', {
             url: '/persons',
             abstract: true,
         })
-        .state('app.persons.page', {
+        .state('app.lang.persons.page', {
             url: '/page/:id',
             templateUrl: 'views/person_page.html',
             controller: 'PersonPageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri },
         })
-        .state('app.persons.demo', {
+        .state('app.lang.persons.demo', {
             url: '',
             templateUrl: 'views/person_demo.html',
             controller: 'PersonDemoController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
-            redirectTo: 'app.persons.demo.page.info'
+            redirectTo: 'app.lang.persons.demo.page.info'
         })
-        .state('app.persons.demo.page', {
+        .state('app.lang.persons.demo.page', {
             url: '/{id:string}?{tab:int}',
             abstract: true,
             templateUrl: 'views/person_demo_page.html',
@@ -182,19 +190,19 @@
             },
             onEnter: function($transition$, $state) {
                 if (!$transition$.params().id) {
-                    return $state.target('app.persons.demo.page.info', { lang: $transition$.params().lang, id: 'person_50' });
+                    return $state.target('app.lang.persons.demo.page.info', { lang: $transition$.params().lang, id: 'person_50' });
                 }
             }
 
         })
-        .state('app.persons.demo.page.info', {
+        .state('app.lang.persons.demo.page.info', {
             url: '',
             templateUrl: 'views/person_demo_info.html',
             controller: 'PersonPageController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
         })
-        .state('app.persons.demo.page.timeline', {
+        .state('app.lang.persons.demo.page.timeline', {
             url: '',
             templateUrl: 'views/person_timeline.html',
             controller: 'PersonTimelineController',
@@ -202,15 +210,15 @@
             reloadOnSearch: false,
         })
         // Units
-        .state('app.units', {
-            url: '/units/:id?',
+        .state('app.lang.units', {
+            url: '/:id?',
             templateUrl: 'views/unit_timeline.html',
             controller: 'UnitDemoController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
             resolve: { uri: resolveUri }
         })
-        .state('app.units.page', {
+        .state('app.lang.units.page', {
             url: '/units/page/:id?',
             templateUrl: 'views/unit_page.html',
             controller: 'UnitPageController',
@@ -218,14 +226,14 @@
             resolve: { uri: resolveUri }
         })
         // Photographs
-        .state('app.photographs', {
+        .state('app.lang.photographs', {
             url: '/photographs',
             templateUrl: 'views/photo_demo.html',
             controller: 'PhotoDemoController',
             controllerAs: 'vm',
             reloadOnSearch: false
         })
-        .state('app.photographs.page', {
+        .state('app.lang.photographs.page', {
             url: '/photographs/page/:id?',
             templateUrl: 'views/photo_page.html',
             controller: 'PhotoPageController',
@@ -233,7 +241,7 @@
             resolve: { uri: resolveUri }
         })
         // Cemeteries
-        .state('app.cemeteries', {
+        .state('app.lang.cemeteries', {
             url: '/cemeteries',
             templateUrl: 'views/cemetery_demo.html',
             controller: 'CemeteryDemoController',
@@ -241,7 +249,7 @@
             reloadOnSearch: false,
             resolve: { uri: resolveUri }
         })
-        .state('app.cemeteries.page', {
+        .state('app.lang.cemeteries.page', {
             url: '/cemeteries/page/:id?',
             templateUrl: 'views/cemetery_page.html',
             controller: 'CemeteryPageController',
@@ -249,35 +257,35 @@
             resolve: { uri: resolveUri }
         })
         // Other pages
-        .state('app.ranks', {
+        .state('app.lang.ranks', {
             url: '/ranks/page/:id?',
             templateUrl: 'views/rank_page.html',
             controller: 'RankPageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
-        .state('app.medals', {
+        .state('app.lang.medals', {
             url: '/medals/page/:id?',
             templateUrl: 'views/medal_page.html',
             controller: 'MedalPageController',
             controllerAs: 'vm',
             resolve: { uri: resolveUri }
         })
-        .state('app.times', {
+        .state('app.lang.times', {
             url: '/times/page/:id?',
             templateUrl: 'views/time_page.html',
             controller: 'TimePageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
-        .state('app.casualties', {
+        .state('app.lang.casualties', {
             url: '/casualties/page/:id?',
             templateUrl: 'views/semantic_page.html',
             controller: 'SemanticPageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
-        .state('app.generic', {
+        .state('app.lang.generic', {
             url: '/page/:id?',
             templateUrl: 'views/semantic_page.html',
             controller: 'SemanticPageController',
@@ -294,6 +302,10 @@
     .config(function($locationProvider) {
         $locationProvider.html5Mode(true);
     })
+    /* ngInject */
+    //.config(function($urlMatcherFactoryProvider) {
+        //$urlMatcherFactoryProvider.strictMode(false);
+    //})
     /* ngInject */
     .config(function($translateProvider, defaultLocale) {
         $translateProvider.useStaticFilesLoader({
@@ -356,7 +368,10 @@
     }
 
     /* @ngInject */
-    function resolvePerson($transition$, personService) {
+    function resolvePerson($q, $transition$, personService) {
+        if (!$transition$.params().id) {
+            return $q.when();
+        }
         var uri = 'http://ldf.fi/warsa/actors/' + $transition$.params().id;
         return personService.getById(uri);
 

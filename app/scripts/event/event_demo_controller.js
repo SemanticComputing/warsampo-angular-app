@@ -6,9 +6,11 @@
     .controller('EventDemoController', EventDemoController);
 
     /* @ngInject */
-    function EventDemoController($route, $routeParams, $location, $scope, $q, $translate,
+    function EventDemoController($transition$, $location, $scope, $q, $translate,
             $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
             googleMapsService, EventDemoService) {
+
+        var war = $transition$.params().war;
 
         /* Private vars */
 
@@ -71,11 +73,6 @@
         }
 
         function init() {
-            // Update state when url changes.
-            $scope.$on('$routeUpdate', function() {
-                return updateState();
-            });
-
             Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
             Settings.setApplyFunction(visualize);
@@ -87,27 +84,10 @@
             });
         }
 
-        // Update state based on url
-        function updateState() {
-            var uri = $location.search().uri;
-            if (!uri) {
-                self.promise = self.promise.then(function() {
-                    return demoService.clearCurrent();
-                });
-                return self.promise;
-            }
-            if (uri !== (demoService.getCurrent() || {}).id) {
-                self.promise = self.promise.then(function() {
-                    return demoService.navigateToEvent(uri);
-                });
-                return self.promise;
-            }
-        }
-
         function visualize() {
             self.err = undefined;
             self.isLoadingTimeline = true;
-            var era = $routeParams.era;
+            var era = war;
             var event_uri = $location.search().uri;
             var promise;
             if (event_uri) {

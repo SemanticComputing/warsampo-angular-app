@@ -8,6 +8,7 @@
     function PersonDemoPageController($q, $scope, $location, $state, $transition$, $uibModal,
             $translate, _, personService, PersonDemoService, Settings, person) {
 
+        console.log('jkjk')
         var self = this;
 
         init();

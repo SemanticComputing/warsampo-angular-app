@@ -2,9 +2,8 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('UnitPageController', function(_, $route, eventService, unitService) {
+    .controller('UnitPageController', function(unitService, uri) {
         var self = this;
-        var uri = $route.current.locals.uri;
         if (uri) {
             self.isLoadingEvent = true;
             self.isLoadingLinks = true;

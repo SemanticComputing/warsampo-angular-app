@@ -4,8 +4,8 @@
     angular.module('eventsApp')
     .controller('PhotoPageController', PhotoPageController);
 
-    function PhotoPageController($route, $q, $rootScope, $translate, _, photoService,
-            eventService, placeRepository, Settings) {
+    function PhotoPageController($q, $rootScope, $translate, _, photoService,
+            eventService, placeRepository, Settings, uri) {
 
         $rootScope.showSettings = null;
         $rootScope.showHelp = null;
@@ -16,12 +16,12 @@
         init();
 
         function init() {
-            if (!$route.current.locals.uri) {
+            if (uri) {
                 return;
             }
             vm.isLoadingObj = true;
             vm.isLoadingLinks = true;
-            photoService.getById($route.current.locals.uri)
+            photoService.getById(uri)
                 .then(function(photo) {
                     vm.photo = photo;
                     vm.isLoadingObj = false;
