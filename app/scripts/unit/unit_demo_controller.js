@@ -5,12 +5,11 @@
     .controller('UnitDemoController', UnitDemoController);
 
     /* @ngInject */
-    function UnitDemoController($route, $routeParams, $location, $scope, $q, $uibModal,
+    function UnitDemoController($state, $location, $scope, $q, $uibModal,
             $translate, _, unitService, eventService, Settings, UnitDemoService, WAR_INFO) {
 
         var self = this;
 
-        var DEFAULT_UNIT = 'actor_940';
         var demoService = new UnitDemoService();
 
         // User search input
@@ -24,19 +23,6 @@
 
         self.getDefaultUrl = getDefaultUrl;
 
-        self.getCasualtyCount = getCasualtyCount;
-        self.getCasualtyStats = getCasualtyStats;
-        self.getMinVisibleDate = getMinVisibleDate;
-        self.getMaxVisibleDate = getMaxVisibleDate;
-        self.getCurrent = getCurrent;
-        self.clearEvent = clearEvent;
-        self.getImages = getImages;
-        self.hasEvents = hasEvents;
-
-        self.showUnitDetails = showUnitDetails;
-
-        // A promise chain for state changes
-        self.promise = $q.when();
         // The id of the currently displayed unit
         self.unitId;
 
@@ -44,66 +30,15 @@
 
         /* Implementation */
 
-        function hasEvents() {
-            return !self.isLoadingTimeline && demoService.hasEvents();
-        }
-
-        function getCasualtyCount() {
-            return demoService.getCasualtyCount();
-        }
-
-        function getCasualtyStats() {
-            return demoService.getCasualtyStats();
-        }
-
-        function getMinVisibleDate() {
-            return demoService.getMinVisibleDate();
-        }
-
-        function getMaxVisibleDate() {
-            return demoService.getMaxVisibleDate();
-        }
-
-        function getCurrent() {
-            return demoService.getCurrent();
-        }
-
-        function clearEvent() {
-            return demoService.clearCurrent();
-        }
-
-        function getImages() {
-            return demoService.getImages();
-        }
-
         function init() {
-            // Update state when url changes.
-            $scope.$on('$routeUpdate', function() {
-                return updateState();
-            });
 
             Settings.setHelpFunction(showHelp);
-            Settings.enableSettings();
-            Settings.setApplyFunction(createTimeMap);
-            Settings.setHeatmapUpdater(demoService.updateHeatmap);
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
                 demoService.cleanUp();
             });
 
             getItems();
-
-            if (!$route.current.locals.uri) {
-                // Redirect to default unit.
-                return $route.updateParams({ 'id': DEFAULT_UNIT });
-            }
-            return updateState();
-        }
-
-        function createTimeMap(id) {
-            return demoService.createTimemap(id, WAR_INFO.winterWarTimeSpan.start,
-                WAR_INFO.continuationWarTimeSpan.end,
-                WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights));
         }
 
         function getItems() {
@@ -139,79 +74,8 @@
             if (self.currentSelection) {
                 demoService.clear();
                 $location.search('event', null);
-                $location.path($route.current.params.lang +
-                    '/units/' + demoService.getIdFromUri(self.currentSelection), false);
-                updateState(self.currentSelection);
+                $state.go('app.lang.unit.demo.timeline', { id: demoService.getIdFromUri(self.selectedItem.id) });
             }
-        }
-
-        function showUnitDetails() {
-            return !(self.isLoadingEvent || !self.unit || self.getCurrent());
-        }
-
-        // Update state based on url
-        function updateState(uri) {
-            uri = uri || $route.current.locals.uri;
-            if (!uri) {
-                // This shouldn't happen.
-                return;
-            }
-            var eventId = $location.search().event;
-            if (uri !== self.unitId) {
-                // Unit selection has changed.
-                self.promise = self.promise.then(function() {
-                    return updateByUri(uri, eventId);
-                });
-                return self.promise;
-            }
-            // Unit has not changed.
-            if (eventId) {
-                // Event in url.
-                if (eventId !== (demoService.getCurrent() || {}).id) {
-                    // Event has changed due to back/forward action, navigate to the event.
-                    self.promise = self.promise.then(function() {
-                        return demoService.navigateToEvent(eventId);
-                    });
-                    return self.promise;
-                }
-                // Event was selected by the user, the callback has handled everything, so fall through.
-            } else {
-                // Unit has not changed, and there is no event in url: clear selected event on timeline.
-                self.promise = self.promise.then(function() { return demoService.clearCurrent(); });
-                return self.promise;
-            }
-        }
-
-        function updateByUri(uri) {
-            self.noEvents = false;
-            self.err = undefined;
-            self.isLoadingTimeline = true;
-            self.unitId = uri;
-            var eventId = $location.search().event;
-            if (angular.isString(eventId)) {
-                self.isLoadingEvent = true;
-            }
-            return unitService.getById(uri).then(function(unit) {
-                self.unit = unit;
-                unitService.fetchRelated(unit, true);
-                return createTimeMap(uri);
-            }).then(function() {
-                self.isLoadingTimeline = false;
-                if (self.isLoadingEvent) {
-                    return demoService.navigateToEvent(eventId);
-                }
-                return demoService.refresh();
-            }).then(function() {
-                self.isLoadingEvent = false;
-            }).catch(function(data) {
-                if (data === 'NO_EVENTS') {
-                    self.noEvents = true;
-                } else {
-                    self.err = data ? data.message || data : 'UNKNOWN_ERROR';
-                }
-                self.isLoadingEvent = false;
-                self.isLoadingTimeline = false;
-            });
         }
 
         function showHelp() {
@@ -223,10 +87,6 @@
                     content: $translate('UNIT_DEMO.HELP_TEXT')
                 }
             });
-        }
-
-        function getDefaultUrl() {
-            return $translate.use() + '/units';
         }
     }
 })();

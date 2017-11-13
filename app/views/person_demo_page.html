@@ -12,10 +12,10 @@
 <p ng-if="!ctrl.person && !ctrl.isLoadingObject" translate>NO_METADATA_FOUND</p>
 <div class="tabset-container">
   <ul class="nav nav-tabs">
-    <li ui-sref="app.lang.persons.demo.page.info" ui-sref-active="active" class="person-timeline-tab">
+    <li ui-sref="app.lang.persons.demo.page.info({ tab: 1 })" ui-sref-active="active" class="person-timeline-tab">
       <a href=""><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> {{ 'PERSONS_DEMO.INFO_TAB' | translate }}</a>
     </li>
-    <li ui-sref="app.lang.persons.demo.page.timeline" ui-sref-active="active" class="person-timeline-tab">
+    <li ui-sref="app.lang.persons.demo.page.timeline({ tab: 2 })" ui-sref-active="active" class="person-timeline-tab">
       <a href=""><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> {{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}</a>
     </li>
   </ul>

@@ -6,12 +6,9 @@
 
     /* @ngInject */
     function PersonDemoController($q, $scope, $location, $state, $transition$, $uibModal,
-            $translate, _, personService, PersonDemoService, Settings) {
+            $translate, _, personService, baseService, Settings) {
 
         var self = this;
-        var demoService = new PersonDemoService();
-
-        var DEFAULT_PERSON = 'person_50';
 
         // Person selection list
         self.items = [];
@@ -26,7 +23,6 @@
         function init() {
             // Timeline settings
             Settings.setHelpFunction(showHelp);
-            Settings.setHeatmapUpdater(demoService.updateHeatmap.bind(demoService));
 
             self.helpTextTitle = 'PERSONS_DEMO.TIMELINE_HELP_TEXT_TITLE';
             self.helpText = 'PERSONS_DEMO.TIMELINE_HELP_TEXT';
@@ -34,7 +30,6 @@
             // Cleanup
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
-                demoService.cleanUp();
             });
 
             self.getItems();
@@ -54,9 +49,9 @@
         // Person selection change
         function updateSelection() {
             if (self.selectedItem && self.selectedItem.id) {
-                demoService.clear();
                 $location.search('event', null);
-                $state.go('app.lang.persons.demo.page.info', { id: demoService.getIdFromUri(self.selectedItem.id) });
+                $state.go('app.lang.persons.demo.page.info', {
+                    id: baseService.getIdFromUri(self.selectedItem.id) });
             }
         }
 

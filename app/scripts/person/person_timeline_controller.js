@@ -26,6 +26,12 @@
         init();
 
         function init() {
+
+            $scope.$on('$destroy', function() {
+                demoService.clear();
+                demoService.cleanUp();
+            });
+
             // Timeline settings
             Settings.enableSettings();
             Settings.setApplyFunction(applySettings);

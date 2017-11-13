@@ -175,12 +175,11 @@
             redirectTo: 'app.lang.persons.demo.page.info'
         })
         .state('app.lang.persons.demo.page', {
-            url: '/{id:string}?{tab:int}',
+            url: '/{id:string}',
             abstract: true,
             templateUrl: 'views/person_demo_page.html',
             controller: 'PersonDemoPageController',
             controllerAs: 'ctrl',
-            reloadOnSearch: false,
             resolve: {
                 uri: resolveUri,
                 person: resolvePerson
@@ -196,18 +195,19 @@
 
         })
         .state('app.lang.persons.demo.page.info', {
-            url: '',
+            url: '?{tab:1}',
             templateUrl: 'views/person_demo_info.html',
             controller: 'PersonPageController',
             controllerAs: 'ctrl',
-            reloadOnSearch: false,
+            params: { tab: '1' }
         })
         .state('app.lang.persons.demo.page.timeline', {
-            url: '',
+            url: '?{tab:2}',
             templateUrl: 'views/person_timeline.html',
             controller: 'PersonTimelineController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
+            params: { tab: '2' }
         })
         // Units
         .state('app.lang.units', {
