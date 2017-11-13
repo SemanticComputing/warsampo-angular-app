@@ -5,37 +5,27 @@
     .controller('UnitDemoController', UnitDemoController);
 
     /* @ngInject */
-    function UnitDemoController($state, $location, $scope, $q, $uibModal,
-            $translate, _, unitService, eventService, Settings, UnitDemoService, WAR_INFO) {
+    function UnitDemoController($state, $location, $scope, $uibModal, $translate,
+            unitService, Settings, baseService) {
 
         var self = this;
-
-        var demoService = new UnitDemoService();
 
         // User search input
         self.queryregex = '';
 
         self.getItems = getItems;
         self.updateUnit = updateUnit;
-        self.unit;
 
         self.casualtyDescription = 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN';
-
-        self.getDefaultUrl = getDefaultUrl;
-
-        // The id of the currently displayed unit
-        self.unitId;
 
         init();
 
         /* Implementation */
 
         function init() {
-
             Settings.setHelpFunction(showHelp);
             $scope.$on('$destroy', function() {
                 Settings.clearEventSettings();
-                demoService.cleanUp();
             });
 
             getItems();
@@ -72,9 +62,10 @@
 
         function updateUnit() {
             if (self.currentSelection) {
-                demoService.clear();
                 $location.search('event', null);
-                $state.go('app.lang.unit.demo.timeline', { id: demoService.getIdFromUri(self.selectedItem.id) });
+                $state.go('app.lang.units.demo.timeline', {
+                    id: baseService.getIdFromUri(self.currentSelection)
+                });
             }
         }
 

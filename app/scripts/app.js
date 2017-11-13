@@ -182,7 +182,7 @@
             controllerAs: 'ctrl',
             resolve: {
                 uri: resolveUri,
-                person: resolvePerson
+                person: resolveActor
             },
             params: {
                 id: ''
@@ -211,19 +211,36 @@
         })
         // Units
         .state('app.lang.units', {
-            url: '/:id?',
-            templateUrl: 'views/unit_timeline.html',
-            controller: 'UnitDemoController',
-            controllerAs: 'ctrl',
-            reloadOnSearch: false,
-            resolve: { uri: resolveUri }
+            url: '/units',
+            abstract: true
         })
         .state('app.lang.units.page', {
-            url: '/units/page/:id?',
+            url: '/page/:id',
             templateUrl: 'views/unit_page.html',
             controller: 'UnitPageController',
             controllerAs: 'ctrl',
-            resolve: { uri: resolveUri }
+            resolve: {
+                uri: resolveUri,
+                person: resolveActor
+            },
+        })
+        .state('app.lang.units.demo', {
+            url: '',
+            templateUrl: 'views/unit_demo.html',
+            controller: 'UnitDemoController',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
+        })
+        .state('app.lang.units.demo.timeline', {
+            url: '/:id',
+            templateUrl: 'views/unit_timeline.html',
+            controller: 'UnitTimelineController',
+            resolve: {
+                uri: resolveUri,
+                unit: resolveActor
+            },
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
         })
         // Photographs
         .state('app.lang.photographs', {
@@ -368,12 +385,12 @@
     }
 
     /* @ngInject */
-    function resolvePerson($q, $transition$, personService) {
+    function resolveActor($q, $state, $transition$, personService, unitService) {
         if (!$transition$.params().id) {
             return $q.when();
         }
         var uri = 'http://ldf.fi/warsa/actors/' + $transition$.params().id;
-        return personService.getById(uri);
-
+        var service = _.includes($transition$.targetState().name(), 'persons') ? personService : unitService;
+        return service.getById(uri);
     }
 })(_, google, SimileAjax, TimeMap, TimeMapTheme, Timeline, Chart); // eslint-disable-line no-undef

@@ -2,27 +2,22 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('UnitDemoController', UnitDemoController);
+    .controller('UnitTimelineController', UnitTimelineController);
 
     /* @ngInject */
-    function UnitDemoController($route, $routeParams, $location, $scope, $q, $uibModal,
-            $translate, _, unitService, eventService, Settings, UnitDemoService, WAR_INFO) {
+    function UnitTimelineController($location, $scope, $q, $uibModal,
+            $translate, _, unitService, Settings, UnitDemoService, WAR_INFO, unit) {
 
         var self = this;
 
-        var DEFAULT_UNIT = 'actor_940';
         var demoService = new UnitDemoService();
 
         // User search input
         self.queryregex = '';
 
-        self.getItems = getItems;
-        self.updateUnit = updateUnit;
         self.unit;
 
         self.casualtyDescription = 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN';
-
-        self.getDefaultUrl = getDefaultUrl;
 
         self.getCasualtyCount = getCasualtyCount;
         self.getCasualtyStats = getCasualtyStats;
@@ -77,27 +72,15 @@
         }
 
         function init() {
-            // Update state when url changes.
-            $scope.$on('$routeUpdate', function() {
-                return updateState();
-            });
 
-            Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
             Settings.setApplyFunction(createTimeMap);
             Settings.setHeatmapUpdater(demoService.updateHeatmap);
             $scope.$on('$destroy', function() {
-                Settings.clearEventSettings();
                 demoService.cleanUp();
             });
 
-            getItems();
-
-            if (!$route.current.locals.uri) {
-                // Redirect to default unit.
-                return $route.updateParams({ 'id': DEFAULT_UNIT });
-            }
-            return updateState();
+            return updateByUri(unit, $location.search().event);
         }
 
         function createTimeMap(id) {
@@ -106,96 +89,20 @@
                 WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights));
         }
 
-        function getItems() {
-            var rx = self.queryregex;
-            var testAlphabet = /[^.0-9 ]/g;
-            var withEventsOnly = false;
-
-            if (rx.length<1) {
-                rx='^.*$';
-                withEventsOnly = true;
-            }
-            else if (!testAlphabet.test(rx)) { rx = '^.*'+rx+'.*$'; }
-            else if (rx.length<2) { rx='^'+rx; }
-            else if (rx.length<5) { rx = '(^|^.* )'+rx+'.*$'; }
-            else {
-                rx = rx.replace(' ','.*');
-                rx = '^.*'+rx+'.*$';
-            }
-
-            self.items = [{ id:'#', label: 'Etsitään...' }];
-
-            return unitService.getItems(rx, withEventsOnly).then(function(data) {
-                if (data.length) {
-                    self.items = data;
-                } else {
-                    self.items = [{ id:'#', label: 'Ei hakutuloksia.' }];
-                }
-                return self.items;
-            });
-        }
-
-        function updateUnit() {
-            if (self.currentSelection) {
-                demoService.clear();
-                $location.search('event', null);
-                $location.path($route.current.params.lang +
-                    '/units/' + demoService.getIdFromUri(self.currentSelection), false);
-                updateState(self.currentSelection);
-            }
-        }
-
         function showUnitDetails() {
             return !(self.isLoadingEvent || !self.unit || self.getCurrent());
         }
 
-        // Update state based on url
-        function updateState(uri) {
-            uri = uri || $route.current.locals.uri;
-            if (!uri) {
-                // This shouldn't happen.
-                return;
-            }
-            var eventId = $location.search().event;
-            if (uri !== self.unitId) {
-                // Unit selection has changed.
-                self.promise = self.promise.then(function() {
-                    return updateByUri(uri, eventId);
-                });
-                return self.promise;
-            }
-            // Unit has not changed.
-            if (eventId) {
-                // Event in url.
-                if (eventId !== (demoService.getCurrent() || {}).id) {
-                    // Event has changed due to back/forward action, navigate to the event.
-                    self.promise = self.promise.then(function() {
-                        return demoService.navigateToEvent(eventId);
-                    });
-                    return self.promise;
-                }
-                // Event was selected by the user, the callback has handled everything, so fall through.
-            } else {
-                // Unit has not changed, and there is no event in url: clear selected event on timeline.
-                self.promise = self.promise.then(function() { return demoService.clearCurrent(); });
-                return self.promise;
-            }
-        }
-
-        function updateByUri(uri) {
+        function updateByUri(unit, eventId) {
+            self.unit = unit;
             self.noEvents = false;
             self.err = undefined;
             self.isLoadingTimeline = true;
-            self.unitId = uri;
-            var eventId = $location.search().event;
             if (angular.isString(eventId)) {
                 self.isLoadingEvent = true;
             }
-            return unitService.getById(uri).then(function(unit) {
-                self.unit = unit;
-                unitService.fetchRelated(unit, true);
-                return createTimeMap(uri);
-            }).then(function() {
+            unitService.fetchRelated(unit, true);
+            return createTimeMap(unit.id).then(function() {
                 self.isLoadingTimeline = false;
                 if (self.isLoadingEvent) {
                     return demoService.navigateToEvent(eventId);
@@ -214,19 +121,5 @@
             });
         }
 
-        function showHelp() {
-            $uibModal.open({
-                component: 'helpModal',
-                size: 'lg',
-                resolve: {
-                    title: $translate('UNIT_DEMO.HELP_TEXT_TITLE'),
-                    content: $translate('UNIT_DEMO.HELP_TEXT')
-                }
-            });
-        }
-
-        function getDefaultUrl() {
-            return $translate.use() + '/units';
-        }
     }
 })();
