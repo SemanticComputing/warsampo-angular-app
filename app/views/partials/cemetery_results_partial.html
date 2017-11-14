@@ -1,19 +1,12 @@
 <table class="table faceter-results ng-table-responsive" ng-table="vm.tableParams">
-  <!--<colgroup>-->
-    <!--<col width="15%" />-->
-    <!--<col width="4%" />-->
-    <!--<col width="8%" />-->
-    <!--<col width="10%" />-->
-  <!--</colgroup>-->
   <tr ng-show="!vm.isLoadingResults" ng-repeat="cemetery in $data">
-
     <td data-title="'CEMETERY_DEMO.CEMETERY_NAME' | translate">
       <a ws-page-link="::cemetery.id">
         {{::cemetery.label}}
       </a>
     </td>
     <td data-title="'CEMETERY_DEMO.NARC_NAME' | translate">
-      <span ng-if="::cemetery.original_narc_name">{{::cemetery.original_narc_name}}</span>
+      <span ng-if="::(cemetery.original_narc_name != cemetery.label)">{{::cemetery.original_narc_name}}</span>
     </td>
     <td data-title="'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate">
       <span ng-if="::cemetery.current_municipality">{{::cemetery.current_municipality}}</span>
@@ -27,19 +20,9 @@
     <td data-title="'CEMETERY_DEMO.PERSON_COUNT' | translate">
       <span ng-if="::cemetery.person_count > 0">{{::cemetery.person_count }}</span>
     </td>
-
-
-    <!-- <td data-title="'CEMETERY_DEMO.ARCHITECT' | translate">
-      <span ng-if="::cemetery.architect">{{::cemetery.architect}}</span>
-    </td> -->
-    <!-- <td data-title="'CEMETERY_DEMO.MEMORIAL' | translate">
-      <span ng-if="::cemetery.memorial">{{::cemetery.memorial}}</span>
-    </td> -->
     <td data-title="'CEMETERY_DEMO.CAMERA_CLUB' | translate">
       <span ng-if="::cemetery.camera_club">{{::cemetery.camera_club}}</span>
     </td>
-
   </tr>
-
 </table>
 <img class="loading-img" src="images/loading-lg.gif" ng-if="vm.isLoadingResults"></img>
