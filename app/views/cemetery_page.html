@@ -24,7 +24,8 @@
         {{ 'CEMETERY_DEMO.NUMBER_OF_GRAVES' | translate }}: {{ vm.cemetery.number_of_graves }}
       </p>
       <p ng-if="vm.cemetery.memorial">
-        {{ 'CEMETERY_DEMO.MEMORIAL' | translate }}: {{ vm.cemetery.memorial }} ({{ 'CEMETERY_DEMO.SCULPTOR' | translate }}: {{ vm.cemetery.memorial_sculptor }}, {{ 'CEMETERY_DEMO.UNVEILING_DATE' | translate }} {{ vm.cemetery.memorial_unveiling_date }})
+        {{ 'CEMETERY_DEMO.MEMORIAL' | translate }}: {{ vm.cemetery.memorial }}
+        <span ng-if="vm.cemetery.memorial_sculptor">({{ 'CEMETERY_DEMO.SCULPTOR' | translate }}: {{vm.cemetery.memorial_sculptor}}<span ng-if="vm.cemetery.memorial_unveiling_date">, {{ 'CEMETERY_DEMO.UNVEILING_DATE' | translate }} {{ vm.cemetery.memorial_unveiling_date }}</span>)</span>
       </p>
       <p ng-if="vm.cemetery.current_municipality">
         {{ 'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate }}: {{ vm.cemetery.current_municipality }}
