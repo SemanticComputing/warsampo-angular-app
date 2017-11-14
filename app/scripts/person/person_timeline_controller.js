@@ -28,7 +28,6 @@
         function init() {
 
             $scope.$on('$destroy', function() {
-                demoService.clear();
                 demoService.cleanUp();
             });
 
@@ -42,7 +41,7 @@
 
             self.options.includeUnitEvents = true;
 
-            return updateByUri(uri);
+            return updateByUri(uri, $transition$.params().event);
         }
 
         function applySettings() {

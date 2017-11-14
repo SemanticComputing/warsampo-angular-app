@@ -108,8 +108,13 @@
     .constant('DBPEDIA_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_ENDPOINT_URL, usePost: true })
     .constant('DBPEDIA_FI_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_FI_ENDPOINT_URL, usePost: true })
     .constant('PNR_ENDPOINT_CONFIG', { endpointUrl: PNR_ENDPOINT_URL, usePost: true })
-    .config(function($stateProvider, defaultLocale) {
+    .config(function($stateProvider, $urlRouterProvider, defaultLocale) {
+        $urlRouterProvider.otherwise('/404');
         $stateProvider
+        .state('404', {
+            url: '/404',
+            templateUrl: '404.html'
+        })
         .state('app', {
             abstract: true,
             url: '',
@@ -202,7 +207,7 @@
             params: { tab: '1' }
         })
         .state('app.lang.persons.demo.page.timeline', {
-            url: '?{tab:2}',
+            url: '?{tab:2}&event',
             templateUrl: 'views/person_timeline.html',
             controller: 'PersonTimelineController',
             controllerAs: 'ctrl',
@@ -233,7 +238,7 @@
             redirectTo: 'app.lang.units.demo.timeline'
         })
         .state('app.lang.units.demo.timeline', {
-            url: '/:id',
+            url: '/:id?event',
             templateUrl: 'views/unit_timeline.html',
             controller: 'UnitTimelineController',
             resolve: {
@@ -257,13 +262,17 @@
         // Photographs
         .state('app.lang.photographs', {
             url: '/photographs',
+            abstract: true,
+        })
+        .state('app.lang.photographs.demo', {
+            url: '',
             templateUrl: 'views/photo_demo.html',
             controller: 'PhotoDemoController',
             controllerAs: 'vm',
             reloadOnSearch: false
         })
         .state('app.lang.photographs.page', {
-            url: '/photographs/page/:id?',
+            url: '/page/:id',
             templateUrl: 'views/photo_page.html',
             controller: 'PhotoPageController',
             controllerAs: 'vm',
