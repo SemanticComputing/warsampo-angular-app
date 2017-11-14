@@ -6,7 +6,7 @@
 
     /* @ngInject */
     function wsNavbarDirective($templateRequest, $compile, $translate,
-            $location, _, supportedLocales, Settings) {
+            $location, $state, _, supportedLocales, Settings) {
 
         return {
             link: link,
@@ -30,7 +30,7 @@
         }
 
         /* @ngInject */
-        function NavbarController($scope) {
+        function NavbarController($scope, $state) {
             var self = this;
 
             self.getEventLinksVisibility = getEventLinksVisibility;

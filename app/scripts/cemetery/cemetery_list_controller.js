@@ -4,34 +4,19 @@
 
     angular.module('eventsApp')
 
-    .controller('CemeteryDemoController', CemeteryDemoController);
+    .controller('CemeteryListController', CemeteryListController);
 
     /* @ngInject */
-    function CemeteryDemoController($scope, $transition$, $translate, $location, _, cemeteryFacetService,
-            NgTableParams, FacetHandler, facetUrlStateHandlerService, chartjsService) {
+    function CemeteryListController($scope, $transition$, $translate, $location,
+            _, NgTableParams, cemeteryFacetService) {
 
         var vm = this;
 
         init();
 
         function init() {
-            return cemeteryFacetService.getFacets().then(function(facets) {
-                vm.facets = facets;
-
-                $scope.$on('sf-facet-constraints', updateResults);
-
-                var initListener = $scope.$on('sf-initial-constraints', function(event, config) {
-                    updateResultFormat();
-                    updateResults(event, config);
-                    initListener();
-                });
-
-                return getFacetOptions().then(function(options) {
-                    vm.facetOptions = options;
-                    vm.facetOptions.scope = $scope;
-                    vm.handler = new FacetHandler(vm.facetOptions);
-                });
-            });
+            //return cemeteryRepository.getByFacetSelections(
+            initializeTable();
         }
 
         function initializeTable() {

@@ -281,14 +281,30 @@
         // Cemeteries
         .state('app.lang.cemeteries', {
             url: '/cemeteries',
+            abstract: true
+        })
+        .state('app.lang.cemeteries.demo', {
+            url: '?facets',
             templateUrl: 'views/cemetery_demo.html',
             controller: 'CemeteryDemoController',
             controllerAs: 'vm',
             reloadOnSearch: false,
-            resolve: { uri: resolveUri }
+            redirectTo: 'app.lang.cemeteries.demo.list'
+        })
+        .state('app.lang.cemeteries.demo.list', {
+            url: '/list',
+            templateUrl: 'views/partials/cemetery_results_partial.html',
+            controller: 'CemeteryListController',
+            controllerAs: 'vm'
+        })
+        .state('app.lang.cemeteries.demo.map', {
+            url: '/map',
+            templateUrl: 'views/partials/cemetery_map.html',
+            controller: 'CemeteryMapController',
+            controllerAs: 'vm'
         })
         .state('app.lang.cemeteries.page', {
-            url: '/cemeteries/page/:id?',
+            url: '/page/:id?',
             templateUrl: 'views/cemetery_page.html',
             controller: 'CemeteryPageController',
             controllerAs: 'vm',
@@ -296,35 +312,35 @@
         })
         // Other pages
         .state('app.lang.ranks', {
-            url: '/ranks/page/:id?',
+            url: '/ranks/page/:id',
             templateUrl: 'views/rank_page.html',
             controller: 'RankPageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
         .state('app.lang.medals', {
-            url: '/medals/page/:id?',
+            url: '/medals/page/:id',
             templateUrl: 'views/medal_page.html',
             controller: 'MedalPageController',
             controllerAs: 'vm',
             resolve: { uri: resolveUri }
         })
         .state('app.lang.times', {
-            url: '/times/page/:id?',
+            url: '/times/page/:id',
             templateUrl: 'views/time_page.html',
             controller: 'TimePageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
         .state('app.lang.casualties', {
-            url: '/casualties/page/:id?',
+            url: '/casualties/page/:id',
             templateUrl: 'views/semantic_page.html',
             controller: 'SemanticPageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
         .state('app.lang.generic', {
-            url: '/page/:id?',
+            url: '/page/:id',
             templateUrl: 'views/semantic_page.html',
             controller: 'SemanticPageController',
             controllerAs: 'ctrl'
