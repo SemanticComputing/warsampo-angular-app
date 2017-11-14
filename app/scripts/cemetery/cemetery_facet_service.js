@@ -23,7 +23,7 @@
             name: {
                 facetId: 'name',
                 predicate: '<http://www.w3.org/2004/02/skos/core#prefLabel>',
-                name: 'CEMETERY_DEMO.NAME',
+                name: 'CEMETERY_DEMO.CEMETERY_NAME',
                 enabled: true,
             },
             // cemetery_type: {

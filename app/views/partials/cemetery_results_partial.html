@@ -7,7 +7,7 @@
   <!--</colgroup>-->
   <tr ng-show="!vm.isLoadingResults" ng-repeat="cemetery in $data">
 
-    <td data-title="'CEMETERY_DEMO.NAME' | translate">
+    <td data-title="'CEMETERY_DEMO.CEMETERY_NAME' | translate">
       <a ws-page-link="::cemetery.id">
         {{::cemetery.label}}
       </a>
@@ -21,9 +21,9 @@
     <td data-title="'CEMETERY_DEMO.ARCHITECT' | translate">
       <span ng-if="::cemetery.architect">{{::cemetery.architect}}</span>
     </td>
-    <td data-title="'CEMETERY_DEMO.MEMORIAL' | translate">
+    <!-- <td data-title="'CEMETERY_DEMO.MEMORIAL' | translate">
       <span ng-if="::cemetery.memorial">{{::cemetery.memorial}}</span>
-    </td>
+    </td> -->
     <td data-title="'CEMETERY_DEMO.CAMERA_CLUB' | translate">
       <span ng-if="::cemetery.camera_club">{{::cemetery.camera_club}}</span>
     </td>

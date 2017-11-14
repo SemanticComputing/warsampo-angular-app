@@ -62,8 +62,8 @@
         "RELATED_MEDALS": "Muita kunniamerkkejä"
     },
     "CEMETERY_DEMO": {
-        "TITLE": "Sankarihautausmaat Suomessa",
-        "HEADER": "Sankarihautausmaat Suomessa",
+        "TITLE": "Sankarihautausmaat ja -vainajat Suomessa",
+        "HEADER": "Sankarihautausmaat ja -vainajat Suomessa",
         "PAGE_META_DESCRIPTION_PREFIX": "Sankarihautausmaan tiedot, vainajat ja valokuvat",
         "APP_DESCRIPTION": "Voit tehdä hakuja hautausmaan nimellä ja lisäksi voit rajata hakutulosta tekemällä valintoja vasemmalta löytyvistä suodattimista. Hautausmaan tarkempiin tietoihin voit tutustua hautasmaan tietosivulla.",
         "TEXT_SEARCH_EXCEPTION": "Virheelliset tekstihakuehdot. Muuta hakuehtoja ja yritä uudelleen.",
