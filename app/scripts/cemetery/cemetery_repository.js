@@ -89,9 +89,7 @@
         '  ?id a ?type_id . ' +
         '  OPTIONAL { ?type_id skos:prefLabel ?type . } ' +
         '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
-        //'  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
-        '  OPTIONAL { ?id wces:status ?status . } ' +
-        '  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
+        //'  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
         '  OPTIONAL { ?id wces:cemetery_id ?cemetery_id . } ' +
         '  OPTIONAL { ?id wces:orginal_narc_name ?original_narc_name . } ' +
         '  OPTIONAL { ?id wces:current_municipality ?current_municipality . } ' +
@@ -116,13 +114,6 @@
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id skos:prefLabel ?label . ' +
-
-        // cemeteries that have a label ending in a digit have been generated from
-        // "hautauskunta" property, so do not include them
-        '  FILTER (!regex(?label, "[0-9]$"))' +
-
-        //'  OPTIONAL { ?id cemeteries:temporary_municipality ?place_id . } ' +
-        '  OPTIONAL { ?id wces:status ?status . } ' +
         //'  OPTIONAL { ?id wsc:cemetery_type ?cemetery_type . } ' +
         '  OPTIONAL { ?id wces:cemetery_id ?cemetery_id . } ' +
         '  OPTIONAL { ?id wces:original_narc_name ?original_narc_name . } ' +
@@ -131,13 +122,13 @@
         '  OPTIONAL { ?id wces:camera_club ?camera_club . } ' +
         '  OPTIONAL { ?id wces:architect ?architect . } ' +
         '  OPTIONAL { ?id wces:number_of_graves ?number_of_graves . } ' +
-        '  OPTIONAL { ?id wces:date_of_foundation ?date_of_foundation . } ' +
-        '  OPTIONAL { ?id wces:memorial_unveiling_date ?memorial_unveiling_date . } ' +
-        '  OPTIONAL { ?id wces:memorial ?memorial . } ' +
-        '  OPTIONAL { ?id wces:memorial_sculptor ?memorial_sculptor . } ' +
+        //'  OPTIONAL { ?id wces:date_of_foundation ?date_of_foundation . } ' +
+        //'  OPTIONAL { ?id wces:memorial_unveiling_date ?memorial_unveiling_date . } ' +
+        //'  OPTIONAL { ?id wces:memorial ?memorial . } ' +
+        //'  OPTIONAL { ?id wces:memorial_sculptor ?memorial_sculptor . } ' +
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?lon . } ' +
-        '  OPTIONAL { ?id wces:address ?address . } ' +
+        //'  OPTIONAL { ?id wces:address ?address . } ' +
         ' } ';
 
         /**
