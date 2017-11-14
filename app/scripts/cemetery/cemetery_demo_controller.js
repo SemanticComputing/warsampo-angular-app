@@ -105,19 +105,19 @@
                 }
                 return pager.getAll();
 
-            })
-            .then(function(cemeteries) {
-                vm.cemeteries = cemeteries;
-                var barChartData = [];
-                vm.cemeteries.forEach(function(cemetery) {
-                    if (cemetery.number_of_graves) {
-                        barChartData.push({ value: cemetery.number_of_graves,
-                            label: cemetery.label });
-                    }
-
-                });
-                vm.barChart = chartjsService.createBarChart(barChartData);
             });
+            // .then(function(cemeteries) {
+            //     vm.cemeteries = cemeteries;
+            //     var barChartData = [];
+            //     vm.cemeteries.forEach(function(cemetery) {
+            //         if (cemetery.number_of_graves) {
+            //             barChartData.push({ value: cemetery.number_of_graves,
+            //                 label: cemetery.label });
+            //         }
+            //
+            //     });
+            //     vm.barChart = chartjsService.createBarChart(barChartData);
+            // });
         }
 
     }
