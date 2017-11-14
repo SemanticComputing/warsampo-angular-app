@@ -12,15 +12,26 @@
         {{::cemetery.label}}
       </a>
     </td>
+    <td data-title="'CEMETERY_DEMO.NARC_NAME' | translate">
+      <span ng-if="::cemetery.original_narc_name">{{::cemetery.original_narc_name}}</span>
+    </td>
     <td data-title="'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate">
       <span ng-if="::cemetery.current_municipality">{{::cemetery.current_municipality}}</span>
     </td>
     <td data-title="'CEMETERY_DEMO.FORMER_MUNICIPALITY' | translate">
       <span ng-if="::cemetery.former_municipality">{{::cemetery.former_municipality}}</span>
     </td>
-    <td data-title="'CEMETERY_DEMO.ARCHITECT' | translate">
-      <span ng-if="::cemetery.architect">{{::cemetery.architect}}</span>
+    <td data-title="'CEMETERY_DEMO.NUMBER_OF_GRAVES' | translate">
+      <span ng-if="::cemetery.number_of_graves">{{::cemetery.number_of_graves }}</span>
     </td>
+    <td data-title="'CEMETERY_DEMO.PERSON_COUNT' | translate">
+      <span ng-if="::cemetery.person_count > 0">{{::cemetery.person_count }}</span>
+    </td>
+
+
+    <!-- <td data-title="'CEMETERY_DEMO.ARCHITECT' | translate">
+      <span ng-if="::cemetery.architect">{{::cemetery.architect}}</span>
+    </td> -->
     <!-- <td data-title="'CEMETERY_DEMO.MEMORIAL' | translate">
       <span ng-if="::cemetery.memorial">{{::cemetery.memorial}}</span>
     </td> -->

@@ -69,6 +69,7 @@
         "OTHER_CEMETERIES_CLOSE": "Other cemeteries nearby",
         "NAME": "Name",
         "CEMETERY_NAME": "Cemetery name",
+        "NARC_NAME": "Cemetery name used in Casualties dataset",
         "CEMETERY_TYPE": "Cemetery type",
         "NUMBER_OF_GRAVES": "Number of graves",
         "CURRENT_MUNICIPALITY": "Current municipality",

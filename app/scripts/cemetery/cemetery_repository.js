@@ -52,6 +52,11 @@
 
         var orderBy = '?label';
 
+        var select =
+        ' SELECT DISTINCT ?id ?label ?original_narc_name ?current_municipality ?former_municipality ' +
+        ' ?camera_club ?architect ?number_of_graves (count(distinct ?person_id) as ?person_count) ' +
+        ' ?lat ?lon ';
+
         var singleSelect =
         ' SELECT DISTINCT ?id ?type ?type_id ?label ?place_id ?status ?cemetery_type ' +
         ' ?cemetery_id ?original_narc_name ?current_municipality ?former_municipality ' +
@@ -110,26 +115,25 @@
         '  } ' +
         ' } ';
 
-        var cemeteryQry = singleSelect +
+        var cemeteryQry = select +
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id skos:prefLabel ?label . ' +
-        //'  OPTIONAL { ?id wsc:cemetery_type ?cemetery_type . } ' +
-        '  OPTIONAL { ?id wces:cemetery_id ?cemetery_id . } ' +
         '  OPTIONAL { ?id wces:original_narc_name ?original_narc_name . } ' +
         '  OPTIONAL { ?id wces:current_municipality ?current_municipality . } ' +
         '  OPTIONAL { ?id wces:former_municipality ?former_municipality . } ' +
         '  OPTIONAL { ?id wces:camera_club ?camera_club . } ' +
         '  OPTIONAL { ?id wces:architect ?architect . } ' +
         '  OPTIONAL { ?id wces:number_of_graves ?number_of_graves . } ' +
-        //'  OPTIONAL { ?id wces:date_of_foundation ?date_of_foundation . } ' +
-        //'  OPTIONAL { ?id wces:memorial_unveiling_date ?memorial_unveiling_date . } ' +
-        //'  OPTIONAL { ?id wces:memorial ?memorial . } ' +
-        //'  OPTIONAL { ?id wces:memorial_sculptor ?memorial_sculptor . } ' +
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?lon . } ' +
-        //'  OPTIONAL { ?id wces:address ?address . } ' +
-        ' } ';
+        '  OPTIONAL { ' +
+        '     ?death_record_id nsc:hautausmaa ?id . ' +
+        '     ?death_record_id crm:P70_documents ?person_id . ' +
+        '  } ' +
+        ' } ' +
+        'GROUP BY ?id ?label ?original_narc_name ?current_municipality ?former_municipality ?camera_club ?architect ?number_of_graves ?lat ?lon ' +
+        'ORDER BY ?label ';
 
         /**
         * @ngdoc method
@@ -216,7 +220,7 @@
         function getByFacetSelections(facetSelections, options) {
             var resultSet = facetSelections.join(' ');
             var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet, '?name');
-            //console.log(qryObj.query);
+            console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, options.pageSize,
                     qryObj.resultSetQuery);
         }
