@@ -230,6 +230,7 @@
             controller: 'UnitDemoController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
+            redirectTo: 'app.lang.units.demo.timeline'
         })
         .state('app.lang.units.demo.timeline', {
             url: '/:id',
@@ -241,6 +242,17 @@
             },
             controllerAs: 'ctrl',
             reloadOnSearch: false,
+            params: {
+                id: ''
+            },
+            onEnter: function($transition$, $state) {
+                if (!$transition$.params().id) {
+                    return $state.target('app.lang.units.demo.timeline', {
+                        lang: $transition$.params().lang,
+                        id: 'actor_940'
+                    });
+                }
+            }
         })
         // Photographs
         .state('app.lang.photographs', {
