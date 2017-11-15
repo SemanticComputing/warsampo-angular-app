@@ -68,7 +68,10 @@
             preferredLang : ['fi', 'en']
         };
 
-        var fetchOptions = { pageSize: PHOTO_PAGE_SIZE };
+        var fetchOptions = {
+            pageSize: 25,
+            pagesPerQuery: 5
+        };
 
         function getResults(facetSelections) {
             var selections = facetSelections.constraint;
