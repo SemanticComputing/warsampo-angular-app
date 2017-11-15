@@ -220,7 +220,7 @@
         function getByFacetSelections(facetSelections, options) {
             var resultSet = facetSelections.join(' ');
             var qryObj = queryBuilder.buildQuery(cemeteryQry, resultSet, '?name');
-            console.log(qryObj.query);
+            //console.log(qryObj.query);
             return endpoint.getObjects(qryObj.query, options.pageSize,
                     qryObj.resultSetQuery);
         }
