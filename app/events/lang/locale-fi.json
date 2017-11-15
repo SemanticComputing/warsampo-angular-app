@@ -200,5 +200,7 @@
     "COMMANDER": "Komentaja",
     "NOTE": "Muistiinpano",
     "NAME": "Nimi",
-    "NO_SELECTION": "-- Ei valintaa --"
+    "NO_SELECTION": "-- Ei valintaa --",
+    "PAGE_NOT_FOUND": "Sivua ei löytynyt",
+    "PAGE_NOT_FOUND_DESCRIPTION": "Hakemaasi sivua ei valitettavasti löytynyt. Voit siirtyä Sotasammon etusivulle klikkaamalla alla olevaa linkkiä."
 }

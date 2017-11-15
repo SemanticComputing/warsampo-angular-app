@@ -53,9 +53,6 @@
             function init() {
                 return $translate.onReady().then(function() {
                     self.lang = $translate.use();
-                    var base = self.lang + '/events/';
-                    self.winterWarLink = base + 'winterwar';
-                    self.continuationWarLink = base + 'continuationwar';
                 });
             }
 

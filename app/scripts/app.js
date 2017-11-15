@@ -108,22 +108,29 @@
     .constant('DBPEDIA_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_ENDPOINT_URL, usePost: true })
     .constant('DBPEDIA_FI_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_FI_ENDPOINT_URL, usePost: true })
     .constant('PNR_ENDPOINT_CONFIG', { endpointUrl: PNR_ENDPOINT_URL, usePost: true })
-    .config(function($stateProvider, $urlRouterProvider, defaultLocale) {
-        $urlRouterProvider.otherwise('/404');
+    /* ngInject */
+    .config(function($urlMatcherFactoryProvider) {
+        $urlMatcherFactoryProvider.strictMode(false);
+    })
+    /* ngInject */
+    .config(function($stateProvider, $urlServiceProvider, defaultLocale) {
+        $urlServiceProvider.rules.otherwise({ state: 'app.lang.404' });
         $stateProvider
-        .state('404', {
-            url: '/404',
-            templateUrl: '404.html'
-        })
         .state('app', {
             abstract: true,
-            url: '',
-            redirectTo: { state: 'app.lang.events.demo', params: { era: 'winterwar', lang: defaultLocale } }
+            url: ''
         })
         .state('app.lang', {
             abstract: true,
             url: '/{lang}',
+            params: {
+                lang: defaultLocale
+            },
             resolve: { checkLang: checkLang }
+        })
+        .state('app.lang.404', {
+            url: '/404',
+            templateUrl: '404.html'
         })
         // Events
         .state('app.lang.events', {
@@ -340,26 +347,16 @@
             resolve: { uri: resolveUri }
         })
         .state('app.lang.generic', {
-            url: '/page/:id',
+            url: '/page?uri',
             templateUrl: 'views/semantic_page.html',
             controller: 'SemanticPageController',
             controllerAs: 'ctrl'
         });
-        //.when('/page', {
-            //redirectTo: '/' + defaultLocale + '/page'
-        //})
-        //.otherwise({
-            //redirectTo: '/' + defaultLocale + '/events/'
-        //});
     })
     /* ngInject */
     .config(function($locationProvider) {
         $locationProvider.html5Mode(true);
     })
-    /* ngInject */
-    //.config(function($urlMatcherFactoryProvider) {
-        //$urlMatcherFactoryProvider.strictMode(false);
-    //})
     /* ngInject */
     .config(function($translateProvider, defaultLocale) {
         $translateProvider.useStaticFilesLoader({
