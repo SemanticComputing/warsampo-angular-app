@@ -105,10 +105,10 @@
                 }
                 return pager.getAll();
 
-            });
-            // .then(function(cemeteries) {
-            //     vm.cemeteries = cemeteries;
-            //     var barChartData = [];
+            })
+            .then(function(cemeteries) {
+                 vm.cemeteries = cemeteries;
+            //    var barChartData = [];
             //     vm.cemeteries.forEach(function(cemetery) {
             //         if (cemetery.number_of_graves) {
             //             barChartData.push({ value: cemetery.number_of_graves,
@@ -117,7 +117,7 @@
             //
             //     });
             //     vm.barChart = chartjsService.createBarChart(barChartData);
-            // });
+            });
         }
 
     }
