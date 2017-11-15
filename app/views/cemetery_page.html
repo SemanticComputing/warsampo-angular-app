@@ -17,6 +17,9 @@
       <h2>
         {{ vm.cemetery.getLabel() }}
       </h2>
+      <p ng-if="vm.cemetery.original_narc_name">
+        {{ 'CEMETERY_DEMO.NARC_NAME' | translate }}: {{ vm.cemetery.original_narc_name }}
+      </p>
       <p ng-if="vm.cemetery.date_of_foundation">
         {{ 'CEMETERY_DEMO.FOUNDATION_YEAR' | translate }}: {{ vm.cemetery.date_of_foundation }}
       </p>
