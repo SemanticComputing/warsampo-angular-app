@@ -6,7 +6,7 @@
     .controller('EventDemoController', EventDemoController);
 
     /* @ngInject */
-    function EventDemoController($transition$, $location, $scope, $q, $translate,
+    function EventDemoController($state, $transition$, $location, $scope, $q, $translate,
             $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
             googleMapsService, EventDemoService) {
 
@@ -23,7 +23,6 @@
 
         // The title for the info view
         self.title;
-
         self.helpTextTitle = 'EVENT_DEMO.HELP_TEXT_TITLE';
         self.helpText = 'EVENT_DEMO.HELP_TEXT';
         self.casualtyDescription = 'CASUALTIES_DURING_TIMESPAN';
@@ -40,6 +39,8 @@
         self.getImages = getImages;
         self.getWinterWarUrl = getWinterWarUrl;
         self.visualize = visualize;
+
+        self.uiOnParamsChanged =  onUriChange;
 
         /* Activate */
 
@@ -87,8 +88,8 @@
         function visualize() {
             self.err = undefined;
             self.isLoadingTimeline = true;
-            var era = war;
-            var event_uri = $location.search().uri;
+            var era = war || 'winterwar';
+            var event_uri = $transition$.params().uri;
             var promise;
             if (event_uri) {
                 // Single event given as parameter
@@ -96,13 +97,11 @@
                     if (e && e.start_time) {
                         return createTimeMapForEvent(e);
                     } else {
-                        // Event not found, redirect to Winter War
-                        $location.path(getWinterWarUrl()).replace();
-                        return $q.when();
+                        return $state.go('app.lang.events.demo.war', { war: 'winterwar' });
                     }
 
                 });
-            } else if (era) {
+            } else {
                 // Only war given
                 switch(era.toLowerCase()) {
                     case 'winterwar': {
@@ -114,10 +113,6 @@
                         break;
                     }
                 }
-            } else {
-                // No war or event specified -- redirect to Winter War
-                $location.path(getWinterWarUrl()).replace();
-                return $q.when();
             }
 
             return promise.then(function() {
@@ -160,6 +155,13 @@
 
         function getWinterWarUrl() {
             return $translate.use() + '/events/winterwar';
+        }
+
+        function onUriChange(newValues) {
+            if (newValues.uri && newValues.uri !== (self.getCurrent() || {}).id) {
+                return demoService.navigateToEvent(newValues.uri);
+            }
+            return $q.when();
         }
 
         function showHelp() {

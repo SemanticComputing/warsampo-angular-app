@@ -138,15 +138,13 @@
             abstract: true
         })
         .state('app.lang.events.page', {
-            url: '/page/:id?',
+            url: '/page/:id',
             templateUrl: 'views/event_page.html',
             controller: 'EventPageController',
             controllerAs: 'ctrl',
             resolve: { uri: resolveUri }
         })
         .state('app.lang.events.demo', {
-            url: '?uri',
-            reloadOnSearch: false,
             onEnter: function($transition$, $state) {
                 var uri = $transition$.params().uri;
                 var war = $transition$.params().war;
@@ -160,7 +158,10 @@
             }
         })
         .state('app.lang.events.demo.war', {
-            url: '/:war',
+            url: '/:war?uri',
+            params: {
+                uri: { dynamic: true }
+            },
             templateUrl: 'views/event_timeline.html',
             reloadOnSearch: false,
             controller: 'EventDemoController',
