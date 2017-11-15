@@ -92,8 +92,8 @@
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id a ?type_id . ' +
+        '  ?id skos:prefLabel ?label . ' +
         '  OPTIONAL { ?type_id skos:prefLabel ?type . } ' +
-        '  OPTIONAL { ?id skos:prefLabel ?label . } ' +
         //'  OPTIONAL { ?id wces:cemetery_type ?cemetery_type . } ' +
         '  OPTIONAL { ?id wces:cemetery_id ?cemetery_id . } ' +
         '  OPTIONAL { ?id wces:orginal_narc_name ?original_narc_name . } ' +
@@ -119,7 +119,7 @@
         ' { ' +
         '  <RESULT_SET> ' +
         '  ?id skos:prefLabel ?label . ' +
-        '  OPTIONAL { ?id wces:original_narc_name ?original_narc_name . } ' +
+        '  OPTIONAL { ?id skos:altLabel ?original_narc_name . } ' +
         '  OPTIONAL { ?id wces:current_municipality ?current_municipality . } ' +
         '  OPTIONAL { ?id wces:former_municipality ?former_municipality . } ' +
         '  OPTIONAL { ?id wces:camera_club ?camera_club . } ' +
