@@ -37,7 +37,7 @@
         {{ 'CEMETERY_DEMO.FORMER_MUNICIPALITY' | translate }}: {{ vm.cemetery.former_municipality }}
       </p>
       <p ng-if="vm.cemetery.address">
-        {{ 'CEMETERY_DEMO.STREET_ADDRESS' | translate }}: {{ vm.cemetery.address }}
+        {{ 'CEMETERY_DEMO.STREET_ADDRESS' | translate }}: <a href="https://maps.google.com/?q={{vm.cemetery.address}}">{{ vm.cemetery.address }}</a>
       </p>
       <p>
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.cemetery.id }}</small>
