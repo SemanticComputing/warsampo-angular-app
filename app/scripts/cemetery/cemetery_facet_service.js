@@ -20,12 +20,15 @@
         this.getErrorMessage = getErrorMessage;
 
         var facets = {
+
+            // seco-jena-text-facet
             name: {
                 facetId: 'name',
-                predicate: '<http://www.w3.org/2004/02/skos/core#prefLabel>',
                 name: 'CEMETERY_DEMO.CEMETERY_NAME',
                 enabled: true,
+                graph: '<http://ldf.fi/warsa/places/cemeteries>'
             },
+
             // cemetery_type: {
             //     facetId: 'cemetery_type',
             //     predicate: '<http://ldf.fi/schema/warsa/cemeteries/cemetery_type>',
