@@ -121,6 +121,10 @@
 
         // Redirect non-localized urls to default locale
         $urlServiceProvider.rules.when(new RegExp('^/(?!(?:fi|en))(.*)$'), '/' + defaultLocale + '/$1');
+        // Add missing trailing slash to page urls
+        $urlServiceProvider.rules.when(new RegExp('^.*/page$'), function(match, url) {
+            return match[0] + '/?uri=' + url.search.uri;
+        });
 
         $stateProvider
         .state('app', {
@@ -410,7 +414,7 @@
     }
 
     /* @ngInject */
-    function resolveUri($transition$, $state, $location, baseService) {
+    function resolveUri($q, $transition$, $state, $location, baseService) {
         // Get URI from short URL, and redirect old style URLs to short URLs
         var id = $transition$.params().id;
         var uriParam = $location.search().uri;
@@ -418,8 +422,8 @@
         if (uriParam && !id && uriFromId) {
             // Redirect to short url
             $location.search('uri', null);
-            $location.path($location.path().replace(/[/]*$/, '/') + baseService.getIdFromUri(uriParam));
-            return uriParam;
+            $location.path($location.path().replace(/[/]*$/, '/') + baseService.getIdFromUri(uriParam)).replace();
+            return $q.reject('Redirected to short URL');
         } else if (id) {
             // Short url
             return uriFromId;
