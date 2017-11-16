@@ -141,7 +141,7 @@
         })
         .state('app.lang.404', {
             url: '/404',
-            templateUrl: '404.html'
+            templateUrl: 'views/404.html'
         })
         // Events
         .state('app.lang.events', {
