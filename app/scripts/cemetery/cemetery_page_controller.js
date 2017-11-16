@@ -104,15 +104,24 @@
                         for (var i = 0; i < datasets[0].data.length; ++i) {
                             text.push('<li><div class="circle" style="background-color:' + chart.data.datasets[0].backgroundColor[i] + '"></div>');
                             if (labels[i]) {
+                                var createLink = labels[i] !== 'Muu' && labels[i] !== 'Other'? true : false;
                                 switch (chartTitle) {
                                   case 'unitChart':
-                                      text.push('<a href="/units/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + chart.data.labels[i] + '</a>');
+                                      if (createLink) {
+                                          text.push('<a href="/units/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + labels[i] + '</a>');
+                                      } else {
+                                          text.push('<span>' + labels[i] + '</span>');
+                                      }
                                       break;
                                   case 'rankChart':
-                                      text.push('<a href="/ranks/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + chart.data.labels[i] + '</a>');
+                                      if (createLink) {
+                                          text.push('<a href="/ranks/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + labels[i] + '</a>');
+                                      } else {
+                                          text.push('<span>' + labels[i] + '</span>');
+                                      }
                                       break;
                                   case 'wayChart':
-                                      text.push(chart.data.labels[i]);
+                                      text.push(labels[i]);
                                       break;
                                 }
 
