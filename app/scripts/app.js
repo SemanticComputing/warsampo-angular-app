@@ -108,13 +108,20 @@
     .constant('DBPEDIA_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_ENDPOINT_URL, usePost: true })
     .constant('DBPEDIA_FI_ENDPOINT_CONFIG', { endpointUrl: DBPEDIA_FI_ENDPOINT_URL, usePost: true })
     .constant('PNR_ENDPOINT_CONFIG', { endpointUrl: PNR_ENDPOINT_URL, usePost: true })
+
     /* ngInject */
     .config(function($urlMatcherFactoryProvider) {
         $urlMatcherFactoryProvider.strictMode(false);
     })
+
     /* ngInject */
     .config(function($stateProvider, $urlServiceProvider, defaultLocale) {
+
         $urlServiceProvider.rules.otherwise({ state: 'app.lang.404' });
+
+        // Redirect non-localized urls to default locale
+        $urlServiceProvider.rules.when(new RegExp('^/(?!(?:fi|en))(.*)$'), '/' + defaultLocale + '/$1');
+
         $stateProvider
         .state('app', {
             abstract: true,
@@ -135,7 +142,8 @@
         // Events
         .state('app.lang.events', {
             url: '/events',
-            abstract: true
+            abstract: true,
+            redirectTo: 'app.lang.events.demo'
         })
         .state('app.lang.events.page', {
             url: '/page/:id',
@@ -145,6 +153,7 @@
             resolve: { uri: resolveUri }
         })
         .state('app.lang.events.demo', {
+            url: '',
             onEnter: function($transition$, $state) {
                 var uri = $transition$.params().uri;
                 var war = $transition$.params().war;
