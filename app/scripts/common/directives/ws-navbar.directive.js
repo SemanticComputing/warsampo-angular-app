@@ -76,8 +76,7 @@
                 if (_.includes(supportedLocales, lang)) {
                     $translate.use(lang).then(function() {
                         init();
-                        $routeParams.lang = lang;
-                        $route.updateParams($routeParams);
+                        $route.updateParams({ lang: lang, uri: undefined });
                     });
                 }
             }

@@ -11,6 +11,7 @@
 
         self.getRelated = getRelated;
         self.combineRelated = combineRelated;
+        self.getIdFromUri = getIdFromUri;
 
         // Non-paged objects only, curently
         function getRelated(obj, idProp, targetProp, repository) {
@@ -36,6 +37,10 @@
                 }
             });
             return obj;
+        }
+
+        function getIdFromUri(uri) {
+            return uri.replace(/.*\/(.+?)$/, '$1');
         }
     }
 })();

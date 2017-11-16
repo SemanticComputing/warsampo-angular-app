@@ -5,12 +5,12 @@
     .controller('UnitDemoController', UnitDemoController);
 
     /* @ngInject */
-    function UnitDemoController($routeParams, $location, $scope, $q, $uibModal,
+    function UnitDemoController($route, $routeParams, $location, $scope, $q, $uibModal,
             $translate, _, unitService, eventService, Settings, UnitDemoService, WAR_INFO) {
 
         var self = this;
 
-        var DEFAULT_UNIT = 'http://ldf.fi/warsa/actors/actor_940';
+        var DEFAULT_UNIT = 'actor_940';
         var demoService = new UnitDemoService();
 
         // User search input
@@ -18,7 +18,7 @@
 
         self.getItems = getItems;
         self.updateUnit = updateUnit;
-        self.currentObject;
+        self.unit;
 
         self.casualtyDescription = 'UNIT_DEMO.CASUALTIES_DURING_TIMESPAN';
 
@@ -93,17 +93,17 @@
 
             getItems();
 
-            if (!$routeParams.uri) {
+            if (!$route.current.locals.uri) {
                 // Redirect to default unit.
-                return $location.search('uri', DEFAULT_UNIT).replace();
+                return $route.updateParams({ 'id': DEFAULT_UNIT });
             }
             return updateState();
         }
 
         function createTimeMap(id) {
             return demoService.createTimemap(id, WAR_INFO.winterWarTimeSpan.start,
-                    WAR_INFO.continuationWarTimeSpan.end,
-                    WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights));
+                WAR_INFO.continuationWarTimeSpan.end,
+                WAR_INFO.winterWarHighlights.concat(WAR_INFO.continuationWarHighlights));
         }
 
         function getItems() {
@@ -139,17 +139,19 @@
             if (self.currentSelection) {
                 demoService.clear();
                 $location.search('event', null);
-                $location.search('uri', self.currentSelection);
+                $location.path($route.current.params.lang +
+                    '/units/' + demoService.getIdFromUri(self.currentSelection), false);
+                updateState(self.currentSelection);
             }
         }
 
         function showUnitDetails() {
-            return !(self.isLoadingEvent || !self.currentObject || self.getCurrent());
+            return !(self.isLoadingEvent || !self.unit || self.getCurrent());
         }
 
         // Update state based on url
-        function updateState() {
-            var uri = $routeParams.uri;
+        function updateState(uri) {
+            uri = uri || $route.current.locals.uri;
             if (!uri) {
                 // This shouldn't happen.
                 return;
@@ -190,7 +192,7 @@
                 self.isLoadingEvent = true;
             }
             return unitService.getById(uri).then(function(unit) {
-                self.currentObject = unit;
+                self.unit = unit;
                 unitService.fetchRelated(unit, true);
                 return createTimeMap(uri);
             }).then(function() {
