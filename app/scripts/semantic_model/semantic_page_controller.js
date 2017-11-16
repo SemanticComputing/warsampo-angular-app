@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .controller('SemanticPageController', function($routeParams, $rootScope, _, semanticModelService) {
+    .controller('SemanticPageController', function($transition$, $rootScope, _, semanticModelService) {
         $rootScope.showSettings = null;
         $rootScope.showHelp = null;
         var self = this;
@@ -23,11 +23,12 @@
             return list;
         };
 
-        if ($routeParams.uri) {
-            self.uri = $routeParams.uri;
+        self.uri = $transition$.params().uri;
+
+        if (self.uri) {
             self.isLoadingObject = true;
             self.isLoadingLinks = true;
-            semanticModelService.getById($routeParams.uri)
+            semanticModelService.getById(self.uri)
             .then(function(semanticModel) {
                 self.obj = semanticModel;
                 self.isLoadingObject = false;

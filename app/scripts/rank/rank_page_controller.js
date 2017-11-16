@@ -3,15 +3,15 @@
 
     angular.module('eventsApp')
     .controller('RankPageController', RankPageController);
-    
+
     /* @ngInject */
-    function RankPageController($routeParams, rankService) {
+    function RankPageController(rankService, uri) {
         var self = this;
 
-        if ($routeParams.uri) {
+        if (uri) {
             self.isLoadingRank = true;
             self.isLoadingPersons = false;
-            rankService.getById($routeParams.uri)
+            rankService.getById(uri)
             .then(function(rank) {
                 self.rank = rank;
                 self.isLoadingRank = false;

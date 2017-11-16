@@ -12,14 +12,15 @@
     .controller('CemeteryPageController', CemeteryPageController);
 
     /* @ngInject */
-    function CemeteryPageController($routeParams, $scope, $timeout, $sce, $uibModal, $q, _, cemeteryService, chartjsService, Settings) {
+    function CemeteryPageController($scope, $transition$, $sce, $uibModal, $q, _, cemeteryService,
+                chartjsService, Settings, baseService, uri) {
 
           var vm = this;
 
           init();
 
           function init() {
-              if (!$routeParams.uri) {
+              if (!uri) {
                   return;
               }
               vm.isLoadingCemetery = true;
@@ -32,10 +33,12 @@
 
               setChartOptions(['unitChart', 'rankChart', 'ageChart', 'wayChart']);
 
-              cemeteryService.getSingleCemeteryById($routeParams.uri)
+              var lang = $transition$.params().lang;
+
+              cemeteryService.getSingleCemeteryById(uri)
               .then(function(cemetery) {
                   vm.cemetery = cemetery;
-                  vm.casualtiesLink = '/' + $routeParams.lang  +'/casualties/?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/narc-menehtyneet1939-45/hautausmaa> <'+ cemetery.id +'> . "}}';
+                  vm.casualtiesLink = '/' + lang  +'/casualties/?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/narc-menehtyneet1939-45/hautausmaa> <'+ cemetery.id +'> . "}}';
                   return cemeteryService.fetchRelated(vm.cemetery);
               })
               .then(function(cemetery) {
@@ -55,10 +58,10 @@
                           person.age = getAge(person.cas_date_of_birth, person.cas_date_of_death);
                       });
 
-                      vm.unitChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'unit_label', 'unit_id_picked', true, $routeParams.lang);
-                      vm.rankChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'rank_label', 'rank_id', true, $routeParams.lang);
-                      vm.ageChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'age', '', false, $routeParams.lang);
-                      vm.wayChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'way_to_die', '', true, $routeParams.lang);
+                      vm.unitChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'unit_label', 'unit_id_picked', true, lang);
+                      vm.rankChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'rank_label', 'rank_id', true, lang);
+                      vm.ageChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'age', '', false, lang);
+                      vm.wayChart = chartjsService.createPersonDistribution(vm.buriedPersons, 'way_to_die', '', true, lang);
                   }
                   else {
                       vm.buriedPersons = undefined;
@@ -103,10 +106,10 @@
                             if (labels[i]) {
                                 switch (chartTitle) {
                                   case 'unitChart':
-                                      text.push('<a href="/units/page?uri=' + vm[chartTitle].uris[i] + '">' + chart.data.labels[i] + '</a>');
+                                      text.push('<a href="/units/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + chart.data.labels[i] + '</a>');
                                       break;
                                   case 'rankChart':
-                                      text.push('<a href="/ranks/page?uri=' + vm[chartTitle].uris[i] + '">' + chart.data.labels[i] + '</a>');
+                                      text.push('<a href="/ranks/page/' + baseService.getIdFromUri(vm[chartTitle].uris[i]) + '">' + chart.data.labels[i] + '</a>');
                                       break;
                                   case 'wayChart':
                                       text.push(chart.data.labels[i]);

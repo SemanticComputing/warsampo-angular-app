@@ -8,14 +8,14 @@
  * Controller of the eventsApp
  */
 angular.module('eventsApp')
-.controller('TimePageController', function($routeParams, $q, $rootScope, timeService) {
+.controller('TimePageController', function($q, $rootScope, timeService, uri) {
     $rootScope.showSettings = null;
     $rootScope.showHelp = null;
     var self = this;
-    if ($routeParams.uri) {
+    if (uri) {
         self.isLoadingObj = true;
         self.isLoadingLinks = true;
-        timeService.getById($routeParams.uri)
+        timeService.getById(uri)
         .then(function(time) {
             self.time = time;
             self.isLoadingObj = false;

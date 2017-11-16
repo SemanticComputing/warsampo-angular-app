@@ -16,7 +16,7 @@
     });
 
     /* @ngInject */
-    function PhotoGalleryController($scope, $q, $timeout, $window, _, $translate) {
+    function PhotoGalleryController($scope, $q, $timeout, $window, _, $translate, baseService) {
         var self = this;
 
         self.isCollapsed = true;
@@ -105,7 +105,7 @@
         function setSlideListener() {
             angular.element('#blueimp-gallery-' + self.galleryId).on('slide', function (event, index) {
                 var elem = angular.element('#photo-container-' + self.galleryId + ' a').eq(index);
-                var url = '/' + $translate.use() + '/photographs/page?uri=' + encodeURIComponent(elem.data('id'));
+                var url = '/' + $translate.use() + '/photographs/page/' + baseService.getIdFromUri(elem.data('id'));
                 angular.element(this).children('.description').attr('href', url);
             });
         }

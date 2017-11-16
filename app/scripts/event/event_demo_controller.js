@@ -6,9 +6,11 @@
     .controller('EventDemoController', EventDemoController);
 
     /* @ngInject */
-    function EventDemoController($routeParams, $location, $scope, $q, $translate,
+    function EventDemoController($state, $transition$, $location, $scope, $q, $translate,
             $uibModal, _, Settings, WAR_INFO, eventService, photoService, casualtyRepository,
             googleMapsService, EventDemoService) {
+
+        var war = $transition$.params().war;
 
         /* Private vars */
 
@@ -21,7 +23,6 @@
 
         // The title for the info view
         self.title;
-
         self.helpTextTitle = 'EVENT_DEMO.HELP_TEXT_TITLE';
         self.helpText = 'EVENT_DEMO.HELP_TEXT';
         self.casualtyDescription = 'CASUALTIES_DURING_TIMESPAN';
@@ -38,6 +39,8 @@
         self.getImages = getImages;
         self.getWinterWarUrl = getWinterWarUrl;
         self.visualize = visualize;
+
+        self.uiOnParamsChanged =  onUriChange;
 
         /* Activate */
 
@@ -71,11 +74,6 @@
         }
 
         function init() {
-            // Update state when url changes.
-            $scope.$on('$routeUpdate', function() {
-                return updateState();
-            });
-
             Settings.setHelpFunction(showHelp);
             Settings.enableSettings();
             Settings.setApplyFunction(visualize);
@@ -87,28 +85,11 @@
             });
         }
 
-        // Update state based on url
-        function updateState() {
-            var uri = $routeParams.uri;
-            if (!uri) {
-                self.promise = self.promise.then(function() {
-                    return demoService.clearCurrent();
-                });
-                return self.promise;
-            }
-            if (uri !== (demoService.getCurrent() || {}).id) {
-                self.promise = self.promise.then(function() {
-                    return demoService.navigateToEvent(uri);
-                });
-                return self.promise;
-            }
-        }
-
         function visualize() {
             self.err = undefined;
             self.isLoadingTimeline = true;
-            var era = $routeParams.era;
-            var event_uri = $routeParams.uri;
+            var era = war || 'winterwar';
+            var event_uri = $transition$.params().uri;
             var promise;
             if (event_uri) {
                 // Single event given as parameter
@@ -116,13 +97,11 @@
                     if (e && e.start_time) {
                         return createTimeMapForEvent(e);
                     } else {
-                        // Event not found, redirect to Winter War
-                        $location.path(getWinterWarUrl()).replace();
-                        return $q.when();
+                        return $state.go('app.lang.events.demo.war', { war: 'winterwar' });
                     }
 
                 });
-            } else if (era) {
+            } else {
                 // Only war given
                 switch(era.toLowerCase()) {
                     case 'winterwar': {
@@ -134,10 +113,6 @@
                         break;
                     }
                 }
-            } else {
-                // No war or event specified -- redirect to Winter War
-                $location.path(getWinterWarUrl()).replace();
-                return $q.when();
             }
 
             return promise.then(function() {
@@ -152,15 +127,15 @@
         function showWinterWar() {
             self.title = 'EVENT_DEMO.WINTER_WAR_EVENT_TITLE';
             return demoService.createTimemap(WAR_INFO.winterWarTimeSpan.start,
-                    WAR_INFO.winterWarTimeSpan.end,
-                    WAR_INFO.winterWarHighlights);
+                WAR_INFO.winterWarTimeSpan.end,
+                WAR_INFO.winterWarHighlights);
         }
 
         function showContinuationWar() {
             self.title = 'EVENT_DEMO.CONTINUATION_WAR_EVENT_TITLE';
             return demoService.createTimemap(WAR_INFO.continuationWarTimeSpan.start,
-                    WAR_INFO.continuationWarTimeSpan.end,
-                    WAR_INFO.continuationWarHighlights);
+                WAR_INFO.continuationWarTimeSpan.end,
+                WAR_INFO.continuationWarHighlights);
         }
 
         function getCreateFunction(start) {
@@ -180,6 +155,13 @@
 
         function getWinterWarUrl() {
             return $translate.use() + '/events/winterwar';
+        }
+
+        function onUriChange(newValues) {
+            if (newValues.uri && newValues.uri !== (self.getCurrent() || {}).id) {
+                return demoService.navigateToEvent(newValues.uri);
+            }
+            return $q.when();
         }
 
         function showHelp() {
