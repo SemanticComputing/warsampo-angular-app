@@ -3,72 +3,55 @@
 <update-meta name="robots" content="index, follow"></update-meta>
 <ws-settings></ws-settings>
 <div class="row">
-  <div class="col-sm-3">
-  	<h2 translate>UNIT_DEMO.TITLE</h2>
-    <translate>UNIT_DEMO.DESCRIPTION</translate>
-    <input type="text"
-      ng-model-options="{ debounce: 500 }"
-      placeholder="{{ 'UNIT_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
-      class="form-control" ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
-    <select ng-model="ctrl.currentSelection" ng-change="ctrl.updateUnit()"
-      size="32" class="form-control" id="unitselect"
-      ng-options="item.id as item.label for item in ctrl.items">
-    </select>
-	</div>
-
-  <div class="col-sm-9">
+  <div class="col-lg-5 col-lg-push-7 col-md-12">
     <div class="row">
-      <div class="col-lg-5 col-lg-push-7 col-md-12">
-        <div class="row">
-          <div class="col-md-12">
-            <div ng-switch="ctrl.showUnitDetails()">
-              <div ng-switch-when="true">
-                <!-- Unit details -->
-                <h3>{{ ctrl.unit.getLabel() }} <span ng-if="ctrl.unit.abbrev.length"> – {{ ctrl.unit.abbrev | concatList }}</span></h3>
-                <div ng-include="'views/partials/unit_description_partial.html'"></div>
-                <p><a ws-page-link="ctrl.unit.id" translate>SHOW_INFO_PAGE</a></p>
+      <div class="col-md-12">
+        <div ng-switch="ctrl.showUnitDetails()">
+          <div ng-switch-when="true">
+            <!-- Unit details -->
+            <h3>{{ ctrl.unit.getLabel() }} <span ng-if="ctrl.unit.abbrev.length"> – {{ ctrl.unit.abbrev | concatList }}</span></h3>
+            <div ng-include="'views/partials/unit_description_partial.html'"></div>
+            <p><a ws-page-link="ctrl.unit.id" translate>SHOW_INFO_PAGE</a></p>
 
-                <ws-photo-gallery images="ctrl.unit.images"></ws-photo-gallery>
+            <ws-photo-gallery images="ctrl.unit.images"></ws-photo-gallery>
 
-                <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.unit.wikiLinkList"></ws-related-links>
-                <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.unit.diaries"></ws-related-links>
-                <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
-                <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.unit.superUnits"></ws-related-links>
-                <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.unit.subUnits"></ws-related-links>
-                <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.unit.relatedUnits"></ws-related-links>
-                <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.unit.battles"></ws-related-links>
-                <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.unit.places"></ws-related-links>
-                <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.unit.articles"></ws-related-links>
+            <ws-related-links data-external data-title="'Wikipedia'" data-related="ctrl.unit.wikiLinkList"></ws-related-links>
+            <ws-related-links data-external data-title="'WAR_DIARIES' | translate" data-related="ctrl.unit.diaries"></ws-related-links>
+            <ws-related-links-paged data-title="'RELATED_PEOPLE' | translate" data-paginator="ctrl.unit.relatedPersons"></ws-related-links-paged>
+            <ws-related-links data-title="'SUPER_UNITS' | translate" data-related="ctrl.unit.superUnits"></ws-related-links>
+            <ws-related-links data-title="'SUB_UNITS' | translate" data-related="ctrl.unit.subUnits"></ws-related-links>
+            <ws-related-links data-title="'OTHER_UNITS' | translate" data-related="ctrl.unit.relatedUnits"></ws-related-links>
+            <ws-related-links data-title="'RELATED_BATTLES' | translate" data-related="ctrl.unit.battles"></ws-related-links>
+            <ws-related-links data-title="'RELATED_PLACES' | translate" data-related="ctrl.unit.places"></ws-related-links>
+            <ws-related-links data-title="'KANSA_TAISTELI_ARTICLES' | translate" data-related="ctrl.unit.articles"></ws-related-links>
 
-              </div>
-              <div ng-switch-default>
-                <div ng-if="ctrl.isLoadingEvent">
-                  <h3>{{ 'LOADING' | translate}} <img src="images/loading.gif" /></h3>
-                </div>
-                <div ng-show="!ctrl.isLoadingEvent">
-                  <h3><a href="" ng-click="ctrl.clearEvent()">{{ ctrl.unit.getLabel() }}</a></h3>
-                  <event-details data-event=ctrl.getCurrent()></event-details>
-                  <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
-                  <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
-                </div>
-              </div>
+          </div>
+          <div ng-switch-default>
+            <div ng-if="ctrl.isLoadingEvent">
+              <h3>{{ 'LOADING' | translate}} <img src="images/loading.gif" /></h3>
             </div>
-            <hr/>
-            <!-- Casualty statistics -->
-            <div ng-include="'views/partials/casualty_stats_partial.html'"></div>
+            <div ng-show="!ctrl.isLoadingEvent">
+              <h3><a href="" ng-click="ctrl.clearEvent()">{{ ctrl.unit.getLabel() }}</a></h3>
+              <event-details data-event=ctrl.getCurrent()></event-details>
+              <p><a ws-page-link="ctrl.getCurrent().id" translate>SHOW_INFO_PAGE</a></p>
+              <ws-photo-gallery data-images="ctrl.getImages()"></ws-photo-gallery>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-lg-7 col-lg-pull-5 col-md-12">
-        <div ng-if="ctrl.err">
-          <p class="error-msg bg-danger">
-          {{ 'ERROR_OCCURED' | translate }} <br /><br />
-          <b>{{ ctrl.err }}</b> <br /><br />
-          <a ng-href="{{ ctrl.getDefaultUrl() }}" target="_self" translate>UNIT_DEMO.GO_HOME</a>
-          </p>
-        </div>
-        <div ng-include="'views/partials/timemap_partial.html'"></div>
+        <hr/>
+        <!-- Casualty statistics -->
+        <div ng-include="'views/partials/casualty_stats_partial.html'"></div>
       </div>
     </div>
+  </div>
+  <div class="col-lg-7 col-lg-pull-5 col-md-12">
+    <div ng-if="ctrl.err">
+      <p class="error-msg bg-danger">
+      {{ 'ERROR_OCCURED' | translate }} <br /><br />
+      <b>{{ ctrl.err }}</b> <br /><br />
+      <a ng-href="{{ ctrl.getDefaultUrl() }}" target="_self" translate>UNIT_DEMO.GO_HOME</a>
+      </p>
+    </div>
+    <div ng-include="'views/partials/timemap_partial.html'"></div>
   </div>
 </div>

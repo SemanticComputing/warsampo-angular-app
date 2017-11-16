@@ -1,0 +1,26 @@
+<update-title title="{{ 'TITLE' | translate }} | {{ ctrl.person.label }}"></update-title>
+<update-meta name="description" content="{{ 'PERSONS_DEMO.DEMO_META_DESCRIPTION_PREFIX' | translate }}: {{ ctrl.person.getMetaDescription() }}"></update-meta>
+<ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
+<h1>{{ ctrl.person.getLabel() }}</h1>
+<img ng-show="ctrl.isLoadingObject" src="images/loading.gif" />
+<div ng-if="ctrl.err">
+  <p class="error-msg bg-danger">
+    {{ 'ERROR_OCCURED' | translate }} <br /><br />
+    <b>{{ ctrl.err }}</b> <br /><br />
+  </p>
+</div>
+<p ng-if="!ctrl.person && !ctrl.isLoadingObject" translate>NO_METADATA_FOUND</p>
+<div class="tabset-container">
+  <ul class="nav nav-tabs">
+    <li ui-sref="app.lang.persons.demo.page.info({ tab: 1 })" ui-sref-active="active" class="person-timeline-tab">
+      <a href=""><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> {{ 'PERSONS_DEMO.INFO_TAB' | translate }}</a>
+    </li>
+    <li ui-sref="app.lang.persons.demo.page.timeline({ tab: 2 })" ui-sref-active="active" class="person-timeline-tab">
+      <a href=""><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> {{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <ui-view></ui-view>
+  </div>
+</div>
+

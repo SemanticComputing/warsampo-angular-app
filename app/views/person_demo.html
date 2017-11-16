@@ -1,0 +1,25 @@
+<ws-settings></ws-settings>
+<update-meta name="robots" content="index, follow"></update-meta>
+<div class="row">
+  <div class="col-sm-3">
+    <h2 translate>PERSONS_DEMO.TITLE</h2>
+    <translate>PERSONS_DEMO.SEARCH_HELP_TEXT</translate>
+    <input
+      type="text"
+      value=""
+      class="form-control"
+      ng-model-options="{ debounce: 500 }"
+      placeholder="{{ 'PERSONS_DEMO.SEARCH_BOX_PLACEHOLDER' | translate }}"
+      ng-model="ctrl.queryregex" ng-change="ctrl.getItems()" />
+    <select class="hidden-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
+      size="32" ng-options="item as (item.name + (item.rank ? ' (' + item.rank + ')' : '')) for item in ctrl.items">
+    </select>
+    <select class="visible-xs form-control" ng-model="ctrl.selectedItem" ng-change="ctrl.updateSelection()"
+      size="10" ng-options="item as item.name for item in ctrl.items">
+    </select>
+  </div>
+  <div class="col-sm-9">
+    <ui-view></ui-view>
+  </div>
+</div>
+

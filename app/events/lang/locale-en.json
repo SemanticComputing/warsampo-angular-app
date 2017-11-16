@@ -200,5 +200,7 @@
     "COMMANDER": "Commander",
     "NOTE": "Note",
     "NAME": "Name",
-    "NO_SELECTION": "-- No Selection --"
+    "NO_SELECTION": "-- No Selection --",
+    "PAGE_NOT_FOUND": "Page not found",
+    "PAGE_NOT_FOUND_DESCRIPTION": "The page you were looking for was not found. You can go to the front page of WarSampo by clicking the link below."
 }
