@@ -20,7 +20,7 @@
           init();
 
           function init() {
-              if (uri) {
+              if (!uri) {
                   return;
               }
               vm.isLoadingCemetery = true;
