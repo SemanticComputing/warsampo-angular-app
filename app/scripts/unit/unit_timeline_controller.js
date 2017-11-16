@@ -35,6 +35,8 @@
         // The id of the currently displayed unit
         self.unitId;
 
+        self.uiOnParamsChanged =  onUriChange;
+
         init();
 
         /* Implementation */
@@ -121,5 +123,11 @@
             });
         }
 
+        function onUriChange(newValues) {
+            if (newValues.event && newValues.event !== (self.getCurrent() || {}).id) {
+                return demoService.navigateToEvent(newValues.event);
+            }
+            return $q.when();
+        }
     }
 })();
