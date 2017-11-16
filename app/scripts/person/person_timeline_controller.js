@@ -21,6 +21,8 @@
         self.getCurrent = getCurrent;
         self.getImages = getImages;
 
+        self.uiOnParamsChanged =  onUriChange;
+
         self.options = {};
 
         init();
@@ -140,5 +142,13 @@
         function getImages() {
             return demoService.getImages();
         }
+
+        function onUriChange(newValues) {
+            if (newValues.event && newValues.event !== (self.getCurrent() || {}).id) {
+                return demoService.navigateToEvent(newValues.event);
+            }
+            return $q.when();
+        }
+
     }
 })();
