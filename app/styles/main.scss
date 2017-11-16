@@ -88,6 +88,11 @@ body {
     background-color: black;
 }
 
+.cemetery-demo-container {
+    padding-top: 15px;
+    // background-color: black;
+}
+
 .photo-demo-description {
     .panel-body {
         padding-top: 0px;
@@ -155,13 +160,15 @@ a.no-decoration {
 .person-record-value {
     width:60%;
 }
-table.person-record tr:nth-child(even), table.faceter-results tr:nth-child(even) {
+table.person-record tr:nth-child(even), table.faceter-results tr:nth-child(even),
+table.cemetery-table tr:nth-child(even) {
     background-color: #f8f6f4;
 }
 
-table.faceter-results .ng-table-header {
+table.faceter-results .ng-table-header, table.cemetery-table .ng-table-header {
     text-align: left;
 }
+
 
 #timemap-container {
     position: relative;
@@ -199,12 +206,6 @@ table.faceter-results .ng-table-header {
     width: 100%;
     max-width: 1215px;
     height: 400px;
-}
-
-#cemetery-demo-container {
-    margin-top:20px;
-    margin-bottom:80px;
-
 }
 
 #cemetery-results-google-map-container {
