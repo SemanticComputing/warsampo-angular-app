@@ -17,13 +17,16 @@
       <h2>
         {{ vm.cemetery.getLabel() }}
       </h2>
-      <p ng-if="vm.cemetery.original_narc_name">
+      <p ng-if="vm.cemetery.original_narc_name" title="{{ 'CEMETERY_DEMO.NARC_NAME_DESC' | translate }}">
         {{ 'CEMETERY_DEMO.NARC_NAME' | translate }}: {{ vm.cemetery.original_narc_name }}
       </p>
       <p ng-if="vm.cemetery.date_of_foundation">
         {{ 'CEMETERY_DEMO.FOUNDATION_YEAR' | translate }}: {{ vm.cemetery.date_of_foundation }}
       </p>
-      <p ng-if="vm.cemetery.number_of_graves">
+      <p ng-if="vm.cemetery.architect">
+        {{ 'CEMETERY_DEMO.ARCHITECT' | translate }}: {{ vm.cemetery.architect }}
+      </p>
+      <p ng-if="vm.cemetery.number_of_graves" title="{{ 'CEMETERY_DEMO.NUMBER_OF_GRAVES_DESC' | translate }}">
         {{ 'CEMETERY_DEMO.NUMBER_OF_GRAVES' | translate }}: {{ vm.cemetery.number_of_graves }}
       </p>
       <p ng-if="vm.cemetery.memorial">
@@ -33,7 +36,7 @@
       <p ng-if="vm.cemetery.current_municipality">
         {{ 'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate }}: {{ vm.cemetery.current_municipality }}
       </p>
-      <p ng-if="vm.cemetery.former_municipality">
+      <p ng-if="vm.cemetery.former_municipality" title="{{ 'CEMETERY_DEMO.FORMER_MUNICIPALITY_DESC' | translate }}">
         {{ 'CEMETERY_DEMO.FORMER_MUNICIPALITY' | translate }}: {{ vm.cemetery.former_municipality }}
       </p>
       <p ng-if="vm.cemetery.address">
