@@ -31,7 +31,12 @@
       </p>
       <p ng-if="vm.cemetery.memorial">
         {{ 'CEMETERY_DEMO.MEMORIAL' | translate }}: {{ vm.cemetery.memorial }}
-        <span ng-if="vm.cemetery.memorial_sculptor">({{ 'CEMETERY_DEMO.SCULPTOR' | translate }}: {{vm.cemetery.memorial_sculptor}}<span ng-if="vm.cemetery.memorial_unveiling_date">, {{ 'CEMETERY_DEMO.UNVEILING_DATE' | translate }} {{ vm.cemetery.memorial_unveiling_date | dateLike:'dd.MM.yyyy' }}</span>)</span>
+      </p>
+      <p ng-if="vm.cemetery.memorial_sculptor">
+        {{ 'CEMETERY_DEMO.SCULPTOR' | translate }}: {{vm.cemetery.memorial_sculptor}}
+      </p>
+      <p ng-if="vm.cemetery.memorial_unveiling_date">
+        {{ 'CEMETERY_DEMO.UNVEILING_DATE' | translate }}: {{ vm.cemetery.memorial_unveiling_date | dateLike:'dd.MM.yyyy' }}
       </p>
       <p ng-if="vm.cemetery.current_municipality">
         {{ 'CEMETERY_DEMO.CURRENT_MUNICIPALITY' | translate }}: {{ vm.cemetery.current_municipality }}
