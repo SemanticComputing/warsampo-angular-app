@@ -195,7 +195,7 @@
         '  OPTIONAL { ?id foaf:firstName ?fname . } ' +
         '  BIND(IF(BOUND(?fname), CONCAT(?sname, ", ", ?fname), ?lbl) AS ?listLabel) ' +
         '  ?id skos:prefLabel ?label . ' +
-        ' } ORDER BY ?sname ?fname ';
+        ' } ';
 
         var byMedalQryResultSet =
         ' VALUES ?medal { <ID> } .  ' +
@@ -272,7 +272,11 @@
             }
             options = options || {};
             var resultSet = personQryResultSet.replace(/<ID>/g, ids);
-            var qryObj = queryBuilder.buildQuery(personQry, resultSet, options.orderBy);
+            var qry = personQry;
+            if (options.orderBy) {
+                qry = qry + 'ORDER BY ' + options.orderBy;
+            }
+            var qryObj = queryBuilder.buildQuery(qry, resultSet, options.orderBy);
             return endpoint.getObjects(qryObj.query, options.pageSize, qryObj.resultSetQuery);
         };
 
