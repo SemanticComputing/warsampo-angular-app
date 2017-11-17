@@ -4,7 +4,7 @@
 
     angular.module('eventsApp')
     /* @ngInject */
-    .service('googleMapsService', function(google, baseService) {
+    .service('googleMapsService', function(google, baseService, $http) {
 
         var self = this;
 
@@ -15,6 +15,7 @@
         self.updateHeatmap = updateHeatmap;
         self.normalizeMapZoom = normalizeMapZoom;
         self.removeMarkersFromMap = removeMarkersFromMap;
+        self.showOldMaps = showOldMaps;
 
         function plotObjects(objects, map, infoWindow) {
             var markers = [];
@@ -58,10 +59,36 @@
             return markers;
         }
 
-        function addMapWarperOverlay(mapWarperId, overlays, opacity, map) {
+        function showOldMaps(map, overlays, bbox, page) {
+            // Map Warper bounding box syntax is
+            // lon_min, lat_min, lon_max, lat_max
+            var b = bbox.toUrlValue().split(",");
+            var bbox_to_mw = b[1].concat(",", b[0], ",", b[3], ",", b[2]);
+            var mwUrl = 'http://ldf.fi/corsproxy/mapwarper.onki.fi/maps/geosearch';
+            var httpConf = {
+                params: {
+                    bbox : bbox_to_mw,
+                    format : "json",
+                    operation : "intersect",
+                    page: page
+                }
+            }
+            $http.get(mwUrl, httpConf).then(function(response) {
+                response.data.items.forEach(function(item) {
+                    console.log(item);
+                    addMapWarperOverlay(map, overlays, item.id, item.title, 0.75);
+                });
+
+            }, function(response) {
+                console.log(response);
+            });
+
+        }
+
+        function addMapWarperOverlay(map, overlays, mapWarperId, title, opacity) {
           	overlays[mapWarperId] =  createCustomMapType({
                 map: map,
-                name : 'Map Warper map',
+                name : title,
             		//alt			: 'Custom Tile',
             		tileSize : 256,
             		mwId : mapWarperId,
@@ -71,6 +98,14 @@
           	});
             map.overlayMapTypes.setAt(mapWarperId, overlays[mapWarperId]);
             overlays[mapWarperId].setOpacity(opacity);
+        }
+
+        function changeMapTileOpacity(overlays, opacity){
+        	for(var id in overlays){
+        		if (overlays[id] != null) {
+        			   overlays[id].setOpacity(_opacity);
+        		}
+        	}
         }
 
         function createCustomMapType(args) {
