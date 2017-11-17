@@ -284,6 +284,11 @@ table.faceter-results .ng-table-header, table.cemetery-table .ng-table-header {
         overflow: hidden;
         white-space: nowrap;
         max-width: 85%;
+        opacity: 1.0;
+        top: auto;
+        bottom: 20px;
+
+
     }
     .description {
         position: absolute;
