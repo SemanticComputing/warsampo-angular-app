@@ -16,6 +16,7 @@
         self.normalizeMapZoom = normalizeMapZoom;
         self.removeMarkersFromMap = removeMarkersFromMap;
         self.showOldMaps = showOldMaps;
+        self.changeMapTileOpacity = changeMapTileOpacity;
 
         function plotObjects(objects, map, infoWindow) {
             var markers = [];
@@ -59,7 +60,7 @@
             return markers;
         }
 
-        function showOldMaps(map, overlays, bbox, page) {
+        function showOldMaps(map, overlays, bbox, depicts_year, page) {
             // Map Warper bounding box syntax is
             // lon_min, lat_min, lon_max, lat_max
             var b = bbox.toUrlValue().split(",");
@@ -76,7 +77,10 @@
             $http.get(mwUrl, httpConf).then(function(response) {
                 response.data.items.forEach(function(item) {
                     console.log(item);
-                    addMapWarperOverlay(map, overlays, item.id, item.title, 0.75);
+                    if (item.depicts_year == depicts_year) {
+                        addMapWarperOverlay(map, overlays, item.id, item.title, 0.75);
+                    }
+
                 });
 
             }, function(response) {
@@ -103,7 +107,7 @@
         function changeMapTileOpacity(overlays, opacity){
         	for(var id in overlays){
         		if (overlays[id] != null) {
-        			   overlays[id].setOpacity(_opacity);
+        			   overlays[id].setOpacity(opacity);
         		}
         	}
         }
