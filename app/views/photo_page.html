@@ -28,11 +28,11 @@
         </span>
         <span ng-if="!vm.photo.creators && vm.photo.photographer_string">{{ vm.photo.photographer_string }}</span>
       </p>
-      <p>
-        <a data-gallery="#blueimp-gallery-photo-single" ng-href="{{ vm.photo.full_size_url }}">
-          <img class="img img-responsive" ws-fallback-img alt="{{ vm.photo.description }}" title="{{ vm.photo.description }}" ng-src="{{ vm.photo.full_size_url }}" />
+      <div>
+        <a class="img-link" data-gallery="#blueimp-gallery-photo-single" ng-href="{{ vm.photo.full_size_url }}">
+          <img class="img img-responsive" ws-fallback-img alt="{{ vm.photo.description }}" title="{{ vm.photo.description }}" ng-src="{{ vm.photo.url }}" />
         </a>
-      </p>
+      </div>
       <p>
         <small ng-if="vm.photo.source">{{ 'SOURCE' | translate }}: {{ vm.photo.source }} | </small>
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.photo.id }}</small>
