@@ -27,8 +27,7 @@
     "angular-chart.js": "^1.1.1",
     "sparql-result-mapper-with-translate": "ng-sparql-result-mapper-with-translate#^0.4.3",
     "angular-update-meta": "^2.0.1",
-    "angular-ui-router": "^1.0.10",
-    "google-maps-utility-library-v3": "*"
+    "angular-ui-router": "^1.0.10"
   },
   "devDependencies": {
     "angular-mocks": "^1.5.0"
