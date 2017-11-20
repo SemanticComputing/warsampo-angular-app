@@ -94,10 +94,10 @@
             controlUI.addEventListener('click', function() {
                 if (self.showOldMaps) {
                      map.panTo(new google.maps.LatLng(65.44000165965534, 27.04906940460205));
+                     self.minZoomLevel = 0;
                      map.setZoom(4);
                      document.getElementById('zoomContainer').style.visibility = 'hidden';
                      self.showOldMaps = false;
-                     self.minZoomLevel = 0;
                 } else {
                     map.panTo(new google.maps.LatLng(61.578523, 29.318047));
                     map.setZoom(9);
