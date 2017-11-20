@@ -14,7 +14,7 @@
     });
 
     /* @ngInject */
-    function GoogleMapContoller($scope, $element, google, googleMapsService) {
+    function GoogleMapContoller($scope, $element, $http, google, googleMapsService) {
         var self = this;
 
         self.map;
@@ -24,6 +24,7 @@
         self.showOldMaps = false;
         self.opacity = 0.75; // initial opacity for historical maps
         self.minZoomLevel = 0;
+        self.mapWarperItems = [];
 
         initMap();
         addOldMapFunctionality();
@@ -59,11 +60,64 @@
             filterDiv.style.cssText="position:absolute;right:7px;";
             self.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(filterDiv);
 
-            // Limit the zoom level
+            // limit the zoom level
             google.maps.event.addListener(self.map, 'zoom_changed', function () {
-               if (self.map.getZoom() < self.minZoomLevel) self.map.setZoom(self.minZoomLevel);
+              if (self.map.getZoom() < self.minZoomLevel) self.map.setZoom(self.minZoomLevel);
+            });
+
+            // load old maps
+            google.maps.event.addListener(self.map, 'dragend', function () {
+                if (self.showOldMaps) {
+                    googleMapsService.removeAllOverlays(self.map, self.overlays);
+                    loadOldMaps(self.map, self.overlays, self.map.getBounds(), '1928', 1);
+                    console.log(self.map.getCenter());
+                }
+
             });
         }
+
+        function loadOldMaps(map, overlays, bbox, depicts_year, page) {
+            // Map Warper bounding box syntax is
+            // lon_min, lat_min, lon_max, lat_max
+            var b = bbox.toUrlValue().split(",");
+            var bbox_to_mw = b[1].concat(",", b[0], ",", b[3], ",", b[2]);
+            var mwUrl = 'http://ldf.fi/corsproxy/mapwarper.onki.fi/maps/geosearch';
+            var httpConf = {
+                params: {
+                    bbox : bbox_to_mw,
+                    format : "json",
+                    operation : "intersect",
+                    page: page
+                }
+            }
+            $http.get(mwUrl, httpConf).then(function(response) {
+                response.data.items.forEach(function(item) {
+                    //console.log(item);
+                    if (item.depicts_year == depicts_year) {
+                        self.mapWarperItems.push(item);
+                    }
+
+                });
+                var total_pages = response.data.total_pages;
+
+                // Recursive call untill all old maps within the bbox have
+                // been retrieved
+              	if (total_pages > 1 && page < total_pages) {
+              		  page = page + 1;
+              		  loadOldMaps(map, overlays, bbox, depicts_year, page);
+              	} else {
+                    self.mapWarperItems.forEach(function(item) {
+                          googleMapsService.addMapWarperOverlay(map, overlays, item.id, item.title, 0.75);
+                    });
+                }
+
+            }, function(response) {
+                console.log(response);
+            });
+
+        }
+
+        //a
 
         function OldMapControl(controlDiv, map) {
 
@@ -99,12 +153,12 @@
                      document.getElementById('zoomContainer').style.visibility = 'hidden';
                      self.showOldMaps = false;
                 } else {
-                    map.panTo(new google.maps.LatLng(61.578523, 29.318047));
+                    map.panTo(new google.maps.LatLng(60.714723, 28.755283));
                     map.setZoom(9);
                     self.minZoomLevel = 9;
                     document.getElementById('zoomContainer').style.visibility = 'visible';
                     document.getElementById('old-map-control-text').innerHTML = 'Piilota Karjalan kartat';
-                    googleMapsService.showOldMaps(map, self.overlays, map.getBounds(), '1928', 1);
+                    loadOldMaps(self.map, self.overlays, self.map.getBounds(), '1928', 1);
                     self.showOldMaps = true;
                 }
 

@@ -4,7 +4,7 @@
 
     angular.module('eventsApp')
     /* @ngInject */
-    .service('googleMapsService', function(google, baseService, $http) {
+    .service('googleMapsService', function(google, baseService) {
 
         var self = this;
 
@@ -15,7 +15,7 @@
         self.updateHeatmap = updateHeatmap;
         self.normalizeMapZoom = normalizeMapZoom;
         self.removeMarkersFromMap = removeMarkersFromMap;
-        self.showOldMaps = showOldMaps;
+        self.removeAllOverlays = removeAllOverlays;
         self.changeMapTileOpacity = changeMapTileOpacity;
 
         function plotObjects(objects, map, infoWindow) {
@@ -60,34 +60,7 @@
             return markers;
         }
 
-        function showOldMaps(map, overlays, bbox, depicts_year, page) {
-            // Map Warper bounding box syntax is
-            // lon_min, lat_min, lon_max, lat_max
-            var b = bbox.toUrlValue().split(",");
-            var bbox_to_mw = b[1].concat(",", b[0], ",", b[3], ",", b[2]);
-            var mwUrl = 'http://ldf.fi/corsproxy/mapwarper.onki.fi/maps/geosearch';
-            var httpConf = {
-                params: {
-                    bbox : bbox_to_mw,
-                    format : "json",
-                    operation : "intersect",
-                    page: page
-                }
-            }
-            $http.get(mwUrl, httpConf).then(function(response) {
-                response.data.items.forEach(function(item) {
-                    console.log(item);
-                    if (item.depicts_year == depicts_year) {
-                        addMapWarperOverlay(map, overlays, item.id, item.title, 0.75);
-                    }
 
-                });
-
-            }, function(response) {
-                console.log(response);
-            });
-
-        }
 
         function addMapWarperOverlay(map, overlays, mapWarperId, title, opacity) {
           	overlays[mapWarperId] =  createCustomMapType({
@@ -133,6 +106,13 @@
           	map_type.name = args.name;
           	map_type.alt = args.alt;
           	return map_type;
+        }
+
+        function removeAllOverlays(map, overlays) {
+        	for (var id in overlays) {
+          		overlays[id] = null;
+          		map.overlayMapTypes.setAt(id, null);
+        	}
         }
 
         // Expects a list of objects with lat and lon
