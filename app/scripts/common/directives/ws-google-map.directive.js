@@ -81,7 +81,7 @@
             // lon_min, lat_min, lon_max, lat_max
             var b = bbox.toUrlValue().split(",");
             var bbox_to_mw = b[1].concat(",", b[0], ",", b[3], ",", b[2]);
-            var mwUrl = 'http://ldf.fi/corsproxy/mapwarper.onki.fi/maps/geosearch';
+            var mwUrl = 'https://ldf.fi/corsproxy/mapwarper.onki.fi/maps/geosearch';
             var httpConf = {
                 params: {
                     bbox : bbox_to_mw,
@@ -147,11 +147,13 @@
 
             controlUI.addEventListener('click', function() {
                 if (self.showOldMaps) {
-                     map.panTo(new google.maps.LatLng(65.44000165965534, 27.04906940460205));
-                     self.minZoomLevel = 0;
-                     map.setZoom(4);
-                     document.getElementById('zoomContainer').style.visibility = 'hidden';
-                     self.showOldMaps = false;
+                    googleMapsService.removeAllOverlays(self.map, self.overlays);      
+                    map.panTo(new google.maps.LatLng(65.44000165965534, 27.04906940460205));
+                    self.minZoomLevel = 0;
+                    map.setZoom(4);
+                    document.getElementById('zoomContainer').style.visibility = 'hidden';
+                    document.getElementById('old-map-control-text').innerHTML = 'Näytä Karjalan kartat';
+                    self.showOldMaps = false;
                 } else {
                     map.panTo(new google.maps.LatLng(60.714723, 28.755283));
                     map.setZoom(9);
