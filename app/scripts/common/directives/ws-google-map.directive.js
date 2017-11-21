@@ -27,7 +27,9 @@
         self.mapWarperItems = [];
 
         initMap();
-        addOldMapFunctionality();
+        if ($element[0].id == 'simple-google-map') {
+            addOldMapFunctionality();
+        }
 
         $scope.$watch('places', function(val) {
             if (!val || _.isArray(val) && !val.length) {
@@ -66,12 +68,15 @@
             });
 
             // load old maps
-            google.maps.event.addListener(self.map, 'dragend', function () {
+            google.maps.event.addListener(self.map, 'dragstart', function () {
                 if (self.showOldMaps) {
                     googleMapsService.removeAllOverlays(self.map, self.overlays);
+                }
+            });
+            google.maps.event.addListener(self.map, 'dragend', function () {
+                if (self.showOldMaps) {
                     loadOldMaps(self.map, self.overlays, self.map.getBounds(), '1928', 1);
                 }
-
             });
         }
 
