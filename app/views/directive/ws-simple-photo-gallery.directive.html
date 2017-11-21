@@ -19,7 +19,7 @@
       <div id="photo-container-{{ ctrl.galleryId }}">
         <a ng-repeat="img in ctrl.photos"
           data-gallery="#blueimp-gallery-{{ ::ctrl.galleryId }}"
-          title="kuvaaja: {{ ::img.creator_id }}, kameraseuran_nimi"
+          title="kuvaaja: {{ ::img.creator_id }} ({{ ::ctrl.cameraClub }})"
           data-id="{{ ::img.id }}"
           ng-href="{{ ::img.full_size_url }}">
           <div class="simple-gallery-thumbnail-container">

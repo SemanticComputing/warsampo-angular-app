@@ -7,7 +7,8 @@
             restrict:'E',
             scope: {
                 images: '<',
-                config: '<'
+                config: '<',
+                club: '<'
             },
             controller: SimplePhotoGalleryContoller,
             controllerAs: 'ctrl',
@@ -24,7 +25,7 @@
         self.isLoadingImages;
         self.photos = [];
         self.galleryId = _.uniqueId();
-
+        self.cameraClub;
 
 
         $scope.$watch('images', function(val) {
@@ -33,6 +34,7 @@
             }
 
             self.nPhotosText = _.get($scope, 'config.nPhotosText') || 'N_PHOTOS';
+            self.cameraClub = _.get($scope, 'club');
 
             if (_.isArray(val)) {
                 return handleArray(val);

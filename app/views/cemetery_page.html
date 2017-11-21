@@ -51,7 +51,7 @@
         <small class="uri">{{ 'URI' | translate }}:&nbsp;{{ vm.cemetery.id }}</small>
       </p>
 
-      <ws-simple-photo-gallery images="vm.cemetery.images" class="cemetery-info-page-gallery"></ws-simple-photo-gallery>
+      <ws-simple-photo-gallery images="vm.cemetery.images" club="vm.cemetery.camera_club" class="cemetery-info-page-gallery"></ws-simple-photo-gallery>
 
 
         <div id="cemetery-death-places-map" ng-if="vm.hasDeathPlaces">
