@@ -110,7 +110,8 @@
                     break;
                 default:
                     stateParams.uri = event.id;
-                    state = 'app.lang.events.demo';
+                    stateParams.war = parseInt((event.start_time || '0').substring(0, 4)) > 1940 ? 'continuationwar' : 'winterwar';
+                    state = 'app.lang.events.demo.war';
             }
             if (!state) {
                 return undefined;
