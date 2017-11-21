@@ -64,7 +64,10 @@
 
             // limit the zoom level
             google.maps.event.addListener(self.map, 'zoom_changed', function () {
-              if (self.map.getZoom() < self.minZoomLevel) self.map.setZoom(self.minZoomLevel);
+                if (self.map.getZoom() < self.minZoomLevel) {
+                    alert('Karjalan karttojen ollessa näkyvillä karttanäkymää ei voi loitontaa enempää, jotta karttalehtien määrä ei kasva liian suureksi.')
+                    self.map.setZoom(self.minZoomLevel);
+                }
             });
 
             // load old maps
