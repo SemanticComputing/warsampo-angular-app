@@ -56,14 +56,15 @@
 
         <div id="cemetery-death-places-map" ng-if="vm.hasDeathPlaces">
           <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_DEATH_PLACES' | translate }}</h3>
+          <p class="chart-js-help-text">{{ 'CEMETERY_DEMO.MAP_HELP' | translate }}</p>
           <div id="simple-google-map-container" class="cemetery-info-page-map-container">
             <ws-google-map id="simple-google-map" places="vm.places" style="position: absolute;"></ws-google-map>
           </div>
         </div>
 
         <div id="cemetery-visualizations" ng-if="vm.hasVisualizableData">
-
           <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_UNITS' | translate }}</h3>
+          <p class="chart-js-help-text">{{ 'CEMETERY_DEMO.PIE_CHART_HELP' | translate }}</p>
           <div class="chart-block">
             <div class="chartjs-container">
               <canvas class="chart chart-pie" chart-data="vm.unitChart.data" chart-labels="vm.unitChart.labels" chart-options="vm.chartOptions.unitChart"></canvas>
@@ -71,6 +72,7 @@
           </div>
 
           <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_RANKS' | translate }}</h3>
+          <p class="chart-js-help-text">{{ 'CEMETERY_DEMO.PIE_CHART_HELP' | translate }}</p>
           <div class="chart-block">
             <div class="chartjs-container">
               <canvas class="chart chart-pie" chart-data="vm.rankChart.data" chart-labels="vm.rankChart.labels" chart-options="vm.chartOptions.rankChart"></canvas>
@@ -78,11 +80,13 @@
           </div>
 
           <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_AGES' | translate }}</h3>
+          <p class="chart-js-help-text">{{ 'CEMETERY_DEMO.BAR_CHART_HELP' | translate }}</p>
           <div class="chart-block">
               <canvas class="chart chart-bar" chart-data="vm.ageChart.data" chart-labels="vm.ageChart.labels" chart-options="vm.chartOptions.ageChart"></canvas>
           </div>
 
           <h3>{{ 'CEMETERY_DEMO.PEOPLE_BURIED_WAY_TO_DIE' | translate }}</h3>
+          <p class="chart-js-help-text">{{ 'CEMETERY_DEMO.PIE_CHART_HELP' | translate }}</p>
           <div class="chart-block">
             <div class="chartjs-container">
               <canvas class="chart chart-pie" chart-data="vm.wayChart.data" chart-labels="vm.wayChart.labels" chart-options="vm.chartOptions.wayChart"></canvas>
