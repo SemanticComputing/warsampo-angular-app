@@ -70,7 +70,6 @@
                 if (self.showOldMaps) {
                     googleMapsService.removeAllOverlays(self.map, self.overlays);
                     loadOldMaps(self.map, self.overlays, self.map.getBounds(), '1928', 1);
-                    console.log(self.map.getCenter());
                 }
 
             });
@@ -117,8 +116,6 @@
 
         }
 
-        //a
-
         function OldMapControl(controlDiv, map) {
 
             // Set CSS for the control border.
@@ -147,7 +144,7 @@
 
             controlUI.addEventListener('click', function() {
                 if (self.showOldMaps) {
-                    googleMapsService.removeAllOverlays(self.map, self.overlays);      
+                    googleMapsService.removeAllOverlays(self.map, self.overlays);
                     map.panTo(new google.maps.LatLng(65.44000165965534, 27.04906940460205));
                     self.minZoomLevel = 0;
                     map.setZoom(4);
