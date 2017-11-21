@@ -15,6 +15,8 @@
         self.updateHeatmap = updateHeatmap;
         self.normalizeMapZoom = normalizeMapZoom;
         self.removeMarkersFromMap = removeMarkersFromMap;
+        self.removeAllOverlays = removeAllOverlays;
+        self.changeMapTileOpacity = changeMapTileOpacity;
 
         function plotObjects(objects, map, infoWindow) {
             var markers = [];
@@ -58,10 +60,12 @@
             return markers;
         }
 
-        function addMapWarperOverlay(mapWarperId, overlays, opacity, map) {
+
+
+        function addMapWarperOverlay(map, overlays, mapWarperId, title, opacity) {
           	overlays[mapWarperId] =  createCustomMapType({
                 map: map,
-                name : 'Map Warper map',
+                name : title,
             		//alt			: 'Custom Tile',
             		tileSize : 256,
             		mwId : mapWarperId,
@@ -71,6 +75,14 @@
           	});
             map.overlayMapTypes.setAt(mapWarperId, overlays[mapWarperId]);
             overlays[mapWarperId].setOpacity(opacity);
+        }
+
+        function changeMapTileOpacity(overlays, opacity){
+        	for(var id in overlays){
+        		if (overlays[id] != null) {
+        			   overlays[id].setOpacity(opacity);
+        		}
+        	}
         }
 
         function createCustomMapType(args) {
@@ -94,6 +106,13 @@
           	map_type.name = args.name;
           	map_type.alt = args.alt;
           	return map_type;
+        }
+
+        function removeAllOverlays(map, overlays) {
+        	for (var id in overlays) {
+          		overlays[id] = null;
+          		map.overlayMapTypes.setAt(id, null);
+        	}
         }
 
         // Expects a list of objects with lat and lon
