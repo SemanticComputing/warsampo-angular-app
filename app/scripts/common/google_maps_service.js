@@ -27,7 +27,9 @@
                     infoWindowHtml = '<div id="content">'+
                       '<a href="/persons/page/' + objId + '"><h3>' + obj.description + '</h3></a>'+
                       '<div id="bodyContent">'+
-                      '<p>Paikka: ' + obj.label + ' (' + obj.type + ')</p>' +
+                      '<p>aika: ' + obj.timeSpanString + ' </p>' +
+                      '<p>paikka: ' + obj.label + ' (' + obj.type + ')</p>' +
+                      '<p>kuolinsyy: ' + obj.wayToDie + '</p>' +
                       '</div>'+
                       '</div>';
                 } else if (obj.id.startsWith('http://ldf.fi/warsa/places/cemeteries/')) {

@@ -219,6 +219,8 @@
                             id: person.id,
                             lat: place.point.lat,
                             lon: place.point.lon,
+                            timeSpanString: event.timeSpanString,
+                            wayToDie: event.way_to_die
                         });
                     }
                 });

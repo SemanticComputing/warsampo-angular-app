@@ -40,7 +40,8 @@
         ' PREFIX wevs: <http://ldf.fi/warsa/events/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
         ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ' +
-        ' PREFIX wars: <http://ldf.fi/schema/warsa/articles/> ';
+        ' PREFIX wars: <http://ldf.fi/schema/warsa/articles/> ' +
+        ' PREFIX narcs: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -49,7 +50,7 @@
         var select =
         ' SELECT DISTINCT ?id ?type ?type_id ?description ?label ?time_id ' +
         '  ?start_time ?end_time ?municipality_id ?participant_id ?participant_role ' +
-        '  ?title ?place_id ?medal__id ?medal__label ?source ?photo_id ';
+        '  ?title ?place_id ?medal__id ?medal__label ?source ?photo_id ?way_to_die ';
 
         var eventTypeFilter =
         ' FILTER(?type_id NOT IN ( ' +
@@ -73,6 +74,7 @@
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id skos:prefLabel ?label . ' +
         '   OPTIONAL { ?id dct:description ?description . } ' +
+        '   OPTIONAL { ?id narcs:menehtymisluokka/skos:prefLabel ?way_to_die } . ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         '     ?id ?part_pred ?participant_id . ' +
