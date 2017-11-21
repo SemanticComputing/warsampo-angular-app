@@ -69,7 +69,7 @@
             		//alt			: 'Custom Tile',
             		tileSize : 256,
             		mwId : mapWarperId,
-            		BaseUrl : "http://mapwarper.onki.fi/maps/tile/",
+            		BaseUrl : "https://ldf.fi/corsproxy/mapwarper.onki.fi/maps/tile/",
             		minZoom : 7,
             		maxZoom : 15
           	});
