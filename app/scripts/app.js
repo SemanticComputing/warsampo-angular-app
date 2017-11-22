@@ -77,7 +77,9 @@
             continuationWarTimeSpan: {
                 start: '1941-06-01',
                 end: '1944-12-31'
-            }
+            },
+            winterWarUri: 'http://ldf.fi/warsa/conflicts/WinterWar',
+            continuationWarUri: 'http://ldf.fi/warsa/conflicts/ContinuationWar'
         }
     )
     .constant('PHOTO_PAGE_SIZE', 50)
