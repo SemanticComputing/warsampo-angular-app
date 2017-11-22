@@ -297,8 +297,7 @@ table.faceter-results .ng-table-header, table.cemetery-table .ng-table-header {
         opacity: 1.0;
         top: auto;
         bottom: 20px;
-
-
+        font-size: 14px;
     }
     .description {
         position: absolute;
@@ -418,4 +417,12 @@ table.faceter-results .ng-table-header, table.cemetery-table .ng-table-header {
 
 .img-link {
     display: inline-block;
+}
+
+@media (max-width: 480px) {
+  .blueimp-gallery {
+      .title {
+          font-size: 12px;
+      }
+  }
 }
