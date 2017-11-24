@@ -35,7 +35,6 @@
 
       <div class="col-sm-8 col-md-9">
         <div uib-alert class="alert-danger" ng-if="vm.error">
-          <p>{{ 'ERROR_OCCURED' | translate }}:</p>
           <p>{{ vm.error | translate }}</p>
         </div>
         <div ng-include="'views/partials/photo_list_partial.html'"></div>
