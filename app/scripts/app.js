@@ -117,12 +117,14 @@
     })
 
     /* ngInject */
-    .config(function($stateProvider, $urlServiceProvider, defaultLocale) {
+    .config(function($stateProvider, $urlServiceProvider, _, defaultLocale) {
 
         $urlServiceProvider.rules.otherwise({ state: 'app.lang.404' });
 
         // Redirect non-localized urls to default locale
-        $urlServiceProvider.rules.when(new RegExp('^/(?!(?:fi|en))(.*)$'), '/' + defaultLocale + '/$1');
+        $urlServiceProvider.rules.when(new RegExp('^/(?!(?:fi|en))(.*)$'), function(match, url) {
+            return '/' + defaultLocale + '/' + match[1] + (_.get(url, 'search.uri') ? '?uri=' + url.search.uri : '');
+        });
         // Add missing trailing slash to page urls
         $urlServiceProvider.rules.when(new RegExp('^.*/page$'), function(match, url) {
             return match[0] + '/?uri=' + url.search.uri;
