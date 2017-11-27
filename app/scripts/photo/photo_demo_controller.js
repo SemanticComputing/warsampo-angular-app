@@ -21,6 +21,7 @@
 
         vm.disableFacets = disableFacets;
         vm.isScrollDisabled = isScrollDisabled;
+        vm.hasResults = hasResults;
 
         vm.nextPage = nextPage;
         vm.openModal = openModal;
@@ -87,6 +88,10 @@
 
         function disableFacets() {
             return vm.isLoadingResults;
+        }
+
+        function hasResults() {
+            return vm.isLoadingResults || !_.isEmpty(vm.photos);
         }
 
         var latestPageUpdate;
