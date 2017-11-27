@@ -117,12 +117,12 @@
         }
 
         function getErrorMessage(error) {
-            var errorMsg = error.message || error;
+            var errorMsg = error.statusText;
             if (errorMsg) {
                 if (_.includes(errorMsg, 'TextIndexParseException')) {
                     return 'PHOTO_DEMO.TEXT_SEARCH_EXCEPTION';
                 }
-                return errorMsg;
+                return 'PHOTO_DEMO.RESULT_ERROR';
             }
             return 'UNKNOWN_ERROR';
         }

@@ -8,7 +8,7 @@
           <div class="panel-body">
             <a class="no-decoration" href="" ng-click="vm.openModal(photo)">
               <figure class="photo">
-                <img ws-fallback-img class="img img-responsive" ng-src="{{::photo.url}}" title="{{::photo.description}} | {{ ::photo.source }} {{::photo.created}}" />
+                <img ws-fallback-img class="img img-responsive" ng-src="{{ ::photo.url }}" title="{{ ::photo.description }} | {{ ::photo.source }} {{ ::photo.created }}" />
                 <figcaption>{{ ::photo.description }}</figcaption>
               </figure>
             </a>
