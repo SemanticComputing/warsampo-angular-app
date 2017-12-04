@@ -39,7 +39,8 @@
         'seco.facetedSearch',
         'seco.translateableObjectMapper',
         'chart.js',
-        'updateMeta'
+        'updateMeta',
+        '720kb.tooltips'
     ])
     .constant('_', _)
     .constant('google', google)

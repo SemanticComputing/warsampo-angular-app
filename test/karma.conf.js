@@ -54,6 +54,7 @@ module.exports = function(config) {
       'bower_components/sparql-result-mapper-with-translate/src/translateable_object_mapper.js',
       'bower_components/angular-update-meta/dist/update-meta.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
+      'bower_components/angular-tooltips/dist/angular-tooltips.min.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",

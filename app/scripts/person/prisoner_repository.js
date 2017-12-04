@@ -122,6 +122,7 @@
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_end ?properties__<PROPERTY>__date_end . } ' +
             '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
+            '   <NAMESPACE><PROPERTY> dct:description ?properties__<PROPERTY>__propertyDescription . ' +
             '   OPTIONAL { ' +
             '    [] rdf:subject ?id ; ' +
             '     rdf:predicate <NAMESPACE><PROPERTY> ; ' +
@@ -135,10 +136,13 @@
         }
 
         function generatePrisonerSelectRow(property) {
-            return '?properties__' + property + '__id ?properties__' + property +
-                '__propertyLabel ?properties__' + property + '__valueLabel ?properties__' +
-                property + '__source ' + '?properties__' + property +
-                '__date_begin ?properties__' + property + '__date_end';
+            return '?properties__' + property + '__id ' +
+                '?properties__' + property + '__propertyLabel ' +
+                '?properties__' + property + '__propertyDescription ' +
+                '?properties__' + property + '__valueLabel ' +
+                '?properties__' + property + '__source ' +
+                '?properties__' + property + '__date_begin ' +
+                '?properties__' + property + '__date_end';
         }
     });
 })();

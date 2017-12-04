@@ -12,7 +12,15 @@
       <td translate>NAME</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
     </tr>
     <tr ng-repeat="(key, property) in ctrl.person.prisonerRecord.properties">
-      <td class="person-record-property">{{ property.propertyLabel || property[0].propertyLabel }}</td>
+      <td class="person-record-property">
+        <span
+          tooltips
+          tooltip-template="{{ property.propertyDescription || property[0].propertyDescription }}"
+          tooltip-size="large"
+          tooltip-side="right"
+          tooltip-class="prisoner-tooltip"
+          >{{ property.propertyLabel || property[0].propertyLabel }}</span>
+      </td>
       <td class="person-record-value">
         <div ng-repeat="v in (property | castArray)">
           <span ng-switch="!!v.valueLabel">
