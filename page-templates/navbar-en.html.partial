@@ -1,5 +1,4 @@
 <nav id="nav" class="navbar navbar-inverse">
-	<!-- Google Analytics Script -->
 	<div class="container-fluid">
 
 		<!--  HEADER -->
@@ -31,6 +30,7 @@
             <li><a href="/en/articles/" target="_self" id="kata">Articles</a></li>
             <li><a href="/en/casualties/" target="_self" id="casualties">Casulties</a></li>
             <li><a href="/en/photographs/" target="_self" id="photographs">Photographs</a></li>
+            <li><a href="/en/cemeteries/" target="_self" id="cemeteries">War Cemeteries</a></li>
           </ul>
         </li>
 			</ul>
@@ -45,8 +45,8 @@
             <li><a href="https://seco.cs.aalto.fi/projects/sotasampo/en/#datasets">Datasets</a></li>
             <li><a href="https://www.ldf.fi/dataset/warsa">LDF.fi data service</a></li>
             <li><a href="https://seco.cs.aalto.fi/projects/sotasampo/en">WarSampo project</a></li>
-            <!--   <li><a href="https://seco.cs.aalto.fi/projects/lodsci/">Linked Open Data Science Finland</a></li> -->
             <li><a href="https://seco.cs.aalto.fi/projects/sotasampo/en/#contact">Contact</a></li>
+            <li><a href="https://www.facebook.com/groups/sotasampo/"><img src="/images/FB-f-Logo__blue_29.png" /> Facebook group</a></li>
           </ul>
         </li>
 				<li><a data-toggle="modal" data-target="#myModal" href="#">Instructions</a></li>
@@ -70,14 +70,43 @@
 				<p>
 				The content of WarSampo is provided through seven different perspectives:
 				</p>
-				<ol>
-				<li><b>Events.</b> Events of the Winter and Continuation War visualized using a timeline and a map with related linked data.</li>
-				<li><b>Persons.</b> Data about persons with related links from various sources.</li>
-				<li><b>Army Units.</b> Events and other related data about army units visualized using i.a. maps.</li>
-				<li><b>Places.</b> Search and browse places and maps covering the war zone area in Finland and discover addional data such as events and photographs linked to places.</li>
-				<li><b>Kansa taisteli magazine articles.</b> Faceted semantic search and contextual reader for Kansa taisteli magazine articles containing mostly memoirs of soldiers related to WW2.</li>
-				<li><b>Casulties.</b> A table-like view of war casualty records that can be filtered using faceted semantic search, enriched with links to other WarSampo datasets.</li>
-				<li><b>Photographs.</b> Browse the content of the Finnish Wartime Photograph Archive with faceted search.</li>
+				<ol class="demo-desc">
+          <li>
+            <div>
+              <a class="pull-right" href="https://vimeo.com/200002380"><img class="play-button" src="/images/play-button.svg" alt="Video" title="Video" /></a>
+              <span><b>Events.</b> Events of the Winter and Continuation War visualized using a timeline and a map with related linked data.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <a class="pull-right" href="https://vimeo.com/200002079"><img class="play-button" src="/images/play-button.svg" alt="Video" title="Video" /></a>
+              <span><b>Persons.</b> Data about persons with related links from various sources.</span>
+            </div>
+          </li>
+          <li>
+            <span><b>Army Units.</b> Events and other related data about army units visualized using i.a. maps.</span>
+          </li>
+          <li>
+            <div>
+              <a class="pull-right" href="https://vimeo.com/200002343"><img class="play-button" src="/images/play-button.svg" alt="Video" title="Video" /></a>
+            </div>
+            <span><b>Places.</b> Search and browse places and maps covering the war zone area in Finland and discover addional data such as events and photographs linked to places.</span>
+          </li>
+          <li>
+            <div>
+              <a class="pull-right" href="https://vimeo.com/200002315"><img class="play-button" src="/images/play-button.svg" alt="Video" title="Video" /></a>
+              <span><b>Kansa taisteli magazine articles.</b> Faceted semantic search and contextual reader for Kansa taisteli magazine articles containing mostly memoirs of soldiers related to WW2.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <a class="pull-right" href="https://vimeo.com/200002331"><img class="play-button" src="/images/play-button.svg" alt="Video" title="Video" /></a>
+              <span><b>Casulties.</b> A table-like view of war casualty records that can be filtered using faceted semantic search, enriched with links to other WarSampo datasets.</span>
+            </div>
+          </li>
+          <li>
+            <span><b>Photographs.</b> Browse the content of the Finnish Wartime Photograph Archive with faceted search.</span>
+          </li>
 				</ol>
 				<p>
 				In order to search of browse the content, you must first select a perspective from the front page or using the dropdown button on the navigation bar.  

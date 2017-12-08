@@ -1,5 +1,4 @@
 <nav id="nav" class="navbar navbar-inverse">
-	<!-- Google Analytics Script -->
 	<div class="container-fluid">
 
 		<!--  HEADER -->
@@ -14,7 +13,6 @@
 				<span>
 				<img width="160" height="50" src="/images/warsa-gun-logo.jpg">
 				</span>
-				<!-- <span class="navbartitle">Sotasampo</span> -->
 			</a>
 		</div>
 
@@ -31,6 +29,7 @@
             <li><a href="/fi/articles/" target="_self" id="kata">Kansa taisteli</a></li>
             <li><a href="/fi/casualties/" target="_self" id="casualties">Menehtyneet</a></li>
             <li><a href="/fi/photographs/" target="_self" id="photographs">Valokuvat</a></li>
+            <li><a href="/fi/cemeteries/" target="_self" id="cemeteries">Sankarihautausmaat</a></li>
           </ul>
         </li>
 			</ul>
@@ -45,8 +44,8 @@
             <li><a href="https://seco.cs.aalto.fi/projects/sotasampo#aineistot">Aineistot</a></li>
             <li><a href="https://www.ldf.fi/dataset/warsa">Datapalvelu LDF.fi</a></li>
             <li><a href="https://seco.cs.aalto.fi/projects/sotasampo/">Sotasampo-projekti</a></li>
-            <!--   <li><a href="https://seco.cs.aalto.fi/projects/lodsci/">Linked Open Data Science Finland</a></li> -->
             <li><a href="https://seco.cs.aalto.fi/projects/sotasampo#yhteystiedot">Yhteystiedot</a></li>
+            <li><a href="https://www.facebook.com/groups/sotasampo/"><img src="/images/FB-f-Logo__blue_29.png" /> Facebook-ryhmä</a></li>
           </ul>
         </li>
 				<li><a data-toggle="modal" data-target="#myModal" href="#">Ohje</a></li>
@@ -70,14 +69,47 @@
 				<p>
 				Sotasampo tarjoaa sisältöjään loppukäyttäjälle erilaisten sovellusnäkymien kautta, joita ovat:
 				</p>
-				<ol>
-				<li><b>Tapahtumat</b>-näkymän kautta voit tutusta toisen maailmansodan tapahtumiin aikajanalla ja kartalla.</li>
-				<li><b>Henkilöt</b>-näkymän kautta voit hakea aineistoja niissä esiintyvien henkilöiden kautta.</li>
-				<li><b>Joukko-osastot</b>-näkymän kautta voit hakea aineistoja niissä esiintyvien armeijan joukko-osastojen avulla.</li>
-				<li><b>Paikat</b>-näkymän kautta voit tutusta toisen maailmansodan historiallisiin paikkoihin ja karttoihin.</li>
-				<li><b>Kansa taisteli</b> -näkymän kautta pääset tutustumaan verkossa oleviin Kansa taisteli -lehtiin.</li>
-				<li><b>Menehtyneet</b>-näkymän kautta pääset tutustumaan sotiemme sankarivainajiin.</li>
-        <li><b>Valokuvat</b>-näkymän kautta voit hakea ja selata sotien aikaisia valokuvia.</li>
+				<ol class="demo-desc">
+				<li>
+          <div>
+            <a class="pull-right" href="https://vimeo.com/200002380"><img class="play-button" src="/images/play-button.svg" alt="Katso video" title="Katso video" /></a>
+            <span><b>Tapahtumat</b>-näkymän kautta voit tutusta toisen maailmansodan tapahtumiin aikajanalla ja kartalla.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a class="pull-right" href="https://vimeo.com/200002079"><img class="play-button" src="/images/play-button.svg" alt="Katso video" title="Katso video" /></a>
+            <span><b>Henkilöt</b>-näkymän kautta voit hakea aineistoja niissä esiintyvien henkilöiden kautta.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <span><b>Joukko-osastot</b>-näkymän kautta voit hakea aineistoja niissä esiintyvien armeijan joukko-osastojen avulla.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a class="pull-right" href="https://vimeo.com/200002343"><img class="play-button" src="/images/play-button.svg" alt="Katso video" title="Katso video" /></a>
+            <span><b>Paikat</b>-näkymän kautta voit tutusta toisen maailmansodan historiallisiin paikkoihin ja karttoihin.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a class="pull-right" href="https://vimeo.com/200002315"><img class="play-button" src="/images/play-button.svg" alt="Katso video" title="Katso video" /></a>
+            <span><b>Kansa taisteli</b> -näkymän kautta pääset tutustumaan verkossa oleviin Kansa taisteli -lehtiin.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <a class="pull-right" href="https://vimeo.com/200002331"><img class="play-button" src="/images/play-button.svg" alt="Katso video" title="Katso video" /></a>
+            <span><b>Menehtyneet</b>-näkymän kautta pääset tutustumaan sotiemme sankarivainajiin.</span>
+          </div>
+        </li>
+        <li>
+          <div>
+            <span><b>Valokuvat</b>-näkymän kautta voit hakea ja selata sotien aikaisia valokuvia.</span>
+          </div>
+        </li>
 				</ol>
 				<p>
 				Valitse näkymä Sotasammon yläpalkista, ja pääset hakemaan aineistoja semanttisesti.
