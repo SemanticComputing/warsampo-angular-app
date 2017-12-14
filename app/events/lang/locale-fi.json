@@ -34,6 +34,10 @@
         "NUMBER_OF_CHILDREN": "{NUM, plural, =0{ei lapsia} one{yksi lapsi} other{# lasta}}",
         "BORN_ON_IN": "Syntynyt {{date}} paikassa {{place}}",
         "DIED_ON_IN": "Kuollut {{date}} paikassa {{place}}",
+        "PRISONER_PERSON_DETAILS": "Henkilötiedot",
+        "PRISONER_IMPRISONMENT_DETAILS": "Sotavankeustiedot",
+        "PRISONER_DEATH_DETAILS": "Kuolintiedot",
+        "PRISONER_RETURN_DETAILS": "Paluutiedot",
         "RELATED_PEOPLE": "Muita henkilöitä",
         "RELATED_PEOPLE_DESCRIPTION": "Tähän henkilöön tapahtumien, joukko-osastojen, mitalien tai sukunimen kautta liittyviä henkilöitä."
     },

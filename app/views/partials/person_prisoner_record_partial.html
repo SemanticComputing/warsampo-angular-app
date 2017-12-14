@@ -1,4 +1,4 @@
-<div ng-if="ctrl.person.prisonerRecord">
+<div ng-if="::ctrl.person.prisonerRecord">
 
   <h3>Video (testi)</h3>
   <video class="prisoner-video" controls>
@@ -7,34 +7,59 @@
   </video>
 
   <h3 translate="PRISONER_RECORD"></h3>
-  <table class="table person-record">
-    <tr>
-      <td translate>NAME</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
-    </tr>
-    <tr ng-repeat="(key, property) in ctrl.person.prisonerRecord.properties">
-      <td class="person-record-property">
-        <span
-          tooltips
-          tooltip-template="{{ property.propertyDescription || property[0].propertyDescription }}"
-          tooltip-size="large"
-          tooltip-side="right"
-          tooltip-class="prisoner-tooltip"
-          >{{ property.propertyLabel || property[0].propertyLabel }}</span>
-      </td>
-      <td class="person-record-value">
-        <div ng-repeat="v in (property | castArray)">
-          <span ng-switch="!!v.valueLabel">
-            <span ng-switch-when="true">
-              <a ws-page-link="v.id">{{ v.valueLabel }}</a>
-            </span>
-            <span ng-switch-when="false">
-              {{ v.valueLabel || (ctrl.person.prisonerRecord.isDateValue(key) ? (v.id | date:'dd.MM.yyyy') : v.id) }}
-            </span>
-          <span ng-if="v.date_begin">({{ v.date_begin | date:'dd.MM.yyyy' }} &ndash; {{ v.date_end | date:'dd.MM.yyyy' }})</span>
-          <span ng-if="v.source">(lähde: {{ v.source | concatList }})</span>
-          <hr ng-if="ctrl.showHr(key) && !$last">
-        </div>
-      </td>
-    </tr>
-  </table>
+  <div>
+    <h4 translate="PERSONS_DEMO.PRISONER_PERSON_DETAILS"></h4>
+    <table class="table person-record">
+      <tr>
+        <td translate>NAME</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
+      </tr>
+      <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getPersonDetails()">
+        <td class="person-record-property">
+          <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
+        </td>
+        <td class="person-record-value">
+          <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
+        </td>
+      </tr>
+    </table>
+    <div ng-if="::ctrl.person.prisonerRecord.getImprisonmentDetails().length">
+      <h4 translate="PERSONS_DEMO.PRISONER_IMPRISONMENT_DETAILS"></h4>
+      <table class="table person-record">
+        <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getImprisonmentDetails()">
+          <td class="person-record-property">
+            <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
+          </td>
+          <td class="person-record-value">
+            <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div ng-if="::ctrl.person.prisonerRecord.getDeathDetails().length">
+      <h4 translate="PERSONS_DEMO.PRISONER_DEATH_DETAILS"></h4>
+      <table class="table person-record">
+        <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getDeathDetails()">
+          <td class="person-record-property">
+            <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
+          </td>
+          <td class="person-record-value">
+            <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div ng-if="::ctrl.person.prisonerRecord.getReturnDetails().length">
+      <h4 translate="PERSONS_DEMO.PRISONER_RETURN_DETAILS"></h4>
+      <table class="table person-record">
+        <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getReturnDetails()">
+          <td class="person-record-property">
+            <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
+          </td>
+          <td class="person-record-value">
+            <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </div>

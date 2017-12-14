@@ -33,6 +33,10 @@
         "NUMBER_OF_CHILDREN": "{NUM, plural, =0{no children} one{one child} other{# children}}",
         "BORN_ON_IN": "Born on {{date}} in {{place}}",
         "DIED_ON_IN": "Died on {{date}} in {{place}}",
+        "PRISONER_PERSON_DETAILS": "Personal details",
+        "PRISONER_IMPRISONMENT_DETAILS": "Imprisonment details",
+        "PRISONER_DEATH_DETAILS": "Death details",
+        "PRISONER_RETURN_DETAILS": "Return details",
         "RELATED_PEOPLE": "Related people",
         "RELATED_PEOPLE_DESCRIPTION": "People related to this person via events, military units, medals, or family name."
     },

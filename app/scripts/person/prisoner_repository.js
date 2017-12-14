@@ -23,6 +23,8 @@
                 dateUtilService, ENDPOINT_CONFIG) {
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, prisonerMapperService);
 
+        this.getPersonPrisonerRecord = getPersonPrisonerRecord;
+
         var prefixes =
         ' PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 	' +
         ' PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>	' +
@@ -59,6 +61,7 @@
             'place_captured_battle',
             'place_captured_municipality',
             'time_gone_missing',
+            'place_gone_missing',
             'returned_date',
             'cause_of_death',
             'death_date',
@@ -84,6 +87,7 @@
             'continuation_war_russian_card_file_F_465',
             'finnish_return_interrogation_file',
             'other_information',
+            'confiscated_possession',
         ];
 
         var select = 'SELECT DISTINCT ?id ?name ?properties__id ';
@@ -100,12 +104,12 @@
         var prisonerRecordQry = prefixes + select + '{' + qryBody + '}';
 
 
-        this.getPersonPrisonerRecord = function(id) {
+        function getPersonPrisonerRecord(id) {
             var qry = prisonerRecordQry.replace(/<ID>/g, '<' + id + '>');
             return endpoint.getObjects(qry).then(function(data) {
                 return data[0];
             });
-        };
+        }
 
         function generatePrisonerPropertyQry(property) {
             var namespace = property === 'has_occupation' ? 'bioc:' : 'psc:';

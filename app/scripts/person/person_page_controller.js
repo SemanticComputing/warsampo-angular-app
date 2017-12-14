@@ -8,11 +8,7 @@
     function PersonPageController($log, _, personService, uri) {
         var self = this;
 
-        self.showHr = showHr;
-
         init();
-
-        var hrProps = ['other_information', 'memoirs'];
 
         function init() {
             if (uri) {
@@ -32,10 +28,6 @@
                     self.isLoadingRelated = false;
                 });
             }
-        }
-
-        function showHr(prop) {
-            return _.includes(hrProps, prop);
         }
     }
 })();
