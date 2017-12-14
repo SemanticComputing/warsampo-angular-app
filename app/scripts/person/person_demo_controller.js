@@ -49,9 +49,10 @@
         // Person selection change
         function updateSelection() {
             if (self.selectedItem && self.selectedItem.id) {
-                $location.search('event', null);
                 $state.go('app.lang.persons.demo.page.info', {
-                    id: baseService.getIdFromUri(self.selectedItem.id) });
+                    id: baseService.getIdFromUri(self.selectedItem.id),
+                    event: null
+                });
             }
         }
 

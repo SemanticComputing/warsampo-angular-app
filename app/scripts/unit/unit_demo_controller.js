@@ -62,9 +62,9 @@
 
         function updateUnit() {
             if (self.currentSelection) {
-                $location.search('event', null);
                 $state.go('app.lang.units.demo.timeline', {
-                    id: baseService.getIdFromUri(self.currentSelection)
+                    id: baseService.getIdFromUri(self.currentSelection),
+                    event: null
                 });
             }
         }
