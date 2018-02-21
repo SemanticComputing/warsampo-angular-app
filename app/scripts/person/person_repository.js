@@ -118,7 +118,7 @@
         ' { ' +
         '  SELECT DISTINCT ?name ?id WHERE {	' +
         '   GRAPH <http://ldf.fi/warsa/persons> {	' +
-        '    ?id text:query "<QUERY>" . ' +
+        '    ?id text:query ("<QUERY>" 1000000) . ' +
         '    ?id a wsc:Person . ' +
         '    ?id foaf:familyName ?familyName . ' +
         '    OPTIONAL { ?id foaf:firstName ?firstName . } ' +
