@@ -10,10 +10,11 @@
 
 module.exports = function (grunt) {
 
-    var modRewrite = require('connect-modrewrite');
-    //var history = require('connect-history-api-fallback');
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
+
+    var modRewrite = require('connect-modrewrite');
+    var serveStatic = require('serve-static');
 
     grunt.loadNpmTasks('grunt-cdnify');
     grunt.loadNpmTasks('grunt-replace');
@@ -22,7 +23,6 @@ module.exports = function (grunt) {
     require('jit-grunt')(grunt, {
         useminPrepare: 'grunt-usemin',
         ngtemplates: 'grunt-angular-templates'
-        //cdnify: 'grunt-google-cdn'
     });
 
     // Configurable paths for the application
@@ -45,14 +45,13 @@ module.exports = function (grunt) {
             },
             js: {
                 files: ['<%= yeoman.app %>/scripts/**/*.js'],
-                tasks: ['newer:jshint:all'],
                 options: {
                     livereload: '<%= connect.options.livereload %>'
                 }
             },
             jsTest: {
                 files: ['test/spec/{,*/}*.js'],
-                tasks: ['newer:jshint:test', 'karma']
+                tasks: ['karma']
             },
             compass: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
@@ -87,20 +86,20 @@ module.exports = function (grunt) {
                     middleware: function (connect) {
                         return [
                             modRewrite(['!\\.html|\\.js|\\.css|\\.png|\\.jpg|\\.gif|\\.mp4|\\woff|\\woff2$ /index.html [L]']),
-                            connect.static('.tmp'),
+                            serveStatic('.tmp'),
                             connect().use(
                                 '/bower_components',
-                                connect.static('./bower_components')
+                                serveStatic('./bower_components')
                             ),
                             connect().use(
                                 '/page-templates',
-                                connect.static('./page-templates')
+                                serveStatic('./page-templates')
                             ),
                             connect().use(
                                 '/app/styles',
-                                connect.static('./app/styles')
+                                serveStatic('./app/styles')
                             ),
-                            connect.static(appConfig.app)
+                            serveStatic(appConfig.app)
                         ];
                     }
                 }
@@ -110,13 +109,13 @@ module.exports = function (grunt) {
                     port: 9001,
                     middleware: function (connect) {
                         return [
-                            connect.static('.tmp'),
-                            connect.static('test'),
+                            serveStatic('.tmp'),
+                            serveStatic('test'),
                             connect().use(
                                 '/bower_components',
-                                connect.static('./bower_components')
+                                serveStatic('./bower_components')
                             ),
-                            connect.static(appConfig.app)
+                            serveStatic(appConfig.app)
                         ];
                     }
                 }
@@ -126,26 +125,6 @@ module.exports = function (grunt) {
                     open: true,
                     base: '<%= yeoman.dist %>'
                 }
-            }
-        },
-
-        // Make sure code styles are up to par and there are no obvious mistakes
-        jshint: {
-            options: {
-                jshintrc: '.jshintrc',
-                reporter: require('jshint-stylish')
-            },
-            all: {
-                src: [
-                    'Gruntfile.js',
-                    '<%= yeoman.app %>/scripts/**/*.js'
-                ]
-            },
-            test: {
-                options: {
-                    jshintrc: 'test/.jshintrc'
-                },
-                src: ['test/spec/{,*/}*.js']
             }
         },
 
@@ -303,42 +282,9 @@ module.exports = function (grunt) {
                         });
                         return res;
                     }
-                    /*,
-            js: function(block) {
-                return '<script src="/events/' + block.dest + '"></script>';
-            },
-            css: function(block) {
-                return '<link rel="stylesheet" href="/events/' + block.dest + '">';
-            }*/
                 }
             }
         },
-
-        // The following *-min tasks will produce minified files in the dist folder
-        // By default, your `index.html`'s <!-- Usemin block --> will take care of
-        // minification. These next options are pre-configured if you do not wish
-        // to use the Usemin blocks.
-        // cssmin: {
-        //   dist: {
-        //     files: {
-        //       '<%= yeoman.dist %>/styles/main.css': [
-        //         '.tmp/styles/{,*/}*.css'
-        //       ]
-        //     }
-        //   }
-        // },
-        // uglify: {
-        //   dist: {
-        //     files: {
-        //       '<%= yeoman.dist %>/scripts/scripts.js': [
-        //         '<%= yeoman.dist %>/scripts/scripts.js'
-        //       ]
-        //     }
-        //   }
-        // },
-        // concat: {
-        //   dist: {}
-        // },
 
         imagemin: {
             dist: {
@@ -414,7 +360,7 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: '<%= yeoman.dist %>',
                     src: [
-                        'scripts/*.js',
+                        'scripts/scripts*.js',
                         'vendor/timemap/*/*.js',
                         '**/*.{css,html}'
                     ],
@@ -443,15 +389,6 @@ module.exports = function (grunt) {
                 ]
             }
         },
-
-        /*
-        // Replace Google CDN references
-    cdnify: {
-      dist: {
-        html: ['<%= yeoman.dist %>/*.html']
-      }
-    },
-    */
 
         // Copies remaining files to places other tasks can use
         copy: {
@@ -544,11 +481,6 @@ module.exports = function (grunt) {
         ]);
     });
 
-    grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
-        grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-        grunt.task.run(['serve:' + target]);
-    });
-
     grunt.registerTask('test', [
         'clean:server',
         'wiredep',
@@ -578,7 +510,6 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'newer:jshint',
         'test',
         'build'
     ]);
