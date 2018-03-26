@@ -370,12 +370,26 @@ module.exports = function (grunt) {
         },
 
         replace: {
+            default: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'server',
+                            replacement: process.env.WARSAMPO_SERVER_URL || 'https://ldf.fi'
+                        }
+                    ]
+                }
+            },
             dist: {
                 options: {
                     patterns: [
                         {
                             match: /eventIconPath: 'vendor\/timemap\/images\/'/g,
                             replacement: "eventIconPath: 'events/vendor/timemap/images/'"
+                        },
+                        {
+                            match: 'server',
+                            replacement: process.env.WARSAMPO_SERVER_URL || 'https://ldf.fi'
                         }
                     ]
                 },
@@ -473,6 +487,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            'replace:default',
             'wiredep',
             'concurrent:server',
             'autoprefixer:server',
