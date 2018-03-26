@@ -374,11 +374,19 @@ module.exports = function (grunt) {
                 options: {
                     patterns: [
                         {
-                            match: 'server',
+                            match: 'WARSAMPO_SERVER_URL',
                             replacement: process.env.WARSAMPO_SERVER_URL || 'https://ldf.fi'
                         }
                     ]
-                }
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>',
+                        src: ['**/*.js'],
+                        dest: '.tmp/'
+                    }
+                ]
             },
             dist: {
                 options: {
