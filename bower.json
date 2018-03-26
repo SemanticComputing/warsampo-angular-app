@@ -60,5 +60,8 @@
         "js/blueimp-gallery-fullscreen.js"
       ]
     }
+  },
+  "resolutions": {
+    "angular-paging-sparql-service": ">=0.9.0"
   }
 }

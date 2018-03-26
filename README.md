@@ -1,6 +1,10 @@
-# Events
+# WarSampo
 
-## Build & development
+Events, persons, military units, photographs, cemeteries
+
+## Requirements
+
+Docker (and Docker Compose), or:
 
     sudo apt-get install ruby-compass
     sudo gem install compass
@@ -8,8 +12,28 @@
     npm install -g grunt-cli
     bower install
 
-Run `grunt build` for building and `grunt serve` for preview.
+## Development
 
-## Testing
+With Docker Compose:
 
-Running `grunt test` will run the unit tests with karma.
+`docker-compose up` (or `docker-compose up client` for just this frontend)
+
+Without Docker:
+
+`grunt serve`
+
+The server url can be set with the environment variable `WARSAMPO_SERVER_URL`,
+e.g. `WARSAMPO_SERVER_URL=http://localhost:8080 grunt serve`.
+
+## Build
+
+With Docker Compose:
+
+`docker-compose run client grunt build`
+
+Without Docker:
+
+`grunt build`
+
+The server url can be set with the environment variable `WARSAMPO_SERVER_URL`,
+e.g. `WARSAMPO_SERVER_URL=http://example.com grunt build`.

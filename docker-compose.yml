@@ -4,8 +4,12 @@ services:
         build: .
         ports:
             - 9000:9000
+            - 35729:35729
         environment:
             - WARSAMPO_SERVER_URL=http://localhost:8080
+        volumes:
+            - ./app:/app/app
+            - ./dist:/app/dist
     api:
         image: nginx:1-alpine
         ports:
