@@ -10,7 +10,7 @@
     * Main module of the application.
     */
 
-    var server = 'https://ldf.fi';
+    var server = '@@WARSAMPO_SERVER_URL';
     //var server = 'http://localhost:3030';
     var PNR_SERVICE_URI = '<' + server + '/pnr/sparql>';
     var PNR_ENDPOINT_URL = server + '/pnr/sparql';

@@ -45,6 +45,7 @@ module.exports = function (grunt) {
             },
             js: {
                 files: ['<%= yeoman.app %>/scripts/**/*.js'],
+                tasks: ['replace:default'],
                 options: {
                     livereload: '<%= connect.options.livereload %>'
                 }
@@ -77,12 +78,12 @@ module.exports = function (grunt) {
             options: {
                 port: 9000,
                 // Change this to '0.0.0.0' to access the server from outside.
-                hostname: 'localhost',
+                hostname: '0.0.0.0',
                 livereload: 35729
             },
             livereload: {
                 options: {
-                    open: true,
+                    open: false,
                     middleware: function (connect) {
                         return [
                             modRewrite(['!\\.html|\\.js|\\.css|\\.png|\\.jpg|\\.gif|\\.mp4|\\woff|\\woff2$ /index.html [L]']),
@@ -370,12 +371,34 @@ module.exports = function (grunt) {
         },
 
         replace: {
+            default: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'WARSAMPO_SERVER_URL',
+                            replacement: process.env.WARSAMPO_SERVER_URL || 'https://ldf.fi'
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>',
+                        src: ['**/*.js'],
+                        dest: '.tmp/'
+                    }
+                ]
+            },
             dist: {
                 options: {
                     patterns: [
                         {
                             match: /eventIconPath: 'vendor\/timemap\/images\/'/g,
                             replacement: "eventIconPath: 'events/vendor/timemap/images/'"
+                        },
+                        {
+                            match: 'WARSAMPO_SERVER_URL',
+                            replacement: process.env.WARSAMPO_SERVER_URL || 'https://ldf.fi'
                         }
                     ]
                 },
@@ -473,6 +496,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            'replace:default',
             'wiredep',
             'concurrent:server',
             'autoprefixer:server',
