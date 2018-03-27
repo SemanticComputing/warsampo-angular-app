@@ -7,7 +7,7 @@
     */
     angular.module('eventsApp')
     .service('casualtyRepository', function($q, _, AdvancedSparqlService, baseRepository,
-            translateableObjectMapperService, ENDPOINT_CONFIG, PNR_ENDPOINT_URL, dateUtilService) {
+            translateableObjectMapperService, ENDPOINT_CONFIG, PNR_SERVICE_URI, dateUtilService) {
         var endpoint = new AdvancedSparqlService(ENDPOINT_CONFIG, translateableObjectMapperService);
 
         var prefixes =
@@ -135,7 +135,7 @@
         this.getPersonDeathRecord = function(id) {
             var qry = personDeathRecordQry
                 .replace('<ID>', baseRepository.uriFy(id))
-                .replace('<PNR>', baseRepository.uriFy(PNR_ENDPOINT_URL));
+                .replace('<PNR>', baseRepository.uriFy(PNR_SERVICE_URI));
             return endpoint.getObjects(qry);
         };
     });

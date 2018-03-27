@@ -12,7 +12,7 @@
 
     /* @ngInject */
     function photoFacetService($q, $translate, _, photoRepository,
-            SPARQL_ENDPOINT_URL, PNR_SERVICE_URI, PHOTO_PAGE_SIZE) {
+            SPARQL_ENDPOINT_URL, PNR_ENDPOINT_URL, PHOTO_PAGE_SIZE) {
 
         this.getResults = getResults;
         this.getFacets = getFacets;
@@ -44,7 +44,7 @@
                 facetId: 'spatial',
                 name: 'PHOTO_DEMO.PLACE',
                 predicate: '^<http://www.cidoc-crm.org/cidoc-crm/P94_has_created>/<http://www.cidoc-crm.org/cidoc-crm/P7_took_place_at>',
-                services: [PNR_SERVICE_URI],
+                services: [PNR_ENDPOINT_URL],
                 enabled: true
             },
             person: {

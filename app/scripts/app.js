@@ -10,15 +10,14 @@
     * Main module of the application.
     */
 
-    var server = '@@WARSAMPO_SERVER_URL';
-    //var server = 'http://localhost:3030';
-    var PNR_SERVICE_URI = '<' + server + '/pnr/sparql>';
-    var PNR_ENDPOINT_URL = server + '/pnr/sparql';
-    var SPARQL_ENDPOINT_URL = server + '/warsa/sparql';
-    var HISTORY_ENDPOINT_URL = server + '/history/sparql';
-    var DBPEDIA_FI_ENDPOINT_URL = server + '/dbpedia-fi/sparql';
+    var SPARQL_ENDPOINT_URL = '@@WARSAMPO_ENDPOINT_URL';
 
-    var DBPEDIA_ENDPOINT_URL = 'https://dbpedia.org/sparql';
+    var PNR_ENDPOINT_URL = '@@PNR_ENDPOINT_URL';
+    var HISTORY_ENDPOINT_URL = '@@HISTORY_ENDPOINT_URL';
+    var DBPEDIA_FI_ENDPOINT_URL = '@@DBPEDIA_FI_ENDPOINT_URL';
+    var DBPEDIA_ENDPOINT_URL = '@@DBPEDIA_ENDPOINT_URL';
+
+    var PNR_SERVICE_URI = '@@PNR_SERVICE_URI';
 
     angular
     .module('eventsApp', [

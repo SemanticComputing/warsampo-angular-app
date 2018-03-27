@@ -1,4 +1,4 @@
-/* global require module */
+/* global require module process */
 // Generated on 2015-07-03 using generator-angular 0.12.0
 'use strict';
 
@@ -30,6 +30,33 @@ module.exports = function (grunt) {
         app: require('./bower.json').appPath || 'app',
         dist: 'dist'
     };
+
+    var replacePatterns = [
+        {
+            match: 'WARSAMPO_ENDPOINT_URL',
+            replacement: process.env.WARSAMPO_ENDPOINT_URL || 'https://ldf.fi/warsa/sparql'
+        },
+        {
+            match: 'PNR_ENDPOINT_URL',
+            replacement: process.env.PNR_ENDPOINT_URL || 'https://ldf.fi/pnr/sparql'
+        },
+        {
+            match: 'HISTORY_ENDPOINT_URL',
+            replacement: process.env.HISTORY_ENDPOINT_URL || 'https://ldf.fi/history/sparql'
+        },
+        {
+            match: 'DBPEDIA_FI_ENDPOINT_URL',
+            replacement: process.env.DBPEDIA_FI_ENDPOINT_URL || 'https://ldf.fi/dbpedia-fi/sparql'
+        },
+        {
+            match: 'DBPEDIA_ENDPOINT_URL',
+            replacement: process.env.DBPEDIA_ENDPOINT_URL || 'https://dbpedia.org/sparql'
+        },
+        {
+            match: 'PNR_SERVICE_URI',
+            replacement: process.env.PNR_SERVICE_URI || '<https://ldf.fi/pnr/sparql>'
+        }
+    ];
 
     // Define the configuration for all the tasks
     grunt.initConfig({
@@ -371,15 +398,10 @@ module.exports = function (grunt) {
         },
 
         replace: {
+            options: {
+                patterns: replacePatterns
+            },
             default: {
-                options: {
-                    patterns: [
-                        {
-                            match: 'WARSAMPO_SERVER_URL',
-                            replacement: process.env.WARSAMPO_SERVER_URL || 'https://ldf.fi'
-                        }
-                    ]
-                },
                 files: [
                     {
                         expand: true,
@@ -391,16 +413,12 @@ module.exports = function (grunt) {
             },
             dist: {
                 options: {
-                    patterns: [
+                    patterns: replacePatterns.concat([
                         {
                             match: /eventIconPath: 'vendor\/timemap\/images\/'/g,
                             replacement: "eventIconPath: 'events/vendor/timemap/images/'"
                         },
-                        {
-                            match: 'WARSAMPO_SERVER_URL',
-                            replacement: process.env.WARSAMPO_SERVER_URL || 'https://ldf.fi'
-                        }
-                    ]
+                    ])
                 },
                 files: [
                     {

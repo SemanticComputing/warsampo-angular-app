@@ -11,8 +11,7 @@
     .service('cemeteryFacetService', cemeteryFacetService);
 
     /* @ngInject */
-    function cemeteryFacetService($q, $translate, _, cemeteryRepository,
-            SPARQL_ENDPOINT_URL, PNR_SERVICE_URI, PHOTO_PAGE_SIZE) {
+    function cemeteryFacetService($q, $translate, _, cemeteryRepository, SPARQL_ENDPOINT_URL) {
 
         this.getResults = getResults;
         this.getFacets = getFacets;
@@ -29,11 +28,6 @@
                 graph: '<http://ldf.fi/warsa/places/cemeteries>'
             },
 
-            // cemetery_type: {
-            //     facetId: 'cemetery_type',
-            //     predicate: '<http://ldf.fi/schema/warsa/cemeteries/cemetery_type>',
-            //     name: 'CEMETERY_DEMO.CEMETERY_TYPE'
-            // },
             current_municipality: {
                 facetId: 'current_municipality',
                 predicate: '<http://ldf.fi/schema/warsa/places/cemeteries/current_municipality>',
@@ -53,12 +47,7 @@
                 facetId: 'architect',
                 predicate: '<http://ldf.fi/schema/warsa/places/cemeteries/architect>',
                 name: 'CEMETERY_DEMO.ARCHITECT'
-            },
-            // memorial: {
-            //     facetId: 'memorial',
-            //     predicate: '<http://ldf.fi/schema/warsa/cemeteries/memorial>',
-            //     name: 'CEMETERY_DEMO.MEMORIAL'
-            // },
+            }
         };
 
         var cons =
