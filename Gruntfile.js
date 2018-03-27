@@ -83,7 +83,7 @@ module.exports = function (grunt) {
             },
             livereload: {
                 options: {
-                    open: true,
+                    open: false,
                     middleware: function (connect) {
                         return [
                             modRewrite(['!\\.html|\\.js|\\.css|\\.png|\\.jpg|\\.gif|\\.mp4|\\woff|\\woff2$ /index.html [L]']),

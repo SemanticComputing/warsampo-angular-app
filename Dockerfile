@@ -1,9 +1,8 @@
 FROM node:9
 
-RUN apt-get update && apt-get install -y ruby ruby-dev \
+RUN apt-get update && apt-get install -y ruby-compass \
     && rm -rf /var/lib/apt/lists/*
 
-RUN gem update --system && gem install --no-document compass
 RUN npm install -g bower grunt-cli
 
 RUN mkdir /app && chown node:node /app
