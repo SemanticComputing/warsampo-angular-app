@@ -23,3 +23,5 @@ services:
         image: warsa-fuseki
     pnr:
         image: pnr-fuseki
+    history:
+        image: history-fuseki
