@@ -15,6 +15,8 @@
         "INCLUDE_UNIT_EVENTS": "Show person's military units' events",
         "INFO_TAB": "Information",
         "TIMELINE_TAB": "Timeline",
+        "PHOTO_TAB": "Photographs",
+        "VIDEO_TAB": "Videos",
         "TITLE": "Persons",
         "DEMO_META_DESCRIPTION_PREFIX": "Persons of the Winter War, Continuation War, and Lapland War",
         "PAGE_META_DESCRIPTION_PREFIX": "Information page",

@@ -239,6 +239,22 @@
             reloadOnSearch: false,
             params: { tab: '2' }
         })
+        .state('app.lang.persons.demo.page.photographs', {
+            url: '?{tab:3}',
+            templateUrl: 'views/person_photos.html',
+            controller: 'PersonPhotoController',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
+            params: { tab: '3' }
+        })
+        .state('app.lang.persons.demo.page.videos', {
+            url: '?{tab:4}',
+            templateUrl: 'views/person_videos.html',
+            controller: 'PersonVideoController',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
+            params: { tab: '4' }
+        })
         // Units
         .state('app.lang.units', {
             url: '/units',

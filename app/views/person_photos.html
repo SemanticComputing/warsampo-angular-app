@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div ng-switch="ctrl.isLoading">
+      <div ng-switch-when="false">
+        <ws-photo-gallery data-images="ctrl.photos" data-config="ctrl.config"></ws-photo-gallery>
+      </div>
+      <div ng-switch-when="true">
+        <p>{{ 'LOADING' | translate}} <img src="images/loading.gif" /></p>
+      </div>
+    </div>
+  </div>
+</div>

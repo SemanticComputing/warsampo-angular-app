@@ -5,8 +5,7 @@
     .controller('PersonDemoPageController', PersonDemoPageController);
 
     /* @ngInject */
-    function PersonDemoPageController($q, $scope, $location, $state, $transition$, $uibModal,
-            $translate, _, personService, PersonDemoService, Settings, person) {
+    function PersonDemoPageController(personService, person) {
 
         var self = this;
 

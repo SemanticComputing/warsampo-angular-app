@@ -16,6 +16,8 @@
         "INCLUDE_UNIT_EVENTS": "Näytä henkilön joukko-osastojen tapahtumat",
         "INFO_TAB": "Henkilön tiedot",
         "TIMELINE_TAB": "Aikajana",
+        "PHOTO_TAB": "Valokuvat",
+        "VIDEO_TAB": "Videot",
         "TITLE": "Henkilöt",
         "DEMO_META_DESCRIPTION_PREFIX": "Talvisodan, jatkosodan ja Lapin sodan henkilöt",
         "PAGE_META_DESCRIPTION_PREFIX": "Tietosivu",
