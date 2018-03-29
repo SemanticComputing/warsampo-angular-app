@@ -2,19 +2,6 @@ version: '3.5'
 services:
     client:
         build: .
-        ports:
-            - 9000:9000
-            - 35729:35729
-        environment:
-            - WARSAMPO_ENDPOINT_URL=http://localhost:8080/warsa/sparql
-            - PNR_ENDPOINT_URL=http://localhost:8080/pnr/sparql
-            - HISTORY_ENDPOINT_URL=http://localhost:8080/history/sparql
-            - DBPEDIA_ENDPOINT_URL=http://localhost:8080/dbpedia/sparql
-            - DBPEDIA_FI_ENDPOINT_URL=http://localhost:8080/dbpedia-fi/sparql
-            - PNR_SERVICE_URI=http://pnr:3030/pnr/sparql
-        volumes:
-            - ./app:/app/app
-            - ./dist:/app/dist
     api:
         image: nginx:1-alpine
         ports:

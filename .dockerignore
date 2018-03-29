@@ -1,0 +1,5 @@
+**
+!app
+!*.json
+!page-templates
+!Gruntfile.js
