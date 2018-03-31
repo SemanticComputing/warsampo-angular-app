@@ -1,0 +1,42 @@
+FROM node:9
+
+RUN apt-get update && apt-get install -y ruby-compass \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g bower grunt-cli serve
+
+RUN mkdir /app && chown node:node /app
+
+WORKDIR /app
+
+USER node
+
+COPY *.json ./
+
+RUN npm install
+RUN bower install
+
+EXPOSE 9000
+
+COPY Gruntfile.js ./
+COPY app ./app
+
+ARG WARSAMPO_ENDPOINT_URL
+ARG PNR_ENDPOINT_URL
+ARG HISTORY_ENDPOINT_URL
+ARG DBPEDIA_ENDPOINT_URL
+ARG DBPEDIA_FI_ENDPOINT_URL
+ARG PNR_SERVICE_URI
+
+ENV WARSAMPO_ENDPOINT_URL=${WARSAMPO_ENDPOINT_URL}
+ENV PNR_ENDPOINT_URL=${PNR_ENDPOINT_URL}
+ENV HISTORY_ENDPOINT_URL=${HISTORY_ENDPOINT_URL}
+ENV DBPEDIA_ENDPOINT_URL=${DBPEDIA_ENDPOINT_URL}
+ENV DBPEDIA_FI_ENDPOINT_URL=${DBPEDIA_FI_ENDPOINT_URL}
+ENV PNR_SERVICE_URI=${PNR_SERVICE_URI}
+
+RUN grunt build
+
+COPY page-templates ./dist/page-templates
+
+CMD serve --port 9000 -s dist
