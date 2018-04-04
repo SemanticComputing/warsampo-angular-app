@@ -50,8 +50,8 @@
                     name: 'birth_date',
                     isDateValue: true
                 },
-                { name: 'birth_place' },
-                { name: 'home_place' },
+                { name: 'birth_place_literal' },
+                { name: 'home_place_literal' },
                 { name: 'residence_place' },
                 { name: 'has_occupation' },
                 { name: 'marital_status' },
@@ -91,6 +91,8 @@
                 },
                 { name: 'death_place' },
                 { name: 'burial_place' },
+                { name: 'declared_death' },
+                { name: 'cause_of_death' },
             ]
         };
 
