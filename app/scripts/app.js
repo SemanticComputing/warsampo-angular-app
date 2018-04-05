@@ -194,7 +194,10 @@
             templateUrl: 'views/person_page.html',
             controller: 'PersonPageController',
             controllerAs: 'ctrl',
-            resolve: { uri: resolveUri },
+            resolve: {
+                uri: resolveUri,
+                person: resolveActor
+            },
         })
         .state('app.lang.persons.demo', {
             url: '',

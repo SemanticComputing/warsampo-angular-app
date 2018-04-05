@@ -121,7 +121,7 @@
             '   ?id a wsc:PrisonerRecord . ' +
             '   BIND(1 AS ?properties__id) ' +
             '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
-            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel|psc:place ?properties__<PROPERTY>__valueLabel . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel|psc:location_literal ?properties__<PROPERTY>__valueLabel . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:order ?properties__<PROPERTY>__order . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_end ?properties__<PROPERTY>__date_end . } ' +
@@ -131,8 +131,9 @@
             '    [] rdf:subject ?id ; ' +
             '     rdf:predicate <NAMESPACE><PROPERTY> ; ' +
             '     rdf:object ?properties__<PROPERTY>__id ; ' +
-            '     dct:source ?properties__<PROPERTY>__source . ' +
+            '     dct:source ?properties__<PROPERTY>__source_ . ' +
             '   } ' +
+            '   BIND(COALESCE(?properties__<PROPERTY>__source_, "Sotavankimatrikkeli"@fi) AS ?properties__<PROPERTY>__source) ' +
             '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
 

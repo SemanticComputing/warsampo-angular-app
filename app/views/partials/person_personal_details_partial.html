@@ -1,0 +1,60 @@
+<div ng-if="!ctrl.isLoadingRelated">
+  <h4 translate="PERSONS_DEMO.DETAILS"></h4>
+  <table class="table person-record">
+    <tr>
+      <th class="person-record-property" translate>BIRTH</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getBirthDateInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th class="person-record-property" translate>BIRTH_MUNICIPALITY</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getBirthMunicipalityInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th class="person-record-property" translate>HOME_MUNICIPALITY</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getHomeMunicipalityInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th class="person-record-property" translate>RESIDENCE_MUNICIPALITY</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getResidenceMunicipalityInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th class="person-record-property" translate>MARITAL_STATUS</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getMaritalStatusInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th class="person-record-property" translate>RANK</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getRankInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <th class="person-record-property" translate>UNIT</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getUnitInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+</div>

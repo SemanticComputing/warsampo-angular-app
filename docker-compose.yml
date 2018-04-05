@@ -12,7 +12,7 @@ services:
             - ./nginx.conf:/etc/nginx/nginx.conf:ro
         restart: unless-stopped
     warsa:
-        image: warsa-fuseki
+        image: warsa-fuseki-private
     pnr:
         image: pnr-fuseki
     history:

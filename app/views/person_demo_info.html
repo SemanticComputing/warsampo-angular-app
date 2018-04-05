@@ -1,9 +1,10 @@
+<ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <div ng-if="ctrl.person.nationals" class="col-md-4 col-md-push-8 col-sm-12">
     <div ng-include="'views/partials/national_bibliography_partial.html'"></div>
   </div>
   <div ng-class="{ 'col-md-8 col-md-pull-4 col-sm-12': ctrl.person.nationals, 'col-md-12': !ctrl.person.nationals }">
-    <div ng-include="'views/partials/person_description_partial.html'"></div>
+    <div ng-include="'views/partials/person_personal_details_partial.html'"></div>
 
     <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
 
