@@ -4,7 +4,7 @@
 
     /* @ngInject */
     function PrisonerDetailValueController(_) {
-        var hrProps = ['other_information', 'memoirs'];
+        var hrProps = ['other_information', 'memoirs', 'explanation'];
 
         var vm = this;
 

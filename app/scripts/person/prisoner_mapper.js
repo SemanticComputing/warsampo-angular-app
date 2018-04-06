@@ -65,11 +65,6 @@
             id: 'imprisonmentDetails',
             props: [
                 {
-                    name: 'time_gone_missing',
-                    isDateValue: true
-                },
-                { name: 'place_gone_missing' },
-                {
                     name: 'time_captured',
                     isDateValue: true
                 },

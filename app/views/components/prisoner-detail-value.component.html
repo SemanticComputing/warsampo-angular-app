@@ -8,6 +8,6 @@
     </span>
   </span>
   <span ng-if="v.date_begin">({{ v.date_begin | date:'dd.MM.yyyy' }} &ndash; {{ v.date_end | date:'dd.MM.yyyy' }})</span>
-  <span ng-if="v.source">({{ 'SOURCE' | translate }}: {{ v.source | concatList }})</span>
+  <span ng-if="v.source"><small>({{ 'SOURCE' | translate }}: {{ v.source | concatList:'; ' }})</small></span>
   <hr ng-if="$ctrl.showHr() && !$last">
 </div>

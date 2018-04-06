@@ -2,8 +2,8 @@
 
 angular.module('eventsApp')
 .filter('concatList', function(_) {
-    return function(input) {
-        return _.isArray(input) ? input.join(', ') : input;
+    return function(input, delimiter) {
+        return _.isArray(input) ? input.join(delimiter || ', ') : input;
     };
 }).filter('capitalizeFirst', function(_) {
     return function(input) {

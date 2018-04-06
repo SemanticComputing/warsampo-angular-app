@@ -1,0 +1,53 @@
+<div ng-if="!ctrl.isLoadingRelated">
+  <h4 translate="PERSONS_DEMO.DEATH_DETAILS"></h4>
+  <table class="table person-record">
+    <tr ng-if="::ctrl.person.getDeathDateInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.DEATH_DATE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getDeathDateInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getDeclaredDeathDateInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.DECLARED_DEATH</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getDeclaredDeathDateInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getDeathPlaceInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.DEATH_PLACE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getDeathPlaceInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getCauseOfDeathInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.CAUSE_OF_DEATH</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getCauseOfDeathInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getBurialPlaceInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.BURIAL_PLACE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getBurialPlaceInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getCemeteryInfo().length">
+      <th class="person-record-property" translate>CEMETERY</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getCemeteryInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>

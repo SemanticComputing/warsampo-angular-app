@@ -12,6 +12,15 @@
         "META_DESCRIPTION": "Study the events of the war, and related photographs, people, and military units on a timeline and map."
     },
     "PERSONS_DEMO": {
+        "PERSON_DETAILS": "Personal Details",
+        "BIRTH_DATE": "Born",
+        "BIRTH_MUNICIPALITY": "Municipality of birth",
+        "RESIDENCE_MUNICIPALITY": "Principal abode",
+        "HOME_MUNICIPALITY": "Place of domicile",
+        "DISAPPEARANCE_DETAILS": "Disappearance Details",
+        "DISAPPEARANCE_DATE": "Date of disappearance",
+        "DISAPPEARANCE_PLACE": "Place of disappearance",
+        "DISAPPEARANCE_MUNICIPALITY": "Municipality of disappearance",
         "INCLUDE_UNIT_EVENTS": "Show person's military units' events",
         "INFO_TAB": "Information",
         "TIMELINE_TAB": "Timeline",
@@ -35,10 +44,13 @@
         "NUMBER_OF_CHILDREN": "{NUM, plural, =0{no children} one{one child} other{# children}}",
         "BORN_ON_IN": "Born on {{date}} in {{place}}",
         "DIED_ON_IN": "Died on {{date}} in {{place}}",
-        "PRISONER_PERSON_DETAILS": "Personal details",
         "PRISONER_IMPRISONMENT_DETAILS": "Imprisonment details",
-        "PRISONER_DEATH_DETAILS": "Death details",
-        "PRISONER_RETURN_DETAILS": "Return details",
+        "DEATH_DETAILS": "Death Details",
+        "DEATH_DATE": "Date of death",
+        "DEATH_PLACE": "Place of death",
+        "CAUSE_OF_DEATH": "Cause of death",
+        "BURIAL_PLACE": "Burial place",
+        "PRISONER_RETURN_DETAILS": "Return Details",
         "RELATED_PEOPLE": "Related people",
         "RELATED_PEOPLE_DESCRIPTION": "People related to this person via events, military units, medals, or family name."
     },
@@ -223,5 +235,9 @@
     "NAME": "Name",
     "NO_SELECTION": "-- No Selection --",
     "PAGE_NOT_FOUND": "Page not found",
+    "OCCUPATION": "Occupation",
+    "GENDER": "Gender",
+    "FAMILY_NAME": "Family name",
+    "GIVEN_NAMES": "Given names",
     "PAGE_NOT_FOUND_DESCRIPTION": "The page you were looking for was not found. You can go to the front page of WarSampo by clicking the link below."
 }

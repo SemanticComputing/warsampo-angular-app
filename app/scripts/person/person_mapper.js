@@ -32,14 +32,26 @@
     .factory('Person', function(_, TranslateableObject) {
         Person.prototype.getMetaDescription = getMetaDescription;
         Person.prototype.getInfo = getInfo;
+        Person.prototype.getFamilyNameInfo = getFamilyNameInfo;
+        Person.prototype.getGivenNameInfo = getGivenNameInfo;
+        Person.prototype.getGenderInfo = getGenderInfo;
         Person.prototype.getBirthDateInfo = getBirthDateInfo;
         Person.prototype.getDeathDateInfo = getDeathDateInfo;
+        Person.prototype.getDeclaredDeathDateInfo = getDeclaredDeathDateInfo;
+        Person.prototype.getDeathPlaceInfo = getDeathPlaceInfo;
+        Person.prototype.getDisappearanceDateInfo = getDisappearanceDateInfo;
+        Person.prototype.getDisappearancePlaceInfo = getDisappearancePlaceInfo;
+        Person.prototype.getDisappearanceMunicipalityInfo = getDisappearanceMunicipalityInfo;
+        Person.prototype.getBurialPlaceInfo = getBurialPlaceInfo;
+        Person.prototype.getCemeteryInfo = getCemeteryInfo;
+        Person.prototype.getCauseOfDeathInfo = getCauseOfDeathInfo;
         Person.prototype.getBirthMunicipalityInfo = getBirthMunicipalityInfo;
         Person.prototype.getHomeMunicipalityInfo = getHomeMunicipalityInfo;
         Person.prototype.getResidenceMunicipalityInfo = getResidenceMunicipalityInfo;
         Person.prototype.getMaritalStatusInfo = getMaritalStatusInfo;
         Person.prototype.getUnitInfo = getUnitInfo;
         Person.prototype.getRankInfo = getRankInfo;
+        Person.prototype.getOccupationInfo = getOccupationInfo;
 
         Person.prototype = angular.extend({}, TranslateableObject.prototype, Person.prototype);
 
@@ -64,16 +76,64 @@
             return this.label + unit + lifeSpan;
         }
 
+        function getFamilyNameInfo() {
+            return this.getInfo('familyNameInfo', 'na', 'na', 'family_name', 'sukunimi');
+        }
+
+        function getGivenNameInfo() {
+            return this.getInfo('givenNameInfo', 'na', 'na', 'given_name', 'etunimet');
+        }
+
         function getBirthDateInfo() {
-            return this.getInfo('birthDate', 'birthEvent', 'date', 'birth_date', 'syntymaeaika');
+            return this.getInfo('birthDate', 'birthEvent', 'timeSpanString', 'birth_date', 'syntymaeaika');
+        }
+
+        function getGenderInfo() {
+            return this.getInfo('gender', 'na', 'na', 'gender', 'sukupuoli');
         }
 
         function getDeathDateInfo() {
-            return this.getInfo('deathDate', 'deathEvent', 'date', 'death_date', 'kuolinaika');
+            return this.getInfo('deathDate', 'deathEvent', 'timeSpanString', 'death_date', 'kuolinaika');
+        }
+
+        function getDeclaredDeathDateInfo() {
+            return this.getInfo('declaredDeathDate', 'na', 'na', 'declared_death', 'na');
+        }
+
+        function getDeathPlaceInfo() {
+            return this.getInfo('deathPlace', 'deathEvent', 'places', 'death_place', 'kuolinpaikka');
+        }
+
+        function getDisappearanceDateInfo() {
+            return this.getInfo('disappearanceDate', 'na', 'na', 'time_gone_missing', 'katoamisaika');
+        }
+
+        function getDisappearancePlaceInfo() {
+            return this.getInfo('disappearancePlace', 'na', 'na', 'place_gone_missing', 'katoamispaikka');
+        }
+
+        function getDisappearanceMunicipalityInfo() {
+            return this.getInfo('disappearanceMunicipality', 'na', 'na', 'na', 'katoamiskunta');
+        }
+
+        function getBurialPlaceInfo() {
+            return this.getInfo('burialPlace', 'na', 'na', 'burial_place', 'hautauskunta');
+        }
+
+        function getCemeteryInfo() {
+            return this.getInfo('cemetery', 'na', 'na', 'na', 'hautausmaa');
+        }
+
+        function getCauseOfDeathInfo() {
+            return this.getInfo('causeOfDeath', 'na', 'na', 'cause_of_death', 'menehtymisluokka');
         }
 
         function getRankInfo() {
-            return this.getInfo('rankInfo', 'rank', 'label', 'rank', 'sotilasarvo');
+            return this.getInfo('rankInfo', 'rank', 'label', 'warsa_rank', 'sotilasarvo');
+        }
+
+        function getOccupationInfo() {
+            return this.getInfo('occupationInfo', 'na', 'na', 'occupation_literal', 'ammatti');
         }
 
         function getBirthMunicipalityInfo() {
@@ -101,32 +161,33 @@
             if (this[infoName]) {
                 return this[infoName];
             }
-            var info = [];
-            var prisoner = _.get(this, 'prisonerRecord.properties.' + prisonerProp) || {};
-            if (prisoner.id) {
-                info.push({
-                    id: prisoner.id,
-                    source: prisoner.source
+            var info = {};
+            var prisoner = _.compact(_.castArray(_.get(this, 'prisonerRecord.properties.' + prisonerProp)));
+            if (!_.isEmpty(prisoner)) {
+                prisoner.forEach(function(p) {
+                    var lbl = p.valueLabel ? p.valueLabel : p.id;
+                    info[lbl] = _.compact(info[lbl]).concat(p.source);
                 });
             }
             var casualty = _.find(this.deathRecord,
                 ['id', 'http://ldf.fi/schema/narc-menehtyneet1939-45/' + casualtyProp]) || {};
             if (casualty.description) {
-                info.push({
-                    id: casualty.description,
-                    source: casualty.source
-                });
+                info[casualty.description] = _.compact(info[casualty.description]).concat(casualty.source);
             }
-            var prop = _.isArray(this[ownProp]) ? this[ownProp][0] : this[ownProp];
-            if (prop &&
-                    !_.includes(_.compact([casualty.source, prisoner.source]), prop.source)) {
-                info.push({
-                    id: prop[ownPropValue],
-                    source: prop[ownPropValue].source
-                });
+            var resource = (_.first(_.castArray(this[ownProp])) || {})[0];
+
+            if (resource && !_.includes(_.compact([casualty.source, prisoner.source]), resource.source)) {
+                var value = _.first(_.castArray(value[ownPropValue]));
+                if (value) {
+                    info[value] = _.compact(info[value]).concat(resource.source);
+                }
             }
-            this[infoName] = info;
-            return info;
+            var res = [];
+            _.keys(info).forEach(function(key) {
+                res.push({ id: key, source: info[key] });
+            });
+            this[infoName] = res;
+            return res;
         }
     });
 })();

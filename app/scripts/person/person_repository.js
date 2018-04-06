@@ -113,14 +113,16 @@
         ' { ' +
         '  SELECT DISTINCT ?name ?id WHERE {	' +
         '   GRAPH <http://ldf.fi/warsa/persons> {	' +
-        '    ?id text:query ("<QUERY>" 1000000) . ' +
         '    ?id a wsc:Person . ' +
         '    ?id foaf:familyName ?familyName . ' +
         '    OPTIONAL { ?id foaf:firstName ?firstName . } ' +
         '    BIND(CONCAT(?familyName, ", ", COALESCE(?firstName, "?")) AS ?name) ' +
-        '    FILTER (regex(?name, "<REGEX>", "i"))	' +
         '   } 	' +
-        '  } LIMIT 1000	' +
+        '   ?id ^crm:P70_documents/a wsc:PrisonerRecord . ' +
+        '   ?id ^crm:P70_documents/a casualties:DeathRecord . ' +
+        '   ?id dct:source ?src . ' +
+        '   FILTER(?src NOT IN (<http://ldf.fi/warsa/sources/source22>, <http://ldf.fi/warsa/sources/source9>)) . ' +
+        '  }' +
         ' } ' +
         ' OPTIONAL { ' +
         '  ?id ^crm:P11_had_participant/wacs:hasRank [ wacs:level ?rl ; skos:prefLabel ?rank ] . ' +

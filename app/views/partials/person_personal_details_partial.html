@@ -1,47 +1,71 @@
 <div ng-if="!ctrl.isLoadingRelated">
-  <h4 translate="PERSONS_DEMO.DETAILS"></h4>
+  <h4 translate="PERSONS_DEMO.PERSON_DETAILS"></h4>
   <table class="table person-record">
-    <tr>
-      <th class="person-record-property" translate>BIRTH</th>
+    <tr ng-if="::ctrl.person.getFamilyNameInfo().length">
+      <th class="person-record-property" translate>FAMILY_NAME</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getFamilyNameInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getGivenNameInfo().length">
+      <th class="person-record-property" translate>GIVEN_NAMES</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getGivenNameInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getBirthDateInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.BIRTH_DATE</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getBirthDateInfo()">
           <prisoner-detail-value is-date-value="true" property="::prop"detail-value>
         </span>
       </td>
     </tr>
-    <tr>
-      <th class="person-record-property" translate>BIRTH_MUNICIPALITY</th>
+    <tr ng-if="::ctrl.person.getBirthMunicipalityInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.BIRTH_MUNICIPALITY</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getBirthMunicipalityInfo()">
           <prisoner-detail-value property="::prop"></prisoner-detail-value>
         </span>
       </td>
     </tr>
-    <tr>
-      <th class="person-record-property" translate>HOME_MUNICIPALITY</th>
+    <tr ng-if="::ctrl.person.getHomeMunicipalityInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.HOME_MUNICIPALITY</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getHomeMunicipalityInfo()">
           <prisoner-detail-value property="::prop"></prisoner-detail-value>
         </span>
       </td>
     </tr>
-    <tr>
-      <th class="person-record-property" translate>RESIDENCE_MUNICIPALITY</th>
+    <tr ng-if="::ctrl.person.getResidenceMunicipalityInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.RESIDENCE_MUNICIPALITY</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getResidenceMunicipalityInfo()">
           <prisoner-detail-value property="::prop"></prisoner-detail-value>
         </span>
       </td>
     </tr>
-    <tr>
-      <th class="person-record-property" translate>MARITAL_STATUS</th>
+    <tr ng-if="::ctrl.person.getMaritalStatusInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.MARITAL_STATUS</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getMaritalStatusInfo()">
           <prisoner-detail-value property="::prop"></prisoner-detail-value>
         </span>
       </td>
     </tr>
-    <tr>
+    <tr ng-if="::ctrl.person.getOccupationInfo().length">
+      <th class="person-record-property" translate>OCCUPATION</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getOccupationInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getRankInfo().length">
       <th class="person-record-property" translate>RANK</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getRankInfo()">
@@ -49,10 +73,18 @@
         </span>
       </td>
     </tr>
-    <tr>
+    <tr ng-if="::ctrl.person.getUnitInfo().length">
       <th class="person-record-property" translate>UNIT</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getUnitInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getGenderInfo().length">
+      <th class="person-record-property" translate>GENDER</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getGenderInfo()">
           <prisoner-detail-value property="::prop"></prisoner-detail-value>
         </span>
       </td>

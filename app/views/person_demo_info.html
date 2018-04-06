@@ -4,11 +4,12 @@
     <div ng-include="'views/partials/national_bibliography_partial.html'"></div>
   </div>
   <div ng-class="{ 'col-md-8 col-md-pull-4 col-sm-12': ctrl.person.nationals, 'col-md-12': !ctrl.person.nationals }">
+
+    <p class="preserve-whitespace" ng-if="ctrl.person.getDescription()">{{ ctrl.person.getDescription() }} <span ng-if="ctrl.person.wikilink">(<a ng-href="{{ ctrl.person.wikilink[0].id }}">Wikipedia</a>)</span>
     <div ng-include="'views/partials/person_personal_details_partial.html'"></div>
-
-    <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
-
+    <div ng-include="'views/partials/person_disappearance_details_partial.html'"></div>
     <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
+    <div ng-include="'views/partials/person_death_details_partial.html'"></div>
     <div ng-include="'views/partials/person_death_record_partial.html'"></div>
 
     <!-- Links -->

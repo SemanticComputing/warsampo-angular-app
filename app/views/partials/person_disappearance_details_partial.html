@@ -1,0 +1,29 @@
+<div ng-if="!ctrl.isLoadingRelated">
+  <h4 translate="PERSONS_DEMO.DISAPPEARANCE_DETAILS"></h4>
+  <table class="table person-record">
+    <tr ng-if="::ctrl.person.getDisappearanceDateInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.DISAPPEARANCE_DATE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getDisappearanceDateInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getDisappearancePlaceInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.DISAPPEARANCE_PLACE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getDisappearancePlaceInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getDisappearanceMunicipalityInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.DISAPPEARANCE_MUNICIPALITY</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getDisappearanceMunicipalityInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>

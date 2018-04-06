@@ -45,6 +45,8 @@
         ' PREFIX psc: <http://ldf.fi/schema/warsa/prisoners/> ';
 
         var prisonerRecordProperties = [
+            'given_name',
+            'family_name',
             'birth_date',
             'birth_place_literal',
             'home_place_literal',
@@ -125,15 +127,15 @@
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:order ?properties__<PROPERTY>__order . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_end ?properties__<PROPERTY>__date_end . } ' +
-            '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
-            '   <NAMESPACE><PROPERTY> dct:description ?properties__<PROPERTY>__propertyDescription . ' +
+            '   OPTIONAL { <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . } ' +
+            '   OPTIONAL { <NAMESPACE><PROPERTY> dct:description ?properties__<PROPERTY>__propertyDescription . } ' +
             '   OPTIONAL { ' +
             '    [] rdf:subject ?id ; ' +
             '     rdf:predicate <NAMESPACE><PROPERTY> ; ' +
             '     rdf:object ?properties__<PROPERTY>__id ; ' +
             '     dct:source ?properties__<PROPERTY>__source_ . ' +
             '   } ' +
-            '   BIND(COALESCE(?properties__<PROPERTY>__source_, "Sotavankimatrikkeli"@fi) AS ?properties__<PROPERTY>__source) ' +
+            '   BIND(COALESCE(?properties__<PROPERTY>__source_, "Prisoners of war register"@en) AS ?properties__<PROPERTY>__source) ' +
             '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
 
