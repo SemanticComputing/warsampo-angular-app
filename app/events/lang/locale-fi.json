@@ -13,6 +13,15 @@
         "META_DESCRIPTION": "Tutki sodan tapahtumia ja niihin liittyviä valokuvia, henkilöitä ja joukko-osastoja aikajanan ja kartan avulla."
     },
     "PERSONS_DEMO": {
+        "PERSON_DETAILS": "Henkilötiedot",
+        "BIRTH_DATE": "Syntynyt",
+        "BIRTH_MUNICIPALITY": "Syntymäkunta",
+        "RESIDENCE_MUNICIPALITY": "Asuinkunta",
+        "HOME_MUNICIPALITY": "Kotikunta",
+        "DISAPPEARANCE_DETAILS": "Katoamistiedot",
+        "DISAPPEARANCE_DATE": "Katoamispäivä",
+        "DISAPPEARANCE_PLACE": "Katoamispaikka",
+        "DISAPPEARANCE_MUNICIPALITY": "Katoamiskunta",
         "INCLUDE_UNIT_EVENTS": "Näytä henkilön joukko-osastojen tapahtumat",
         "INFO_TAB": "Henkilön tiedot",
         "TIMELINE_TAB": "Aikajana",
@@ -36,9 +45,12 @@
         "NUMBER_OF_CHILDREN": "{NUM, plural, =0{ei lapsia} one{yksi lapsi} other{# lasta}}",
         "BORN_ON_IN": "Syntynyt {{date}} paikassa {{place}}",
         "DIED_ON_IN": "Kuollut {{date}} paikassa {{place}}",
-        "PRISONER_PERSON_DETAILS": "Henkilötiedot",
         "PRISONER_IMPRISONMENT_DETAILS": "Sotavankeustiedot",
-        "PRISONER_DEATH_DETAILS": "Kuolintiedot",
+        "DEATH_DETAILS": "Kuolintiedot",
+        "DEATH_DATE": "Kuolinpäivä",
+        "DEATH_PLACE": "Kuolinpaikka",
+        "CAUSE_OF_DEATH": "Kuolinsyy",
+        "BURIAL_PLACE": "Hautapaikka",
         "PRISONER_RETURN_DETAILS": "Paluutiedot",
         "RELATED_PEOPLE": "Muita henkilöitä",
         "RELATED_PEOPLE_DESCRIPTION": "Tähän henkilöön tapahtumien, joukko-osastojen, mitalien tai sukunimen kautta liittyviä henkilöitä."
@@ -223,5 +235,9 @@
     "NAME": "Nimi",
     "NO_SELECTION": "-- Ei valintaa --",
     "PAGE_NOT_FOUND": "Sivua ei löytynyt",
-    "PAGE_NOT_FOUND_DESCRIPTION": "Hakemaasi sivua ei valitettavasti löytynyt. Voit siirtyä Sotasammon etusivulle klikkaamalla alla olevaa linkkiä."
+    "PAGE_NOT_FOUND_DESCRIPTION": "Hakemaasi sivua ei valitettavasti löytynyt. Voit siirtyä Sotasammon etusivulle klikkaamalla alla olevaa linkkiä.",
+    "OCCUPATION": "Ammatti",
+    "GENDER": "Sukupuoli",
+    "FAMILY_NAME": "Sukunimi",
+    "GIVEN_NAMES": "Etunimet"
 }
