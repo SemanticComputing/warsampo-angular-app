@@ -111,7 +111,7 @@
 
         function getDetails(detailList) {
             var self = this;
-            if (self[detailList.id]) {
+            if (_.has(self, detailList.id)) {
                 return self[detailList.id];
             }
             var res = [];

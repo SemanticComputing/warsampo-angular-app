@@ -32,6 +32,10 @@
     .factory('Person', function(_, TranslateableObject) {
         Person.prototype.getMetaDescription = getMetaDescription;
         Person.prototype.getInfo = getInfo;
+        Person.prototype.getOwnInfo = getOwnInfo;
+        Person.prototype.getOwnDateInfo = getOwnDateInfo;
+        Person.prototype.getCasualtyInfo = getCasualtyInfo;
+        Person.prototype.getPrisonerInfo = getPrisonerInfo;
         Person.prototype.getFamilyNameInfo = getFamilyNameInfo;
         Person.prototype.getGivenNameInfo = getGivenNameInfo;
         Person.prototype.getGenderInfo = getGenderInfo;
@@ -85,7 +89,7 @@
         }
 
         function getBirthDateInfo() {
-            return this.getInfo('birthDate', 'birthEvent', 'timeSpanString', 'birth_date', 'syntymaeaika');
+            return this.getInfo('birthDate', 'birthEvent', 'timeSpanString', 'birth_date', 'syntymaeaika', true);
         }
 
         function getGenderInfo() {
@@ -93,11 +97,11 @@
         }
 
         function getDeathDateInfo() {
-            return this.getInfo('deathDate', 'deathEvent', 'timeSpanString', 'death_date', 'kuolinaika');
+            return this.getInfo('deathDate', 'deathEvent', 'timeSpanString', 'death_date', 'kuolinaika', true);
         }
 
         function getDeclaredDeathDateInfo() {
-            return this.getInfo('declaredDeathDate', 'na', 'na', 'declared_death', 'na');
+            return this.getInfo('declaredDeathDate', 'na', 'na', 'declared_death', 'na', true);
         }
 
         function getDeathPlaceInfo() {
@@ -105,7 +109,7 @@
         }
 
         function getDisappearanceDateInfo() {
-            return this.getInfo('disappearanceDate', 'na', 'na', 'time_gone_missing', 'katoamisaika');
+            return this.getInfo('disappearanceDate', 'na', 'na', 'time_gone_missing', 'katoamisaika', true);
         }
 
         function getDisappearancePlaceInfo() {
@@ -157,37 +161,97 @@
             return this.getInfo('unitInfo', 'units', 'label', 'unit', 'joukko_osasto');
         }
 
-        function getInfo(infoName, ownProp, ownPropValue, prisonerProp, casualtyProp) {
-            if (this[infoName]) {
+        function getInfo(infoName, ownProp, ownPropValue, prisonerProp, casualtyProp, isDate) {
+            if (_.has(this, infoName)) {
                 return this[infoName];
             }
-            var info = {};
+
+            var info = this.getPrisonerInfo({}, infoName, prisonerProp);
+            info = this.getCasualtyInfo(info, infoName, casualtyProp);
+            info = isDate ? this.getOwnDateInfo(info, infoName, ownProp) : this.getOwnInfo(info,
+                infoName, ownProp, ownPropValue);
+
+            var res = _.values(info);
+            this[infoName] = res;
+            console.log(info);
+            return res;
+        }
+
+        function getOwnDateInfo(info, infoName, ownProp) {
+            var resource = _.first(_.castArray(this[ownProp]));
+
+            if (resource) {
+                var value = resource.timeSpanString;
+                if (value) {
+                    try {
+                        // Prefer the ISO date string in order to match other sources
+                        var startTime = resource.start_time.split('T')[0];
+                        if (startTime === resource.end_time.split('T')[0]) {
+                            value = startTime;
+                        }
+                    }
+                    catch(e) { /* start_time/end_time not defined */ }
+
+                    info[value] = _.compact(info[value]).concat(resource.source || '?');
+                }
+            }
+            return info;
+        }
+
+        function getOwnInfo(info, infoName, ownProp, ownPropValue) {
+            var resource = _.first(_.castArray(this[ownProp]));
+
+            if (resource) {
+                var value = _.first(_.castArray(resource[ownPropValue]));
+                if (value) {
+                    var label = value.label;
+                    if (label && info[label]) {
+                        info[label].valueLabel = info[label].valueLabel || info[label].id;
+                        info[label].id = value.id;
+                        return info;
+                    }
+
+                    var propVal = {};
+                    if (label) {
+                        propVal.id = value.id;
+                        propVal.valueLabel = value.label;
+                    } else {
+                        propVal.id = value;
+                    }
+                    propVal.source = resource.source || '?';
+
+                    label = value.label || value;
+
+                    if (!info[label] || resource.source && !_.includes(_.map(info[label], 'source'), resource.source)) {
+                        info[label] = _.compact(info[label]).concat(propVal);
+                    }
+                }
+            }
+            return info;
+        }
+
+        function getCasualtyInfo(info, infoName, casualtyProp) {
+            var casualty = _.find(this.deathRecord,
+                ['id', 'http://ldf.fi/schema/narc-menehtyneet1939-45/' + casualtyProp]) || {};
+            if (casualty.description) {
+                var value = {
+                    id: casualty.description,
+                    source: casualty.source
+                };
+                info[casualty.description] = _.compact(info[casualty.description]).concat(value);
+            }
+            return info;
+        }
+
+        function getPrisonerInfo(info, infoName, prisonerProp) {
             var prisoner = _.compact(_.castArray(_.get(this, 'prisonerRecord.properties.' + prisonerProp)));
             if (!_.isEmpty(prisoner)) {
                 prisoner.forEach(function(p) {
                     var lbl = p.valueLabel ? p.valueLabel : p.id;
-                    info[lbl] = _.compact(info[lbl]).concat(p.source);
+                    info[lbl] = _.compact(info[lbl]).concat(p);
                 });
             }
-            var casualty = _.find(this.deathRecord,
-                ['id', 'http://ldf.fi/schema/narc-menehtyneet1939-45/' + casualtyProp]) || {};
-            if (casualty.description) {
-                info[casualty.description] = _.compact(info[casualty.description]).concat(casualty.source);
-            }
-            var resource = (_.first(_.castArray(this[ownProp])) || {})[0];
-
-            if (resource && !_.includes(_.compact([casualty.source, prisoner.source]), resource.source)) {
-                var value = _.first(_.castArray(value[ownPropValue]));
-                if (value) {
-                    info[value] = _.compact(info[value]).concat(resource.source);
-                }
-            }
-            var res = [];
-            _.keys(info).forEach(function(key) {
-                res.push({ id: key, source: info[key] });
-            });
-            this[infoName] = res;
-            return res;
+            return info;
         }
     });
 })();
