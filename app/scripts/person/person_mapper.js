@@ -56,6 +56,9 @@
         Person.prototype.getUnitInfo = getUnitInfo;
         Person.prototype.getRankInfo = getRankInfo;
         Person.prototype.getOccupationInfo = getOccupationInfo;
+        Person.prototype.hasDeathInfo = hasDeathInfo;
+        Person.prototype.hasMiaInfo = hasMiaInfo;
+        Person.prototype.hasInfo = hasInfo;
 
         Person.prototype = angular.extend({}, TranslateableObject.prototype, Person.prototype);
 
@@ -78,6 +81,23 @@
             var unit = this.cas_unit ? ', ' + this.cas_unit : '';
 
             return this.label + unit + lifeSpan;
+        }
+
+        function hasInfo(infoFuns) {
+            var self = this;
+            return !!_.compact(_.map(infoFuns, function(info) { return self[info]().length; })).length;
+        }
+
+        function hasDeathInfo() {
+            var infos = ['getDeathDateInfo', 'getDeclaredDeathDateInfo', 'getDeathPlaceInfo',
+                'getCauseOfDeathInfo', 'getBurialPlaceInfo', 'getCemeteryInfo'];
+            return this.hasInfo(infos);
+        }
+
+        function hasMiaInfo() {
+            var infos = ['getDisappearanceDateInfo', 'getDisappearancePlaceInfo',
+                'getDisappearanceMunicipalityInfo'];
+            return this.hasInfo(infos);
         }
 
         function getFamilyNameInfo() {
@@ -173,7 +193,7 @@
 
             var res = _.values(info);
             this[infoName] = res;
-            console.log(info);
+
             return res;
         }
 
@@ -192,7 +212,15 @@
                     }
                     catch(e) { /* start_time/end_time not defined */ }
 
-                    info[value] = _.compact(info[value]).concat(resource.source || '?');
+                    var source = resource.source || '?';
+                    if (_.get(info[value], 'id')) {
+                        info[value].source = _.compact(info[value].source).concat(source);
+                    } else {
+                        info[value] = {
+                            id: value,
+                            source: source
+                        };
+                    }
                 }
             }
             return info;

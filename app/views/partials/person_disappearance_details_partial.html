@@ -1,4 +1,4 @@
-<div ng-if="!ctrl.isLoadingRelated">
+<div ng-if="!ctrl.isLoadingRelated && ctrl.person.hasMiaInfo()">
   <h4 translate="PERSONS_DEMO.DISAPPEARANCE_DETAILS"></h4>
   <table class="table person-record">
     <tr ng-if="::ctrl.person.getDisappearanceDateInfo().length">

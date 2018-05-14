@@ -1,4 +1,4 @@
-<div ng-if="!ctrl.isLoadingRelated">
+<div ng-if="!ctrl.isLoadingRelated && ctrl.person.hasDeathInfo()">
   <h4 translate="PERSONS_DEMO.DEATH_DETAILS"></h4>
   <table class="table person-record">
     <tr ng-if="::ctrl.person.getDeathDateInfo().length">

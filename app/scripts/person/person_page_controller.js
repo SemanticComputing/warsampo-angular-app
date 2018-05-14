@@ -11,7 +11,6 @@
         init();
 
         function init() {
-            console.log(person)
             if (person) {
                 self.isLoadingRelated = true;
                 self.person = person;
