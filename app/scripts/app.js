@@ -222,7 +222,9 @@
             },
             onEnter: function($transition$, $state) {
                 if (!$transition$.params().id) {
-                    return $state.target('app.lang.persons.demo.page.info', { lang: $transition$.params().lang, id: 'person_50' });
+                    return $state.target('app.lang.persons.demo.page.info', {
+                        lang: $transition$.params().lang, id: 'person_50'
+                    });
                 }
             }
 

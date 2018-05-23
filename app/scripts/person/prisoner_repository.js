@@ -135,7 +135,7 @@
             '     rdf:object ?properties__<PROPERTY>__id ; ' +
             '     dct:source ?properties__<PROPERTY>__source_ . ' +
             '   } ' +
-            '   BIND(COALESCE(?properties__<PROPERTY>__source_, "Prisoners of war register"@en) AS ?properties__<PROPERTY>__source) ' +
+            '   BIND(COALESCE(?properties__<PROPERTY>__source_, "Sotavankimatrikkeli"@fi) AS ?properties__<PROPERTY>__source) ' +
             '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
 

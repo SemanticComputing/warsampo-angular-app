@@ -178,7 +178,7 @@
         }
 
         function getUnitInfo() {
-            return this.getInfo('unitInfo', 'units', 'label', 'unit', 'joukko_osasto');
+            return this.getInfo('unitInfo', 'units', undefined, 'unit', 'joukko_osasto');
         }
 
         function getInfo(infoName, ownProp, ownPropValue, prisonerProp, casualtyProp, isDate) {
@@ -227,34 +227,34 @@
         }
 
         function getOwnInfo(info, infoName, ownProp, ownPropValue) {
-            var resource = _.first(_.castArray(this[ownProp]));
+            var resources = _.castArray(this[ownProp]);
 
-            if (resource) {
-                var value = _.first(_.castArray(resource[ownPropValue]));
-                if (value) {
-                    var label = value.label;
-                    if (label && info[label]) {
-                        info[label].valueLabel = info[label].valueLabel || info[label].id;
-                        info[label].id = value.id;
-                        return info;
-                    }
+            resources.forEach(function(resource) {
+                if (resource) {
+                    var value = _.first(_.castArray(ownPropValue ? resource[ownPropValue] : resource));
+                    if (value) {
+                        var label = value.label;
+                        if (label && info[label]) {
+                            return info;
+                        }
 
-                    var propVal = {};
-                    if (label) {
-                        propVal.id = value.id;
-                        propVal.valueLabel = value.label;
-                    } else {
-                        propVal.id = value;
-                    }
-                    propVal.source = resource.source || '?';
+                        var propVal = {};
+                        if (label) {
+                            propVal.id = value.id;
+                            propVal.valueLabel = value.label;
+                        } else {
+                            propVal.id = value;
+                        }
+                        propVal.source = resource.source || '?';
 
-                    label = value.label || value;
+                        label = value.label || value;
 
-                    if (!info[label] || resource.source && !_.includes(_.map(info[label], 'source'), resource.source)) {
-                        info[label] = _.compact(info[label]).concat(propVal);
+                        if (!info[label] || resource.source && !_.includes(_.map(info[label], 'source'), resource.source)) {
+                            info[label] = _.compact(info[label]).concat(propVal);
+                        }
                     }
                 }
-            }
+            });
             return info;
         }
 
@@ -263,9 +263,12 @@
                 ['id', 'http://ldf.fi/schema/narc-menehtyneet1939-45/' + casualtyProp]) || {};
             if (casualty.description) {
                 var value = {
-                    id: casualty.description,
+                    id: casualty.obj_link || casualty.description,
                     source: casualty.source
                 };
+                if (casualty.obj_link) {
+                    value.valueLabel = casualty.description;
+                }
                 info[casualty.description] = _.compact(info[casualty.description]).concat(value);
             }
             return info;
