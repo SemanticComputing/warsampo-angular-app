@@ -123,7 +123,7 @@
         '   SELECT DISTINCT ?id (COUNT(?id) as ?unit_count) { ' +
         '     VALUES ?cemetery { <CEMETERY> } . ' +
         '     ?death_record nsc:hautausmaa ?cemetery . ' +
-        '     ?death_record nsc:osasto ?id . ' +
+        '     ?death_record nsc:unit ?id . ' +
         '   } ' +
         '   GROUP BY ?id ';
 

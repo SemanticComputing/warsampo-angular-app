@@ -1,0 +1,21 @@
+<div ng-if="!ctrl.isLoadingRelated && ctrl.person.hasWoundingInfo()">
+  <h4 translate="PERSONS_DEMO.WOUNDING_DETAILS"></h4>
+  <table class="table person-record">
+    <tr ng-if="::ctrl.person.getWoundingDateInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.WOUNDING_DATE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getWoundingDateInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getWoundingPlaceInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.WOUNDING_PLACE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getWoundingPlaceInfo()">
+          <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>

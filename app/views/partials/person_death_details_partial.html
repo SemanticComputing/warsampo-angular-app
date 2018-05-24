@@ -49,5 +49,21 @@
         </span>
       </td>
     </tr>
+    <tr ng-if="::ctrl.person.getGraveNumberInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.GRAVE_NUMBER</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getGraveNumberInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getAdditionalDeathInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.ADDITIONAL_DEATH_INFORMATION</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getAdditionalDeathInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
   </table>
 </div>

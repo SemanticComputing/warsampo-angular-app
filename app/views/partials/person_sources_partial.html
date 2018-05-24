@@ -1,0 +1,10 @@
+<div ng-if="::ctrl.person.source">
+  <h4 translate="PERSONS_DEMO.SOURCES"></h4>
+  <table class="table person-record">
+    <tr ng-repeat="source in ::ctrl.person.source | castArray">
+      <td class="person-record-value">
+          {{ source }}
+      </td>
+    </tr>
+  </table>
+</div>

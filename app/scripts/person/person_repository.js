@@ -74,14 +74,14 @@
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
-        '   ?casualty a casualties:DeathRecord . ' +
-        '   OPTIONAL { ?casualty casualties:syntymaeaika ?cas_date_of_birth . } ' +
-        '   OPTIONAL { ?casualty casualties:kuolinaika ?cas_date_of_death . } ' +
-        '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . } ' +
-        '   OPTIONAL { ?casualty casualties:osasto ?unit_id . } ' +
-        '   OPTIONAL { ?casualty casualties:sotilasarvo ?rank_id . } ' +
+        '   ?casualty a wsc:DeathRecord . ' +
+        '   OPTIONAL { ?casualty casualties:date_of_birth ?cas_date_of_birth . } ' +
+        '   OPTIONAL { ?casualty casualties:date_of_death ?cas_date_of_death . } ' +
+        '   OPTIONAL { ?casualty casualties:unit_literal ?cas_unit . } ' +
+        '   OPTIONAL { ?casualty casualties:unit ?unit_id . } ' +
+        '   OPTIONAL { ?casualty casualties:rank ?rank_id . } ' +
         '   OPTIONAL { ' +
-        '    ?casualty casualties:menehtymisluokka/skos:prefLabel ?way_to_die . ' +
+        '    ?casualty casualties:perishing_category/skos:prefLabel ?way_to_die . ' +
         '   } ' +
         '  }' +
         ' } GROUP BY ' + props +
@@ -202,7 +202,7 @@
         '   foaf:firstName ?fname . ';
 
         var casualtiesByTimeSpanQryResultSet =
-        ' ?casualty casualties:kuolinaika ?death_time . ' +
+        ' ?casualty casualties:date_of_death ?death_time . ' +
         ' FILTER(?death_time >= "<START>"^^xsd:date && ?death_time <= "<END>"^^xsd:date) ' +
         ' ?id crm:P70i_is_documented_in ?casualty . ' +
         ' ?id foaf:familyName ?sname . ';

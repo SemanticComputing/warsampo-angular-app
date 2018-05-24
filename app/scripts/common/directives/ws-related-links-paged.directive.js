@@ -22,7 +22,7 @@
     });
 
     /* @ngInject */
-    function RelatedController($scope, Settings) {
+    function RelatedController($scope, _, Settings) {
         var vm = this;
 
         vm.isLoadingPage = false;
@@ -48,7 +48,7 @@
         });
 
         function getLabel(thing) {
-            return thing.listLabel || thing.verboseLabel || thing.getLabel() || thing.label;
+            return _.first(_.castArray(thing.listLabel || thing.verboseLabel || thing.getLabel() || thing.label));
         }
 
         function updatePage() {

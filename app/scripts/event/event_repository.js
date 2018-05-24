@@ -75,7 +75,7 @@
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id skos:prefLabel ?label . ' +
         '   OPTIONAL { ?id dct:description ?description . } ' +
-        '   OPTIONAL { ?id narcs:menehtymisluokka/skos:prefLabel ?way_to_die } . ' +
+        '   OPTIONAL { ?id narcs:perishing_category/skos:prefLabel ?way_to_die } . ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         '     ?id ?part_pred ?participant_id . ' +

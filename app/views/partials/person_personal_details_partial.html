@@ -49,6 +49,30 @@
         </span>
       </td>
     </tr>
+    <tr ng-if="::ctrl.person.getCitizenshipInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.CITIZENSHIP</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getCitizenshipInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getNationalityInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.NATIONALITY</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getNationalityInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
+    <tr ng-if="::ctrl.person.getMotherTongueInfo().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.MOTHER_TONGUE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getMotherTongueInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
     <tr ng-if="::ctrl.person.getMaritalStatusInfo().length">
       <th class="person-record-property" translate>PERSONS_DEMO.MARITAL_STATUS</th>
       <td class="person-record-value">

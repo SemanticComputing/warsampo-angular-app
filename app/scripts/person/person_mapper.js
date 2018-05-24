@@ -36,19 +36,11 @@
         Person.prototype.getOwnDateInfo = getOwnDateInfo;
         Person.prototype.getCasualtyInfo = getCasualtyInfo;
         Person.prototype.getPrisonerInfo = getPrisonerInfo;
+
         Person.prototype.getFamilyNameInfo = getFamilyNameInfo;
         Person.prototype.getGivenNameInfo = getGivenNameInfo;
         Person.prototype.getGenderInfo = getGenderInfo;
         Person.prototype.getBirthDateInfo = getBirthDateInfo;
-        Person.prototype.getDeathDateInfo = getDeathDateInfo;
-        Person.prototype.getDeclaredDeathDateInfo = getDeclaredDeathDateInfo;
-        Person.prototype.getDeathPlaceInfo = getDeathPlaceInfo;
-        Person.prototype.getDisappearanceDateInfo = getDisappearanceDateInfo;
-        Person.prototype.getDisappearancePlaceInfo = getDisappearancePlaceInfo;
-        Person.prototype.getDisappearanceMunicipalityInfo = getDisappearanceMunicipalityInfo;
-        Person.prototype.getBurialPlaceInfo = getBurialPlaceInfo;
-        Person.prototype.getCemeteryInfo = getCemeteryInfo;
-        Person.prototype.getCauseOfDeathInfo = getCauseOfDeathInfo;
         Person.prototype.getBirthMunicipalityInfo = getBirthMunicipalityInfo;
         Person.prototype.getHomeMunicipalityInfo = getHomeMunicipalityInfo;
         Person.prototype.getResidenceMunicipalityInfo = getResidenceMunicipalityInfo;
@@ -56,6 +48,27 @@
         Person.prototype.getUnitInfo = getUnitInfo;
         Person.prototype.getRankInfo = getRankInfo;
         Person.prototype.getOccupationInfo = getOccupationInfo;
+        Person.prototype.getCitizenshipInfo= getCitizenshipInfo;
+        Person.prototype.getNationalityInfo= getNationalityInfo;
+        Person.prototype.getMotherTongueInfo= getMotherTongueInfo;
+
+        Person.prototype.getDisappearanceDateInfo = getDisappearanceDateInfo;
+        Person.prototype.getDisappearancePlaceInfo = getDisappearancePlaceInfo;
+        Person.prototype.getDisappearanceMunicipalityInfo = getDisappearanceMunicipalityInfo;
+        Person.prototype.getBurialPlaceInfo = getBurialPlaceInfo;
+        Person.prototype.getCemeteryInfo = getCemeteryInfo;
+        Person.prototype.getGraveNumberInfo = getGraveNumberInfo;
+        Person.prototype.getCauseOfDeathInfo = getCauseOfDeathInfo;
+
+        Person.prototype.getWoundingDateInfo = getWoundingDateInfo;
+        Person.prototype.getWoundingPlaceInfo = getWoundingPlaceInfo;
+
+        Person.prototype.getDeathDateInfo = getDeathDateInfo;
+        Person.prototype.getDeclaredDeathDateInfo = getDeclaredDeathDateInfo;
+        Person.prototype.getDeathPlaceInfo = getDeathPlaceInfo;
+        Person.prototype.getAdditionalDeathInfo = getAdditionalDeathInfo;
+
+        Person.prototype.hasWoundingInfo = hasWoundingInfo;
         Person.prototype.hasDeathInfo = hasDeathInfo;
         Person.prototype.hasMiaInfo = hasMiaInfo;
         Person.prototype.hasInfo = hasInfo;
@@ -90,7 +103,12 @@
 
         function hasDeathInfo() {
             var infos = ['getDeathDateInfo', 'getDeclaredDeathDateInfo', 'getDeathPlaceInfo',
-                'getCauseOfDeathInfo', 'getBurialPlaceInfo', 'getCemeteryInfo'];
+                'getCauseOfDeathInfo', 'getBurialPlaceInfo', 'getCemeteryInfo', 'getWoundingDateInfo'];
+            return this.hasInfo(infos);
+        }
+
+        function hasWoundingInfo() {
+            var infos = ['getWoundingDateInfo', 'getWoundingPlaceInfo'];
             return this.hasInfo(infos);
         }
 
@@ -101,23 +119,32 @@
         }
 
         function getFamilyNameInfo() {
-            return this.getInfo('familyNameInfo', 'na', 'na', 'family_name', 'sukunimi');
+            return this.getInfo('familyNameInfo', 'sname', undefined, 'family_name', 'family_name');
         }
 
         function getGivenNameInfo() {
-            return this.getInfo('givenNameInfo', 'na', 'na', 'given_name', 'etunimet');
+            return this.getInfo('givenNameInfo', 'fname', undefined, 'given_name', 'given_names');
         }
 
         function getBirthDateInfo() {
-            return this.getInfo('birthDate', 'birthEvent', 'timeSpanString', 'birth_date', 'syntymaeaika', true);
+            return this.getInfo('birthDate', 'birthEvent', 'timeSpanString', 'birth_date', 'date_of_birth', true);
         }
 
         function getGenderInfo() {
             return this.getInfo('gender', 'na', 'na', 'gender', 'sukupuoli');
         }
 
+        function getWoundingDateInfo() {
+            return this.getInfo('woundingDate', 'woundingEvent', 'timeSpanString', 'date_of_wounding', 'date_of_wounding',
+                true);
+        }
+
+        function getWoundingPlaceInfo() {
+            return this.getInfo('woundingPlaceInfo', 'woundingEvent', 'places', 'municipality_of_wounding', 'municipality_of_wounding');
+        }
+
         function getDeathDateInfo() {
-            return this.getInfo('deathDate', 'deathEvent', 'timeSpanString', 'death_date', 'kuolinaika', true);
+            return this.getInfo('deathDate', 'deathEvent', 'timeSpanString', 'death_date', 'date_of_death', true);
         }
 
         function getDeclaredDeathDateInfo() {
@@ -129,56 +156,76 @@
         }
 
         function getDisappearanceDateInfo() {
-            return this.getInfo('disappearanceDate', 'na', 'na', 'time_gone_missing', 'katoamisaika', true);
+            return this.getInfo('disappearanceDate', 'na', 'na', 'date_of_going_mia', 'date_of_going_mia', true);
         }
 
         function getDisappearancePlaceInfo() {
-            return this.getInfo('disappearancePlace', 'na', 'na', 'place_gone_missing', 'katoamispaikka');
+            return this.getInfo('disappearancePlace', 'na', 'na', 'place_gone_missing', 'place_of_going_mia');
         }
 
         function getDisappearanceMunicipalityInfo() {
-            return this.getInfo('disappearanceMunicipality', 'na', 'na', 'na', 'katoamiskunta');
+            return this.getInfo('disappearanceMunicipality', 'na', 'na', 'na', 'municipality_of_going_mia');
         }
 
         function getBurialPlaceInfo() {
-            return this.getInfo('burialPlace', 'na', 'na', 'burial_place', 'hautauskunta');
+            return this.getInfo('burialPlace', 'na', 'na', 'burial_place', 'municipality_of_burial');
         }
 
         function getCemeteryInfo() {
-            return this.getInfo('cemetery', 'na', 'na', 'na', 'hautausmaa');
+            return this.getInfo('cemetery', 'na', 'na', 'na', 'buried_in');
+        }
+
+        function getGraveNumberInfo() {
+            return this.getInfo('graveNumber', 'na', 'na', 'na', 'place_of_burial_number');
         }
 
         function getCauseOfDeathInfo() {
-            return this.getInfo('causeOfDeath', 'na', 'na', 'cause_of_death', 'menehtymisluokka');
+            return this.getInfo('causeOfDeath', 'na', 'na', 'cause_of_death', 'perishing_category');
         }
 
         function getRankInfo() {
-            return this.getInfo('rankInfo', 'rank', 'label', 'warsa_rank', 'sotilasarvo');
+            return this.getInfo('rankInfo', 'rank', undefined, 'rank', 'rank');
         }
 
         function getOccupationInfo() {
-            return this.getInfo('occupationInfo', 'na', 'na', 'occupation_literal', 'ammatti');
+            return this.getInfo('occupationInfo', 'na', 'na', 'occupation_literal', 'has_occupation');
         }
 
         function getBirthMunicipalityInfo() {
             return this.getInfo('birthMunicipality', 'birthEvent', 'places', 'birth_place_literal',
-                'synnyinkunta');
+                'municipality_of_birth');
         }
 
         function getHomeMunicipalityInfo() {
-            return this.getInfo('homeMunicipality', 'na', 'na', 'home_place_literal', 'kotikunta');
+            return this.getInfo('homeMunicipality', 'na', 'na', 'home_place_literal', 'municipality_of_domicile');
         }
 
         function getResidenceMunicipalityInfo() {
-            return this.getInfo('residenceMunicipality', 'na', 'na', 'residence_place', 'asuinkunta');
+            return this.getInfo('residenceMunicipality', 'na', 'na', 'residence_place', 'municipality_of_residence');
         }
 
         function getMaritalStatusInfo() {
-            return this.getInfo('maritalStatus', 'na', 'na', 'marital_status', 'siviilisaeaety');
+            return this.getInfo('maritalStatus', 'na', 'na', 'marital_status', 'marital_status');
         }
 
         function getUnitInfo() {
-            return this.getInfo('unitInfo', 'units', undefined, 'unit', 'joukko_osasto');
+            return this.getInfo('unitInfo', 'units', undefined, 'unit', 'unit');
+        }
+
+        function getCitizenshipInfo() {
+            return this.getInfo('citizenshipInfo', 'na', 'na', 'citizenship', 'citizenship');
+        }
+
+        function getNationalityInfo() {
+            return this.getInfo('nationalityInfo', 'na', 'na', 'nationality', 'nationality');
+        }
+
+        function getMotherTongueInfo() {
+            return this.getInfo('motherTongueInfo', 'na', 'na', 'mother_tongue', 'mother_tongue');
+        }
+
+        function getAdditionalDeathInfo() {
+            return this.getInfo('additionalDeathInfo', 'na', 'na', 'na', 'additional_information');
         }
 
         function getInfo(infoName, ownProp, ownPropValue, prisonerProp, casualtyProp, isDate) {
@@ -214,7 +261,7 @@
 
                     var source = resource.source || '?';
                     if (_.get(info[value], 'id')) {
-                        info[value].source = _.compact(info[value].source).concat(source);
+                        info[value].source = _.uniq(_.compact(info[value].source).concat(source));
                     } else {
                         info[value] = {
                             id: value,
@@ -227,32 +274,38 @@
         }
 
         function getOwnInfo(info, infoName, ownProp, ownPropValue) {
+            // A person can have multiple values for a property, and the value can have multiple
+            // values for its property.
             var resources = _.castArray(this[ownProp]);
 
             resources.forEach(function(resource) {
                 if (resource) {
-                    var value = _.first(_.castArray(ownPropValue ? resource[ownPropValue] : resource));
-                    if (value) {
-                        var label = value.label;
-                        if (label && info[label]) {
-                            return info;
-                        }
+                    var values = _.castArray(ownPropValue ? resource[ownPropValue] : resource);
+                    values.forEach(function(value) {
+                        if (value) {
+                            var key = value.id || value;
+                            if (key && info[key]) {
+                                return info;
+                            }
 
-                        var propVal = {};
-                        if (label) {
-                            propVal.id = value.id;
-                            propVal.valueLabel = value.label;
-                        } else {
-                            propVal.id = value;
-                        }
-                        propVal.source = resource.source || '?';
+                            var propVal = {};
+                            if (value.id) {
+                                propVal.id = value.id;
+                                propVal.valueLabel = value.label;
+                            } else {
+                                propVal.id = value;
+                            }
+                            // If the value is a literal, showing the source is problematic.
+                            // One could use the source of the person instance, but as there can be multiple,
+                            // it's not clear from which source the value is from. So we're leaving out the source
+                            // from literal values for now.
+                            propVal.source = _.isObjectLike(resource) ? (resource.source || '?') : undefined;
 
-                        label = value.label || value;
-
-                        if (!info[label] || resource.source && !_.includes(_.map(info[label], 'source'), resource.source)) {
-                            info[label] = _.compact(info[label]).concat(propVal);
+                            if (!info[key] || resource.source && !_.includes(_.map(info[key], 'source'), resource.source)) {
+                                info[key] = _.compact(info[key]).concat(propVal);
+                            }
                         }
-                    }
+                    });
                 }
             });
             return info;
@@ -260,16 +313,22 @@
 
         function getCasualtyInfo(info, infoName, casualtyProp) {
             var casualty = _.find(this.deathRecord,
-                ['id', 'http://ldf.fi/schema/narc-menehtyneet1939-45/' + casualtyProp]) || {};
+                ['prop', casualtyProp]) || _.find(this.deathRecord, ['prop', casualtyProp + '_literal']) || {};
             if (casualty.description) {
+                var literal = _.find(this.deathRecord,
+                    ['prop', casualtyProp + '_literal']) || {};
                 var value = {
                     id: casualty.obj_link || casualty.description,
-                    source: casualty.source
+                    source: [casualty.source]
                 };
                 if (casualty.obj_link) {
-                    value.valueLabel = casualty.description;
+                    value.valueLabel = literal.description || casualty.description;
                 }
-                info[casualty.description] = _.compact(info[casualty.description]).concat(value);
+                if (info[value.id]) {
+                    info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(value.source));
+                } else {
+                    info[value.id] = value;
+                }
             }
             return info;
         }
@@ -278,8 +337,11 @@
             var prisoner = _.compact(_.castArray(_.get(this, 'prisonerRecord.properties.' + prisonerProp)));
             if (!_.isEmpty(prisoner)) {
                 prisoner.forEach(function(p) {
-                    var lbl = p.valueLabel ? p.valueLabel : p.id;
-                    info[lbl] = _.compact(info[lbl]).concat(p);
+                    if (info[p.id]) {
+                        info[p.id].source = _.uniq(_.compact(info[p.id].source.concat(p.source)));
+                    } else {
+                        info[p.id] = angular.extend({}, p, { source: [p.source] });
+                    }
                 });
             }
             return info;
