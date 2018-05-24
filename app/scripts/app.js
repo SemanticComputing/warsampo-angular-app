@@ -130,6 +130,11 @@
             return match[0] + '/?uri=' + url.search.uri;
         });
 
+        // Redirect person page urls to demo
+        $urlServiceProvider.rules.when(new RegExp('^(.*/persons/)page/(.*)'), function(match) {
+            return match[1] + match[2];
+        });
+
         $stateProvider
         .state('app', {
             abstract: true,
@@ -191,13 +196,7 @@
         })
         .state('app.lang.persons.page', {
             url: '/page/:id',
-            templateUrl: 'views/person_page.html',
-            controller: 'PersonPageController',
-            controllerAs: 'ctrl',
-            resolve: {
-                uri: resolveUri,
-                person: resolveActor
-            },
+            redirectTo: 'app.lang.persons.demo'
         })
         .state('app.lang.persons.demo', {
             url: '',

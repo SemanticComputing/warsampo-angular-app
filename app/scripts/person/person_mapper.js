@@ -259,7 +259,7 @@
                     }
                     catch(e) { /* start_time/end_time not defined */ }
 
-                    var source = resource.source || '?';
+                    var source = _.get(resource.source, 'label') || '?';
                     if (_.get(info[value], 'id')) {
                         info[value].source = _.uniq(_.compact(info[value].source).concat(source));
                     } else {

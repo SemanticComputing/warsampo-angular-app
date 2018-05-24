@@ -33,7 +33,7 @@
         var props = '?id ?label ?rank__id ?rank__label ?listLabel ?sname ?fname ?description ' +
         ' ?rank ?rank_id ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ' +
         ' ?living_place ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
-        ' ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ?birth_id ';
+        ' ?sid ?source__id ?source__label ?death_id ?cas_date_of_birth ?cas_date_of_death ?birth_id ';
 
         var select = ' SELECT DISTINCT ' + props;
 
@@ -60,8 +60,8 @@
         '   ?id ^crm:P11_had_participant/wacs:hasRank/wacs:level ?rl2 . ' +
         '   OPTIONAL { ?promotion dct:source/skos:prefLabel ?rank__source . } ' +
         '  } ' +
-        '  OPTIONAL { ?id dct:source ?sid . ' +
-        '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+        '  OPTIONAL { ?id dct:source ?source__id . ' +
+        '   OPTIONAL { ?source__id skos:prefLabel ?source__label . } ' +
         '  }' +
         '  OPTIONAL { ' +
         '   ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +

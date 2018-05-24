@@ -32,7 +32,7 @@
                 } else if (_.includes(objId, '/photographs/')) {
                     path = isDemoLink ? 'photographs/' : 'photographs/page/';
                 } else if (_.includes(objId, '/person_')) {
-                    path = isDemoLink ? 'persons/' : 'persons/page/';
+                    path = 'persons/';
                 } else if (_.includes(objId, '/actor_')) {
                     path = isDemoLink ? 'units/' : 'units/page/';
                 } else if (_.includes(objId, '/ranks/')) {
