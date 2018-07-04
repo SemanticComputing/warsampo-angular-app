@@ -54,7 +54,7 @@ module.exports = function (grunt) {
         },
         {
             match: 'PNR_SERVICE_URI',
-            replacement: process.env.PNR_SERVICE_URI || '<https://ldf.fi/pnr/sparql>'
+            replacement: process.env.PNR_SERVICE_URI || 'https://ldf.fi/pnr/sparql'
         }
     ];
 
