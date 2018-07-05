@@ -259,7 +259,7 @@
                     }
                     catch(e) { /* start_time/end_time not defined */ }
 
-                    var source = _.get(resource.source, 'label') || '?';
+                    var source = _.get(resource.source, 'label');
                     if (_.get(info[value], 'id')) {
                         info[value].source = _.uniq(_.compact(info[value].source).concat(source));
                     } else {
@@ -299,7 +299,7 @@
                             // One could use the source of the person instance, but as there can be multiple,
                             // it's not clear from which source the value is from. So we're leaving out the source
                             // from literal values for now.
-                            propVal.source = _.isObjectLike(resource) ? (resource.source || '?') : undefined;
+                            propVal.source = _.isObjectLike(resource) ? (resource.source) : undefined;
 
                             if (!info[key] || resource.source && !_.includes(_.map(info[key], 'source'), resource.source)) {
                                 info[key] = _.compact(info[key]).concat(propVal);
