@@ -3,7 +3,7 @@
   <table class="table person-record">
     <tr ng-repeat="source in ::ctrl.person.source | castArray">
       <td class="person-record-value">
-        {{ source.label }}
+        [{{$index + 1}}] {{ source.label }}
       </td>
     </tr>
   </table>

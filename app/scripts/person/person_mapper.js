@@ -36,6 +36,7 @@
         Person.prototype.getOwnDateInfo = getOwnDateInfo;
         Person.prototype.getCasualtyInfo = getCasualtyInfo;
         Person.prototype.getPrisonerInfo = getPrisonerInfo;
+        Person.prototype.getSourceNumber = getSourceNumber;
 
         Person.prototype.getFamilyNameInfo = getFamilyNameInfo;
         Person.prototype.getGivenNameInfo = getGivenNameInfo;
@@ -228,6 +229,14 @@
             return this.getInfo('additionalDeathInfo', 'na', 'na', 'na', 'additional_information');
         }
 
+        function getSourceNumber(sourceName) {
+            if (!_.isArrayLike(this.source)) {
+              return (this.source.label_trans_fi === sourceName || this.source.label_trans_en === sourceName) ? 1 : 0;
+            }
+            return (1 + _.findIndex(this.source, {'label_trans_fi': sourceName})) ||
+                   (1 + _.findIndex(this.source, {'label_trans_en': sourceName}));
+        }
+
         function getInfo(infoName, ownProp, ownPropValue, prisonerProp, casualtyProp, isDate) {
             if (_.has(this, infoName)) {
                 return this[infoName];
@@ -261,7 +270,7 @@
 
                     var source = _.get(resource.source, 'label');
                     if (_.get(info[value], 'id')) {
-                        info[value].source = _.uniq(_.compact(info[value].source).concat(source));
+                        info[value].source = _.uniq(_.compact(_.concat(info[value].source, source))).sort();
                     } else {
                         info[value] = {
                             id: value,
@@ -277,6 +286,7 @@
             // A person can have multiple values for a property, and the value can have multiple
             // values for its property.
             var resources = _.castArray(this[ownProp]);
+            var person = this;
 
             resources.forEach(function(resource) {
                 if (resource) {
@@ -299,7 +309,7 @@
                             // One could use the source of the person instance, but as there can be multiple,
                             // it's not clear from which source the value is from. So we're leaving out the source
                             // from literal values for now.
-                            propVal.source = _.isObjectLike(resource) ? (resource.source) : undefined;
+                            propVal.source = _.isObjectLike(resource) ? (person.getSourceNumber(resource.source)) : undefined;
 
                             if (!info[key] || resource.source && !_.includes(_.map(info[key], 'source'), resource.source)) {
                                 info[key] = _.compact(info[key]).concat(propVal);
@@ -319,13 +329,13 @@
                     ['prop', casualtyProp + '_literal']) || {};
                 var value = {
                     id: casualty.obj_link || casualty.description,
-                    source: [casualty.source]
+                    source: [this.getSourceNumber(casualty.source)]
                 };
                 if (casualty.obj_link) {
                     value.valueLabel = literal.description || casualty.description;
                 }
                 if (info[value.id]) {
-                    info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(value.source));
+                    info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(value.source)).sort();
                 } else {
                     info[value.id] = value;
                 }
