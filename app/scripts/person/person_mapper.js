@@ -231,10 +231,9 @@
 
         function getSourceNumber(sourceName) {
             if (!_.isArrayLike(this.source)) {
-              return (this.source.label_trans_fi === sourceName || this.source.label_trans_en === sourceName) ? 1 : 0;
+              return this.source.label === sourceName ? 1 : 0;
             }
-            return (1 + _.findIndex(this.source, {'label_trans_fi': sourceName})) ||
-                   (1 + _.findIndex(this.source, {'label_trans_en': sourceName}));
+            return 1 + _.findIndex(this.source, {'label': sourceName});
         }
 
         function getInfo(infoName, ownProp, ownPropValue, prisonerProp, casualtyProp, isDate) {
