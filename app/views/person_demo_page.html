@@ -1,6 +1,5 @@
 <update-title title="{{ 'TITLE' | translate }} | {{ ctrl.person.label }}"></update-title>
 <update-meta name="description" content="{{ 'PERSONS_DEMO.DEMO_META_DESCRIPTION_PREFIX' | translate }}: {{ ctrl.person.getMetaDescription() }}"></update-meta>
-<ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <h1>{{ ctrl.person.getLabel() }}</h1>
 <img ng-show="ctrl.isLoadingObject" src="images/loading.gif" />
 <div ng-if="ctrl.err">
@@ -18,6 +17,12 @@
     <li ui-sref="app.lang.persons.demo.page.timeline({ tab: 2 })" ui-sref-active="active" class="person-timeline-tab">
       <a href=""><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> {{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}</a>
     </li>
+    <li ui-sref="app.lang.persons.demo.page.photographs({ tab: 3 })" ui-sref-active="active" class="person-timeline-tab">
+      <a href=""><span class="glyphicon glyphicon-camera" aria-hidden="true"></span> {{ 'PERSONS_DEMO.PHOTO_TAB' | translate }}</a>
+    </li>
+    <!--<li ui-sref="app.lang.persons.demo.page.videos({ tab: 4 })" ui-sref-active="active" class="person-timeline-tab">-->
+      <!--<a href=""><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> {{ 'PERSONS_DEMO.VIDEO_TAB' | translate }}</a>-->
+    <!--</li>-->
   </ul>
   <div class="tab-content">
     <ui-view></ui-view>

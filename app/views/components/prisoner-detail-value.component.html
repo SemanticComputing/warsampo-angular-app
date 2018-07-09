@@ -4,10 +4,10 @@
       <a ws-page-link="v.id">{{ v.valueLabel }}</a>
     </span>
     <span ng-switch-when="false">
-      {{ v.valueLabel || ($ctrl.isDateValue ? (v.id | date:'dd.MM.yyyy') : v.id) }}
+      {{ $ctrl.isDateValue ? (v.id | date:'dd.MM.yyyy') : v.id }}
     </span>
   </span>
   <span ng-if="v.date_begin">({{ v.date_begin | date:'dd.MM.yyyy' }} &ndash; {{ v.date_end | date:'dd.MM.yyyy' }})</span>
-  <span ng-if="v.source">({{ 'SOURCE' | translate }}: {{ v.source | concatList }})</span>
+  <span ng-if="v.source"><sup>[{{ v.source | concatList:', ' }}]</sup></span>
   <hr ng-if="$ctrl.showHr() && !$last">
 </div>

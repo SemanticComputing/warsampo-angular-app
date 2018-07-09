@@ -1,0 +1,15 @@
+version: '3.5'
+services:
+    client:
+        build:
+            context: .
+            dockerfile: Dockerfile.production
+            args:
+                - WARSAMPO_ENDPOINT_URL=${WARSAMPO_ENDPOINT_URL}
+                - PNR_ENDPOINT_URL=${PNR_ENDPOINT_URL}
+                - HISTORY_ENDPOINT_URL=${HISTORY_ENDPOINT_URL}
+                - DBPEDIA_ENDPOINT_URL=${DBPEDIA_ENDPOINT_URL}
+                - DBPEDIA_FI_ENDPOINT_URL=${DBPEDIA_FI_ENDPOINT_URL}
+                - PNR_SERVICE_URI=${PNR_SERVICE_URI}
+        ports:
+            - 9000:9000

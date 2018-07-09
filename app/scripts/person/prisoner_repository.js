@@ -45,11 +45,14 @@
         ' PREFIX psc: <http://ldf.fi/schema/warsa/prisoners/> ';
 
         var prisonerRecordProperties = [
+            'given_name',
+            'family_name',
             'birth_date',
-            'birth_place',
-            'home_place',
+            'birth_place_literal',
+            'home_place_literal',
             'residence_place',
             'has_occupation',
+            'occupation_literal',
             'located_in',
             'amount_children',
             'rank',
@@ -66,25 +69,24 @@
             'cause_of_death',
             'death_date',
             'death_place',
+            'declared_death',
             'municipality_of_death',
             'burial_place',
             'explanation',
-            'flyer',
+            'flyers',
             'karaganda_card_file',
             'karelian_archive_documents',
             'marital_status',
             'memoirs',
+            'mother_tongue',
+            'photograph_sotilaan_aani',
             'photograph',
             'propaganda_magazine',
             'radio_report',
             'recording',
-            'russian_interrogation_sheets',
+            'sotilaan_aani',
+            'soviet_card_files',
             'winter_war_collection',
-            'winter_war_collection_from_moscow',
-            'winterwar_card_file',
-            'continuation_war_card_file',
-            'continuation_war_russian_card_file_461p',
-            'continuation_war_russian_card_file_F_465',
             'finnish_return_interrogation_file',
             'other_information',
             'confiscated_possession',
@@ -121,18 +123,19 @@
             '   ?id a wsc:PrisonerRecord . ' +
             '   BIND(1 AS ?properties__id) ' +
             '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
-            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel|psc:place ?properties__<PROPERTY>__valueLabel . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel|psc:location_literal ?properties__<PROPERTY>__valueLabel . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:order ?properties__<PROPERTY>__order . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_end ?properties__<PROPERTY>__date_end . } ' +
-            '   <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . ' +
-            '   <NAMESPACE><PROPERTY> dct:description ?properties__<PROPERTY>__propertyDescription . ' +
+            '   OPTIONAL { <NAMESPACE><PROPERTY> skos:prefLabel ?properties__<PROPERTY>__propertyLabel . } ' +
+            '   OPTIONAL { <NAMESPACE><PROPERTY> dct:description ?properties__<PROPERTY>__propertyDescription . } ' +
             '   OPTIONAL { ' +
             '    [] rdf:subject ?id ; ' +
             '     rdf:predicate <NAMESPACE><PROPERTY> ; ' +
             '     rdf:object ?properties__<PROPERTY>__id ; ' +
-            '     dct:source ?properties__<PROPERTY>__source . ' +
+            '     dct:source ?properties__<PROPERTY>__source_ . ' +
             '   } ' +
+            '   BIND(COALESCE(?properties__<PROPERTY>__source_, "Sotavankimatrikkeli"@fi) AS ?properties__<PROPERTY>__source) ' +
             '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
 

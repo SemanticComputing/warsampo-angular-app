@@ -1,47 +1,13 @@
-<div ng-if="::ctrl.person.prisonerRecord">
-
-  <h3>Video (testi)</h3>
-  <video class="prisoner-video" controls>
-    <source src="https://static.sotasampo.fi/videos/test/Oranki.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-
-  <h3 translate="PRISONER_RECORD"></h3>
+<!--<div ng-if="::ctrl.person.prisonerRecord">-->
+<div ng-if="!ctrl.isLoadingRelated">
   <div>
-    <h4 translate="PERSONS_DEMO.PRISONER_PERSON_DETAILS"></h4>
-    <table class="table person-record">
-      <tr>
-        <td translate>NAME</td><td>{{ ctrl.person.prisonerRecord.name }}</td>
-      </tr>
-      <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getPersonDetails()">
-        <td class="person-record-property">
-          <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
-        </td>
-        <td class="person-record-value">
-          <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
-        </td>
-      </tr>
-    </table>
     <div ng-if="::ctrl.person.prisonerRecord.getImprisonmentDetails().length">
       <h4 translate="PERSONS_DEMO.PRISONER_IMPRISONMENT_DETAILS"></h4>
       <table class="table person-record">
         <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getImprisonmentDetails()">
-          <td class="person-record-property">
+          <th class="person-record-property">
             <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
-          </td>
-          <td class="person-record-value">
-            <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <div ng-if="::ctrl.person.prisonerRecord.getDeathDetails().length">
-      <h4 translate="PERSONS_DEMO.PRISONER_DEATH_DETAILS"></h4>
-      <table class="table person-record">
-        <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getDeathDetails()">
-          <td class="person-record-property">
-            <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
-          </td>
+          </th>
           <td class="person-record-value">
             <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
           </td>
@@ -52,9 +18,9 @@
       <h4 translate="PERSONS_DEMO.PRISONER_RETURN_DETAILS"></h4>
       <table class="table person-record">
         <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getReturnDetails()">
-          <td class="person-record-property">
+          <th class="person-record-property">
             <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
-          </td>
+          </th>
           <td class="person-record-value">
             <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
           </td>

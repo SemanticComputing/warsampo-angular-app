@@ -5,22 +5,16 @@
     .controller('PersonPageController', PersonPageController);
 
     /* @ngInject */
-    function PersonPageController($log, _, personService, uri) {
+    function PersonPageController($log, _, personService, person) {
         var self = this;
 
         init();
 
         function init() {
-            if (uri) {
-                self.isLoadingPerson = true;
+            if (person) {
                 self.isLoadingRelated = true;
-                personService.getById(uri)
-                .then(function(person) {
-                    self.person = person;
-                    self.isLoadingPerson = false;
-                    return personService.fetchRelated(person);
-                })
-                .then(function() {
+                self.person = person;
+                return personService.fetchRelated(person).then(function() {
                     self.isLoadingRelated = false;
                 }).catch(function(err) {
                     $log.error(err);

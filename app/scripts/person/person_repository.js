@@ -30,10 +30,10 @@
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
-        var props = '?id ?label ?rank__id ?rank__label ?listLabel ?sname ?fname ?description ?rank ?rank_id ' +
-        ' ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ?living_place ' +
-        ' ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
-        ' ?sid ?source ?death_id ?cas_date_of_birth ?cas_date_of_death ';
+        var props = '?id ?label ?rank__id ?rank__label ?listLabel ?sname ?fname ?description ' +
+        ' ?rank ?rank_id ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ' +
+        ' ?living_place ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
+        ' ?sid ?source__id ?source__label ?death_id ?cas_date_of_birth ?cas_date_of_death ?birth_id ';
 
         var select = ' SELECT DISTINCT ' + props;
 
@@ -51,14 +51,17 @@
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
         '  BIND(IF(BOUND(?fname), CONCAT(?sname, ", ", ?fname), ?lbl) AS ?listLabel) ' +
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
+        '  OPTIONAL { ?id ^crm:P98_brought_into_life ?birth_id . } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
         '  OPTIONAL { ' +
-        '   ?id ^crm:P11_had_participant/wacs:hasRank ?rank__id . ' +
+        '   ?id ^crm:P11_had_participant ?promotion . ' +
+        '   ?promotion wacs:hasRank ?rank__id . ' +
         '   ?rank__id wacs:level ?rl ; skos:prefLabel ?rank__label . ' +
         '   ?id ^crm:P11_had_participant/wacs:hasRank/wacs:level ?rl2 . ' +
+        '   OPTIONAL { ?promotion dct:source/skos:prefLabel ?rank__source . } ' +
         '  } ' +
-        '  OPTIONAL { ?id dct:source ?sid . ' +
-        '   OPTIONAL { ?sid skos:prefLabel ?source . } ' +
+        '  OPTIONAL { ?id dct:source ?source__id . ' +
+        '   OPTIONAL { ?source__id skos:prefLabel ?source__label . } ' +
         '  }' +
         '  OPTIONAL { ' +
         '   ?id owl:sameAs ?natiobib . FILTER(REGEX(STR(?natiobib),"ldf.fi/history","i")) ' +
@@ -71,23 +74,15 @@
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
-        '   ?casualty a casualties:DeathRecord . ' +
-        '   OPTIONAL { ?casualty casualties:syntymaeaika ?cas_date_of_birth . } ' +
-        '   OPTIONAL { ?casualty casualties:kuolinaika ?cas_date_of_death . } ' +
+        '   ?casualty a wsc:DeathRecord . ' +
+        '   OPTIONAL { ?casualty casualties:date_of_birth ?cas_date_of_birth . } ' +
+        '   OPTIONAL { ?casualty casualties:date_of_death ?cas_date_of_death . } ' +
+        '   OPTIONAL { ?casualty casualties:unit_literal ?cas_unit . } ' +
+        '   OPTIONAL { ?casualty casualties:unit ?unit_id . } ' +
+        '   OPTIONAL { ?casualty casualties:rank ?rank_id . } ' +
         '   OPTIONAL { ' +
-        '    ?casualty casualties:hautauskunta ?bury_place_uri . ' +
-        '    ?bury_place_uri skos:prefLabel ?bury_place . ' +
+        '    ?casualty casualties:perishing_category/skos:prefLabel ?way_to_die . ' +
         '   } ' +
-        '   OPTIONAL { ' +
-        '    ?casualty casualties:asuinkunta ?living_place_uri . ' +
-        '    ?living_place_uri skos:prefLabel ?living_place . } ' +
-        '   OPTIONAL { ?casualty casualties:joukko_osasto ?cas_unit . } ' +
-        '   OPTIONAL { ?casualty casualties:osasto ?unit_id . } ' +
-        '   OPTIONAL { ?casualty casualties:sotilasarvo ?rank_id . } ' +
-        '   OPTIONAL { ' +
-        '    ?casualty casualties:menehtymisluokka ?way_id . ' +
-        '    ?way_id skos:prefLabel ?way_to_die . ' +
-        '   } '+
         '  }' +
         ' } GROUP BY ' + props +
         ' HAVING (MAX(COALESCE(?rl, 1)) >= MAX(COALESCE(?rl2, 1))) ';
@@ -207,7 +202,7 @@
         '   foaf:firstName ?fname . ';
 
         var casualtiesByTimeSpanQryResultSet =
-        ' ?casualty casualties:kuolinaika ?death_time . ' +
+        ' ?casualty casualties:date_of_death ?death_time . ' +
         ' FILTER(?death_time >= "<START>"^^xsd:date && ?death_time <= "<END>"^^xsd:date) ' +
         ' ?id crm:P70i_is_documented_in ?casualty . ' +
         ' ?id foaf:familyName ?sname . ';

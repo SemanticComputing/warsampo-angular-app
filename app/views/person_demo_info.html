@@ -1,16 +1,18 @@
+<ws-json-ld data-json="ctrl.person.jsonLd"></ws-json-ld>
 <div class="row">
   <div ng-if="ctrl.person.nationals" class="col-md-4 col-md-push-8 col-sm-12">
     <div ng-include="'views/partials/national_bibliography_partial.html'"></div>
   </div>
   <div ng-class="{ 'col-md-8 col-md-pull-4 col-sm-12': ctrl.person.nationals, 'col-md-12': !ctrl.person.nationals }">
-    <div ng-include="'views/partials/person_description_partial.html'"></div>
 
-    <p><a ws-page-link="ctrl.person.id" translate>SHOW_INFO_PAGE</a></p>
-
-    <ws-photo-gallery images="ctrl.person.images"></ws-photo-gallery>
-
+    <p class="preserve-whitespace" ng-if="ctrl.person.getDescription()">{{ ctrl.person.getDescription() }} <span ng-if="ctrl.person.wikilink">(<a ng-href="{{ ctrl.person.wikilink[0].id }}">Wikipedia</a>)</span>
+    <p><small>URI: <a ng-href="{{ ctrl.person.id }}">{{ ctrl.person.id }}</a></small></p>
+    <div ng-include="'views/partials/person_personal_details_partial.html'"></div>
+    <div ng-include="'views/partials/person_disappearance_details_partial.html'"></div>
     <div ng-include="'views/partials/person_prisoner_record_partial.html'"></div>
-    <div ng-include="'views/partials/person_death_record_partial.html'"></div>
+    <div ng-include="'views/partials/person_wounding_details_partial.html'"></div>
+    <div ng-include="'views/partials/person_death_details_partial.html'"></div>
+    <div ng-include="'views/partials/person_sources_partial.html'"></div>
 
     <!-- Links -->
     <h2 id="links-header" class="links-header-class" ng-if="ctrl.person.hasLinks"></h2>

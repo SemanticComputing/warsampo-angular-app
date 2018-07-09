@@ -16,14 +16,14 @@ Docker (and Docker Compose), or:
 
 With Docker Compose:
 
-`docker-compose up` (or `docker-compose up client` for just this frontend)
+`docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d` (or `docker-compose up client` for just this frontend)
 
 Without Docker:
 
 `grunt serve`
 
-The server url can be set with the environment variable `WARSAMPO_SERVER_URL`,
-e.g. `WARSAMPO_SERVER_URL=http://localhost:8080 grunt serve`.
+The SPARQL endpoint URL can be set with the environment variable `WARSAMPO_ENDPOINT_URL`,
+e.g. `WARSAMPO_ENDPOINT_URL=http://localhost:8080 grunt serve`.
 
 ## Build
 
@@ -35,5 +35,5 @@ Without Docker:
 
 `grunt build`
 
-The server url can be set with the environment variable `WARSAMPO_SERVER_URL`,
-e.g. `WARSAMPO_SERVER_URL=http://example.com grunt build`.
+The SPARQL endpoint URL can be set with the environment variable `WARSAMPO_ENDPOINT_URL`,
+e.g. `WARSAMPO_ENDPOINT_URL=http://example.com grunt build`.

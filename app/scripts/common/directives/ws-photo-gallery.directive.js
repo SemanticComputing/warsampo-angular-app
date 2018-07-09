@@ -81,7 +81,7 @@
             self.imageCount = images.length;
             self.photos = images;
             self.hasMore = false;
-            self.isCollapsed = true;
+            self.isCollapsed = _.get($scope, 'config.showAll') ? false : true;
             $timeout(function() {
                 checkOverflow();
             }, 0);

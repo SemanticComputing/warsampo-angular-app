@@ -54,7 +54,7 @@ module.exports = function (grunt) {
         },
         {
             match: 'PNR_SERVICE_URI',
-            replacement: process.env.PNR_SERVICE_URI || '<https://ldf.fi/pnr/sparql>'
+            replacement: process.env.PNR_SERVICE_URI || 'https://ldf.fi/pnr/sparql'
         }
     ];
 
@@ -289,7 +289,10 @@ module.exports = function (grunt) {
         usemin: {
             html: ['<%= yeoman.dist %>/{,*/}*.html'],
             css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
-            js: ['<%= yeoman.dist %>/scripts/{,*/}*.js', '<%= yeoman.dist %>/vendor/{,*/}*.js'],
+            js: [
+                '<%= yeoman.dist %>/scripts/{,*/}*.js',
+                '<%= yeoman.dist %>/vendor/**/*.js'
+            ],
             options: {
                 assetsDirs: [
                     '<%= yeoman.dist %>',

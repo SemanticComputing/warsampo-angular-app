@@ -130,6 +130,11 @@
             return match[0] + '/?uri=' + url.search.uri;
         });
 
+        // Redirect person page urls to demo
+        $urlServiceProvider.rules.when(new RegExp('^(.*/persons/)page/(.*)'), function(match) {
+            return match[1] + match[2];
+        });
+
         $stateProvider
         .state('app', {
             abstract: true,
@@ -191,10 +196,7 @@
         })
         .state('app.lang.persons.page', {
             url: '/page/:id',
-            templateUrl: 'views/person_page.html',
-            controller: 'PersonPageController',
-            controllerAs: 'ctrl',
-            resolve: { uri: resolveUri },
+            redirectTo: 'app.lang.persons.demo'
         })
         .state('app.lang.persons.demo', {
             url: '',
@@ -219,7 +221,9 @@
             },
             onEnter: function($transition$, $state) {
                 if (!$transition$.params().id) {
-                    return $state.target('app.lang.persons.demo.page.info', { lang: $transition$.params().lang, id: 'person_50' });
+                    return $state.target('app.lang.persons.demo.page.info', {
+                        lang: $transition$.params().lang, id: 'person_50'
+                    });
                 }
             }
 
@@ -238,6 +242,22 @@
             controllerAs: 'ctrl',
             reloadOnSearch: false,
             params: { tab: '2' }
+        })
+        .state('app.lang.persons.demo.page.photographs', {
+            url: '?{tab:3}',
+            templateUrl: 'views/person_photos.html',
+            controller: 'PersonPhotoController',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
+            params: { tab: '3' }
+        })
+        .state('app.lang.persons.demo.page.videos', {
+            url: '?{tab:4}',
+            templateUrl: 'views/person_videos.html',
+            controller: 'PersonVideoController',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
+            params: { tab: '4' }
         })
         // Units
         .state('app.lang.units', {

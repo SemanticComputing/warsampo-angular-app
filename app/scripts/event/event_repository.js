@@ -75,7 +75,7 @@
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id skos:prefLabel ?label . ' +
         '   OPTIONAL { ?id dct:description ?description . } ' +
-        '   OPTIONAL { ?id narcs:menehtymisluokka/skos:prefLabel ?way_to_die } . ' +
+        '   OPTIONAL { ?id narcs:perishing_category/skos:prefLabel ?way_to_die } . ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         '     ?id ?part_pred ?participant_id . ' +
@@ -97,6 +97,7 @@
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id crm:P4_has_time-span ?time_id . ' +
+        '     ?time_id skos:prefLabel ?time_label . ' +
         '     ?time_id crm:P82a_begin_of_the_begin ?start_t ; ' +
         '       crm:P82b_end_of_the_end ?end_t . ' +
         '     BIND(xsd:dateTime(?start_t) AS ?start_time) ' +

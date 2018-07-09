@@ -50,8 +50,8 @@
                     name: 'birth_date',
                     isDateValue: true
                 },
-                { name: 'birth_place' },
-                { name: 'home_place' },
+                { name: 'birth_place_literal' },
+                { name: 'home_place_literal' },
                 { name: 'residence_place' },
                 { name: 'has_occupation' },
                 { name: 'marital_status' },
@@ -64,11 +64,6 @@
         var imprisonmentDetails = {
             id: 'imprisonmentDetails',
             props: [
-                {
-                    name: 'time_gone_missing',
-                    isDateValue: true
-                },
-                { name: 'place_gone_missing' },
                 {
                     name: 'time_captured',
                     isDateValue: true
@@ -91,6 +86,8 @@
                 },
                 { name: 'death_place' },
                 { name: 'burial_place' },
+                { name: 'declared_death' },
+                { name: 'cause_of_death' },
             ]
         };
 
@@ -114,7 +111,7 @@
 
         function getDetails(detailList) {
             var self = this;
-            if (self[detailList.id]) {
+            if (_.has(self, detailList.id)) {
                 return self[detailList.id];
             }
             var res = [];

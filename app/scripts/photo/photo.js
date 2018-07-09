@@ -29,6 +29,7 @@
         self.getDistinctPhotoData = getDistinctPhotoData;
         self.getRelatedPhotosForEvent = getRelatedPhotosForEvent;
         self.getById = getById;
+        self.getByPersonId = getByPersonId;
 
 
         function fetchRelated(photo) {
@@ -129,6 +130,11 @@
             // start and end as strings
             var opts = angular.extend({}, defaultOptions, options);
             return photoRepository.getByTimeSpan(start, end, opts);
+        }
+
+        function getByPersonId(id, options) {
+            var opts = angular.extend({}, defaultOptions, options);
+            return photoRepository.getByPersonId(id, opts.pageSize);
         }
 
         function getDistinctPhotoData(start, end, getPlace) {
