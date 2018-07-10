@@ -126,6 +126,10 @@
         '  ?id ^crm:P11_had_participant/wacs:hasRank [ wacs:level ?rl ; skos:prefLabel ?rank ] . ' +
         '  ?id ^crm:P11_had_participant/wacs:hasRank/wacs:level ?rl2 . ' +
         ' } ' +
+        ' OPTIONAL { ' +
+        '   ?id ^crm:P11_had_participant/wacs:hasRank ?rank1 . ' +
+        '   ?rank1 skos:prefLabel ?rank .  ' +
+        ' } ' +
         '} GROUP BY ?name ?rank ?id ' +
         ' HAVING (MAX(COALESCE(?rl, 1)) >= MAX(COALESCE(?rl2, 1))) ' +
         ' ORDER BY ?name ';
