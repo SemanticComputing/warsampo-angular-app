@@ -41,7 +41,7 @@
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
         ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ' +
         ' PREFIX wars: <http://ldf.fi/schema/warsa/articles/> ' +
-        ' PREFIX narcs: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
+        ' PREFIX wcsc: <http://ldf.fi/schema/warsa/casualties/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -75,7 +75,7 @@
         '   ?type_id skos:prefLabel ?type . ' +
         '   ?id skos:prefLabel ?label . ' +
         '   OPTIONAL { ?id dct:description ?description . } ' +
-        '   OPTIONAL { ?id narcs:perishing_category/skos:prefLabel ?way_to_die } . ' +
+        '   OPTIONAL { ?id wcsc:perishing_category/skos:prefLabel ?way_to_die } . ' +
         '   OPTIONAL { ' +
         '     ?part_pred rdfs:subPropertyOf* crm:P11_had_participant . ' +
         '     ?id ?part_pred ?participant_id . ' +

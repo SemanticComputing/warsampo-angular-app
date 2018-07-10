@@ -42,11 +42,11 @@
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX cemeteries: <http://ldf.fi/schema/warsa/places/cemeteries/> ' +
-        ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wsch: <http://ldf.fi/schema/warsa/> ' +
         ' PREFIX wces: <http://ldf.fi/schema/warsa/places/cemeteries/> ' +
         ' PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> ' +
-        ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ';
+        ' PREFIX wcsc: <http://ldf.fi/schema/warsa/casualties/> ';
 
         var queryBuilder = new QueryBuilderService(prefixes);
 
@@ -68,7 +68,7 @@
         ' SELECT DISTINCT ?id ?label ';
 
         var baseResultSet =
-        ' ?id a wsc:Cemetery . ' +
+        ' ?id a wsch:Cemetery . ' +
         ' ?id skos:prefLabel ?label . ';
 
         var singleResultSet =
@@ -78,7 +78,7 @@
         var byPlaceQryResultSet =
         ' VALUES ?place_id { <ID> } ' +
         ' <FILTER> ' +
-        ' ?id wsc:temporary_municipality ?place_id . ' +
+        ' ?id wsch:temporary_municipality ?place_id . ' +
         baseResultSet;
 
         var relatedQry = relatedSelect +
@@ -110,7 +110,7 @@
         '  OPTIONAL { ?id wgs84:long ?long . } ' +
         '  OPTIONAL { ?id wces:address ?address . } ' +
         '  OPTIONAL { ' +
-        '     ?death_record_id nsc:hautausmaa ?id . ' +
+        '     ?death_record_id wsch:buried_in ?id . ' +
         '     ?death_record_id crm:P70_documents ?person_id . ' +
         '  } ' +
         ' } ';
@@ -128,7 +128,7 @@
         '  OPTIONAL { ?id wgs84:lat ?lat . } ' +
         '  OPTIONAL { ?id wgs84:long ?lon . } ' +
         '  OPTIONAL { ' +
-        '     ?death_record_id nsc:hautausmaa ?id . ' +
+        '     ?death_record_id wsch:buried_in ?id . ' +
         '     ?death_record_id crm:P70_documents ?person_id . ' +
         '  } ' +
         ' } ' +

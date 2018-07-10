@@ -34,7 +34,6 @@
         ' PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
         ' PREFIX sch: <http://schema.org/> ' +
-        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
         ' PREFIX geosparql: <http://www.opengis.net/ont/geosparql#> ' +
         ' PREFIX suo: <http://www.yso.fi/onto/suo/> ' +
         ' PREFIX sf: <http://ldf.fi/functions#>'  +

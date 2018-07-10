@@ -19,11 +19,9 @@
         ' PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ' +
-        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
-        ' PREFIX wsc: <http://ldf.fi/warsa/actors/actor_types/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX wars: <http://ldf.fi/schema/warsa/articles/> ' +
-        ' PREFIX nsc: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
+        ' PREFIX wcsc: <http://ldf.fi/schema/warsa/casualties/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
         ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ';
 
@@ -122,8 +120,8 @@
         var byCemeteryIdQryResultSet =
         '   SELECT DISTINCT ?id (COUNT(?id) as ?unit_count) { ' +
         '     VALUES ?cemetery { <CEMETERY> } . ' +
-        '     ?death_record nsc:hautausmaa ?cemetery . ' +
-        '     ?death_record nsc:unit ?id . ' +
+        '     ?death_record wsc:buried_in ?cemetery . ' +
+        '     ?death_record wcsc:unit ?id . ' +
         '   } ' +
         '   GROUP BY ?id ';
 

@@ -38,7 +38,7 @@
               cemeteryService.getSingleCemeteryById(uri)
               .then(function(cemetery) {
                   vm.cemetery = cemetery;
-                  vm.casualtiesLink = '/' + lang  +'/casualties/?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/narc-menehtyneet1939-45/hautausmaa> <'+ cemetery.id +'> . "}}';
+                  vm.casualtiesLink = '/' + lang  +'/casualties/?facets={"cemetery":{"value":"<'+ cemetery.id +'>","constraint":" ?id <http://ldf.fi/schema/warsa/buried_in> <'+ cemetery.id +'> . "}}';
                   return cemeteryService.fetchRelated(vm.cemetery);
               })
               .then(function(cemetery) {

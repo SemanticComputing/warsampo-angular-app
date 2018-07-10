@@ -23,7 +23,8 @@
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
         ' PREFIX georss: <http://www.georss.org/georss/> ' +
-        ' PREFIX casualties: <http://ldf.fi/schema/narc-menehtyneet1939-45/> ' +
+        ' PREFIX wsch: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wcsc: <http://ldf.fi/schema/warsa/casualties/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
         ' PREFIX text: <http://jena.apache.org/text#> ' +
         ' PREFIX wacs: <http://ldf.fi/schema/warsa/actors/> ';
@@ -75,13 +76,13 @@
         '  OPTIONAL { ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
         '   ?casualty a wsc:DeathRecord . ' +
-        '   OPTIONAL { ?casualty casualties:date_of_birth ?cas_date_of_birth . } ' +
-        '   OPTIONAL { ?casualty casualties:date_of_death ?cas_date_of_death . } ' +
-        '   OPTIONAL { ?casualty casualties:unit_literal ?cas_unit . } ' +
-        '   OPTIONAL { ?casualty casualties:unit ?unit_id . } ' +
-        '   OPTIONAL { ?casualty casualties:rank ?rank_id . } ' +
+        '   OPTIONAL { ?casualty wsch:date_of_birth ?cas_date_of_birth . } ' +
+        '   OPTIONAL { ?casualty wsch:date_of_death ?cas_date_of_death . } ' +
+        '   OPTIONAL { ?casualty wcsc:unit_literal ?cas_unit . } ' +
+        '   OPTIONAL { ?casualty wcsc:unit ?unit_id . } ' +
+        '   OPTIONAL { ?casualty wcsc:rank ?rank_id . } ' +
         '   OPTIONAL { ' +
-        '    ?casualty casualties:perishing_category/skos:prefLabel ?way_to_die . ' +
+        '    ?casualty wcsc:perishing_category/skos:prefLabel ?way_to_die . ' +
         '   } ' +
         '  }' +
         ' } GROUP BY ' + props +
@@ -126,10 +127,7 @@
         '  ?id ^crm:P11_had_participant/wacs:hasRank [ wacs:level ?rl ; skos:prefLabel ?rank ] . ' +
         '  ?id ^crm:P11_had_participant/wacs:hasRank/wacs:level ?rl2 . ' +
         ' } ' +
-        ' OPTIONAL { ' +
-        '   ?id ^crm:P11_had_participant/wacs:hasRank ?rank1 . ' +
-        '   ?rank1 skos:prefLabel ?rank .  ' +
-        ' } ' +
+        ' OPTIONAL { ?id ^crm:P11_had_participant/wacs:hasRank/skos:prefLabel ?rank . } ' +
         '} GROUP BY ?name ?rank ?id ' +
         ' HAVING (MAX(COALESCE(?rl, 1)) >= MAX(COALESCE(?rl2, 1))) ' +
         ' ORDER BY ?name ';
@@ -206,7 +204,7 @@
         '   foaf:firstName ?fname . ';
 
         var casualtiesByTimeSpanQryResultSet =
-        ' ?casualty casualties:date_of_death ?death_time . ' +
+        ' ?casualty wsch:date_of_death ?death_time . ' +
         ' FILTER(?death_time >= "<START>"^^xsd:date && ?death_time <= "<END>"^^xsd:date) ' +
         ' ?id crm:P70i_is_documented_in ?casualty . ' +
         ' ?id foaf:familyName ?sname . ';

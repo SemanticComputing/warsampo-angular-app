@@ -85,7 +85,6 @@
         ' OPTIONAL { ?id skos:prefLabel ?label . }' +
         ' OPTIONAL { ?obj skos:prefLabel ?obj_lbl . }' +
         ' OPTIONAL { ?obj casualties:preferred_municipality ?mun . }' +
-        ' OPTIONAL { SERVICE <PNR> { ?obj skos:prefLabel ?obj_lbl . } }' +
         ' BIND(IF(isIRI(?obj), COALESCE(?mun, ?obj), "") as ?obj_link) '  +
         ' BIND(COALESCE(?obj_lbl, ?obj) as ?description) '  +
         ' wso:source9 skos:prefLabel ?source . ' +
