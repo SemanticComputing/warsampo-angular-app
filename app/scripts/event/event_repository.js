@@ -97,7 +97,6 @@
         '   } ' +
         '   OPTIONAL { ' +
         '     ?id crm:P4_has_time-span ?time_id . ' +
-        '     ?time_id skos:prefLabel ?time_label . ' +
         '     ?time_id crm:P82a_begin_of_the_begin ?start_t ; ' +
         '       crm:P82b_end_of_the_end ?end_t . ' +
         '     BIND(xsd:dateTime(?start_t) AS ?start_time) ' +
