@@ -16,8 +16,13 @@ Docker (and Docker Compose), or:
 
 ### With Docker Compose
 
-Frontend only: `docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d client`
-With Fuseki images (warsa, pnr, history): `docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d`
+Frontend only:
+
+`docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d client`
+
+With Fuseki images (warsa, pnr, history: have to be installed separately):
+
+`docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d`
 
 ### Without Docker
 
