@@ -14,11 +14,12 @@ Docker (and Docker Compose), or:
 
 ## Development
 
-With Docker Compose:
+### With Docker Compose
 
-`docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d` (or `docker-compose up client` for just this frontend)
+Frontend only: `docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d client`
+With Fuseki images (warsa, pnr, history): `docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d`
 
-Without Docker:
+### Without Docker
 
 `grunt serve`
 
