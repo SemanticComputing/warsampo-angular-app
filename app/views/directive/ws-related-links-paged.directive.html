@@ -16,7 +16,7 @@
           </span>
           <span ng-if="external">
             <a ng-href="{{ thing.id }}">{{ vm.getLabel(thing) | words:10 }}</a>
-          </span->
+          </span>
         </li>
         <li class="list-group-item" ng-if="vm.totalItems > vm.pageSize">
           <ul uib-pagination total-items="vm.totalItems" ng-change="vm.updatePage()"

@@ -37,26 +37,27 @@
         PrisonerRecord.prototype.getDetails = getDetails;
 
         var dateVals = [
-            'birth_date',
-            'time_captured',
-            'returned_date',
-            'death_date'
+            'date_of_birth',
+            'date_of_capture',
+            'date_of_return',
+            'date_of_death'
         ];
 
         var personDetails = {
             id: 'personDetails',
             props: [
                 {
-                    name: 'birth_date',
+                    name: 'date_of_birth',
                     isDateValue: true
                 },
-                { name: 'birth_place_literal' },
-                { name: 'home_place_literal' },
-                { name: 'residence_place' },
+                { name: 'municipality_of_birth' },
+                { name: 'municipality_of_domicile' },
+                { name: 'municipality_of_residence' },
                 { name: 'has_occupation' },
                 { name: 'marital_status' },
-                { name: 'amount_children' },
+                { name: 'number_of_children' },
                 { name: 'rank' },
+                { name: 'rank_literal' },
                 { name: 'unit' }
             ]
         };
@@ -65,13 +66,13 @@
             id: 'imprisonmentDetails',
             props: [
                 {
-                    name: 'time_captured',
+                    name: 'date_of_capture',
                     isDateValue: true
                 },
-                { name: 'place_captured_municipality' },
-                { name: 'place_captured' },
-                { name: 'explanation' },
-                { name: 'located_in' },
+                { name: 'municipality_of_capture' },
+                { name: 'place_of_capture_literal' },
+                { name: 'description_of_capture' },
+                { name: 'captivity' },
                 { name: 'confiscated_possession' },
                 { name: 'other_information' },
             ]
@@ -81,12 +82,12 @@
             id: 'deathDetails',
             props: [
                 {
-                    name: 'death_date',
+                    name: 'date_of_death',
                     isDateValue: true
                 },
-                { name: 'death_place' },
-                { name: 'burial_place' },
-                { name: 'declared_death' },
+                { name: 'place_of_death' },
+                { name: 'place_of_burial_literal' },
+                { name: 'date_of_declaration_of_death' },
                 { name: 'cause_of_death' },
             ]
         };
@@ -95,7 +96,7 @@
             id: 'returnDetails',
             props: [
                 {
-                    name: 'returned_date',
+                    name: 'date_of_return',
                     isDateValue: true
                 },
             ]

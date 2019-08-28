@@ -62,7 +62,8 @@
         "SOURCES": "Lähteet",
         "PRISONER_RETURN_DETAILS": "Paluutiedot",
         "RELATED_PEOPLE": "Muita henkilöitä",
-        "RELATED_PEOPLE_DESCRIPTION": "Tähän henkilöön tapahtumien, joukko-osastojen, mitalien tai sukunimen kautta liittyviä henkilöitä."
+        "RELATED_PEOPLE_DESCRIPTION": "Tähän henkilöön tapahtumien, joukko-osastojen, mitalien tai sukunimen kautta liittyviä henkilöitä.",
+        "DECLARED_DEATH": "Kuolleeksi julistamisen päivämäärä"
     },
     "UNIT_DEMO": {
         "TITLE": "Joukko-osastot",

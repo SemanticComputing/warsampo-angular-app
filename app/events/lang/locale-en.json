@@ -62,7 +62,8 @@
         "SOURCES": "Sources",
         "PRISONER_RETURN_DETAILS": "Return Details",
         "RELATED_PEOPLE": "Related people",
-        "RELATED_PEOPLE_DESCRIPTION": "People related to this person via events, military units, medals, or family name."
+        "RELATED_PEOPLE_DESCRIPTION": "People related to this person via events, military units, medals, or family name.",
+        "DECLARED_DEATH": "Date of declaration of death"
     },
     "UNIT_DEMO": {
         "TITLE": "Units",

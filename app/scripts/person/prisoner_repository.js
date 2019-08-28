@@ -44,49 +44,53 @@
         ' PREFIX psc: <http://ldf.fi/schema/warsa/prisoners/> ';
 
         var prisonerRecordProperties = [
-            'given_name',
-            'family_name',
-            'birth_date',
-            'birth_place_literal',
-            'home_place_literal',
-            'residence_place',
             'has_occupation',
-            'occupation_literal',
-            'located_in',
-            'amount_children',
-            'rank',
-            'warsa_rank',
-            'unit',
-            'warsa_unit',
-            'time_captured',
-            'place_captured',
-            'place_captured_battle',
-            'place_captured_municipality',
-            'time_gone_missing',
-            'place_gone_missing',
-            'returned_date',
+
+            'date_of_birth',
+            'family_name',
+            'given_names',
+            'municipality_of_birth',
+
+            'captivity',
             'cause_of_death',
-            'death_date',
-            'death_place',
-            'declared_death',
+            'date_of_capture',
+            'date_of_death',
+            'date_of_declaration_of_death',
+            'date_of_going_mia',
+            'date_of_return',
+            'description_of_capture',
+            'finnish_return_interrogation_file', // not used
+            'flyer', // not used
+            'marital_status',
+            'municipality_of_capture',
             'municipality_of_death',
-            'burial_place',
-            'explanation',
-            'flyers',
+            'municipality_of_domicile',
+            'municipality_of_residence',
+            'number_of_children', // not used
+            'occupation_literal',
+            'place_of_burial_literal',
+            'place_of_capture_battle_literal', // not used
+            'place_of_capture_literal',
+            'place_of_death',
+            'place_of_going_mia_literal',
+            'radio_report', // not used
+            'rank',
+            'rank_literal', // not used
+            'soviet_card_files', // not used
+            'unit',
+            'unit_literal', // not used
+
+            // TODO: Check below properties
             'karaganda_card_file',
             'karelian_archive_documents',
-            'marital_status',
             'memoirs',
             'mother_tongue',
             'photograph_sotilaan_aani',
             'photograph',
             'propaganda_magazine',
-            'radio_report',
             'recording',
             'sotilaan_aani',
-            'soviet_card_files',
             'winter_war_collection',
-            'finnish_return_interrogation_file',
             'other_information',
             'confiscated_possession',
         ];
@@ -113,7 +117,15 @@
         }
 
         function generatePrisonerPropertyQry(property) {
-            var namespace = property === 'has_occupation' ? 'bioc:' : 'psc:';
+
+            const warsa_schema_props = [
+              'date_of_birth',
+              'family_name',
+              'given_names',
+              'municipality_of_birth',
+            ];
+
+            var namespace = property === 'has_occupation' ? 'bioc:' : _.includes(warsa_schema_props, property) ? 'wsc:' : 'psc:';
 
             var qry =
             ' UNION { ' +

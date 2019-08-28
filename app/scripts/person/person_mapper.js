@@ -124,11 +124,11 @@
         }
 
         function getGivenNameInfo() {
-            return this.getInfo('givenNameInfo', 'fname', undefined, 'given_name', 'given_names');
+            return this.getInfo('givenNameInfo', 'fname', undefined, 'given_names', 'given_names');
         }
 
         function getBirthDateInfo() {
-            return this.getInfo('birthDate', 'birthEvent', 'timeSpanString', 'birth_date', 'date_of_birth', true);
+            return this.getInfo('birthDate', 'birthEvent', 'timeSpanString', 'date_of_birth', 'date_of_birth', true);
         }
 
         function getGenderInfo() {
@@ -145,15 +145,15 @@
         }
 
         function getDeathDateInfo() {
-            return this.getInfo('deathDate', 'deathEvent', 'timeSpanString', 'death_date', 'date_of_death', true);
+            return this.getInfo('deathDate', 'deathEvent', 'timeSpanString', 'date_of_death', 'date_of_death', true);
         }
 
         function getDeclaredDeathDateInfo() {
-            return this.getInfo('declaredDeathDate', 'na', 'na', 'declared_death', 'na', true);
+            return this.getInfo('declaredDeathDate', 'na', 'na', 'date_of_declaration_of_death', 'na', true);
         }
 
         function getDeathPlaceInfo() {
-            return this.getInfo('deathPlace', 'deathEvent', 'places', 'death_place', 'kuolinpaikka');
+            return this.getInfo('deathPlace', 'deathEvent', 'places', 'place_of_death', 'place_of_death_literal');
         }
 
         function getDisappearanceDateInfo() {
@@ -161,7 +161,7 @@
         }
 
         function getDisappearancePlaceInfo() {
-            return this.getInfo('disappearancePlace', 'na', 'na', 'place_gone_missing', 'place_of_going_mia');
+            return this.getInfo('disappearancePlace', 'na', 'na', 'place_of_going_mia_literal', 'place_of_going_mia');
         }
 
         function getDisappearanceMunicipalityInfo() {
@@ -169,7 +169,7 @@
         }
 
         function getBurialPlaceInfo() {
-            return this.getInfo('burialPlace', 'na', 'na', 'burial_place', 'municipality_of_burial');
+            return this.getInfo('burialPlace', 'na', 'na', 'place_of_burial_literal', 'municipality_of_burial');
         }
 
         function getCemeteryInfo() {
@@ -189,20 +189,20 @@
         }
 
         function getOccupationInfo() {
-            return this.getInfo('occupationInfo', 'na', 'na', 'occupation_literal', 'has_occupation');
+            return this.getInfo('occupationInfo', 'na', 'na', 'has_occupation', 'has_occupation');
         }
 
         function getBirthMunicipalityInfo() {
-            return this.getInfo('birthMunicipality', 'birthEvent', 'places', 'birth_place_literal',
+            return this.getInfo('birthMunicipality', 'birthEvent', 'places', 'municipality_of_birth',
                 'municipality_of_birth');
         }
 
         function getHomeMunicipalityInfo() {
-            return this.getInfo('homeMunicipality', 'na', 'na', 'home_place_literal', 'municipality_of_domicile');
+            return this.getInfo('homeMunicipality', 'na', 'na', 'municipality_of_domicile', 'municipality_of_domicile');
         }
 
         function getResidenceMunicipalityInfo() {
-            return this.getInfo('residenceMunicipality', 'na', 'na', 'residence_place', 'municipality_of_residence');
+            return this.getInfo('residenceMunicipality', 'na', 'na', 'municipality_of_residence', 'municipality_of_residence');
         }
 
         function getMaritalStatusInfo() {
