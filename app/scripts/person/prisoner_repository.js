@@ -118,7 +118,7 @@
 
         function generatePrisonerPropertyQry(property) {
 
-            const warsa_schema_props = [
+            var warsa_schema_props = [
               'date_of_birth',
               'family_name',
               'given_names',
