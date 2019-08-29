@@ -4,14 +4,22 @@
     <div ng-if="::ctrl.person.prisonerRecord.getImprisonmentDetails().length">
       <h4 translate="PERSONS_DEMO.PRISONER_IMPRISONMENT_DETAILS"></h4>
       <table class="table person-record">
-        <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getImprisonmentDetails()">
-          <th class="person-record-property">
-            <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
-          </th>
-          <td class="person-record-value">
-            <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
-          </td>
-        </tr>
+          <tr ng-if="::ctrl.person.getMunicipalityOfCaptureInfo().length">
+            <th class="person-record-property" translate>PERSONS_DEMO.MUNICIPALITY_OF_CAPTURE</th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getMunicipalityOfCaptureInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getDateOfCaptureInfo().length">
+            <th class="person-record-property" translate>PERSONS_DEMO.DATE_OF_CAPTURE</th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getDateOfCaptureInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
       </table>
     </div>
     <div ng-if="::ctrl.person.prisonerRecord.getReturnDetails().length">

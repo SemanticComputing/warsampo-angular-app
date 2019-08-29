@@ -115,11 +115,11 @@
         function generatePrisonerPropertyQry(property) {
 
             var warsa_schema_props = [
-              'date_of_birth',
-              'family_name',
-              'given_names',
-              'mother_tongue',
-              'municipality_of_birth',
+                'date_of_birth',
+                'family_name',
+                'given_names',
+                'mother_tongue',
+                'municipality_of_birth',
             ];
 
             var namespace = property === 'has_occupation' ? 'bioc:' : _.includes(warsa_schema_props, property) ? 'wsc:' : 'psc:';

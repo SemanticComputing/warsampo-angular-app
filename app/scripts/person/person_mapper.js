@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('eventsApp')
-    .factory('personMapperService', function(translateableObjectMapperService, Person) {
+    .factory('personMapperService', function(_, translateableObjectMapperService, Person) {
         var proto = Object.getPrototypeOf(translateableObjectMapperService);
 
         PersonMapper.prototype.reviseObject = reviseObject;
@@ -25,6 +25,10 @@
                 obj.wikilink = [{ id: obj.wikilink, label: obj.getLabel() }];
             }
 
+            if (!_.isArray(obj.source)) {
+                obj.source = obj.source ? _.castArray(obj.source) : [];
+            }
+
             return obj;
         }
 
@@ -37,6 +41,7 @@
         Person.prototype.getCasualtyInfo = getCasualtyInfo;
         Person.prototype.getPrisonerInfo = getPrisonerInfo;
         Person.prototype.getSourceNumber = getSourceNumber;
+        Person.prototype.addValue = addValue;
 
         Person.prototype.getFamilyNameInfo = getFamilyNameInfo;
         Person.prototype.getGivenNameInfo = getGivenNameInfo;
@@ -63,6 +68,15 @@
 
         Person.prototype.getWoundingDateInfo = getWoundingDateInfo;
         Person.prototype.getWoundingPlaceInfo = getWoundingPlaceInfo;
+
+        Person.prototype.getMunicipalityOfCaptureInfo = getMunicipalityOfCaptureInfo;
+        Person.prototype.getDateOfCaptureInfo = getDateOfCaptureInfo;
+        Person.prototype.getPlaceOfCaptureInfo = getPlaceOfCaptureInfo;
+        Person.prototype.getDescriptionOfCaptureInfo = getDescriptionOfCaptureInfo;
+        Person.prototype.getCaptivityInfo = getCaptivityInfo;
+        Person.prototype.getConsfiscatedPossessionInfo = getConsfiscatedPossessionInfo;
+        Person.prototype.getAdditionalImprisonmentInfo = getAdditionalImprisonmentInfo;
+        Person.prototype.getDateOfReturnInfo = getDateOfReturnInfo;
 
         Person.prototype.getDeathDateInfo = getDeathDateInfo;
         Person.prototype.getDeclaredDeathDateInfo = getDeclaredDeathDateInfo;
@@ -229,11 +243,50 @@
             return this.getInfo('additionalDeathInfo', 'na', 'na', 'na', 'additional_information');
         }
 
+        function getDateOfCaptureInfo() {
+            return this.getInfo('dateOfCapture', 'na', 'na', 'date_of_capture', 'na', true);
+        }
+
+        function getMunicipalityOfCaptureInfo() {
+            return this.getInfo('municipalityOfCapture', 'na', 'na', 'municipality_of_capture', 'na');
+        }
+
+        function getPlaceOfCaptureInfo() {
+            return this.getInfo('placeOfCapture', 'na', 'na', 'place_of_capture', 'na');
+        }
+
+        function getDescriptionOfCaptureInfo() {
+            return this.getInfo('descriptionOfCapture', 'na', 'na', 'description_of_capture', 'na');
+        }
+
+        function getCaptivityInfo() {
+            return this.getInfo('captivity', 'na', 'na', 'captivity', 'na');
+        }
+
+        function getConsfiscatedPossessionInfo() {
+            return this.getInfo('confiscatedPossession', 'na', 'na', 'consfiscated_possession', 'na');
+        }
+
+        function getAdditionalImprisonmentInfo() {
+            return this.getInfo('additionalInprisonmentInfo', 'na', 'na', 'additional_information', 'na');
+        }
+
+        function getDateOfReturnInfo() {
+            return this.getInfo('dateOfReturn', 'na', 'na', 'date_of_return', 'na', true);
+        }
+
         function getSourceNumber(sourceName) {
-            if (!_.isArrayLike(this.source)) {
-              return this.source.label === sourceName ? 1 : 0;
+            if (sourceName === undefined) {
+                return undefined;
             }
-            return 1 + _.findIndex(this.source, {'label': sourceName});
+            var index = _.findIndex(this.source, { label: sourceName }) + 1;
+
+            if (index === 0) {
+                this.source = this.source.concat({ id: sourceName, label: sourceName });
+                index = this.source.length;
+            }
+
+            return index;
         }
 
         function getInfo(infoName, ownProp, ownPropValue, prisonerProp, casualtyProp, isDate) {
@@ -320,6 +373,16 @@
             return info;
         }
 
+        function addValue(info, value) {
+            if (info[value.id]) {
+                info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(value.source)).sort();
+            } else {
+                // source is (possibly) a getter, so create a new object.
+                info[value.id] = angular.extend({}, value, { source: [this.getSourceNumber(value.source)] });
+            }
+            return info;
+        }
+
         function getCasualtyInfo(info, infoName, casualtyProp) {
             var casualty = _.find(this.deathRecord,
                 ['prop', casualtyProp]) || _.find(this.deathRecord, ['prop', casualtyProp + '_literal']) || {};
@@ -333,24 +396,17 @@
                 if (casualty.obj_link) {
                     value.valueLabel = literal.description || casualty.description;
                 }
-                if (info[value.id]) {
-                    info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(value.source)).sort();
-                } else {
-                    info[value.id] = value;
-                }
+                this.addValue(info, value);
             }
             return info;
         }
 
         function getPrisonerInfo(info, infoName, prisonerProp) {
+            var self = this;
             var prisoner = _.compact(_.castArray(_.get(this, 'prisonerRecord.properties.' + prisonerProp)));
             if (!_.isEmpty(prisoner)) {
                 prisoner.forEach(function(p) {
-                    if (info[p.id]) {
-                        info[p.id].source = _.uniq(_.compact(info[p.id].source.concat(p.source)));
-                    } else {
-                        info[p.id] = angular.extend({}, p, { source: [p.source] });
-                    }
+                    self.addValue(info, p);
                 });
             }
             return info;
