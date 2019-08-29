@@ -49,10 +49,13 @@
             'date_of_birth',
             'family_name',
             'given_names',
+            'mother_tongue',
             'municipality_of_birth',
 
+            'additional_information',
             'captivity',
             'cause_of_death',
+            'confiscated_possession',
             'date_of_capture',
             'date_of_death',
             'date_of_declaration_of_death',
@@ -62,37 +65,30 @@
             'finnish_return_interrogation_file', // not used
             'flyer', // not used
             'marital_status',
+            'memoir', // not used
             'municipality_of_capture',
             'municipality_of_death',
             'municipality_of_domicile',
             'municipality_of_residence',
             'number_of_children', // not used
             'occupation_literal',
+            'photograph', // not used
+            'photograph_sotilaan_aani', // not used
             'place_of_burial_literal',
             'place_of_capture_battle_literal', // not used
             'place_of_capture_literal',
             'place_of_death',
             'place_of_going_mia_literal',
+            'propaganda_magazine', // not used
             'radio_report', // not used
             'rank',
             'rank_literal', // not used
+            'recording', // not used
+            'sotilaan_aani', // not used
             'soviet_card_files', // not used
             'unit',
             'unit_literal', // not used
-
-            // TODO: Check below properties
-            'karaganda_card_file',
-            'karelian_archive_documents',
-            'memoirs',
-            'mother_tongue',
-            'photograph_sotilaan_aani',
-            'photograph',
-            'propaganda_magazine',
-            'recording',
-            'sotilaan_aani',
-            'winter_war_collection',
-            'other_information',
-            'confiscated_possession',
+            'winter_war_collection', // not used
         ];
 
         var select = 'SELECT DISTINCT ?id ?name ?properties__id ';
@@ -122,6 +118,7 @@
               'date_of_birth',
               'family_name',
               'given_names',
+              'mother_tongue',
               'municipality_of_birth',
             ];
 

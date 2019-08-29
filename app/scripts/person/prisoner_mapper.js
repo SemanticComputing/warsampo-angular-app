@@ -74,7 +74,7 @@
                 { name: 'description_of_capture' },
                 { name: 'captivity' },
                 { name: 'confiscated_possession' },
-                { name: 'other_information' },
+                { name: 'additional_information' },
             ]
         };
 
