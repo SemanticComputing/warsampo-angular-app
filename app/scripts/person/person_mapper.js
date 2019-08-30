@@ -375,7 +375,7 @@
 
         function addValue(info, value) {
             if (info[value.id]) {
-                info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(value.source)).sort();
+                info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(this.getSourceNumber(value.source))).sort();
             } else {
                 // source is (possibly) a getter, so create a new object.
                 info[value.id] = angular.extend({}, value, { source: [this.getSourceNumber(value.source)] });
@@ -391,7 +391,7 @@
                     ['prop', casualtyProp + '_literal']) || {};
                 var value = {
                     id: casualty.obj_link || casualty.description,
-                    source: [this.getSourceNumber(casualty.source)]
+                    source: casualty.source
                 };
                 if (casualty.obj_link) {
                     value.valueLabel = literal.description || casualty.description;
