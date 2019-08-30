@@ -63,7 +63,21 @@
         "PRISONER_RETURN_DETAILS": "Return Details",
         "RELATED_PEOPLE": "Related people",
         "RELATED_PEOPLE_DESCRIPTION": "People related to this person via events, military units, medals, or family name.",
-        "DECLARED_DEATH": "Date of declaration of death"
+        "DECLARED_DEATH": "Date of declaration of death",
+        "DATE_OF_CAPTURE": "Date of capture",
+        "DATE_OF_CAPTURE_TOOLTIP": "",
+        "MUNICIPALITY_OF_CAPTURE": "Municipality of capture",
+        "MUNICIPALITY_OF_CAPTURE_TOOLTIP": "",
+        "PLACE_OF_CAPTURE": "Village or district of capture",
+        "PLACE_OF_CAPTURE_TOOLTIP": "",
+        "DESCRIPTION_OF_CAPTURE": "Description of capture",
+        "DESCRIPTION_OF_CAPTURE_TOOLTIP": "",
+        "CAPTIVITY_INFO": "Captivity locations",
+        "CAPTIVITY_INFO_TOOLTIP": "",
+        "CONFISCATED_POSSESSION": "Confiscated possessions",
+        "CONFISCATED_POSSESSION_TOOLTIP": "",
+        "ADDITIONAL_IMPRISONMENT": "Additional information",
+        "ADDITIONAL_IMPRISONMENT_TOOLTIP": ""
     },
     "UNIT_DEMO": {
         "TITLE": "Units",

@@ -404,6 +404,7 @@
         function getPrisonerInfo(info, infoName, prisonerProp) {
             var self = this;
             var prisoner = _.compact(_.castArray(_.get(this, 'prisonerRecord.properties.' + prisonerProp)));
+
             if (!_.isEmpty(prisoner)) {
                 prisoner.forEach(function(p) {
                     self.addValue(info, p);

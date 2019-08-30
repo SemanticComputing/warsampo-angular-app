@@ -4,35 +4,136 @@
     <div ng-if="::ctrl.person.prisonerRecord.getImprisonmentDetails().length">
       <h4 translate="PERSONS_DEMO.PRISONER_IMPRISONMENT_DETAILS"></h4>
       <table class="table person-record">
-          <tr ng-if="::ctrl.person.getMunicipalityOfCaptureInfo().length">
-            <th class="person-record-property" translate>PERSONS_DEMO.MUNICIPALITY_OF_CAPTURE</th>
-            <td class="person-record-value">
-              <span ng-repeat="prop in ::ctrl.person.getMunicipalityOfCaptureInfo()">
-                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
-              </span>
-            </td>
-          </tr>
           <tr ng-if="::ctrl.person.getDateOfCaptureInfo().length">
-            <th class="person-record-property" translate>PERSONS_DEMO.DATE_OF_CAPTURE</th>
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.DATE_OF_CAPTURE_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.DATE_OF_CAPTURE</span>
+            </th>
             <td class="person-record-value">
               <span ng-repeat="prop in ::ctrl.person.getDateOfCaptureInfo()">
                 <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
               </span>
             </td>
           </tr>
+          <tr ng-if="::ctrl.person.getMunicipalityOfCaptureInfo().length">
+            <th class="person-record-property">
+                <span translate
+                  tooltips
+                  tooltip-template="{{ 'PERSONS_DEMO.MUNICIPALITY_OF_CAPTURE_TOOLTIP' | translate }}"
+                  tooltip-size="large"
+                  tooltip-side="right"
+                  tooltip-class="prisoner-tooltip"
+                  >PERSONS_DEMO.MUNICIPALITY_OF_CAPTURE</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getMunicipalityOfCaptureInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getPlaceOfCaptureInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.PLACE_OF_CAPTURE_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.PLACE_OF_CAPTURE</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getPlaceOfCaptureInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getDescriptionOfCaptureInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.DESCRIPTION_OF_CAPTURE_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.DESCRIPTION_OF_CAPTURE</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getDescriptionOfCaptureInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getCaptivityInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.CAPTIVITY_INFO_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.CAPTIVITY_INFO</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getCaptivityInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getConsfiscatedPossessionInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.CONFISCATED_POSSESSION_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.CONFISCATED_POSSESSION</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getConsfiscatedPossessionInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getAdditionalImprisonmentInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.ADDITIONAL_IMPRISONMENT_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.ADDITIONAL_IMPRISONMENT</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getAdditionalImprisonmentInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
       </table>
     </div>
-    <div ng-if="::ctrl.person.prisonerRecord.getReturnDetails().length">
+    <div ng-if="::ctrl.person.prisonerRecord.getDateOfReturnInfo().length">
       <h4 translate="PERSONS_DEMO.PRISONER_RETURN_DETAILS"></h4>
       <table class="table person-record">
-        <tr ng-repeat="prop in ::ctrl.person.prisonerRecord.getReturnDetails()">
           <th class="person-record-property">
-            <prisoner-detail-property property="::prop.property"></prisoner-detail-property>
+            <span translate
+              tooltips
+              tooltip-template="{{ 'PERSONS_DEMO.DATE_OF_RETURN_TOOLTIP' | translate }}"
+              tooltip-size="large"
+              tooltip-side="right"
+              tooltip-class="prisoner-tooltip"
+              >PERSONS_DEMO.DATE_OF_RETURN</span>
           </th>
           <td class="person-record-value">
-            <prisoner-detail-value is-date-value="::prop.isDateValue" property="::prop.property" property-name="::prop.name"></prisoner-detail-value>
+            <span ng-repeat="prop in ::ctrl.person.getDateOfReturnInfo()">
+              <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+            </span>
           </td>
-        </tr>
       </table>
     </div>
   </div>

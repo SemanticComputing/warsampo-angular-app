@@ -143,12 +143,12 @@
 
         function getPropertyLabel(propertyName) {
             var prop = _.get(this, 'properties.' + propertyName);
-            return  prop.propertyLabel || prop[0].propertyLabel;
+            return prop.propertyLabel || prop[0].propertyLabel;
         }
 
         function getPropertyDescription(propertyName) {
             var prop = _.get(this, 'properties.' + propertyName);
-            return  prop.propertyDescription || prop[0].propertyDescription;
+            return prop.propertyDescription || prop[0].propertyDescription;
         }
     });
 })();
