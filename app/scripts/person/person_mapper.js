@@ -16,9 +16,9 @@
         function reviseObject(obj, orig) {
             obj = translateableObjectMapperService.reviseObject(obj, orig);
 
-            if (obj.num_children) {
-                var n = parseInt(obj.num_children, 10);
-                obj.num_children = isNaN(n) ? obj.num_children : n;
+            if (obj.number_of_children) {
+                var n = parseInt(obj.number_of_children, 10);
+                obj.number_of_children = isNaN(n) ? obj.number_of_children : n;
             }
 
             if (obj.wikilink) {
@@ -57,6 +57,7 @@
         Person.prototype.getCitizenshipInfo= getCitizenshipInfo;
         Person.prototype.getNationalityInfo= getNationalityInfo;
         Person.prototype.getMotherTongueInfo= getMotherTongueInfo;
+        Person.prototype.getNumberOfChildren= getNumberOfChildren;
 
         Person.prototype.getDisappearanceDateInfo = getDisappearanceDateInfo;
         Person.prototype.getDisappearancePlaceInfo = getDisappearancePlaceInfo;
@@ -273,6 +274,10 @@
 
         function getDateOfReturnInfo() {
             return this.getInfo('dateOfReturn', 'na', 'na', 'date_of_return', 'na', true);
+        }
+
+        function getNumberOfChildren() {
+            return this.getInfo('numberOfChildren', 'na', 'na', 'number_of_children', 'number_of_children');
         }
 
         function getSourceNumber(sourceName) {

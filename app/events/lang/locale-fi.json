@@ -46,6 +46,7 @@
         "WOUNDED": "Haavoittunut",
         "SERVED_IN_UNIT": "Palvellut joukko-osastossa",
         "NUMBER_OF_CHILDREN": "{NUM, plural, =0{ei lapsia} one{yksi lapsi} other{# lasta}}",
+        "NUMBER_OF_CHILDREN_TITLE": "Lasten lukumäärä",
         "BORN_ON_IN": "Syntynyt {{date}} paikassa {{place}}",
         "DIED_ON_IN": "Kuollut {{date}} paikassa {{place}}",
         "PRISONER_IMPRISONMENT_DETAILS": "Sotavankeustiedot",

@@ -71,7 +71,7 @@
             'municipality_of_death',
             'municipality_of_domicile',
             'municipality_of_residence',
-            'number_of_children', // not used TODO
+            'number_of_children',
             'occupation_literal',
             // 'photograph', // not used
             // 'photograph_sotilaan_aani', // not used

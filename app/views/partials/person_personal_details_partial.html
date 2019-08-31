@@ -81,6 +81,14 @@
         </span>
       </td>
     </tr>
+    <tr ng-if="::ctrl.person.getNumberOfChildren().length">
+      <th class="person-record-property" translate>PERSONS_DEMO.NUMBER_OF_CHILDREN_TITLE</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getNumberOfChildren()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
     <tr ng-if="::ctrl.person.getOccupationInfo().length">
       <th class="person-record-property" translate>OCCUPATION</th>
       <td class="person-record-value">
