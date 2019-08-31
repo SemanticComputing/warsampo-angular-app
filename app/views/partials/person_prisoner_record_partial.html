@@ -52,6 +52,22 @@
               </span>
             </td>
           </tr>
+          <tr ng-if="::ctrl.person.getPlaceOfCaptureBattleInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.PLACE_OF_CAPTURE_BATTLE_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.PLACE_OF_CAPTURE_BATTLE</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getPlaceOfCaptureBattleInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
           <tr ng-if="::ctrl.person.getDescriptionOfCaptureInfo().length">
             <th class="person-record-property">
               <span translate

@@ -76,7 +76,7 @@
             // 'photograph', // not used
             // 'photograph_sotilaan_aani', // not used
             'place_of_burial_literal',
-            'place_of_capture_battle_literal', // not used
+            'place_of_capture_battle_literal',
             'place_of_capture_literal',
             'place_of_death',
             'place_of_going_mia_literal',

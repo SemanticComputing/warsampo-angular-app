@@ -73,6 +73,14 @@
         </span>
       </td>
     </tr>
+    <tr ng-if="::ctrl.person.getGenderInfo().length">
+      <th class="person-record-property" translate>GENDER</th>
+      <td class="person-record-value">
+        <span ng-repeat="prop in ::ctrl.person.getGenderInfo()">
+          <prisoner-detail-value property="::prop"></prisoner-detail-value>
+        </span>
+      </td>
+    </tr>
     <tr ng-if="::ctrl.person.getMaritalStatusInfo().length">
       <th class="person-record-property" translate>PERSONS_DEMO.MARITAL_STATUS</th>
       <td class="person-record-value">
@@ -109,14 +117,6 @@
       <th class="person-record-property" translate>UNIT</th>
       <td class="person-record-value">
         <span ng-repeat="prop in ::ctrl.person.getUnitInfo()">
-          <prisoner-detail-value property="::prop"></prisoner-detail-value>
-        </span>
-      </td>
-    </tr>
-    <tr ng-if="::ctrl.person.getGenderInfo().length">
-      <th class="person-record-property" translate>GENDER</th>
-      <td class="person-record-value">
-        <span ng-repeat="prop in ::ctrl.person.getGenderInfo()">
           <prisoner-detail-value property="::prop"></prisoner-detail-value>
         </span>
       </td>

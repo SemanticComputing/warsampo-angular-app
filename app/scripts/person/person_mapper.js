@@ -73,6 +73,7 @@
         Person.prototype.getMunicipalityOfCaptureInfo = getMunicipalityOfCaptureInfo;
         Person.prototype.getDateOfCaptureInfo = getDateOfCaptureInfo;
         Person.prototype.getPlaceOfCaptureInfo = getPlaceOfCaptureInfo;
+        Person.prototype.getPlaceOfCaptureBattleInfo = getPlaceOfCaptureBattleInfo;
         Person.prototype.getDescriptionOfCaptureInfo = getDescriptionOfCaptureInfo;
         Person.prototype.getCaptivityInfo = getCaptivityInfo;
         Person.prototype.getConsfiscatedPossessionInfo = getConsfiscatedPossessionInfo;
@@ -278,6 +279,10 @@
 
         function getNumberOfChildren() {
             return this.getInfo('numberOfChildren', 'na', 'na', 'number_of_children', 'number_of_children');
+        }
+
+        function getPlaceOfCaptureBattleInfo() {
+            return this.getInfo('placeOfCaptureBattle', 'na', 'na', 'place_of_capture_battle_literal', 'na');
         }
 
         function getSourceNumber(sourceName) {

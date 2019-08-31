@@ -71,6 +71,8 @@
         "MUNICIPALITY_OF_CAPTURE_TOOLTIP": "",
         "PLACE_OF_CAPTURE": "Village or district of capture",
         "PLACE_OF_CAPTURE_TOOLTIP": "",
+        "PLACE_OF_CAPTURE_BATTLE": "Location of battle in which captured",
+        "PLACE_OF_CAPTURE_BATTLE_TOOLTIP": "",
         "DESCRIPTION_OF_CAPTURE": "Description of capture",
         "DESCRIPTION_OF_CAPTURE_TOOLTIP": "",
         "CAPTIVITY_INFO": "Captivity locations",
