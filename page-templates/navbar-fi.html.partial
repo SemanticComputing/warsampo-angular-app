@@ -29,7 +29,8 @@
             <li><a href="/fi/articles/" target="_self" id="kata">Kansa taisteli</a></li>
             <li><a href="/fi/casualties/" target="_self" id="casualties">Menehtyneet</a></li>
             <li><a href="/fi/photographs/" target="_self" id="photographs">Valokuvat</a></li>
-            <li><a href="/fi/cemeteries/" target="_self" id="cemeteries">Sankarihautausmaat</a></li>
+			<li><a href="/fi/cemeteries/" target="_self" id="cemeteries">Sankarihautausmaat</a></li>
+            <li><a href="/fi/prisoners/" target="_self" id="cemeteries">Sotavangit</a></li>
           </ul>
         </li>
 			</ul>
