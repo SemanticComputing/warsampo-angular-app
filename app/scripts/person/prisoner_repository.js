@@ -41,6 +41,7 @@
         ' PREFIX bioc: <http://ldf.fi/schema/bioc/> ' +
         ' PREFIX dct: <http://purl.org/dc/terms/> ' +
         ' PREFIX wsc: <http://ldf.fi/schema/warsa/> ' +
+        ' PREFIX wso: <http://ldf.fi/warsa/sources/> ' +
         ' PREFIX psc: <http://ldf.fi/schema/warsa/prisoners/> ';
 
         var prisonerRecordProperties = [
@@ -62,33 +63,33 @@
             'date_of_going_mia',
             'date_of_return',
             'description_of_capture',
-            'finnish_return_interrogation_file', // not used
-            'flyer', // not used
+            // 'finnish_return_interrogation_file', // not used
+            // 'flyer', // not used
             'marital_status',
-            'memoir', // not used
+            // 'memoir', // not used
             'municipality_of_capture',
             'municipality_of_death',
             'municipality_of_domicile',
             'municipality_of_residence',
-            'number_of_children', // not used
+            'number_of_children', // not used TODO
             'occupation_literal',
-            'photograph', // not used
-            'photograph_sotilaan_aani', // not used
+            // 'photograph', // not used
+            // 'photograph_sotilaan_aani', // not used
             'place_of_burial_literal',
             'place_of_capture_battle_literal', // not used
             'place_of_capture_literal',
             'place_of_death',
             'place_of_going_mia_literal',
-            'propaganda_magazine', // not used
-            'radio_report', // not used
+            // 'propaganda_magazine', // not used
+            // 'radio_report', // not used
             'rank',
             'rank_literal', // not used
-            'recording', // not used
-            'sotilaan_aani', // not used
-            'soviet_card_files', // not used
+            // 'recording', // not used
+            // 'sotilaan_aani', // not used
+            // 'soviet_card_files', // not used
             'unit',
             'unit_literal', // not used
-            'winter_war_collection', // not used
+            // 'winter_war_collection', // not used
         ];
 
         var select = 'SELECT DISTINCT ?id ?name ?properties__id ';
@@ -141,9 +142,10 @@
             '    [] rdf:subject ?id ; ' +
             '     rdf:predicate <NAMESPACE><PROPERTY> ; ' +
             '     rdf:object ?properties__<PROPERTY>__id ; ' +
-            '     dct:source ?properties__<PROPERTY>__source_ . ' +
+            '     dct:source ?properties__<PROPERTY>__source . ' +
             '   } ' +
-            '   BIND(COALESCE(?properties__<PROPERTY>__source_, "Sotavankimatrikkeli"@fi) AS ?properties__<PROPERTY>__source) ' +
+            '   wso:source22 skos:prefLabel ?properties__<PROPERTY>__sourceRegister ' +
+            '     ' +
             '  } ORDER BY ?properties__<PROPERTY>__order ' +
             ' } ';
 
@@ -156,6 +158,7 @@
                 '?properties__' + property + '__propertyDescription ' +
                 '?properties__' + property + '__valueLabel ' +
                 '?properties__' + property + '__source ' +
+                '?properties__' + property + '__sourceRegister ' +
                 '?properties__' + property + '__date_begin ' +
                 '?properties__' + property + '__date_end';
         }

@@ -408,6 +408,8 @@
             if (!_.isEmpty(prisoner)) {
                 prisoner.forEach(function(p) {
                     self.addValue(info, p);
+                    var p2 = angular.extend({}, p, { source: p.sourceRegister });
+                    self.addValue(info, p2);
                 });
             }
             return info;
