@@ -380,7 +380,9 @@
 
         function addValue(info, value) {
             if (info[value.id]) {
-                info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(this.getSourceNumber(value.source))).sort();
+                if (value.source) {
+                    info[value.id].source = _.uniq(_.compact(info[value.id].source).concat(this.getSourceNumber(value.source))).sort();
+                }
             } else {
                 // source is (possibly) a getter, so create a new object.
                 info[value.id] = angular.extend({}, value, { source: [this.getSourceNumber(value.source)] });
@@ -412,9 +414,9 @@
 
             if (!_.isEmpty(prisoner)) {
                 prisoner.forEach(function(p) {
-                    self.addValue(info, p);
                     var p2 = angular.extend({}, p, { source: p.sourceRegister });
                     self.addValue(info, p2);
+                    self.addValue(info, p);
                 });
             }
             return info;
