@@ -111,6 +111,12 @@
             <span><b>Valokuvat</b>-näkymän kautta voit hakea ja selata sotien aikaisia valokuvia.</span>
           </div>
         </li>
+		<li>
+		  <span><b>Sankarihautausmaat</b> -näkymässä voit hakea ja selata sankarihautausmaita ja nähdä niiden tilastotietoa.</span>
+		</li>
+		<li>
+		  <span><b>Sotavangit</b> -näkmässä voit selata ja analysoida suomalaisten sotavankien tietoja.</span>
+		</li>
 				</ol>
 				<p>
 				Valitse näkymä Sotasammon yläpalkista, ja pääset hakemaan aineistoja semanttisesti.

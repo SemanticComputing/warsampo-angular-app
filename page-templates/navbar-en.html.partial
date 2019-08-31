@@ -69,7 +69,7 @@
 				<p>The users of WarSampo are 1) people  2) machines.</p>
 				<h2>WarSampo Portal for Human Users</h2>
 				<p>
-				The content of WarSampo is provided through seven different perspectives:
+				The content of WarSampo is provided through nine different perspectives:
 				</p>
 				<ol class="demo-desc">
           <li>
@@ -102,11 +102,17 @@
           <li>
             <div>
               <a class="pull-right" href="https://vimeo.com/200002331"><img class="play-button" src="/images/play-button.svg" alt="Video" title="Video" /></a>
-              <span><b>Casulties.</b> A table-like view of war casualty records that can be filtered using faceted semantic search, enriched with links to other WarSampo datasets.</span>
+              <span><b>Casualties.</b> A table-like view of war casualty records that can be filtered using faceted semantic search, enriched with links to other WarSampo datasets.</span>
             </div>
           </li>
           <li>
             <span><b>Photographs.</b> Browse the content of the Finnish Wartime Photograph Archive with faceted search.</span>
+          </li>
+		  <li>
+            <span><b>War Cemeteries.</b> Search and browse the War Cemeteries and their statistics.</span>
+          </li>
+		  <li>
+            <span><b>Prisoners of War.</b> Browse and analyze information about the Finnish prisoners of war, using faceted semantic search.</span>
           </li>
 				</ol>
 				<p>
@@ -114,7 +120,7 @@
 				After you have selected a resource, which can be e.g. an army unit or place, you are provided with 1) detailed information about the resource, and 2) related data
 				to the resource. This related data originates from other WarSampo datasets or other linked open data services such as DBpedia.
 				</p>
-				The content of WarSampo consists of several datasets, i.a.
+				The content of WarSampo consists of several datasets, e.g.
 				<ol>
 					<li>Casualties data (93,000 death incidents) includes data about the deaths in action during the wars. <i>Source: The National Archives of Finland.</i></li>
 					<li> Around 160,000 photographs from the Second World War from a time period of six years. <i>Source: Military Museum.</i></li>
