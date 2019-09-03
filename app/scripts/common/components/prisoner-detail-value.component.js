@@ -9,9 +9,17 @@
         var vm = this;
 
         vm.showHr = showHr;
+        vm.isYear = isYear;
 
         function showHr() {
             return _.includes(hrProps, vm.propertyName);
+        }
+
+        function isYear(value) {
+            if (!_.isInteger(value)) {
+                return false;
+            }
+            return (value > 1700 && value < 2100);
         }
 
     }
