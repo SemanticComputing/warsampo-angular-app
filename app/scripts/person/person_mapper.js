@@ -290,7 +290,7 @@
                 return undefined;
             }
 
-            var index = _.findIndex(this.source, function(sourceObj) { return sourceObj.label.toLowerCase() == sourceName.toLowerCase(); }) + 1;
+            var index = _.findIndex(this.source, function(sourceObj) { return sourceObj.label ? sourceObj.label.toLowerCase() == sourceName.toLowerCase() : 0; }) + 1;
 
             if (index === 0) {
                 this.source = this.source.concat({ id: sourceName, label: sourceName });
