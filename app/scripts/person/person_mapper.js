@@ -419,9 +419,20 @@
 
             if (!_.isEmpty(prisoner)) {
                 prisoner.forEach(function(p) {
+                    // Add POW register as a source
                     var p2 = angular.extend({}, p, { source: p.sourceRegister });
                     self.addValue(info, p2);
-                    self.addValue(info, p);
+
+                    if (_.isArrayLikeObject(p.source)) {
+                        // Multiple sources for information, loop over them
+                        _.forEach(p.source, function(source) {
+                            var ps = angular.extend({}, p, { source: source });
+                            self.addValue(info, ps);
+                        });
+                    }
+                    else {
+                        self.addValue(info, p);
+                    }
                 });
             }
             return info;
