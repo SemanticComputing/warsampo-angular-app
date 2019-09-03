@@ -241,8 +241,12 @@
                     if (placeIds.length) {
                         return placeRepository.getById(placeIds).then(function(places) {
                             if (places.length) {
-                                baseService.combineRelated(person.birthEvent, places, 'place_id', 'places');
-                                baseService.combineRelated(person.deathEvent, places, 'place_id', 'places');
+                                if (person.birthEvent) {
+                                    baseService.combineRelated(person.birthEvent, places, 'place_id', 'places');
+                                }
+                                if (person.deathEvent) {
+                                    baseService.combineRelated(person.deathEvent, places, 'place_id', 'places');
+                                }
                             }
                             return person;
                         });
