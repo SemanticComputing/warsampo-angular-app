@@ -289,7 +289,8 @@
             if (sourceName === undefined) {
                 return undefined;
             }
-            var index = _.findIndex(this.source, { label: sourceName }) + 1;
+
+            var index = _.findIndex(this.source, function(sourceObj) { return sourceObj.label.toLowerCase() == sourceName.toLowerCase(); }) + 1;
 
             if (index === 0) {
                 this.source = this.source.concat({ id: sourceName, label: sourceName });
