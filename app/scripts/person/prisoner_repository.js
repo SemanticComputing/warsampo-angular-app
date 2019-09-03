@@ -132,7 +132,9 @@
             '   ?id a wsc:PrisonerRecord . ' +
             '   BIND(1 AS ?properties__id) ' +
             '   ?id <NAMESPACE><PROPERTY> ?properties__<PROPERTY>__id . ' +
-            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel|psc:location_literal ?properties__<PROPERTY>__valueLabel . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id skos:prefLabel|psc:location/skos:prefLabel ?properties__<PROPERTY>__valueLabel . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id psc:location ?properties__<PROPERTY>__location . } ' +
+            '   OPTIONAL { ?properties__<PROPERTY>__id psc:location_literal ?properties__<PROPERTY>__location_literal . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:order ?properties__<PROPERTY>__order . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_begin ?properties__<PROPERTY>__date_begin . } ' +
             '   OPTIONAL { ?properties__<PROPERTY>__id psc:date_end ?properties__<PROPERTY>__date_end . } ' +
@@ -159,6 +161,8 @@
                 '?properties__' + property + '__valueLabel ' +
                 '?properties__' + property + '__source ' +
                 '?properties__' + property + '__sourceRegister ' +
+                '?properties__' + property + '__location ' +
+                '?properties__' + property + '__location_literal ' +
                 '?properties__' + property + '__date_begin ' +
                 '?properties__' + property + '__date_end';
         }
