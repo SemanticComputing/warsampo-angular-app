@@ -81,7 +81,8 @@
         "CONFISCATED_POSSESSION_TOOLTIP": "Jatkosodan toisen (25.12.1944) ja kolmannen (28.3.1945) palautuserän sotavangeille tehty erillinen kysymys. Lähteinä KA T-26073/2–KA T-26073/22",
         "ADDITIONAL_IMPRISONMENT": "Muita vankeustietoja",
         "ADDITIONAL_IMPRISONMENT_TOOLTIP": "Muita sotavankeuteen liittyviä tietoja",
-        "DATE_OF_RETURN": "Sotavankeudesta palaamisen päivämäärä"
+        "DATE_OF_RETURN": "Sotavankeudesta palaamisen päivämäärä",
+        "DATE_OF_RETURN_TOOLTIP": "Päivä, jona henkilö on palannut Suomeen sotavankeudesta"
     },
     "UNIT_DEMO": {
         "TITLE": "Joukko-osastot",
