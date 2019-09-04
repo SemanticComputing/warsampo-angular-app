@@ -407,7 +407,7 @@
                     source: casualty.source
                 };
                 if (casualty.obj_link) {
-                    value.valueLabel = literal.description || casualty.description;
+                    value.valueLabel = casualty.description || literal.description;
                 }
                 this.addValue(info, value);
             }
