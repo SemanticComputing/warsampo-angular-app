@@ -1,7 +1,7 @@
 <!--<div ng-if="::ctrl.person.prisonerRecord">-->
 <div ng-if="!ctrl.isLoadingRelated">
   <div>
-    <div ng-if="::ctrl.person.prisonerRecord.getImprisonmentDetails().length">
+    <div ng-if="::ctrl.person.getDateOfCaptureInfo().length">
       <h4 translate="PERSONS_DEMO.PRISONER_IMPRISONMENT_DETAILS"></h4>
       <table class="table person-record">
           <tr ng-if="::ctrl.person.getDateOfCaptureInfo().length">
@@ -133,7 +133,7 @@
             </td>
       </table>
     </div>
-    <div ng-if="::ctrl.person.prisonerRecord.getDateOfReturnInfo().length">
+    <div ng-if="::ctrl.person.getDateOfReturnInfo().length">
       <h4 translate="PERSONS_DEMO.PRISONER_RETURN_DETAILS"></h4>
       <table class="table person-record">
           <th class="person-record-property">

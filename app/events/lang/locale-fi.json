@@ -80,7 +80,8 @@
         "CONFISCATED_POSSESSION": "Vankeudessa takavarikoitu omaisuus markoissa",
         "CONFISCATED_POSSESSION_TOOLTIP": "Jatkosodan toisen (25.12.1944) ja kolmannen (28.3.1945) palautuserän sotavangeille tehty erillinen kysymys. Lähteinä KA T-26073/2–KA T-26073/22",
         "ADDITIONAL_IMPRISONMENT": "Muita vankeustietoja",
-        "ADDITIONAL_IMPRISONMENT_TOOLTIP": "Muita sotavankeuteen liittyviä tietoja"
+        "ADDITIONAL_IMPRISONMENT_TOOLTIP": "Muita sotavankeuteen liittyviä tietoja",
+        "DATE_OF_RETURN": "Sotavankeudesta palaamisen päivämäärä"
     },
     "UNIT_DEMO": {
         "TITLE": "Joukko-osastot",

@@ -80,7 +80,8 @@
         "CONFISCATED_POSSESSION": "Confiscated possessions",
         "CONFISCATED_POSSESSION_TOOLTIP": "",
         "ADDITIONAL_IMPRISONMENT": "Additional information",
-        "ADDITIONAL_IMPRISONMENT_TOOLTIP": ""
+        "ADDITIONAL_IMPRISONMENT_TOOLTIP": "",
+        "DATE_OF_RETURN": "Date of return from captivity"
     },
     "UNIT_DEMO": {
         "TITLE": "Units",
