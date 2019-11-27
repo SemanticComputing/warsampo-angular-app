@@ -254,10 +254,18 @@
         .state('app.lang.persons.demo.page.videos', {
             url: '?{tab:4}',
             templateUrl: 'views/person_videos.html',
-            controller: 'PersonVideoController',
+            controller: 'PersonPageController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
             params: { tab: '4' }
+        })
+        .state('app.lang.persons.demo.page.documents', {
+            url: '?{tab:5}',
+            templateUrl: 'views/person_documents.html',
+            controller: 'PersonPageController',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
+            params: { tab: '5' }
         })
         // Units
         .state('app.lang.units', {

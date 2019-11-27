@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h4 translate="PERSONS_DEMO.DOCUMENT_TAB_HEADING"></h4>
+    <ul>
+        <li ng-repeat="document in ctrl.person.document">
+            <a
+                href="{{ ::document.url }}"
+                target="_blank"
+            >
+                {{ ::document.prefLabel }}
+            </a>
+        </li>
+    </ul>
+  </div>
+</div>

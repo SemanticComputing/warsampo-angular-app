@@ -34,7 +34,9 @@
         var props = '?id ?label ?rank__id ?rank__label ?listLabel ?sname ?fname ?description ' +
         ' ?rank ?rank_id ?natiobib ?wikilink ?sameAs ?casualty ?bury_place ?bury_place_uri ' +
         ' ?living_place ?living_place_uri ?profession ?mstatus ?way_to_die ?cas_unit ?unit_id ' +
-        ' ?sid ?source__id ?source__label ?death_id ?cas_date_of_birth ?cas_date_of_death ?birth_id ';
+        ' ?sid ?source__id ?source__label ?death_id ?cas_date_of_birth ?cas_date_of_death ?birth_id ' +
+        ' ?document__id ?document__prefLabel ?document__url ' +
+        ' ?video__id ?video__prefLabel ?video__url ';
 
         var select = ' SELECT DISTINCT ' + props;
 
@@ -51,6 +53,14 @@
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
         '  BIND(IF(BOUND(?fname), CONCAT(?sname, ", ", ?fname), ?lbl) AS ?listLabel) ' +
+
+        '  VALUES ?document__id { <http://ldf.fi/warsa/document/1> <http://ldf.fi/warsa/document/2> } ' +
+        '  BIND("Test" AS ?document__prefLabel) ' +
+        '  BIND("http://www.africau.edu/images/default/sample.pdf" AS ?document__url) ' +
+        '  VALUES ?video__id { <http://ldf.fi/warsa/video/1> <http://ldf.fi/warsa/video/2> } ' +
+        '  BIND("Test" AS ?video__prefLabel) ' +
+        '  BIND("https://static.sotasampo.fi/videos/test/Oranki.mp4" AS ?video__url) ' +
+
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
         '  OPTIONAL { ?id ^crm:P98_brought_into_life ?birth_id . } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
