@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h4 translate="PERSONS_DEMO.SOTILAAN_AANI_TAB_HEADING"></h4>
+    <ul>
+        <li ng-repeat="sa in ctrl.person.sa | castArray | orderBy : 'prefLabel'">
+            <a
+                href="{{ ::sa.url }}"
+                target="_blank"
+            >
+                {{ ::sa.prefLabel }}
+            </a>
+        </li>
+    </ul>
+  </div>
+</div>

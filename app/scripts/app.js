@@ -259,13 +259,21 @@
             reloadOnSearch: false,
             params: { tab: '4' }
         })
-        .state('app.lang.persons.demo.page.documents', {
+        .state('app.lang.persons.demo.page.sa', {
             url: '?{tab:5}',
-            templateUrl: 'views/person_documents.html',
+            templateUrl: 'views/person_sa.html',
             controller: 'PersonPageController',
             controllerAs: 'ctrl',
             reloadOnSearch: false,
             params: { tab: '5' }
+        })
+        .state('app.lang.persons.demo.page.documents', {
+            url: '?{tab:6}',
+            templateUrl: 'views/person_documents.html',
+            controller: 'PersonPageController',
+            controllerAs: 'ctrl',
+            reloadOnSearch: false,
+            params: { tab: '6' }
         })
         // Units
         .state('app.lang.units', {
