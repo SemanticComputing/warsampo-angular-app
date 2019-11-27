@@ -17,7 +17,7 @@
     <li ui-sref="app.lang.persons.demo.page.timeline({ tab: 2 })" ui-sref-active="active" class="person-timeline-tab">
       <a href=""><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> {{ 'PERSONS_DEMO.TIMELINE_TAB' | translate }}</a>
     </li>
-    <li ui-sref="app.lang.persons.demo.page.photographs({ tab: 3 })" ui-sref-active="active" class="person-timeline-tab">
+    <li ng-if="ctrl.person.hasImages" ui-sref="app.lang.persons.demo.page.photographs({ tab: 3 })" ui-sref-active="active" class="person-timeline-tab">
       <a href=""><span class="glyphicon glyphicon-camera" aria-hidden="true"></span> {{ 'PERSONS_DEMO.PHOTO_TAB' | translate }}</a>
     </li>
     <!--<li ui-sref="app.lang.persons.demo.page.videos({ tab: 4 })" ui-sref-active="active" class="person-timeline-tab">-->

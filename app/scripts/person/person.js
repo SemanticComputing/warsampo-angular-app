@@ -185,6 +185,7 @@
             }).then(function(count) {
                 if (count) {
                     person.hasLinks = true;
+                    person.hasImages = true;
                 }
                 return person;
             });
