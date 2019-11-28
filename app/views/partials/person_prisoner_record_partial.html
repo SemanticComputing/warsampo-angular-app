@@ -132,22 +132,7 @@
               </span>
             </td>
           </tr>
-          <tr ng-if="::ctrl.person.getPropagandaMagazineInfo().length">
-            <th class="person-record-property">
-              <span translate
-                tooltips
-                tooltip-template="{{ 'PERSONS_DEMO.PROPAGANDA_MAGAZINE_TOOLTIP' | translate }}"
-                tooltip-size="large"
-                tooltip-side="right"
-                tooltip-class="prisoner-tooltip"
-                >PERSONS_DEMO.PROPAGANDA_MAGAZINE</span>
-            </th>
-            <td class="person-record-value">
-              <span ng-repeat="prop in ::ctrl.person.getPropagandaMagazineInfo()">
-                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
-              </span>
-            </td>
-          </tr>
+
           <tr ng-if="::ctrl.person.getSotilaanAaniInfo().length">
             <th class="person-record-property">
               <span translate
@@ -198,6 +183,22 @@
                        </a>
                     </li>
                 </ul>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getPropagandaMagazineInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.PROPAGANDA_MAGAZINE_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.PROPAGANDA_MAGAZINE</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getPropagandaMagazineInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
             </td>
           </tr>
           <tr ng-if="::ctrl.person.getPropagandaMagazineLinkInfo().length">
