@@ -23,13 +23,9 @@
     <li ng-if="ctrl.person.video" ui-sref="app.lang.persons.demo.page.videos({ tab: 4 })" ui-sref-active="active" class="person-timeline-tab">
       <a href=""><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> {{ 'PERSONS_DEMO.VIDEO_TAB' | translate }}</a>
     </li>
-    <li ng-if="ctrl.person.sa" ui-sref="app.lang.persons.demo.page.sa({ tab: 5 })" ui-sref-active="active" class="person-timeline-tab">
-      <a href=""><span class="glyphicon glyphicon-book" aria-hidden="true"></span> {{ 'PERSONS_DEMO.SOTILAAN_AANI_TAB' | translate }}</a>
-    </li>
-    <li ng-if="ctrl.person.document" ui-sref="app.lang.persons.demo.page.documents({ tab: 6 })" ui-sref-active="active" class="person-timeline-tab">
+    <li ng-if="ctrl.person.document" ui-sref="app.lang.persons.demo.page.documents({ tab: 5 })" ui-sref-active="active" class="person-timeline-tab">
       <a href=""><span class="glyphicon glyphicon-book" aria-hidden="true"></span> {{ 'PERSONS_DEMO.DOCUMENT_TAB' | translate }}</a>
     </li>
-
   </ul>
   <div class="tab-content">
     <ui-view></ui-view>

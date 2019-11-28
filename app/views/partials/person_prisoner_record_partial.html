@@ -180,6 +180,26 @@
               </span>
             </td>
           </tr>
+          <tr ng-if="::ctrl.person.sa">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.SOTILAAN_AANI_LINK_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.SOTILAAN_AANI_LINK</span>
+            </th>
+            <td class="person-record-value">
+                <ul>
+                    <li ng-repeat="sa in ctrl.person.sa | castArray | orderBy : 'prefLabel'">
+                       <a href="{{ ::sa.url }}" target="_blank">
+                          {{ ::sa.prefLabel }}
+                       </a>
+                    </li>
+                </ul>
+            </td>
+          </tr>
           <tr ng-if="::ctrl.person.getPropagandaMagazineLinkInfo().length">
             <th class="person-record-property">
               <span translate
@@ -191,9 +211,13 @@
                 >PERSONS_DEMO.PROPAGANDA_MAGAZINE_LINK</span>
             </th>
             <td class="person-record-value">
-              <span ng-repeat="prop in ::ctrl.person.getPropagandaMagazineLinkInfo()">
-                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
-              </span>
+                <ul>
+                    <li ng-repeat="link in ctrl.person.getPropagandaMagazineLinkInfo()">
+                       <a href="{{ ::link.id }}" target="_blank">
+                          Linkki {{ $index + 1 }}
+                       </a>
+                    </li>
+                </ul>
             </td>
           </tr>
       </table>
