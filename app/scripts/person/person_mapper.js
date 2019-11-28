@@ -85,6 +85,11 @@
         Person.prototype.getDeathPlaceInfo = getDeathPlaceInfo;
         Person.prototype.getAdditionalDeathInfo = getAdditionalDeathInfo;
 
+        Person.prototype.getPropagandaMagazineInfo = getPropagandaMagazineInfo;
+        Person.prototype.getSotilaanAaniInfo = getSotilaanAaniInfo;
+        Person.prototype.getPhotographSotilaanAaniInfo = getPhotographSotilaanAaniInfo;
+        Person.prototype.getPropagandaMagazineLinkInfo = getPropagandaMagazineLinkInfo;
+
         Person.prototype.hasWoundingInfo = hasWoundingInfo;
         Person.prototype.hasDeathInfo = hasDeathInfo;
         Person.prototype.hasMiaInfo = hasMiaInfo;
@@ -283,6 +288,22 @@
 
         function getPlaceOfCaptureBattleInfo() {
             return this.getInfo('placeOfCaptureBattle', 'na', 'na', 'place_of_capture_battle_literal', 'na');
+        }
+
+        function getPropagandaMagazineInfo() {
+            return this.getInfo('propagandaMagazine', 'na', 'na', 'propaganda_magazine', 'na');
+        }
+
+        function getSotilaanAaniInfo() {
+            return this.getInfo('sotilaanAani', 'na', 'na', 'sotilaan_aani', 'na');
+        }
+
+        function getPhotographSotilaanAaniInfo() {
+            return this.getInfo('photographSotilaanAani', 'na', 'na', 'photograph_sotilaan_aani', 'na');
+        }
+
+        function getPropagandaMagazineLinkInfo() {
+            return this.getInfo('propagandaMagazineLink', 'na', 'na', 'propaganda_magazine_link', 'na');
         }
 
         function getSourceNumber(sourceName) {

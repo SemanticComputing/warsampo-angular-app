@@ -90,6 +90,10 @@
             'unit',
             'unit_literal', // not used
             // 'winter_war_collection', // not used
+            'propaganda_magazine',
+            'sotilaan_aani',
+            'photograph_sotilaan_aani',
+            'propaganda_magazine_link'
         ];
 
         var select = 'SELECT DISTINCT ?id ?name ?properties__id ';

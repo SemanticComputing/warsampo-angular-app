@@ -1,7 +1,7 @@
 <!--<div ng-if="::ctrl.person.prisonerRecord">-->
 <div ng-if="!ctrl.isLoadingRelated">
   <div>
-    <div ng-if="::ctrl.person.getDateOfCaptureInfo().length">
+    <div ng-if="::ctrl.person.prisonerRecord">
       <h4 translate="PERSONS_DEMO.PRISONER_IMPRISONMENT_DETAILS"></h4>
       <table class="table person-record">
           <tr ng-if="::ctrl.person.getDateOfCaptureInfo().length">
@@ -131,6 +131,71 @@
                 <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
               </span>
             </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getPropagandaMagazineInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.PROPAGANDA_MAGAZINE_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.PROPAGANDA_MAGAZINE</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getPropagandaMagazineInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getSotilaanAaniInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.SOTILAAN_AANI_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.SOTILAAN_AANI</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getSotilaanAaniInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getPhotographSotilaanAaniInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.PHOTOGRAPH_SOTILAAN_AANI_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.PHOTOGRAPH_SOTILAAN_AANI</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getPhotographSotilaanAaniInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
+          <tr ng-if="::ctrl.person.getPropagandaMagazineLinkInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.PROPAGANDA_MAGAZINE_LINK_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.PROPAGANDA_MAGAZINE_LINK</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getPropagandaMagazineLinkInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
       </table>
     </div>
     <div ng-if="::ctrl.person.getDateOfReturnInfo().length">
