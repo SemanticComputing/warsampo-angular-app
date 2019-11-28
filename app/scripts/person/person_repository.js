@@ -59,10 +59,6 @@
         '  BIND("Test" AS ?video__prefLabel) ' +
         '  BIND("https://static.sotasampo.fi/videos/test/Oranki.mp4" AS ?video__url) ' +
 
-        '  VALUES ?document__id { <http://ldf.fi/warsa/document/1> <http://ldf.fi/warsa/document/2> } ' +
-        '  BIND("Test" AS ?document__prefLabel) ' +
-        '  BIND("http://www.africau.edu/images/default/sample.pdf" AS ?document__url) ' +
-
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
         '  OPTIONAL { ?id ^crm:P98_brought_into_life ?birth_id . } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
@@ -89,6 +85,11 @@
         '   ?id wsc:sotilaan_aani_magazine ?sa__id . ' +
         '   ?sa__id skos:prefLabel ?sa__prefLabel . ' +
         '   ?sa__id sch:contentUrl ?sa__url  . ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   ?id wsc:person_document ?document__id . ' +
+        '   ?document__id skos:prefLabel ?document__prefLabel . ' +
+        '   ?document__id sch:contentUrl ?document__url  . ' +
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +

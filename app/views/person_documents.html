@@ -2,7 +2,7 @@
   <div class="col-sm-12">
     <h4 translate="PERSONS_DEMO.DOCUMENT_TAB_HEADING"></h4>
     <ul>
-        <li ng-repeat="document in ctrl.person.document">
+        <li ng-repeat="document in ctrl.person.document | castArray | orderBy : 'prefLabel'">
             <a
                 href="{{ ::document.url }}"
                 target="_blank"
