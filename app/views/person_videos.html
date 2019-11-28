@@ -1,9 +1,14 @@
 <div class="row">
-  <div class="col-sm-12">
-  <h4 translate="PERSONS_DEMO.VIDEO_TAB_HEADING"></h4>
-    <video ng-repeat="video in ctrl.person.video | castArray" class="prisoner-video" controls>
-      <source ng-src="{{ ::video.url }}" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+  <div class="col-sm-12 tab-heading">
+      <h4 translate="PERSONS_DEMO.VIDEO_TAB_HEADING"></h4>
   </div>
+</div>
+<div ng-repeat="video in ctrl.person.video | castArray" class="row">
+    <div class="col-sm-12">
+        <p>{{ video.prefLabel }}</p>
+        <video  class="prisoner-video" controls>
+            <source ng-src="{{ ::video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+        </video>
+    </div>
 </div>

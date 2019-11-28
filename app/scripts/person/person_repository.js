@@ -54,11 +54,6 @@
         '  OPTIONAL { ?id foaf:firstName ?fname . }' +
         '  BIND(IF(BOUND(?fname), CONCAT(?fname, " ", ?sname), ?lbl) AS ?label) ' +
         '  BIND(IF(BOUND(?fname), CONCAT(?sname, ", ", ?fname), ?lbl) AS ?listLabel) ' +
-
-        '  VALUES ?video__id { <http://ldf.fi/warsa/video/1> <http://ldf.fi/warsa/video/2> } ' +
-        '  BIND("Test" AS ?video__prefLabel) ' +
-        '  BIND("https://static.sotasampo.fi/videos/test/Oranki.mp4" AS ?video__url) ' +
-
         '  OPTIONAL { ?id ^crm:P100_was_death_of ?death_id . } ' +
         '  OPTIONAL { ?id ^crm:P98_brought_into_life ?birth_id . } ' +
         '  OPTIONAL { ?id dct:description ?description . } ' +
@@ -90,6 +85,11 @@
         '   ?id wsc:person_document ?document__id . ' +
         '   ?document__id skos:prefLabel ?document__prefLabel . ' +
         '   ?document__id sch:contentUrl ?document__url  . ' +
+        '  } ' +
+        '  OPTIONAL { ' +
+        '   ?id wsc:documented_in_video ?video__id . ' +
+        '   ?video__id skos:prefLabel ?video__prefLabel . ' +
+        '   ?video__id sch:contentUrl ?video__url  . ' +
         '  } ' +
         '  OPTIONAL { ' +
         '   ?id crm:P70i_is_documented_in ?casualty . ' +
