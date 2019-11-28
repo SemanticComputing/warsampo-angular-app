@@ -342,7 +342,7 @@
                             if (r.valueLabel[0].startsWith('Henkilön') || r.valueLabel[0].startsWith('Person') ) {
                                 r.valueLabel = r.valueLabel[1];
                             } else {
-                                r.valuLabel = r.valueLabel[0];
+                                r.valueLabel = r.valueLabel[0];
                             }
                         }
                     });
