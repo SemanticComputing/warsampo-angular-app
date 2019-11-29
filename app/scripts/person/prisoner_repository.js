@@ -148,7 +148,7 @@
             '    [] rdf:subject ?id ; ' +
             '     rdf:predicate <NAMESPACE><PROPERTY> ; ' +
             '     rdf:object ?properties__<PROPERTY>__id ; ' +
-            '     dct:source ?properties__<PROPERTY>__source . ' +
+            '     dct:source/skos:prefLabel ?properties__<PROPERTY>__source . ' +
             '   } ' +
             '   wso:source22 skos:prefLabel ?properties__<PROPERTY>__sourceRegister ' +
             '     ' +
