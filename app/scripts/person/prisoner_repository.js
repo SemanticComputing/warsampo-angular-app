@@ -66,7 +66,6 @@
             // 'finnish_return_interrogation_file', // not used
             // 'flyer', // not used
             'marital_status',
-            // 'memoir', // not used
             'municipality_of_capture',
             'municipality_of_death',
             'municipality_of_domicile',
@@ -93,7 +92,8 @@
             'propaganda_magazine',
             'sotilaan_aani',
             'photograph_sotilaan_aani',
-            'propaganda_magazine_link'
+            'propaganda_magazine_link',
+            'memoir'
         ];
 
         var select = 'SELECT DISTINCT ?id ?name ?properties__id ';

@@ -89,6 +89,7 @@
         Person.prototype.getSotilaanAaniInfo = getSotilaanAaniInfo;
         Person.prototype.getPhotographSotilaanAaniInfo = getPhotographSotilaanAaniInfo;
         Person.prototype.getPropagandaMagazineLinkInfo = getPropagandaMagazineLinkInfo;
+        Person.prototype.getMemoirInfo= getMemoirInfo;
 
         Person.prototype.hasWoundingInfo = hasWoundingInfo;
         Person.prototype.hasDeathInfo = hasDeathInfo;
@@ -304,6 +305,10 @@
 
         function getPropagandaMagazineLinkInfo() {
             return this.getInfo('propagandaMagazineLink', 'na', 'na', 'propaganda_magazine_link', 'na');
+        }
+
+        function getMemoirInfo() {
+            return this.getInfo('memoir', 'na', 'na', 'memoir', 'na');
         }
 
         function getSourceNumber(sourceName) {

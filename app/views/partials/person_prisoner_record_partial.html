@@ -221,6 +221,22 @@
                 </ul>
             </td>
           </tr>
+          <tr ng-if="::ctrl.person.getMemoirInfo().length">
+            <th class="person-record-property">
+              <span translate
+                tooltips
+                tooltip-template="{{ 'PERSONS_DEMO.PROPAGANDA_MAGAZINE_LINK_TOOLTIP' | translate }}"
+                tooltip-size="large"
+                tooltip-side="right"
+                tooltip-class="prisoner-tooltip"
+                >PERSONS_DEMO.MEMOIR</span>
+            </th>
+            <td class="person-record-value">
+              <span ng-repeat="prop in ::ctrl.person.getMemoirInfo()">
+                <prisoner-detail-value is-date-value="true" property="::prop"></prisoner-detail-value>
+              </span>
+            </td>
+          </tr>
       </table>
     </div>
     <div ng-if="::ctrl.person.getDateOfReturnInfo().length">

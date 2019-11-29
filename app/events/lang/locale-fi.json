@@ -97,7 +97,9 @@
         "PROPAGANDA_MAGAZINE_LINK": "Muu propagandalehti, linkki",
         "PROPAGANDA_MAGAZINE_LINK_TOOLTIP": "Linkki propagandalehteen, jossa henkilö on mainittu",
         "DATE_OF_RETURN": "Sotavankeudesta palaamisen päivämäärä",
-        "DATE_OF_RETURN_TOOLTIP": "Päivä, jona henkilö on palannut Suomeen sotavankeudesta"
+        "DATE_OF_RETURN_TOOLTIP": "Päivä, jona henkilö on palannut Suomeen sotavankeudesta",
+        "MEMOIR": "Muistelmat, lehtiartikkelit ja kirjallisuus",
+        "MEMOIR_TOOLTIP": "Kirjallisissa lähteissä olevat maininnat henkilön sotavankeudesta"
     },
     "UNIT_DEMO": {
         "TITLE": "Joukko-osastot",
