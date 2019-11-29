@@ -113,13 +113,16 @@
                 if (_.includes(imageTypes, imgMatch[1])) {
                     o.imageUrl = obj.obj.value;
                 }
-            // Check if this property is a coordinate
-            } else if (prop.pred_type === latUri) {
-                o.lat = prop.value;
-            } else if (prop.pred_type === lonUri) {
-                o.lon = prop.value;
             }
-
+            // Check if this property is a coordinate
+            if (prop.pred_type === latUri) {
+                o.lat = prop.value;
+                o[objKey].labelFromUri = 'Leveysaste (WGS84)';
+            }
+            if (prop.pred_type === lonUri) {
+                o.lon = prop.value;
+                o[objKey].labelFromUri = 'Pituusaste (WGS84)';
+            }
             return o;
         }
 

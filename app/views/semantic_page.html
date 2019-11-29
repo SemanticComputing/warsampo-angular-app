@@ -26,10 +26,10 @@
       <img ng-if="ctrl.obj.lat"
       ng-src="https://maps.googleapis.com/maps/api/staticmap?size=600x300&zoom=5&markers=color:red%7C{{ ctrl.obj.lat }},{{ ctrl.obj.lon }}" />
       <div ng-repeat="(key, prop) in ctrl.obj.properties">
-        <h2>{{ (prop.getLangAttr('pred_label', 'en') | first) || prop.labelFromUri }}</h2>
+        <p>{{ (prop.getLangAttr('pred_label', 'en') | first) || prop.labelFromUri }}</p>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="val in prop.value | castArray">
-            <a ng-if="val.type === 'uri'" ws-page-link="val.value">{{ (val.getLabel() || val.value) | first }}</a>
+            <a ng-if="val.type === 'uri'" ws-page-link="val.value">{{ (val.getLangAttr('label', 'en') || val.value) | first }}</a>
             <p ng-if="val.type !== 'uri'">{{ val.value | first }}</p>
           </li>
         </ul>
