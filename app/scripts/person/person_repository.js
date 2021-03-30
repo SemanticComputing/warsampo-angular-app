@@ -121,7 +121,7 @@
         '  OPTIONAL {?death crm:P100_was_death_of ?id . ' +
         '   ?death crm:P7_took_place_at ?placeD . ' +
         '   ?placeD rdfs:label ?placeOfDeath . } ' +
-        '  OPTIONAL {?id sch:image ?images } ' +
+        // '  OPTIONAL {?id sch:image ?images } ' +
         '  OPTIONAL {?id dct:type ?shortDescription } ' +
         '  OPTIONAL {?id rdfs:comment ?description } ' +
         '} ORDER BY DESC(?dateOfDeath) LIMIT 1 ';
