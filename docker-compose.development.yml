@@ -6,12 +6,12 @@ services:
             - 9000:9000
             - 35729:35729
         environment:
-            - WARSAMPO_ENDPOINT_URL=http://localhost:8080/warsa/sparql
-            - PNR_ENDPOINT_URL=http://localhost:8080/pnr/sparql
-            - HISTORY_ENDPOINT_URL=http://localhost:8080/history/sparql
-            - DBPEDIA_ENDPOINT_URL=http://localhost:8080/dbpedia/sparql
-            - DBPEDIA_FI_ENDPOINT_URL=http://localhost:8080/dbpedia-fi/sparql
-            - PNR_SERVICE_URI=http://pnr:3030/pnr/sparql
+            - WARSAMPO_ENDPOINT_URL=https://ldf.fi/warsa/sparql
+            - PNR_ENDPOINT_URL=https://ldf.fi/pnr/sparql
+            - HISTORY_ENDPOINT_URL=https://ldf.fi/history/sparql
+            - DBPEDIA_ENDPOINT_URL=https://ldf.fi/dbpedia/sparql
+            - DBPEDIA_FI_ENDPOINT_URL=https://ldf.fi/dbpedia-fi/sparql
+            - PNR_SERVICE_URI=https://ldf.fi/pnr/sparql
         volumes:
             - ./app:/app/app
             - ./dist:/app/dist
